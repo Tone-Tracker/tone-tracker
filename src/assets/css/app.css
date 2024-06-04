@@ -2,11 +2,11 @@
 
 /*
 
-Template Name: Rocker Admin
+App Name: Tone Tracker
 
-Author: codervent
+Author: Mazisi Msebele
 
-Email: codervent@gmail.com
+Email: mazisimsebele18@gmail.com
 
 File: app.css
 
@@ -30,6 +30,13 @@ body {
 
 }
 
+
+.maz-gradient-btn {
+	background: linear-gradient(to right, #117AD1, #9A3AB1);
+	border: none;
+	color: white;
+	transition: background 0.3s ease-in-out;
+}
 
 
 a {
