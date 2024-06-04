@@ -14,6 +14,13 @@
         <ul class="metismenu" id="menu">
             
             <li>
+                <router-link to="/dashboard">
+                    <div class="parent-icon"><i class='bx bx-desktop'></i>
+                    </div>
+                    <div class="menu-title">Dashboard</div>
+                </router-link>
+            </li>
+            <li>
                 <a href="javascript:;" >
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
@@ -22,11 +29,11 @@
             </li>
 
             <li>
-                <a href="javascript:;" >
+                <router-link to="/status" >
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
                     <div class="menu-title">Status</div>
-                </a>
+                </router-link>
             </li>
             <li>
                 <a href="javascript:;" >

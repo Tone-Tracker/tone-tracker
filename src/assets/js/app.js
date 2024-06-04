@@ -4,9 +4,9 @@ import PerfectScrollbar from 'perfect-scrollbar';
 $(function() {
 	
 	"use strict";
-	new PerfectScrollbar(".app-container"),
-	new PerfectScrollbar(".header-message-list"),
-	new PerfectScrollbar(".header-notifications-list"),
+	// new PerfectScrollbar(".app-container"),
+	// new PerfectScrollbar(".header-message-list"),
+	// new PerfectScrollbar(".header-notifications-list"),
 
 
 	    $(".mobile-search-icon").on("click", function() {
