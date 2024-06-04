@@ -30,23 +30,23 @@
 
             <li>
                 <router-link to="/status" >
-                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    <div class="parent-icon"><i class='bx bx-notepad'></i>
                     </div>
                     <div class="menu-title">Status</div>
                 </router-link>
             </li>
             <li>
-                <a href="javascript:;" >
+                <router-link to="/report" >
                     <div class="parent-icon"><i class='bx bx-line-chart'></i>
                     </div>
                     <div class="menu-title">Report</div>
-                </a>
+                </router-link>
             </li>
             <li>
                 <a href="javascript:;" >
-                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    <div class="parent-icon"><i class='bx bx-calculator' ></i>
                     </div>
-                    <div class="menu-title">Bigdet</div>
+                    <div class="menu-title">Budget</div>
                 </a>
             </li>
             <li>
@@ -59,7 +59,7 @@
 
             <li class="maz">
                 <a href="javascript:;" >
-                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    <div class="parent-icon"><i class='bx bxs-school'></i>
                     </div>
                     <div class="menu-title">Warehousing</div>
                 </a>
