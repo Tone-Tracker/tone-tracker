@@ -4,60 +4,50 @@
 		<div class="page-wrapper">
 			<div class="page-content">
 
+				<BreadCrumb title="Welcome" icon="bx bx-user-pin"/>
+
                 <div class="row">
                     <div class="col-12 col-lg-12 d-flex">
                        <div class="card radius-10 w-100">
                          <div class="card-header">
                              <div class="d-flex align-items-center">
                                  <div>
-                                     <h6 class="mb-0">Sales Overview</h6>
+                                     <h6 class="mb-0">Project Controlling Dashboard</h6>
                                  </div>
+
+								 
                                  <div class="dropdown ms-auto">
-                                     <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                                     </a>
-                                     <ul class="dropdown-menu">
-                                         <li><a class="dropdown-item" href="javascript:;">Action</a>
-                                         </li>
-                                         <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                                         </li>
-                                         <li>
-                                             <hr class="dropdown-divider">
-                                         </li>
-                                         <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                                         </li>
-                                     </ul>
+                                    <select class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
+										<option selected="">Client:</option>
+										<option value="1">Telkom</option>
+										<option value="2">Microsoft</option>
+										<option value="3">Vodacom</option>
+									</select>
+                                 </div>
+								 <div class="dropdown ms-auto">
+                                    <select class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
+										<option selected="">Project Status:</option>
+										<option value="1">To Be Activated</option>
+										<option value="2">Activated</option>
+									</select>
+                                 </div>
+								 <div class="dropdown ms-auto">
+                                    <select class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
+										<option selected="">Time Period:</option>
+										<option value="1">One</option>
+										<option value="2">Two</option>
+										<option value="3">Three</option>
+									</select>
                                  </div>
                              </div>
                          </div>
                            <div class="card-body">
-                             <div class="d-flex align-items-center ms-auto font-13 gap-2 mb-3">
-                                 <span class="border px-1 rounded cursor-pointer"><i class="bx bxs-circle me-1" style="color: #14abef"></i>Sales</span>
-                                 <span class="border px-1 rounded cursor-pointer"><i class="bx bxs-circle me-1" style="color: #ffc107"></i>Visits</span>
-                             </div>
                              <div class="chart-container-1">
-                                 <canvas id="chart1"></canvas>
+								<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3580.2966141401544!2d28.30907767631748!3d-26.187027763276376!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e953d778f6d80b7%3A0x79a4aac8b50eb2c2!2s49%20Newlands%20Ave%2C%20Benoni%2C%201500!5e0!3m2!1sen!2sza!4v1717522328846!5m2!1sen!2sza" 
+								width="1589" height="270" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                                </div>
                            </div>
-                           <div class="row row-cols-1 row-cols-md-3 row-cols-xl-3 g-0 row-group text-center border-top">
-                             <div class="col">
-                               <div class="p-3">
-                                 <h5 class="mb-0">24.15M</h5>
-                                 <small class="mb-0">Overall Visitor <span> <i class="bx bx-up-arrow-alt align-middle"></i> 2.43%</span></small>
-                               </div>
-                             </div>
-                             <div class="col">
-                               <div class="p-3">
-                                 <h5 class="mb-0">12:38</h5>
-                                 <small class="mb-0">Visitor Duration <span> <i class="bx bx-up-arrow-alt align-middle"></i> 12.65%</span></small>
-                               </div>
-                             </div>
-                             <div class="col">
-                               <div class="p-3">
-                                 <h5 class="mb-0">639.82</h5>
-                                 <small class="mb-0">Pages/Visit <span> <i class="bx bx-up-arrow-alt align-middle"></i> 5.62%</span></small>
-                               </div>
-                             </div>
-                           </div>
+                           
                        </div>
                     </div>
                   
@@ -69,10 +59,11 @@
 						<div class="card radius-10">
 							<div class="card-body">
 								<div class="text-center">
-									<div class="widgets-icons mx-auto  mb-3"><i class='bx bx-scatter-chart'></i>
+									<div class="widgets-icons mx-auto  mb-3"><i class='bx bx-scatter-chart text-primary'></i>
 									</div>
-									<h4 class="my-1 maz-height">84</h4>
 									<p class="mb-0 text-secondary">Activation Process</p>
+									<h4 class="my-1 maz-height">84%</h4>
+									
 								</div>
 							</div>
 						</div>
@@ -81,7 +72,7 @@
 						<div class="card radius-10">
 							<div class="card-body">
 								<div class="text-center">
-									<div class="widgets-icons mx-auto mb-3"><i class='bx bx-notepad' ></i>
+									<div class="widgets-icons mx-auto mb-3"><i class='bx bx-notepad text-primary' ></i>
 									</div>
 									<p class="mb-0 text-secondary">Leads</p>
 									<h4 class="my-1 maz-height">34</h4>
@@ -95,7 +86,7 @@
 							<div class="card-body">
 								<div class="text-center">
 									<div class="widgets-icons  mx-auto  mb-3">
-										<i class='bx bx-check-circle'></i>
+										<i class='bx bx-check-circle text-primary'></i>
 									</div>
 									<p class="mb-0 text-secondary">Activations Completed</p>
 									<h4 class="my-1 maz-height">56</h4>
@@ -108,7 +99,7 @@
 						<div class="card radius-10">
 							<div class="card-body">
 								<div class="text-center">
-									<div class="widgets-icons mx-auto  mb-3"><i class='bx bx-line-chart'></i>
+									<div class="widgets-icons mx-auto  mb-3"><i class='bx bx-line-chart text-primary'></i>
 									</div>
 									<p class="mb-0 text-secondary">Ongoing Activations</p>
 									<h4 class="my-1 maz-height">38</h4>
@@ -196,7 +187,7 @@
 						<div class="card radius-10">
 							 <div class="card-body">
 								<div class="">
-									<div id="chart3" style="height:250px;"><svg height="250" version="1.1" width="665.328" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.2.0</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><path fill="none" stroke="#008cff" d="M332.664,201.66666666666669A76.66666666666667,76.66666666666667,0,0,0,408.94122662266636,132.71767299982181" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#008cff" stroke="#ffffff" d="M332.664,204.66666666666669A79.66666666666667,79.66666666666667,0,0,0,411.92598766442285,133.01966889981483L442.1052381977387,136.07318299974432A110,110,0,0,1,332.664,235Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#15ca20" d="M408.94122662266636,132.71767299982181A76.66666666666667,76.66666666666667,0,0,0,261.12270210661495,97.4387867918025" stroke-width="2" opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 1;"></path><path fill="#15ca20" stroke="#ffffff" d="M411.92598766442285,133.01966889981483A79.66666666666667,79.66666666666667,0,0,0,258.3232600151347,96.36030453582956L225.35205315992243,83.65818018770375A115,115,0,0,1,447.0798399339995,136.5765094997327Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#fd3550" d="M261.12270210661495,97.4387867918025A76.66666666666667,76.66666666666667,0,0,0,332.6399144567186,201.66666288331834" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#fd3550" stroke="#ffffff" d="M258.3232600151347,96.36030453582956A79.66666666666667,79.66666666666667,0,0,0,332.638971978938,204.6666627352743L332.6294424813789,234.99999457171762A110,110,0,0,1,230.01778997905626,85.45565061432532Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="332.664" y="115" text-anchor="middle" font-family="&quot;Arial&quot;" font-size="15px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 15px; font-weight: 800;" font-weight="800" transform="matrix(1.7424,0,0,1.7424,-246.9778,-93.5455)" stroke-width="0.5739130434782609"><tspan dy="6" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Nokia</tspan></text><text x="332.664" y="135" text-anchor="middle" font-family="&quot;Arial&quot;" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 14px;" transform="matrix(1.5972,0,0,1.5972,-198.6743,-75.8472)" stroke-width="0.6260869565217391"><tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">30</tspan></text></svg></div>
+									<div id="chart3" style="height:250px;"><svg height="250" version="1.1" width="665.328" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.2.0</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><path fill="none" stroke="#008cff" d="M332.664,201.66666666666669A76.66666666666667,76.66666666666667,0,0,0,408.94122662266636,132.71767299982181" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#008cff" stroke="#ffffff" d="M332.664,204.66666666666669A79.66666666666667,79.66666666666667,0,0,0,411.92598766442285,133.01966889981483L442.1052381977387,136.07318299974432A110,110,0,0,1,332.664,235Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#15ca20" d="M408.94122662266636,132.71767299982181A76.66666666666667,76.66666666666667,0,0,0,261.12270210661495,97.4387867918025" stroke-width="2" opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 1;"></path><path fill="#15ca20" stroke="#ffffff" d="M411.92598766442285,133.01966889981483A79.66666666666667,79.66666666666667,0,0,0,258.3232600151347,96.36030453582956L225.35205315992243,83.65818018770375A115,115,0,0,1,447.0798399339995,136.5765094997327Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#fd3550" d="M261.12270210661495,97.4387867918025A76.66666666666667,76.66666666666667,0,0,0,332.6399144567186,201.66666288331834" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#fd3550" stroke="#ffffff" d="M258.3232600151347,96.36030453582956A79.66666666666667,79.66666666666667,0,0,0,332.638971978938,204.6666627352743L332.6294424813789,234.99999457171762A110,110,0,0,1,230.01778997905626,85.45565061432532Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="332.664" y="115" text-anchor="middle" font-family="&quot;Arial&quot;" font-size="15px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 15px; font-weight: 800;" font-weight="800" transform="matrix(1.7424,0,0,1.7424,-246.9778,-93.5455)" stroke-width="0.5739130434782609"><tspan dy="6" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></tspan></text><text x="332.664" y="135" text-anchor="middle" font-family="&quot;Arial&quot;" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 14px;" transform="matrix(1.5972,0,0,1.5972,-198.6743,-75.8472)" stroke-width="0.6260869565217391"><tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></tspan></text></svg></div>
 								</div>
 							 </div>
 							 <ul class="list-group list-group-flush">
@@ -660,7 +651,9 @@
 </template>
 <script setup>
 import Layout from '../shared/Layout.vue';
+import BreadCrumb from '../../components/BreadCrumb.vue';
 </script>
+
 <style>
 .maz-height{
 	font-size: 3rem;
@@ -679,5 +672,13 @@ html.dark-theme .widgets-icons {
 }
 .maz-table-row-height{
 	height: 55px;
+}
+.bg-maz-light{
+	background: #6F7070 !important;
+	color: #fff !important;
+	width: 150px;
+	border: 0;
+	border-radius: 0;
+	font-weight: 600;
 }
 </style>

@@ -1,11 +1,12 @@
 <template>
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3"><i class='bx bx-notepad maz-gradient-txt' ></i> {{ title }}</div>
+        <div class="breadcrumb-title pe-3"><i class='maz-gradient-txt' :class="icon"></i> {{ title }}</div>
     </div>
 </template>
 <script setup >
 const props = defineProps({
-    title: String
+    title: String,
+    icon: String
 })
 </script>
 <style >
@@ -19,6 +20,8 @@ const props = defineProps({
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-
+html.dark-theme .breadcrumb-title {
+    border-right: 0px solid rgb(255 255 255 / 18%);
+}
 
 </style>

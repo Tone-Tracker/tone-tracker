@@ -4,7 +4,7 @@
 		<div class="page-wrapper">
 			<div class="page-content">
 
-                <BreadCrumb title="Status"/>
+                <BreadCrumb title="Status" icon="bx bx-notepad"/>
 
 
 
