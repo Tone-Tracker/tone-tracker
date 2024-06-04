@@ -9,11 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "jquery": "^3.7.1",
+    "perfect-scrollbar": "^1.5.5",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.30",
     "@vitejs/plugin-vue": "^5.0.4",
     "vite": "^5.2.8"
   }
