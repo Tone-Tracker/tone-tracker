@@ -2,140 +2,12 @@ import $ from 'jquery';
 $(function() {
 
 
-    // chart1
-    var ctx = document.getElementById('chart1').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-            datasets: [{
-                label: 'Google',
-                data: [6, 20, 14, 12, 17, 8, 10],
-                backgroundColor: [
-                    '#008cff'
-                ],
-                lineTension: 0.4,
-                borderColor: [
-                    '#008cff'
-                ],
-                borderWidth: 3
-            },
-            {
-                label: 'Facebook',
-                data: [5, 30, 16, 23, 8, 14, 11],
-                backgroundColor: [
-                    '#fd3550'
-                ],
-                tension: 0.4,
-                borderColor: [
-                    '#fd3550'
-                ],
-                borderWidth: 3
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-				legend: {
-					position:'bottom',
-					display: true,
-				}
-			},
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
+    
 
   
 
-      
-      // chart6
-      var ctx = document.getElementById('chart6').getContext('2d');
-      var myChart = new Chart(ctx, {
-          type: 'polarArea',
-          data: {
-            labels: [
-                'Red',
-                'Purple',
-                'Yellow',
-                'Grey',
-                'Green'
-              ],
-              datasets: [{
-                label: 'My First Dataset',
-                data: [11, 16, 7, 3, 14],
-                backgroundColor: [
-                     '#0d6efd',
-                     '#6f42c1',
-                     '#d63384',
-                     '#fd7e14',
-                     '#15ca20',
-                     '#0dcaf0'
-                ],
-              }]
-          },
-          options: {
-            maintainAspectRatio: false,
-            plugins: {
-				legend: {
-					position:'bottom',
-					display: true,
-				}
-			},
-            elements: {
-              line: {
-                borderWidth: 3
-              }
-            }
-          },
-      });
-
 
     
-
-// chart7
-var ctx = document.getElementById('chart7').getContext('2d');
-var myChart = new Chart(ctx, {
-	type: 'bar',
-	data: {
-		labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-		datasets: [{
-			label: 'Google',
-			data: [18, 25, 14, 12, 17, 8, 10],
-			backgroundColor: [
-				'#fd3550'
-			],
-			lineTension: 0,
-			borderColor: [
-				'#fd3550'
-			],
-			borderWidth: 0
-		}
-		]
-	},
-	options: {
-		maintainAspectRatio: false,
-		barPercentage: 0.5,
-		categoryPercentage: 0.7,
-		indexAxis: 'y',
-		plugins: {
-			legend: {
-				position:'bottom',
-				display: true,
-			}
-		},
-		scales: {
-			y: {
-				beginAtZero: true
-			}
-		}
-	}
-});
-
 
 
 
@@ -144,11 +16,11 @@ var myChart = new Chart(ctx, {
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+            labels: ['3L Bottles', '6L Bottles', 'Ice Buckets', 'Bubble Walls', 'Wall Banners', 'Cushions', 'Thrones','Glorifiers 1 Holder', 'Glorifiers 2 Holder', 'Glorifiers 4 Holder', 'Glorifiers 5 Holder', 'Glorifiers 8 Holder', 'Shields', 'Gold Bars', 'Flutes', 'Ring Lights','Clothing Rails','Glow Sticks', 'Claw Machines','Uniforms', 'Carpets'],
             datasets: [{
 				type: 'bar',
                 label: 'Google',
-                data: [6, 20, 14, 12, 17, 8, 10],
+                data: [6, 20, 14, 12, 17, 8, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
                 backgroundColor: [
                     '#008cff'
                 ],
@@ -157,19 +29,6 @@ var myChart = new Chart(ctx, {
                     '#008cff'
                 ],
                 borderWidth: 1
-            },
-            {
-				type: 'line',
-                label: 'Facebook',
-                data: [5, 30, 16, 23, 8, 14, 11],
-                backgroundColor: [
-                    '#fd3550'
-                ],
-                tension: 0.4,
-                borderColor: [
-                    '#fd3550'
-                ],
-                borderWidth: 4
             }]
         },
         options: {
@@ -184,7 +43,12 @@ var myChart = new Chart(ctx, {
 			},
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    color: 'white',
+                },
+                x: {
+                    color: 'white',
+                    size: 10
                 }
             }
         }

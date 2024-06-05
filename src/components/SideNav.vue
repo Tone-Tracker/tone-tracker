@@ -12,8 +12,23 @@
          </div>
         <!--navigation-->
         <ul class="metismenu" id="menu">
-            
             <li>
+
+                <div class="col-img">
+                    <div class="gallery">
+                        <div class="image-container position-relative">
+                            <router-link to="/dashboard" href="/src/assets/images/fake.png">
+                                <img src="/src/assets/images/fake.png" alt="Cinque Terre" class="img-fluid mx-auto d-block">
+                            </router-link>
+                            <div class="text-center text-sm">Dashboard</div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </li>
+            
+            <li style="margin-top: 2rem">
                 <router-link to="/dashboard">
                     <div class="parent-icon"><i class='bx bx-desktop'></i>
                     </div>

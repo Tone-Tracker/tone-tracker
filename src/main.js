@@ -14,7 +14,7 @@ import './assets/js/app.js';
 import './assets/js/bootstrap.bundle.min.js';
 import './assets/plugins/chartjs/js/chart.js';
 import './assets/plugins/chartjs/js/chartjs-custom.js';
-import './assets/js/index3.js';
+// import './assets/js/index3.js';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

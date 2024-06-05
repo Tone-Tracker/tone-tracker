@@ -5,7 +5,7 @@
                 <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
                 </div>
 
-                  <div class="search-bar d-lg-block">
+                  <div class="search-bar d-lgsblock">
                     <div class="input-group">
                         <span class="input-group-text" id="addon-wrapping"><i class='bx bx-search'></i></span>
                         <input type="text" class="form-control" aria-label="Text input with 2 dropdown buttons" placeholder="Search For Projects...">
@@ -20,32 +20,29 @@
                    
                 </div>
                 <div class="user-box dropdown px-3">
-                    <a class="d-flex align-items-center nav-link dropdown-toggle gap-3 dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="/src/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">
-                        <div class="user-info">
-                            <p class="user-name mb-0">Pauline Seitz</p>
-                            <p class="designattion mb-0">Web Designer</p>
-                        </div>
+                    <a class="d-flex align-items-center nav-link gap-3 t" href="#" role="button">
+                        <img src="/src/assets/images/fake.png" class="user-img" alt="user avatar">
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-user fs-5"></i><span>Profile</span></a>
-                        </li>
-                        <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-cog fs-5"></i><span>Settings</span></a>
-                        </li>
-                        <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-home-circle fs-5"></i><span>Dashboard</span></a>
-                        </li>
-                        <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-dollar-circle fs-5"></i><span>Earnings</span></a>
-                        </li>
-                        <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-download fs-5"></i><span>Downloads</span></a>
-                        </li>
-                        <li>
-                            <div class="dropdown-divider mb-0"></div>
-                        </li>
-                        <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i class="bx bx-log-out-circle"></i><span>Logout</span></a>
-                        </li>
-                    </ul>
                 </div>
             </nav>
         </div>
     </header>
 </template>
+<style scoped>
+.search-bar {
+    width: 45%;
+    cursor: pointer;
+}
+
+.user-img {
+    width: 58px;
+    height: 58px;
+}
+
+html.dark-theme .user-box {
+    border-left: 0px solid rgb(255 255 255 / .15);
+    border-right: 0px solid rgb(255 255 255 / .15);
+}
+
+ 
+</style>

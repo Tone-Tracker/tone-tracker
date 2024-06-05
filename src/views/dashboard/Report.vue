@@ -96,8 +96,8 @@ Date: 04/06/2024
                         </div>
                 </div>
 
-                <div class="col-12 col-lg-12 mt-6 mb-6">
-                    <h2>Projects</h2>
+                <div class="col-12 col-lg-12 mt-4 mb-6">
+                    <h2 class="mb-4"> <i class='bx bx-check-circle text-primary' ></i> Completed</h2>
                 </div>
 
                 <div class="row">
@@ -208,6 +208,138 @@ Date: 04/06/2024
 
                 
 
+                <div class="card">
+                    
+                    <div class="card-body" >
+                        <div class="my-table" style="padding-left: 7rem;padding-right: 7rem;">
+                            <div class="col-12">
+                                <h3 class="text-center fs-2 bg-gray">Post campaign analysis</h3>
+                            </div>
+                            <table class="table table-bordered mb-0 maz-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">JOBS</th>
+                                        <th scope="col">COMMENT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Reported By</td>
+                                        <td>Mazisi Msebele</td>
+                                    </tr>
+                                    <tr>
+                                        <td>What worked</td>
+                                        <td>
+                                            <ol>
+                                                <li style="list-style:disc;">Lorem Lorem Ispsum Ispsum</li>
+                                                <li style="list-style:disc;">Lorem Lorem Ispsum Ispsum</li>
+                                                <li style="list-style:disc;">Lorem Lorem Ispsum Ispsum</li>
+                                            </ol>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>What didn't work</td>
+                                        <td>
+                                            <ol>
+                                                <li style="list-style:disc;">Lorem Lorem Ispsum Ispsum</li>
+                                                <li style="list-style:disc;">Lorem Lorem Ispsum Ispsum</li>
+                                                <li style="list-style:disc;">Lorem Lorem Ispsum Ispsum</li>
+                                            </ol>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Suggestions</td>
+                                        <td>
+                                            <ol>
+                                                <li style="list-style:disc;">Lorem Lorem Ispsum Ispsum</li>
+                                                <li style="list-style:disc;">Lorem Lorem Ispsum Ispsum</li>
+                                                <li style="list-style:disc;">Lorem Lorem Ispsum Ispsum</li>
+                                            </ol>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="mt-2 text-center cursor-pointer d-flex justify-content-center align-items-center">
+                                <span>Load More</span>
+                                <i class='bx bx-chevron-down fs-2'></i>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+               
+                <div class="card radius-10 w-100">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <h6 class="mb-0 text-center fs-2">Overall Summary</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container1">
+                            <canvas id="chart8" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-6  row-cols-xl-9">
+                    <div class="">
+                        <h4 class="mb-2 ml-2">Promoters</h4>
+                    </div>
+                    <div class="col-img">
+                        <div class="gallery">
+                            <a target="_blank" href="../../assets/images/avatars/avatar-1.png">
+                            <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" width="600" height="400">
+                            </a>
+                            <div class="desc">Mazisi Msebele</div>
+                        </div>
+                  </div>
+                  <div class="col-img">
+                  <div class="gallery">
+                    <a target="_blank" href="../../assets/images/avatars/avatar-2.png">
+                      <img src="../../assets/images/avatars/avatar-2.png" alt="Forest" width="600" height="400">
+                    </a>
+                    <div class="desc">Dave Doe</div>
+                  </div>
+                </div>
+                <div class="col-img">
+                  <div class="gallery">
+                    <a target="_blank" href="../../assets/images/avatars/avatar-3.png">
+                      <img src="../../assets/images/avatars/avatar-3.png" alt="Northern Lights" width="600" height="400">
+                    </a>
+                    <div class="desc">Nkanyiso Ncube</div>
+                  </div>
+                </div>
+                
+                <div class="col-img">
+                  <div class="gallery">
+                    <a target="_blank" href="../../assets/images/avatars/avatar-4.png">
+                      <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains" width="600" height="400">
+                    </a>
+                    <div class="desc">Rico Nyathi</div>
+                  </div>
+                  </div>
+
+                  <div class="col-img">
+                    <div class="gallery">
+                      <a target="_blank" href="../../assets/images/avatars/avatar-5.png">
+                        <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains" width="600" height="400">
+                      </a>
+                      <div class="desc">Rico Nyathi</div>
+                    </div>
+                    </div>
+                    <div class="col-img">
+                        <div class="gallery">
+                          <a target="_blank" href="../../assets/images/avatars/avatar-6.png">
+                            <img src="../../assets/images/avatars/avatar-6.png" alt="Mountains" width="600" height="400">
+                          </a>
+                          <div class="desc">Rico Nyathi</div>
+                        </div>
+                        </div>
+                </div>
+
+
 			</div>
 		</div>
 	<!--start switcher-->
@@ -272,5 +404,12 @@ div.gallery {
     width: 180px;
     font-size: 1.2rem;
     font-weight: 600;
+}
+.bg-gray{
+    background: #22222222 !important;
+}
+
+.maz-table{
+    background: #575757;
 }
 </style>
