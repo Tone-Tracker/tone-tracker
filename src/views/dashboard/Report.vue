@@ -283,23 +283,21 @@ Date: 04/06/2024
                     </div>
                 </div>
                 
-                <div class="row mt-6  row-cols-xl-9 row-cols-xl-4">
+                <div class="row mt-6  row-cols-xl-9 ">
                     <div class="">
-                        <h4 class="mb-2 ml-2">Promoters</h4>
+                        <h4 class="mb-2 ml-2">Gallery</h4>
                     </div>
-                    <div class="col">
                     <div class="col-img">
                         <div class="gallery">
-                            <a target="_blank" href="../../assets/images/avatars/avatar-1.png">
+                            <a data-lightbox="image-1" data-title="My caption"  href="../../assets/images/avatars/avatar-1.png">
                             <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" width="600" height="400">
                             </a>
                             <div class="desc">Mazisi Msebele</div>
                         </div>
                   </div>
-                </div>
                   <div class="col-img">
                   <div class="gallery">
-                    <a target="_blank" href="../../assets/images/avatars/avatar-2.png">
+                    <a data-lightbox="image-1" data-title="My caption"  href="../../assets/images/avatars/avatar-2.png">
                       <img src="../../assets/images/avatars/avatar-2.png" alt="Forest" width="600" height="400">
                     </a>
                     <div class="desc">Dave Doe</div>
@@ -307,7 +305,7 @@ Date: 04/06/2024
                 </div>
                 <div class="col-img">
                   <div class="gallery">
-                    <a target="_blank" href="../../assets/images/avatars/avatar-3.png">
+                    <a data-lightbox="image-1" data-title="My caption"  href="../../assets/images/avatars/avatar-3.png">
                       <img src="../../assets/images/avatars/avatar-3.png" alt="Northern Lights" width="600" height="400">
                     </a>
                     <div class="desc">Nkanyiso Ncube</div>
@@ -316,7 +314,7 @@ Date: 04/06/2024
 
                 <div class="col-img">
                   <div class="gallery">
-                    <a target="_blank" href="../../assets/images/avatars/avatar-4.png">
+                    <a data-lightbox="image-1" data-title="My caption"  href="../../assets/images/avatars/avatar-4.png">
                       <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains" width="600" height="400">
                     </a>
                     <div class="desc">Rico Nyathi</div>
@@ -325,7 +323,7 @@ Date: 04/06/2024
 
                   <div class="col-img">
                     <div class="gallery">
-                      <a data-lightbox="image-1" data-title="My caption" href="../../assets/images/avatars/avatar-5.png">
+                      <a href="../../assets/images/avatars/avatar-5.png" data-lightbox="image-1" data-title="My caption" >
                         <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains" width="600" height="400">
                       </a>
                       <div class="desc">Rico Nyathi</div>

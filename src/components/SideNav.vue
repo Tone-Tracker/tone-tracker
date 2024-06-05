@@ -17,7 +17,7 @@
                 <div class="col-img">
                     <div class="gallery">
                         <div class="image-container position-relative">
-                            <router-link to="/dashboard" href="/src/assets/images/fake.png">
+                            <router-link to="/">
                                 <img src="/src/assets/images/fake.png" alt="Cinque Terre" class="img-fluid mx-auto d-block">
                             </router-link>
                             <div class="text-center text-sm">Dashboard</div>

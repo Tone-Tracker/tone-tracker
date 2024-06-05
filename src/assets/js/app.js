@@ -63,7 +63,7 @@ $(function() {
 		
 		
 		$(function() {
-			$("#menu").metisMenu()
+			// $("#menu").metisMenu()
 		}), 
 		
 		$(".chat-toggle-btn").on("click", function() {
