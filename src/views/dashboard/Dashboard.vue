@@ -295,7 +295,7 @@
 
 				
 
-				 <div class="card radius-10">
+				 <div class="card radius-10 d-none">
 					<div class="card-header">
 						<div class="d-flex align-items-center">
 							<div>
@@ -408,7 +408,7 @@
 					</div>
 
 
-					<div class="row">
+					<div class="row d-none">
 						<div class="col-12 col-lg-7 col-xl-8 d-flex">
 						  <div class="card radius-10 w-100">
 							<div class="card-header bg-transparent">
@@ -537,7 +537,7 @@
 						</div>
 					 </div><!--end row-->
 
-					 <div class="row row-cols-1 row-cols-lg-3">
+					 <div class="row row-cols-1 row-cols-lg-3 d-none">
 						 <div class="col d-flex">
                            <div class="card radius-10 w-100">
 							   <div class="card-body">
