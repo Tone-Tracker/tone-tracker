@@ -42,119 +42,150 @@
                  </div>
 
 
+				 <div class="row mt-4">
+					<div class="col-lg-1"></div>
+                    <div class="col-lg-3 col-md-6">
+						<select class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
+							<option selected="">Client:</option>
+							<option value="1">Telkom</option>
+							<option value="2">Microsoft</option>
+							<option value="3">Vodacom</option>
+						</select>
+					  </div>
+					  <div class="col-lg-4 col-md-6">
+						
+					  </div>
+					  <div class="col-lg-3 col-md-6">
+						<div class="container ">
+							<div class="search-container">
+							  <input type="text" class="form-control search-input" placeholder="Search for item">
+							  <i class="bx bx-search search-icon"></i>
+							</div>
+						  </div>
+					  </div>
+					  <div class="col-lg-1"></div>
+                 </div>
+				
 				
 
-				 <div class="card radius-10 d-none">
-					<div class="card-header">
-						<div class="d-flex align-items-center">
-							<div>
-								<h6 class="mb-0">Recent Orders</h6>
-							</div>
-							<div class="dropdown ms-auto">
-								<a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-								</a>
-								<ul class="dropdown-menu">
-									<li><a class="dropdown-item" href="javascript:;">Action</a>
-									</li>
-									<li><a class="dropdown-item" href="javascript:;">Another action</a>
-									</li>
-									<li>
-										<hr class="dropdown-divider">
-									</li>
-									<li><a class="dropdown-item" href="javascript:;">Something else here</a>
-									</li>
-								</ul>
-							</div>
+				 <div class="row mt-4 ">
+					<div class="col-lg-1"></div>
+					<div class="col-12 col-lg-3">
+						<div class="card radius-10">
+							 <div class="card-body">
+								<div class="card card-custom">
+									<h5>Stock check</h5>
+									<p class="text-light"><strong>Storage Capacity:</strong> 50%</p>
+									<p class="text-light"><strong>Days since last check:</strong> 15 Days</p>
+									<p class="text-light"><strong>Checked by:</strong> Tumelo Moloka</p>
+								  </div>
+							
+								  <div class="card card-custom">
+									<h5>Inventory accuracy</h5>
+									<div class="chart-container">
+									  <canvas id="inventoryAccuracyChart"></canvas>
+									</div>
+								  </div>
+							 </div>
 						</div>
 					</div>
-                         <div class="card-body">
-						 <div class="table-responsive">
-						   <table class="table align-middle mb-0">
-							<thead class="table-light">
-							 <tr>
-							   <th>Product</th>
-							   <th>Photo</th>
-							   <th>Product ID</th>
-							   <th>Status</th>
-							   <th>Amount</th>
-							   <th>Date</th>
-							   <th>Shipping</th>
-							 </tr>
-							 </thead>
-							 <tbody><tr>
-							  <td>Iphone 5</td>
-							  <td><img src="../../assets/images/products/01.png" class="product-img-2" alt="product img"></td>
-							  <td>#9405822</td>
-							  <td><span class="badge bg-gradient-quepal text-white shadow-sm w-100">Paid</span></td>
-							  <td>$1250.00</td>
-							  <td>03 Feb 2020</td>
-							  <td><div class="progress" style="height: 6px;">
-									<div class="progress-bar bg-gradient-quepal" role="progressbar" style="width: 100%"></div>
-								  </div></td>
-							 </tr>
-		  
-							 <tr>
-							  <td>Earphone GL</td>
-							  <td><img src="../../assets/images/products/02.png" class="product-img-2" alt="product img"></td>
-							  <td>#8304620</td>
-							  <td><span class="badge bg-gradient-blooker text-white shadow-sm w-100">Pending</span></td>
-							  <td>$1500.00</td>
-							  <td>05 Feb 2020</td>
-							  <td><div class="progress" style="height: 6px;">
-									<div class="progress-bar bg-gradient-blooker" role="progressbar" style="width: 60%"></div>
-								  </div></td>
-							 </tr>
-		  
-							 <tr>
-							  <td>HD Hand Camera</td>
-							  <td><img src="../../assets/images/products/03.png" class="product-img-2" alt="product img"></td>
-							  <td>#4736890</td>
-							  <td><span class="badge bg-gradient-bloody text-white shadow-sm w-100">Failed</span></td>
-							  <td>$1400.00</td>
-							  <td>06 Feb 2020</td>
-							  <td><div class="progress" style="height: 6px;">
-									<div class="progress-bar bg-gradient-bloody" role="progressbar" style="width: 70%"></div>
-								  </div></td>
-							 </tr>
-		  
-							 <tr>
-							  <td>Clasic Shoes</td>
-							  <td><img src="../../assets/images/products/04.png" class="product-img-2" alt="product img"></td>
-							  <td>#8543765</td>
-							  <td><span class="badge bg-gradient-quepal text-white shadow-sm w-100">Paid</span></td>
-							  <td>$1200.00</td>
-							  <td>14 Feb 2020</td>
-							  <td><div class="progress" style="height: 6px;">
-									<div class="progress-bar bg-gradient-quepal" role="progressbar" style="width: 100%"></div>
-								  </div></td>
-							 </tr>
-							 <tr>
-							  <td>Sitting Chair</td>
-							  <td><img src="../../assets/images/products/06.png" class="product-img-2" alt="product img"></td>
-							  <td>#9629240</td>
-							  <td><span class="badge bg-gradient-blooker text-white shadow-sm w-100">Pending</span></td>
-							  <td>$1500.00</td>
-							  <td>18 Feb 2020</td>
-							  <td><div class="progress" style="height: 6px;">
-									<div class="progress-bar bg-gradient-blooker" role="progressbar" style="width: 60%"></div>
-								  </div></td>
-							 </tr>
-							 <tr>
-							  <td>Hand Watch</td>
-							  <td><img src="../../assets/images/products/05.png" class="product-img-2" alt="product img"></td>
-							  <td>#8506790</td>
-							  <td><span class="badge bg-gradient-bloody text-white shadow-sm w-100">Failed</span></td>
-							  <td>$1800.00</td>
-							  <td>21 Feb 2020</td>
-							  <td><div class="progress" style="height: 6px;">
-									<div class="progress-bar bg-gradient-bloody" role="progressbar" style="width: 40%"></div>
-								  </div></td>
-							 </tr>
-						    </tbody>
-						  </table>
+
+
+					<div class="col-12 col-lg-6 d-flex">
+						<div class="card radius-10 w-100">
+						  <div class="card-header">
+							  <div class="d-flex align-items-center">
+								  <div>
+									  <h6 class="mb-0">In Stock</h6>
+								  </div>
+								  <div class="dropdown ms-auto">
+									 
+								  </div>
+							  </div>
 						  </div>
-						 </div>
-					</div>
+						  <div class="card-body row  mx-2">
+							<div class="table-responsive table table-dark table-striped w-50">
+								<table class="table align-middle mb-0">
+								 <thead class="table-light">
+								  <tr style="background:#1D2126">
+									<th>Description</th>
+									<th>Number</th>
+								  </tr>
+								  </thead>
+								  <tbody>
+									<tr class="maz-table-row-height">
+								   <td>Green T-shirts</td>
+								   <td>58</td>
+								  </tr>
+			   
+								  <tr class="maz-table-row-height">
+								   <td>Green Golfer</td>
+								   <td>20</td>
+								  </tr>
+			   
+								  <tr class="maz-table-row-height">
+								   <td>Black Cardigans</td>
+								   <td>68</td>
+								  </tr>
+			   
+								  <tr class="maz-table-row-height">
+								   <td>Project 4</td>
+								   <td>37</td>
+								  </tr>
+								  <tr class="maz-table-row-height">
+								   <td>Green Cardigans</td>
+								   <td>92</td>
+								  </tr>
+								 </tbody>
+							   </table>
+							 </div>
+							 <div class="table-responsive table table-dark table-striped w-50">
+								<table class="table align-middle mb-0">
+								 <thead class="table-light">
+								  <tr style="background:#1D2126">
+									<th>Description</th>
+									<th>Number</th>
+								  </tr>
+								  </thead>
+								  <tbody>
+									<tr class="maz-table-row-height">
+								   <td>Bottles</td>
+								   <td>52</td>
+								  </tr>
+			   
+								  <tr class="maz-table-row-height">
+								   <td>Ice Buckets</td>
+								   <td>20</td>
+								  </tr>
+			   
+								  <tr class="maz-table-row-height">
+								   <td>Wall Banners</td>
+								   <td>68</td>
+								  </tr>
+			   
+								  <tr class="maz-table-row-height">
+								   <td>Cushions</td>
+								   <td>72</td>
+								  </tr>
+								  <tr class="maz-table-row-height">
+								   <td>Flute</td>
+								   <td>24</td>
+								  </tr>
+								  <tr class="maz-table-row-height">
+									<td>Uniforms</td>
+									<td>39</td>
+								   </tr>
+								   <tr class="maz-table-row-height">
+									<td>Ring Lights</td>
+									<td>54</td>
+								   </tr>
+								 </tbody>
+							   </table>
+							 </div>
+						  </div>
+						</div>
+					 </div>
+				</div>
 
 
 
@@ -167,10 +198,17 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
+import { onMounted } from 'vue';
+
+onMounted(() => {
+	
+})
 </script>
 
-<style>
-
+<style scoped>
+.width-50{
+	width: 50%;
+}
 
 .gradient-card {
 	border-radius: 10px;
@@ -191,9 +229,65 @@ import BreadCrumb from '../../components/BreadCrumb.vue';
 	border-radius: 15px;
   }
   .gradient-card .content {
-	background: #1e1e1e;
+	background: #0E0C19;
 	border-radius: 10px;
-	padding: 14px;
+	padding: 12px;
 	z-index: 1;
   }
+
+  .search-container {
+	position: relative;
+	display: inline-block;
+  }
+
+  .search-input {
+	width: 100%;
+	padding-right: 40px; /* Adjust padding to fit the icon */
+	padding-left: 10px; /* Optional: adjust left padding for better appearance */
+	border: 0;
+	border-radius: 5px;
+	height: 35px;
+	background-color: #1e1e1e; /* Match the background color */
+	color: white;
+  }
+
+  .search-input::placeholder {
+	color: #bbb;
+  }
+
+  .search-icon {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #bbb;
+	cursor: pointer;
+  }
+
+  .search-input:focus + .search-icon {
+	display: none;
+  }
+
+  .search-input:focus {
+	outline: none;
+	border-color: #3498db; /* Change border color on focus */
+  }
+
+  .card-custom {
+	background-color: #1e1e1e;
+	color: #ffffff;
+	border-radius: 10px;
+	padding: 20px;
+	margin: 20px 0;
+  }
+
+  .card-custom h5,
+  .card-custom p {
+	margin-bottom: 10px;
+  }
+
+  input::placeholder {
+	color: #bbb;
+  }
+
 </style>

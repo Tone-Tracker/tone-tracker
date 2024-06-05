@@ -1,6 +1,6 @@
 
 <script setup>
-const toggleClassActive = (myClass) => {alert(myClass);
+const toggleClassActive = (myClass) => {
     document.querySelector(myClass).classList.addClass("mm-active");
 }
 </script>
