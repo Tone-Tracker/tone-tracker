@@ -1,12 +1,12 @@
 <template>
     <header>
         <div class="topbar d-flex align-items-center">
-            <nav class="navbar navbar-expand gap-3">
+            <nav class="navbar navbar-expand gap-3 flex justify-content-between flex-direction-row">
                 <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
                 </div>
 
-                  <div class="search-bar d-lgsblock" >
-                    <div class="input-group">
+                  <div class="search-bar d-lgsblock w-100  d-flex justify-content-center" >
+                    <div class="input-group d-lgsblock custom-width-70" >
                         <span class="input-group-text" id="addon-wrapping"><i class='bx bx-search'></i></span>
                         <input type="text" class="form-control" aria-label="Text input with 2 dropdown buttons" placeholder="Search For Projects...">
                         <button class="btn btn-outline-secondary w-20 maz-gradient-btn" >
@@ -14,7 +14,7 @@
                     </div>
                   </div>
 
-                  <div class="top-menu ms-auto"></div>
+              
                 <div class="user-box dropdown px-3">
                     <a class="d-flex align-items-center nav-link gap-3 t" href="#" role="button">
                         <img src="/src/assets/images/fake.png" class="user-img" alt="user avatar">
@@ -26,8 +26,11 @@
 </template>
 <style scoped>
 .search-bar {
-    width: 45%;
+    width: 100%;
     cursor: pointer;
+}
+.custom-width-70 {
+    width: 70%;
 }
 
 .user-img {

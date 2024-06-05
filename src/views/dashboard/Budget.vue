@@ -53,21 +53,89 @@
                     </div>
                   
                  </div>
-                 <div class="card radius-10">
-					<div class="card-header bg-transparent">
-						<div class="d-flex align-items-center">
-							<div>
-								<h6 class="mb-0">Recent Orders</h6>
-							</div>
-						
-						</div>
-					   </div>
-					<div class="card-body">
-                        <div class="chart-container1">
-                            <canvas id="pieChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 300px; width: 1200px;"></canvas>
+
+
+
+                 <div class="row">
+                    <div class="col-12 col-lg-6">
+                        <div class="card radius-10">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <div class="d-flex">
+                                        <h6 class="mb-0">Time Sheet Summary <span class="font-14 mt-2 d-block">Promoters:</span></h6>
+                                        <h6 class="mb-0 mx-4">Total Time vs actual hours spent</h6>
+                                    </div>
+                                    <div class="dropdown ms-auto"></div>
+                                </div>
+                            </div>
+                            <div class="card-body row">
+                                <div class="col-6">
+                                <div class="chart-container0 ">
+                                    <canvas id="pieChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 300px; width: 1200px;"></canvas>                                    
+                                </div>
+                                <div class="mt-2 d-flex justify-content-center">
+                                    <div class="legend">
+                                        <div class="legend-item">
+                                          <div class="legend-color non-billable"></div>
+                                          <span>Non billable</span>
+                                        </div>
+                                        <div class="legend-item">
+                                          <div class="legend-color billable"></div>
+                                          <span>Billable</span>
+                                        </div>
+                                      </div>
+                                </div>
+                            </div>
+                                <div class="col-2">
+                                    <div class="border-end">
+                                     <p>Activation 1</p>
+                                    <p>Activation 2</p>
+                                    <p>Activation 3</p>
+                                    <p>Activation 4</p>
+                                    <p>Activation 5</p>
+                                    <p>Activation 6</p>
+                                    </div>
+
+                                    
+                                </div>
+                            </div>
                         </div>
-					</div>
-			   </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="card radius-10">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Sales Overview</h6>
+                                    </div>
+                                    <div class="dropdown ms-auto">
+                                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class="bx bx-dots-horizontal-rounded font-22 text-option"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="javascript:;">Action</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                             <div class="chart-container-0">
+                               <canvas id="chart1" width="1030" height="320" style="display: block; box-sizing: border-box; height: 320px; width: 1030px;"></canvas>
+                            </div>
+                            </div>
+                         </div>
+                    </div>
+                    
+                </div>
+
+
 
 			</div>
 		</div>
@@ -194,6 +262,29 @@ const pieChart = () => {
 .maz-height{
 	font-size: 3rem;
 }
+
+
+.legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+  }
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  .non-billable {
+    background-color: #8e44ad; /* Purple color */
+  }
+  .billable {
+    background-color: #3498db; /* Blue color */
+  }
+
 
 .widgets-icons {
     width: 60px;
