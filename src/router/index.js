@@ -3,6 +3,8 @@ import Login from '../views/auth/Login.vue'
 import Dashboard from '../views/dashboard/Dashboard.vue';
 import Status from '../views/dashboard/Status.vue';
 import Report from '../views/dashboard/Report.vue';
+import Activations from '../views/dashboard/Activations.vue';
+import Budget from '../views/dashboard/Budget.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,9 +21,26 @@ const router = createRouter({
       component: Dashboard
     },
     {
+      path: '/activations',
+      name: 'activations',
+      component: Activations
+    },
+    {
       path: '/status',
       name: 'status',
       component: Status
+    },
+
+    {
+      path: '/budget',
+      name: 'budget',
+      component: Budget
+    },
+
+    {
+      path: '/report',
+      name: 'report',
+      component: Report
     },
 
     {

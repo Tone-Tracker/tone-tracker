@@ -1,3 +1,9 @@
+
+<script setup>
+const toggleClassActive = (myClass) => {alert(myClass);
+    document.querySelector(myClass).classList.addClass("mm-active");
+}
+</script>
 <template>
     <div class="sidebar-wrapper" data-simplebar="true">
         <div class="sidebar-header">
@@ -34,15 +40,17 @@
                     <div class="menu-title">Dashboard</div>
                 </router-link>
             </li>
+
+
             <li>
-                <a href="javascript:;" >
+                <router-link to="/activations" >
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
                     <div class="menu-title">Activations</div>
-                </a>
+                </router-link>
             </li>
 
-            <li>
+            <li @click="toggleClassActive('status')">
                 <router-link to="/status" >
                     <div class="parent-icon"><i class='bx bx-notepad'></i>
                     </div>
@@ -57,11 +65,11 @@
                 </router-link>
             </li>
             <li>
-                <a href="javascript:;" >
+                <router-link to="/budget" >
                     <div class="parent-icon"><i class='bx bx-calculator' ></i>
                     </div>
                     <div class="menu-title">Budget</div>
-                </a>
+                </router-link>
             </li>
             <li>
                 <a href="javascript:;" >

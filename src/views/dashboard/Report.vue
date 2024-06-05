@@ -337,6 +337,11 @@ Date: 04/06/2024
                           <div class="desc">Rico Nyathi</div>
                         </div>
                         </div>
+
+                        <div class="mt-2 text-center cursor-pointer d-flex justify-content-center align-items-center">
+                          <span>Load More</span>
+                          <i class='bx bx-chevron-down fs-2'></i>
+                      </div>
                 </div>
 
 
