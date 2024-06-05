@@ -7,6 +7,8 @@ import './assets/css/icons.css';
 import './assets/css/pace.min.css';
 import './assets/css/semi-dark.css';
 import $ from 'jquery';
+import lightbox from 'lightbox2';
+import 'lightbox2/dist/css/lightbox.css';
 
 
 
@@ -26,6 +28,7 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+app.use(lightbox)
 app.config.globalProperties.$ = $
 
 app.mount('#app')
