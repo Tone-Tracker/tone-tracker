@@ -5,7 +5,7 @@
                 <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
                 </div>
 
-                  <div class="search-bar d-lgsblock">
+                  <div class="search-bar d-lgsblock" >
                     <div class="input-group">
                         <span class="input-group-text" id="addon-wrapping"><i class='bx bx-search'></i></span>
                         <input type="text" class="form-control" aria-label="Text input with 2 dropdown buttons" placeholder="Search For Projects...">
@@ -14,11 +14,7 @@
                     </div>
                   </div>
 
-                  <div class="top-menu ms-auto">
-
-                    
-                   
-                </div>
+                  <div class="top-menu ms-auto"></div>
                 <div class="user-box dropdown px-3">
                     <a class="d-flex align-items-center nav-link gap-3 t" href="#" role="button">
                         <img src="/src/assets/images/fake.png" class="user-img" alt="user avatar">

@@ -1,14 +1,13 @@
 <template>
     <div class="sidebar-wrapper" data-simplebar="true">
         <div class="sidebar-header">
+          
             <div>
-                <img src="/src/assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
+                <h4 class="logo-text fs-2">tonetracker</h4>
             </div>
-            <div>
-                <h4 class="logo-text">tonetracker</h4>
+            <!-- <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i> 
             </div>
-            <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i>
-            </div>
+            -->
          </div>
         <!--navigation-->
         <ul class="metismenu" id="menu">

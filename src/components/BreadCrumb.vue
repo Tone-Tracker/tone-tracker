@@ -12,7 +12,8 @@ const props = defineProps({
 <style >
 .breadcrumb-title {
     border-right: 0px;
-    font-size: 48px;
+    font-size: 50px;
+    font-weight: 700;
 }
 
 .maz-gradient-txt {
