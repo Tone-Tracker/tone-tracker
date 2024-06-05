@@ -80,11 +80,11 @@ const toggleClassActive = (myClass) => {alert(myClass);
             </li>
 
             <li class="maz">
-                <a href="javascript:;" >
+                <router-link to="/warehouse" >
                     <div class="parent-icon"><i class='bx bxs-school'></i>
                     </div>
                     <div class="menu-title">Warehousing</div>
-                </a>
+                </router-link>
             </li>
           
         </ul>

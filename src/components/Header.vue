@@ -25,6 +25,16 @@
     </header>
 </template>
 <style scoped>
+
+.form-control {
+    border-left: 0;
+    border-top-left-radius: 0;
+}
+
+.form-control:focus {
+    border-left: 0;
+    outline: 0;
+}
 .search-bar {
     width: 100%;
     cursor: pointer;
@@ -42,6 +52,10 @@ html.dark-theme .user-box {
     border-left: 0px solid rgb(255 255 255 / .15);
     border-right: 0px solid rgb(255 255 255 / .15);
 }
-
+html.dark-theme .input-group-text {
+    color: #d1d7de;
+    background-color: transparent;
+    border: 1px solid rgb(255 255 255 / 35%);
+}
  
 </style>

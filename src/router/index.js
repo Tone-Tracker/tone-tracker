@@ -5,6 +5,7 @@ import Status from '../views/dashboard/Status.vue';
 import Report from '../views/dashboard/Report.vue';
 import Activations from '../views/dashboard/Activations.vue';
 import Budget from '../views/dashboard/Budget.vue';
+import Warehouse from '../views/dashboard/Warehouse.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,9 +39,9 @@ const router = createRouter({
     },
 
     {
-      path: '/report',
-      name: 'report',
-      component: Report
+      path: '/warehouse',
+      name: 'warehouse',
+      component: Warehouse
     },
 
     {

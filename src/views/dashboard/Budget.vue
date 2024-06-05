@@ -57,7 +57,7 @@
 
 
                  <div class="row">
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-5">
                         <div class="card radius-10">
                             <div class="card-header">
                                 <div class="d-flex align-items-center">
@@ -71,7 +71,7 @@
                             <div class="card-body row">
                                 <div class="col-6">
                                 <div class="chart-container0 ">
-                                    <canvas id="pieChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 300px; width: 1200px;"></canvas>                                    
+                                    <canvas id="pieChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 300px; width: 1200px;">kkkkkkk</canvas>                                    
                                 </div>
                                 <div class="mt-2 d-flex justify-content-center">
                                     <div class="legend">
@@ -88,12 +88,12 @@
                             </div>
                                 <div class="col-2">
                                     <div class="border-end">
-                                     <p>Activation 1</p>
-                                    <p>Activation 2</p>
-                                    <p>Activation 3</p>
-                                    <p>Activation 4</p>
-                                    <p>Activation 5</p>
-                                    <p>Activation 6</p>
+                                     <p class="activation-list-item">Activation 1</p>
+                                    <p class="activation-list-item">Activation 2</p>
+                                    <p class="activation-list-item">Activation 3</p>
+                                    <p class="activation-list-item">Activation 4</p>
+                                    <p class="activation-list-item">Activation 5</p>
+                                    <p class="activation-list-item">Activation 6</p>
                                     </div>
 
                                     
@@ -101,34 +101,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-7">
                         <div class="card radius-10">
                             <div class="card-header">
                                 <div class="d-flex align-items-center">
                                     <div>
-                                        <h6 class="mb-0">Sales Overview</h6>
+                                        <h6 class="mb-0">ROI</h6>
                                     </div>
-                                    <div class="dropdown ms-auto">
-                                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i class="bx bx-dots-horizontal-rounded font-22 text-option"></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <div class="dropdown ms-auto"></div>
                                 </div>
                             </div>
                             <div class="card-body">
-                             <div class="chart-container-0">
-                               <canvas id="chart1" width="1030" height="320" style="display: block; box-sizing: border-box; height: 320px; width: 1030px;"></canvas>
-                            </div>
+                                <div class="chart-container1">
+									<canvas id="lineChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
+								</div>
                             </div>
                          </div>
                     </div>
@@ -151,6 +137,7 @@ import { onMounted } from 'vue';
     onMounted(() => {
         barChart();
         pieChart();
+        lineChart()
     })
 const barChart = () => {
     var ctx = document.getElementById('maz-bar').getContext('2d');
@@ -209,6 +196,46 @@ const barChart = () => {
     });
 }
 
+const lineChart = () => {
+    var ctx = document.getElementById('lineChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+            datasets: [
+            {
+				type: 'line',
+                label: 'Facebook',
+                data: [5, 30, 16, 23, 8, 14, 11],
+                backgroundColor: [
+                    '#fd3550'
+                ],
+                tension: 0.4,
+                borderColor: [
+                    '#fd3550'
+                ],
+                borderWidth: 4
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+			barPercentage: 0.5,
+		    categoryPercentage: 0.5,
+            plugins: {
+				legend: {
+					position:'bottom',
+					display: true,
+				}
+			},
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
 const pieChart = () => {
     var ctx = document.getElementById("pieChart").getContext('2d');
 
@@ -221,7 +248,7 @@ const pieChart = () => {
       gradientStroke2.addColorStop(1, '#39bd3c');
 
   var gradientStroke3 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke3.addColorStop(0, '#7f00ff');
+      gradientStroke3.addColorStop(0, '#1E90D9');
       gradientStroke3.addColorStop(1, '#e100ff');
 
       var myChart = new Chart(ctx, {
@@ -242,7 +269,7 @@ const pieChart = () => {
             ],
 
             data: [50, 50, 50],
-      borderWidth: [1, 1, 1]
+            borderWidth: [1, 1, 1]
           }]
         },
         options: {
@@ -262,7 +289,9 @@ const pieChart = () => {
 .maz-height{
 	font-size: 3rem;
 }
-
+.activation-list-item {
+    font-size: 13px;
+}
 
 .legend {
     display: flex;
