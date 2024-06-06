@@ -16,27 +16,27 @@ Date: 04/06/2024
                     <div class="col-img">
                         <div class="gallery">
                             <div class="asc pb-2">TTG Head Office Super User</div>
-                            <a target="_blank" href="../../assets/images/avatars/avatar-11.png">
+                            <router-link to="/profile">
                             <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" width="600" height="400">
-                            </a>
+                            </router-link>
                            
                     </div>
                   </div>
                   <div class="col-img">
                   <div class="gallery">
                     <div class="asc pb-2">TTG Head Office Admin</div>
-                    <a target="_blank" href="../../assets/images/avatars/avatar-12.png">
+                    <router-link to="/profile">
                       <img src="../../assets/images/avatars/avatar-2.png" alt="Forest" width="600" height="400">
-                    </a>
+                    </router-link>
                     
                   </div>
                 </div>
                 <div class="col-img">
                   <div class="gallery">
                     <div class="asc pb-2">TTG Regional Manager</div>
-                    <a target="_blank" href="../../assets/images/avatars/avatar-14.png">
+                    <router-link to="/profile">
                       <img src="../../assets/images/avatars/avatar-3.png" alt="Northern Lights" width="600" height="400">
-                    </a>
+                    </router-link>
                     </div>
                 </div>
                 </div>
@@ -47,50 +47,50 @@ Date: 04/06/2024
                     </div>
                     <div class="col-img">
                         <div class="gallery">
-                            <a target="_blank" href="../../assets/images/avatars/avatar-1.png">
+                            <router-link to="/profile">
                             <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" width="600" height="400">
-                            </a>
+                            </router-link>
                             <div class="desc">Mazisi Msebele</div>
                         </div>
                   </div>
                   <div class="col-img">
                   <div class="gallery">
-                    <a target="_blank" href="../../assets/images/avatars/avatar-2.png">
+                    <router-link to="/profile">
                       <img src="../../assets/images/avatars/avatar-2.png" alt="Forest" width="600" height="400">
-                    </a>
+                    </router-link>
                     <div class="desc">Dave Doe</div>
                   </div>
                 </div>
                 <div class="col-img">
                   <div class="gallery">
-                    <a target="_blank" href="../../assets/images/avatars/avatar-3.png">
+                    <router-link to="/profile">
                       <img src="../../assets/images/avatars/avatar-3.png" alt="Northern Lights" width="600" height="400">
-                    </a>
+                    </router-link>
                     <div class="desc">Nkanyiso Ncube</div>
                   </div>
                 </div>
                 <div class="col-img">
                   <div class="gallery">
-                    <a target="_blank" href="../../assets/images/avatars/avatar-4.png">
+                    <router-link to="/profile">
                       <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains" width="600" height="400">
-                    </a>
+                    </router-link>
                     <div class="desc">Rico Nyathi</div>
                   </div>
                   </div>
 
                   <div class="col-img">
                     <div class="gallery">
-                      <a target="_blank" href="../../assets/images/avatars/avatar-5.png">
+                      <router-link to="/profile">
                         <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains" width="600" height="400">
-                      </a>
+                      </router-link>
                       <div class="desc">Rico Nyathi</div>
                     </div>
                     </div>
                     <div class="col-img">
                         <div class="gallery">
-                          <a target="_blank" href="../../assets/images/avatars/avatar-6.png">
+                          <router-link to="/profile">
                             <img src="../../assets/images/avatars/avatar-6.png" alt="Mountains" width="600" height="400">
-                          </a>
+                          </router-link>
                           <div class="desc">Rico Nyathi</div>
                         </div>
                         </div>

@@ -31,7 +31,6 @@
 </template>
 <script setup>
 import Layout from '../shared/Layout.vue';
-import BreadCrumb from '../../components/BreadCrumb.vue';
 </script>
 
 <style>

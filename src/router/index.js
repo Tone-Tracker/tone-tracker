@@ -6,6 +6,7 @@ import Report from '../views/dashboard/Report.vue';
 import Activations from '../views/dashboard/Activations.vue';
 import Budget from '../views/dashboard/Budget.vue';
 import Warehouse from '../views/dashboard/Warehouse.vue';
+import Profile from '../views/dashboard/Profile.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,6 +49,12 @@ const router = createRouter({
       path: '/report',
       name: 'report',
       component: Report
+    },
+
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile
     },
 
 
