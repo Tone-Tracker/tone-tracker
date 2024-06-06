@@ -5,6 +5,7 @@
 			<div class="page-content">
 
 				<BreadCrumb title="Warehousing" icon="bx bxs-school"/>
+				<h4 class="mb-4">Chivas Grade Africa Collection</h4>
 
                 <div class="row">
 					<div class="col-lg-1"></div>
@@ -46,10 +47,9 @@
 					<div class="col-lg-1"></div>
                     <div class="col-lg-3 col-md-6">
 						<select class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
-							<option selected="">Client:</option>
-							<option value="1">Telkom</option>
-							<option value="2">Microsoft</option>
-							<option value="3">Vodacom</option>
+							<option value="1" selected="selected">Unit 1</option>
+							<option value="2">Unit 2</option>
+							<option value="3">Unit 3</option>
 						</select>
 					  </div>
 					  <div class="col-lg-4 col-md-6">
