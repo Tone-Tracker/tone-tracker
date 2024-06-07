@@ -3822,11 +3822,8 @@ input::placeholder {
 
 .form-control:focus {
 	outline: none !important;
-	/* Removes the outline */
 	box-shadow: none !important;
-	/* Removes the shadow, if any */
 	border-color: initial !important;
-	/* Optionally reset the border color */
 }
 
 
@@ -4652,6 +4649,13 @@ input::placeholder {
 .switcher-body .form-check .form-check-label {
 
 	cursor: pointer
+}
+
+.form-select {
+	outline: none !important;
+	box-shadow: none !important;
+	border-color: initial !important;
+
 }
 
 
