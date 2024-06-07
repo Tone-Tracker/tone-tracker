@@ -1,5 +1,5 @@
 <template>
     <footer class="page-footer">
-        <p class="mb-0">Copyright © {{ new Date().getFullYear() }}. All right reserved. </p>
+        <p class="mb-0">Copyright © {{ new Date().getFullYear() }}. All right reserved.</p>
     </footer>
 </template>
