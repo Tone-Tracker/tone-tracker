@@ -8,7 +8,7 @@ const toggleClassActive = (myClass) => {
         <div class="sidebar-header">
 
             <div>
-                <h4 class="logo-text fs-2">tonetracker</h4>
+                <img style="width: 180px;" src="/src/assets/images/logo/white-logo.png" alt="">
             </div>
             <!-- <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i> 
             </div>
