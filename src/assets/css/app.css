@@ -369,7 +369,7 @@ a {
 
 .sidebar-wrapper .metismenu a .menu-title {
 
-	margin-left: 10px
+	/* margin-left: 10px */
 }
 
 
@@ -4763,7 +4763,7 @@ input::placeholder {
 
 	.wrapper.toggled .overlay {
 
-		position: fixed;
+		/* position: fixed; */
 
 		top: 0;
 
