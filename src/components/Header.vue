@@ -63,6 +63,7 @@
 .user-img {
     width: 58px;
     height: 58px;
+    border: none !important;
 }
 
 html.dark-theme .user-box {
