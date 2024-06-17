@@ -1,8 +1,11 @@
 <template>
     <header>
         <div class="topbar d-flex align-items-center">
-            <nav class="navbar navbar-expand gap-3 flex justify-content-between flex-direction-row">
+            <nav class="navbar navbar-expand flex justify-content-between flex-direction-row">
                 <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
+                </div>
+                <div>
+                    <img style="width: 180px;" src="/src/assets/images/logo/white-logo.png" alt="">
                 </div>
 
                 <div class="search-bar d-lgsblock w-100  d-flex justify-content-center">
@@ -18,7 +21,7 @@
 
                 <div class="user-box dropdown px-3">
                     <a class="d-flex align-items-center nav-link gap-3 t" href="#" role="button">
-                        <img src="/src/assets/images/fake.png" class="user-img" alt="user avatar">
+                        <img src="/src/assets/images/logo/Ellipse.png" class="user-img" alt="user avatar">
                     </a>
                 </div>
             </nav>
@@ -27,8 +30,18 @@
 </template>
 <style scoped>
 .form-control {
-    border-left: 0;
+    background-color: #1C1C1C !important;
+    border-left: 0 !important;
     border-top-left-radius: 0;
+    border: 1px solid #000000 !important;
+    border-left: 0 !important;
+    text-align: center;
+    /* color: white !important; */
+}
+
+.form-control::placeholder {
+    text-align: center;
+    color: white !important;
 }
 
 .form-control:focus {
@@ -39,6 +52,8 @@
 .search-bar {
     width: 100%;
     cursor: pointer;
+    /* height: 4px !important; */
+    /* padding: 100px 100px !important; */
 }
 
 .custom-width-70 {
@@ -57,7 +72,13 @@ html.dark-theme .user-box {
 
 html.dark-theme .input-group-text {
     color: #d1d7de;
-    background-color: transparent;
-    border: 1px solid rgb(255 255 255 / 35%);
+    background-color: #1C1C1C !important;
+    border: 1px solid #000000;
+    border-radius: 0;
+
+}
+
+.btn {
+    border-radius: 0;
 }
 </style>

@@ -1,14 +1,15 @@
 <template>
   <div class="wrapper">
-    <SideNav />
+
     <Header />
+    <SideNav />
 
     <div class="overlay toggle-icon"></div>
-		
-		  <BackToTop />
-		  <Footer/>
-    <slot/>
-</div>
+
+    <BackToTop />
+    <Footer />
+    <slot />
+  </div>
 </template>
 <script setup>
 import { defineAsyncComponent } from 'vue'
