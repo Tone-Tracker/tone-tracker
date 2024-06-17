@@ -65,44 +65,48 @@
 					<span class="font-welcome">Welcome</span>
 				</div>
 				<p class="text-white">View live data</p>
+				<div class="card-header">
+					<div class="d-flex align-items-center justify-content-between">
+						<div>
+							<h6 class="mb-0">Project Controlling Dashboard</h6>
+						</div>
+
+						<div class="d-flex align-items-center justify-content-space-between gap-3">
+							<div class="dropdown ms-auto">
+								<select class="form-select form-select-sm bg-maz-light"
+									aria-label=".form-select-sm example">
+									<option selected="">Client:</option>
+									<option value="1">Telkom</option>
+									<option value="2">Microsoft</option>
+									<option value="3">Vodacom</option>
+								</select>
+							</div>
+							<div class="dropdown ms-auto">
+								<select class="form-select form-select-sm bg-maz-light"
+									aria-label=".form-select-sm example">
+									<option selected="">Project Status:</option>
+									<option value="1">To Be Activated</option>
+									<option value="2">Activated</option>
+								</select>
+							</div>
+							<div class="dropdown ms-auto">
+								<select class="form-select form-select-sm bg-maz-light"
+									aria-label=".form-select-sm example">
+									<option selected="">Time Period:</option>
+									<option value="1">One</option>
+									<option value="2">Two</option>
+									<option value="3">Three</option>
+								</select>
+							</div>
+						</div>
+
+
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-12 col-lg-12 d-flex">
-						<div class="card radius-10 w-100">
-							<div class="card-header">
-								<div class="d-flex align-items-center">
-									<div>
-										<h6 class="mb-0">Project Controlling Dashboard</h6>
-									</div>
+						<div class="card p-0 radius-10 w-100">
 
-
-									<div class="dropdown ms-auto">
-										<select class="form-select form-select-sm bg-maz-light"
-											aria-label=".form-select-sm example">
-											<option selected="">Client:</option>
-											<option value="1">Telkom</option>
-											<option value="2">Microsoft</option>
-											<option value="3">Vodacom</option>
-										</select>
-									</div>
-									<div class="dropdown ms-auto">
-										<select class="form-select form-select-sm bg-maz-light"
-											aria-label=".form-select-sm example">
-											<option selected="">Project Status:</option>
-											<option value="1">To Be Activated</option>
-											<option value="2">Activated</option>
-										</select>
-									</div>
-									<div class="dropdown ms-auto">
-										<select class="form-select form-select-sm bg-maz-light"
-											aria-label=".form-select-sm example">
-											<option selected="">Time Period:</option>
-											<option value="1">One</option>
-											<option value="2">Two</option>
-											<option value="3">Three</option>
-										</select>
-									</div>
-								</div>
-							</div>
 							<div class="card-body">
 								<div class="chart-container-1">
 									<iframe
@@ -120,11 +124,17 @@
 
 				<div class="row row-cols-1 row-cols-md-3 row-cols-xl-4">
 					<div class="col">
-						<div class="card radius-10">
+						<div class="card">
 							<div class="card-body">
 								<div class="text-center">
-									<div class="widgets-icons mx-auto  mb-3"><i
-											class='bx bx-scatter-chart text-primary'></i>
+									<div class="widgets-icons mx-auto  mb-3"><svg width="59" height="59"
+											viewBox="0 0 59 59" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path
+												d="M56.108 53.9638H51.2335V51.5192H48.7889V53.9638H43.9217V51.5192H41.4772V53.9638H36.6027V51.5192H34.1581V53.9638H29.2836V51.5192H26.8391V53.9638H21.9646V51.5192H19.52V53.9638H8.78283L21.64 46.2373L28.0027 27.642L37.4541 44.2538L55.769 13.7381L51.5873 11.2252L37.5664 34.5877L26.8903 15.824L17.5976 42.973L4.87451 50.6189V0.285645H0V58.8383H58.5526V51.5192H56.108L56.108 53.9638ZM56.108 0.285645H58.5526V2.73022H56.108V0.285645ZM48.7889 0.285645H51.2335V2.73022H48.7889V0.285645ZM41.4772 0.285645H43.9217V2.73022H41.4772L41.4772 0.285645ZM34.1581 0.285645H36.6026V2.73022H34.1581L34.1581 0.285645ZM26.839 0.285645H29.2836V2.73022H26.8391L26.839 0.285645ZM19.5199 0.285645H21.9645V2.73022H19.52L19.5199 0.285645ZM12.2008 0.285645H14.6454V2.73022H12.2009L12.2008 0.285645ZM4.88176 0.285645H7.32633V2.73022H4.88182L4.88176 0.285645ZM56.108 7.60472H58.5526V10.0493H56.108V7.60472ZM48.7889 7.60472H51.2335V10.0493H48.7889V7.60472ZM41.4772 7.60472H43.9217V10.0493H41.4772L41.4772 7.60472ZM34.1581 7.60472H36.6026V10.0493H34.1581L34.1581 7.60472ZM26.839 7.60472H29.2836V10.0493H26.8391L26.839 7.60472ZM19.5199 7.60472H21.9645V10.0493H19.52L19.5199 7.60472ZM12.2008 7.60472H14.6454V10.0493H12.2009L12.2008 7.60472ZM4.88176 7.60472H7.32633V10.0493H4.88182L4.88176 7.60472ZM56.108 14.9165H58.5526V17.3611H56.108V14.9165ZM41.4772 14.9165H43.9217V17.3611H41.4772L41.4772 14.9165ZM34.1581 14.9165H36.6026V17.3611H34.1581L34.1581 14.9165ZM19.5199 14.9165H21.9645V17.3611H19.52L19.5199 14.9165ZM12.2008 14.9165H14.6454V17.3611H12.2009L12.2008 14.9165ZM4.88176 14.9165H7.32633V17.3611H4.88182L4.88176 14.9165ZM56.108 22.2356H58.5526V24.6801H56.108V22.2356ZM34.1581 22.2356H36.6026V24.6801H34.1581L34.1581 22.2356ZM19.5199 22.2356H21.9645V24.6801H19.52L19.5199 22.2356ZM12.2008 22.2356H14.6454V24.6801H12.2009L12.2008 22.2356ZM4.88177 22.2356H7.32634V24.6801H4.88182L4.88177 22.2356ZM56.108 29.5595H58.5526V32.0041H56.108V29.5595ZM48.7889 29.5595H51.2335V32.0041H48.7889V29.5595ZM12.2008 29.5595H14.6454V32.0041H12.2009L12.2008 29.5595ZM4.88177 29.5595H7.32634V32.0041H4.88182L4.88177 29.5595ZM56.108 36.8786H58.5526V39.3231H56.108V36.8786ZM48.7889 36.8786H51.2335V39.3231H48.7889V36.8786ZM26.839 36.8786H29.2836V39.3231H26.8391L26.839 36.8786ZM12.2008 36.8786H14.6454V39.3231H12.2009L12.2008 36.8786ZM4.88177 36.8786H7.32634V39.3231H4.88182L4.88177 36.8786ZM56.108 44.1903H58.5526V46.6349H56.108V44.1903ZM48.7889 44.1903H51.2335V46.6349H48.7889V44.1903ZM41.4772 44.1903H43.9217V46.6349H41.4772L41.4772 44.1903ZM26.839 44.1903H29.2836V46.6349H26.8391L26.839 44.1903ZM4.88176 44.1903H7.32633V46.6349H4.88182L4.88176 44.1903Z"
+												fill="#019BFE" />
+										</svg>
+
+
 									</div>
 									<p class="mb-0 text-secondary">Activation Process</p>
 									<h4 class="my-1 maz-height">84%</h4>
@@ -137,7 +147,13 @@
 						<div class="card radius-10">
 							<div class="card-body">
 								<div class="text-center">
-									<div class="widgets-icons mx-auto mb-3"><i class='bx bx-notepad text-primary'></i>
+									<div class="widgets-icons mx-auto mb-3"><svg width="44" height="59"
+											viewBox="0 0 44 59" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path
+												d="M38.4251 7.6052H29.2763C29.2763 3.56828 25.9941 0.286133 21.9572 0.286133C17.9203 0.286133 14.6381 3.56828 14.6381 7.6052H5.4893C2.45875 7.6052 0 10.0639 0 13.0945V53.3494C0 56.3799 2.45875 58.8387 5.4893 58.8387H38.4251C41.4556 58.8387 43.9144 56.3799 43.9144 53.3494V13.0945C43.9144 10.0639 41.4556 7.6052 38.4251 7.6052ZM10.9786 48.7749C9.4576 48.7749 8.23395 47.5513 8.23395 46.0303C8.23395 44.5093 9.4576 43.2856 10.9786 43.2856C12.4996 43.2856 13.7232 44.5093 13.7232 46.0303C13.7232 47.5513 12.4996 48.7749 10.9786 48.7749ZM10.9786 37.7963C9.4576 37.7963 8.23395 36.5727 8.23395 35.0517C8.23395 33.5307 9.4576 32.307 10.9786 32.307C12.4996 32.307 13.7232 33.5307 13.7232 35.0517C13.7232 36.5727 12.4996 37.7963 10.9786 37.7963ZM10.9786 26.8177C9.4576 26.8177 8.23395 25.5941 8.23395 24.0731C8.23395 22.5521 9.4576 21.3284 10.9786 21.3284C12.4996 21.3284 13.7232 22.5521 13.7232 24.0731C13.7232 25.5941 12.4996 26.8177 10.9786 26.8177ZM21.9572 4.86055C23.4782 4.86055 24.7018 6.0842 24.7018 7.6052C24.7018 9.12619 23.4782 10.3498 21.9572 10.3498C20.4362 10.3498 19.2125 9.12619 19.2125 7.6052C19.2125 6.0842 20.4362 4.86055 21.9572 4.86055ZM36.5953 46.9452C36.5953 47.4484 36.1836 47.8601 35.6804 47.8601H19.2125C18.7094 47.8601 18.2977 47.4484 18.2977 46.9452V45.1154C18.2977 44.6122 18.7094 44.2005 19.2125 44.2005H35.6804C36.1836 44.2005 36.5953 44.6122 36.5953 45.1154V46.9452ZM36.5953 35.9666C36.5953 36.4698 36.1836 36.8815 35.6804 36.8815H19.2125C18.7094 36.8815 18.2977 36.4698 18.2977 35.9666V34.1368C18.2977 33.6336 18.7094 33.2219 19.2125 33.2219H35.6804C36.1836 33.2219 36.5953 33.6336 36.5953 34.1368V35.9666ZM36.5953 24.988C36.5953 25.4912 36.1836 25.9029 35.6804 25.9029H19.2125C18.7094 25.9029 18.2977 25.4912 18.2977 24.988V23.1582C18.2977 22.655 18.7094 22.2433 19.2125 22.2433H35.6804C36.1836 22.2433 36.5953 22.655 36.5953 23.1582V24.988Z"
+												fill="#019BFE" />
+										</svg>
+
 									</div>
 									<p class="mb-0 text-secondary">Leads</p>
 									<h4 class="my-1 maz-height">34</h4>
@@ -151,7 +167,16 @@
 							<div class="card-body">
 								<div class="text-center">
 									<div class="widgets-icons  mx-auto  mb-3">
-										<i class='bx bx-check-circle text-primary'></i>
+										<svg width="62" height="62" viewBox="0 0 62 62" fill="none"
+											xmlns="http://www.w3.org/2000/svg">
+											<path
+												d="M58.7134 28.4333V30.9961C58.7064 43.3329 50.5857 54.1957 38.7551 57.6936C26.9246 61.1915 14.2024 56.4913 7.48773 46.1419C0.773067 35.7925 1.66544 22.2592 9.68094 12.8811C17.6964 3.50299 30.9256 0.514021 42.1944 5.53511"
+												stroke="#019BFE" stroke-width="5" stroke-linecap="round"
+												stroke-linejoin="round" />
+											<path d="M58.7136 8.71094L30.857 36.5954L22.5 28.2384" stroke="#019BFE"
+												stroke-width="5" stroke-linecap="round" />
+										</svg>
+
 									</div>
 									<p class="mb-0 text-secondary">Activations Completed</p>
 									<h4 class="my-1 maz-height">56</h4>
@@ -164,8 +189,18 @@
 						<div class="card radius-10">
 							<div class="card-body">
 								<div class="text-center">
-									<div class="widgets-icons mx-auto  mb-3"><i
-											class='bx bx-line-chart text-primary'></i>
+									<div class="widgets-icons mx-auto  mb-3"><svg width="73" height="54"
+											viewBox="0 0 73 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<line x1="2.5" y1="2.8252" x2="2.5" y2="46.3389" stroke="#019BFE"
+												stroke-width="5" stroke-linecap="round" />
+											<line x1="58.0176" y1="51.3389" x2="2.50045" y2="51.3389" stroke="#019BFE"
+												stroke-width="5" stroke-linecap="round" />
+											<path d="M13.2227 27.7891L23.168 17.8457L35.1484 29.8262L48.4414 16.5352"
+												stroke="#019BFE" stroke-width="5" stroke-linecap="round" />
+											<path d="M63.9758 36.2019L64.6543 49.6119L50.5658 35.5234L63.9758 36.2019Z"
+												fill="#019BFE" />
+										</svg>
+
 									</div>
 									<p class="mb-0 text-secondary">Ongoing Activations</p>
 									<h4 class="my-1 maz-height">38</h4>
@@ -893,5 +928,39 @@ html.dark-theme .widgets-icons {
 .font-welcome {
 	font-size: 95px;
 	font-weight: 200;
+}
+
+/* /////////// */
+.card-header {
+	background-color: #141414;
+	border: none !important;
+	margin-bottom: 20px;
+	padding: 7px;
+}
+
+.card-body {
+	padding: 0px !important;
+}
+
+.form-select {
+	border: none !important;
+}
+
+.bg-maz-light {
+	background: #6F7070 !important;
+	color: #DBDBDB !important;
+	color: #fff !important;
+	width: 168px;
+	font-weight: 10;
+}
+
+/* ////////////////// */
+.card {
+	border-radius: 0 !important;
+	padding: 10px;
+}
+
+svg {
+	max-width: 2.8rem;
 }
 </style>
