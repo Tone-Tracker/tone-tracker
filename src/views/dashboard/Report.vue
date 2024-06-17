@@ -469,9 +469,7 @@ div.desc {
   font-weight: 600;
 }
 
-.bg-gray {
-  /* background: #22222222 !important; */
-}
+
 
 .maz-table {
   background: #575757;
