@@ -5,7 +5,7 @@
 			<div class="page-content">
 
 				<!-- <BreadCrumb title="Status" icon="bx bx-notepad"/> -->
-				<div class="status d-flex justify-content-flex-start align-items-center gap-3">
+				<div class="status mb-3 d-flex justify-content-flex-start align-items-center gap-3">
 					<svg class="status-icon" width="53" height="71" viewBox="0 0 53 71" fill="none"
 						xmlns="http://www.w3.org/2000/svg">
 						<path
@@ -19,18 +19,18 @@
 							</linearGradient>
 						</defs>
 					</svg>
-					<p class="Status-title">Status</p>
+					<h5 class="Status-title">Status</h5>
 				</div>
 
 
 				<div class="row">
 
 					<div class="col-12 col-lg-9 d-flex">
-						<div class="card radius-10 w-100">
-							<div class="card-header">
-								<div class="d-flex align-items-center">
+						<div class="card p-0 radius-10 w-100">
+							<div class="card-header p-0 mb-0 card-background">
+								<div class="d-flex  align-items-center">
 									<div>
-										<h5 class="mb-0">View Live Data</h5>
+										<h5 class="mb-0">View Live status</h5>
 									</div>
 									<div class="dropdown ms-auto">
 
@@ -98,10 +98,13 @@
 
 
 				</div>
+				<div>
+					<h5 class="mb-3">Campaign report</h5>
+				</div>
 
 				<div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
 					<div class="col">
-						<div class="card radius-10 maz-gradient-btn">
+						<div class="card card-radius radius-10 maz-gradient-btn">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
 									<div>
@@ -114,7 +117,7 @@
 						</div>
 					</div>
 					<div class="col">
-						<div class="card radius-10 maz-gradient-btn">
+						<div class="card card-radius radius-10 maz-gradient-btn">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
 									<div>
@@ -128,7 +131,7 @@
 						</div>
 					</div>
 					<div class="col">
-						<div class="card radius-10 maz-gradient-btn">
+						<div class="card card-radius radius-10 maz-gradient-btn">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
 									<div>
@@ -142,7 +145,7 @@
 						</div>
 					</div>
 					<div class="col">
-						<div class="card radius-10 maz-gradient-btn">
+						<div class="card card-radius radius-10 maz-gradient-btn">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
 									<div>
@@ -156,7 +159,7 @@
 						</div>
 					</div>
 					<div class="col">
-						<div class="card radius-10 maz-gradient-btn">
+						<div class="card card-radius radius-10 maz-gradient-btn">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
 									<div>
@@ -170,7 +173,7 @@
 						</div>
 					</div>
 					<div class="col">
-						<div class="card radius-10 maz-gradient-btn">
+						<div class="card card-radius radius-10 maz-gradient-btn">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
 									<div>
@@ -197,11 +200,16 @@ import BreadCrumb from '../../components/BreadCrumb.vue';
 <style scoped>
 .status-icon {
 	max-width: 6rem !important;
-	margin-bottom: 20px;
+	/* margin-bottom: 20px; */
 
 }
 
-.status-title {}
+
+
+.status h5 {
+	/* font-family: poppins !important; */
+	font-size: 6rem !important;
+}
 
 .dark-theme p {
 	font-size: 90px !important;
@@ -236,5 +244,19 @@ html.dark-theme .widgets-icons {
 
 .col-width-10 {
 	width: 10%;
+}
+
+/* ////////////////// */
+.card-radius {
+	border-radius: 10px !important;
+}
+
+.p-0 {
+	padding: 0 !important;
+}
+
+.card-background {
+	background-color: #0F0F0F !important;
+	padding-bottom: 15px !important;
 }
 </style>
