@@ -39,7 +39,7 @@ setup(){
 	<!-- <img class="logo-light" src="../../assets/images/logo/white-logo.png" alt="logo">
 	<img class="shoes" src="../../assets/images/login-images/Shoes.png" alt=""> -->
 	<div class="logo-light"></div>
-	<div class="shoes" </div>
+	<div class="shoes"></div> 
 		<div class="container-login">
 
 			<div class="section-authentication-cover">
