@@ -1,11 +1,45 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
+<script >
+import { RouterLink, RouterView } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators';
+import { reactive } from 'vue';
+import router from '@/router';
+
+export default {
+setup(){
+
+	const form = reactive({
+      email: 'dev@example.com',
+      password : '123456',
+    });
+
+	const rules = {
+		password: { required },
+        email: { required, email } 
+    }
+	const v$ = useVuelidate(rules, form)
+
+	const onSubmit = async () => {
+		const isFormCorrect = await v$.value.$validate();
+		if (!isFormCorrect) return;
+		router.push('dashboard')
+	}
+	return {
+		form, v$,onSubmit
+	}
+}
+
+}
+
+
+    
+
 </script>
 <template>
 	<!-- <img class="logo-light" src="../../assets/images/logo/white-logo.png" alt="logo">
 	<img class="shoes" src="../../assets/images/login-images/Shoes.png" alt=""> -->
 	<div class="logo-light"></div>
-	<div class="shoes" </div>
+	<div class="shoes"></div> 
 		<div class="container-login">
 
 			<div class="section-authentication-cover">
@@ -31,26 +65,37 @@ import { RouterLink, RouterView } from 'vue-router'
 
 										<div class="form-body">
 											<h5 class="mb-3 text-default">Log in</h5>
-											<form class="row g-3">
+											<form @submit.prevent="onSubmit" class="row g-3">
 												<div class="mb-3 col-12">
 													<label for="inputEmailAddress" class="form-label">User</label>
-													<input type="email" class="form-control custom-input"
-														id="inputEmailAddress" placeholder="">
+													<input v-model="form.email" type="email" class="form-control custom-input"
+														id="inputEmailAddress">
+
+														<div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+															<div class="text-danger">Email is required</div>
+														  </div>
+
+														<!-- <div class="text-danger">{{ v$.email.$errors[0].$message }}</div> -->
 												</div>
 												<div class="mb-5 col-12">
 													<label for="inputChoosePassword" class="form-label">Password</label>
 													<div class="input-group" id="show_hide_password">
-														<input type="password" class="form-control border-end-0"
-															id="inputChoosePassword" value="12345678" placeholder="">
-
+														<input v-model="form.password" type="password" class="form-control border-end-0"
+															id="inputChoosePassword">
+															
 
 													</div>
+													<div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
+														<div class="text-danger">Password is required</div>
+													  </div>
 												</div>
 
 												<div class="col-12">
 													<div class="d-grid">
-														<router-link to="/dashboard" type="submit"
-															class="btn p-3 maz-gradient-btn">Continue</router-link>
+														<!-- <router-link to="/dashboard" type="submit"
+															class="btn p-3 maz-gradient-btn">Continue</router-link> -->
+															<button type="submit"
+															class="btn p-3 maz-gradient-btn">Continue</button>
 													</div>
 												</div>
 
