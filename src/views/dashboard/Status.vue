@@ -40,7 +40,7 @@
 							<div class="card-body">
 								<div class="table-responsive table table-hover table-dark table-striped">
 									<table class="table align-middle mb-0">
-										<thead class="table-light">
+										<thead class="table-dark-custom">
 											<tr>
 												<th class="col-width-30">Regions Activated</th>
 												<th class="col-width-10 text-center">Status</th>
@@ -49,43 +49,43 @@
 										</thead>
 										<tbody>
 											<tr class="maz-table-row-height">
-												<td>Gauteng Central(GC)</td>
+												<td class="table-dark-custom-2">Gauteng Central(GC)</td>
 												<td style="background-color: #A639B6;" class="text-center">To Be
 													Activated</td>
-												<td class="text-center">45%</td>
+												<td class="text-center table-dark-custom-2">45%</td>
 											</tr>
 
 											<tr class="maz-table-row-height">
-												<td>North Eastern Region (NER)</td>
+												<td class="table-dark-custom-1">North Eastern Region (NER)</td>
 												<td style="background-color: #1E90D9;" class="text-center">Activated
 												</td>
-												<td class="text-center">80%</td>
+												<td class="text-center table-dark-custom-1">80%</td>
 											</tr>
 
 											<tr class="maz-table-row-height">
-												<td>Eastern Region (ER)</td>
+												<td class="table-dark-custom-2">Eastern Region (ER)</td>
 												<td style="background-color: #A639B6;" class="text-center">To Be
 													Activated</td>
-												<td class="text-center">22%</td>
+												<td class="text-center table-dark-custom-2">22%</td>
 											</tr>
 
 											<tr class="maz-table-row-height">
-												<td>Southern Eastern Region (SR)</td>
+												<td class="table-dark-custom-1">Southern Eastern Region (SR)</td>
 												<td style="background-color: #1E90D9; " class="text-center">Activated
 												</td>
-												<td class="text-center">22%</td>
+												<td class="text-center table-dark-custom-1">22%</td>
 											</tr>
 											<tr class="maz-table-row-height">
-												<td>Southern Western Region (WR)</td>
+												<td class="table-dark-custom-2">Southern Western Region (WR)</td>
 												<td style="background-color: #A639B6;" class="text-center">To Be
 													Activated</td>
-												<td class="text-center">12%</td>
+												<td class="text-center table-dark-custom-2">12%</td>
 											</tr>
 											<tr class="maz-table-row-height">
-												<td>Southern Central Region (CR)</td>
+												<td class="table-dark-custom-1">Southern Central Region (CR)</td>
 												<td style="background-color: #A639B6;" class="text-center">To Be
 													Activated</td>
-												<td class="text-center">12%</td>
+												<td class="text-center table-dark-custom-1">12%</td>
 											</tr>
 										</tbody>
 									</table>
@@ -258,5 +258,24 @@ html.dark-theme .widgets-icons {
 .card-background {
 	background-color: #0F0F0F !important;
 	padding-bottom: 15px !important;
+}
+
+.table-dark-custom {
+	background-color: #222222 !important;
+}
+
+.table-dark-custom-1 {
+	background-color: #0F0F0F !important;
+}
+
+.table-dark-custom-2 {
+	background-color: #575757 !important;
+}
+
+.table,
+.table th,
+.table td {
+	border: none;
+	border-color: transparent;
 }
 </style>
