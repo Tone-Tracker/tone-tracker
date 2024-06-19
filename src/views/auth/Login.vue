@@ -1,12 +1,16 @@
 <script >
 import { RouterLink, RouterView } from 'vue-router';
-import { useVuelidate } from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import { reactive } from 'vue';
 import router from '@/router';
+import { useMonitorSize } from '@/composables/useMonitorSize';
+
 
 export default {
 setup(){
+
+	const screenSizes = useMonitorSize();
 
 	const form = reactive({
       email: 'dev@example.com',
@@ -25,7 +29,7 @@ setup(){
 		router.push('dashboard')
 	}
 	return {
-		form, v$,onSubmit
+		form, v$,onSubmit,screenSizes
 	}
 }
 
@@ -94,7 +98,7 @@ setup(){
 													<div class="d-grid">
 														<!-- <router-link to="/dashboard" type="submit"
 															class="btn p-3 maz-gradient-btn">Continue</router-link> -->
-															<button type="submit"
+															<button type="submit" 
 															class="btn p-3 maz-gradient-btn">Continue</button>
 													</div>
 												</div>
