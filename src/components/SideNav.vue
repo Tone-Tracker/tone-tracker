@@ -28,7 +28,7 @@ const toggleClassActive = (myClass) => {
             <div class="content">
                 <nav class="sidebar">
                     <ul class="side-nav">
-                        <li class="side-nav__item">
+                        <li class="side-nav__item activation">
                             <router-link to="/activations">
                                 <div class="side-nav__link">
                                     <svg class="side-nav__icon activation-icon" width="40" height="37"
@@ -191,6 +191,10 @@ const toggleClassActive = (myClass) => {
     color: #fff !important;
 }
 
+.sidebar-wrapper .metismenu li+li {
+    margin: 0px;
+}
+
 .metismenu div {
     flex: 1;
     /* Each item takes equal space */
@@ -249,6 +253,10 @@ svg {
 
 .side-nav .side-nav__item {
     background-color: #1C1C1C !important;
+    /* height: 40px; */
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
 }
 
 .side-nav__link:link§,
@@ -269,21 +277,25 @@ svg {
 
 .sidebar-wrapper .metismenu ul {
     background-color: #1C1C1C !important;
-    background-color: #000000 !important;
+    /* background-color: #fff !zz; */
     border: none !important;
 
 }
 
 .sidebar-wrapper .metismenu ul a {
-    padding: 6px 32px 6px 32px !important;
+    padding: 10px 32px 10px 32px !important;
     border-radius: 0 !important;
     color: #fff !important;
-    /* border-bottom: solid 7px #000000; */
+    border-bottom: solid 2px #000000;
 
 }
 
+.activation {
+    padding: 0 0 0 0 !important;
+}
+
 .activation-icon {
-    max-width: 3rem;
+    max-width: 2rem;
 
 }
 </style>
