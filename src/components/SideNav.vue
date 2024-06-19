@@ -159,7 +159,7 @@ const toggleClassActive = (myClass) => {
                                             fill="white" />
                                     </svg>
                                 </div>
-                                <div class="menu-title">War</div>
+                                <div class="menu-title">Warehousing</div>
                             </router-link>
                         </li>
 
@@ -240,14 +240,6 @@ svg {
     align-items: center;
 }
 
-.gallery img {
-
-    width: 62% !important;
-    height: auto !important;
-    border: none !important;
-
-}
-
 .metismenu {
     background-color: #000000 !important;
 }
@@ -269,21 +261,29 @@ svg {
     gap: 20px !important;
 }
 
-.side-nav .side-nav__icon {
+.side-nav__link {
     display: flex;
     align-items: center;
-    justify-content: center
+    justify-content: center;
+}
+
+.sidebar-wrapper .metismenu ul {
+    background-color: #1C1C1C !important;
+    background-color: #000000 !important;
+    border: none !important;
+
 }
 
 .sidebar-wrapper .metismenu ul a {
-    padding: 6px 45px 6px 45px !important;
+    padding: 6px 32px 6px 32px !important;
     border-radius: 0 !important;
     color: #fff !important;
+    /* border-bottom: solid 7px #000000; */
+
 }
 
 .activation-icon {
     max-width: 3rem;
-    margin-left: -5px;
-    margin-bottom: -7px;
+
 }
 </style>
