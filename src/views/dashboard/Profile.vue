@@ -24,11 +24,11 @@ Date: 04/06/2024
                                 </div>
 
                                 <div class="mt-3">
-                                    <h4>John Doe</h4>
+                                    <h4 class="text-center">John Doe</h4>
                                 </div>
 
                                 <div class="profile-imgs">
-                                    <div class="row  row-cols-xl-3">
+                                    <div class="">
                                         <div class="col-img">
                                             <div class="gallery">
                                                 <router-link to="/profile">
@@ -216,7 +216,6 @@ Date: 04/06/2024
             </div>
         </div>
         <!--start switcher-->
-
     </Layout>
 </template>
 <script setup>
@@ -262,5 +261,9 @@ div.desc {
 .image-container:hover .zoom-image {
     transform: scale(1.1);
     /* Zoom in (1.2 = 120%) */
+}
+
+.dark-theme .card {
+    background-color: transparent !important;
 }
 </style>
