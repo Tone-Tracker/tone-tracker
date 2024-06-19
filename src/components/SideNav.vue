@@ -253,10 +253,6 @@ svg {
 
 .side-nav .side-nav__item {
     background-color: #1C1C1C !important;
-    /* height: 40px; */
-    /* display: flex; */
-    /* justify-content: center; */
-    /* align-items: center; */
 }
 
 .side-nav__link:link§,
@@ -290,12 +286,7 @@ svg {
 
 }
 
-.activation {
-    padding: 0 0 0 0 !important;
-}
-
 .activation-icon {
     max-width: 2rem;
-
 }
 </style>

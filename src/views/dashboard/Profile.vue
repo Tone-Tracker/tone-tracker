@@ -15,7 +15,7 @@ Date: 04/06/2024
                 <p class="text-white">Promoter</p>
 
 
-                <div class="row justify-content-space-between">
+                <div class="row justify-content-space-between gap-5">
                     <div class="col-lg-5">
                         <div class="card-c">
                             <div class="card-header-c">
