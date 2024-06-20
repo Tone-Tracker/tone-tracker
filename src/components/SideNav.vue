@@ -163,6 +163,15 @@ const toggleClassActive = (myClass) => {
                             </router-link>
                         </li>
 
+                        <li class="side-nav__item">
+                            <router-link to="/chat">
+                                <div class="side-nav__link">
+                                    <i class='bx bxs-chat h2 mx-4'></i>
+                                </div>
+                                <div class="menu-title">Chat</div>
+                            </router-link>
+                        </li>
+
                     </ul>
                 </nav>
 

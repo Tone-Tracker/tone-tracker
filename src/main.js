@@ -10,10 +10,13 @@ import $ from 'jquery';
 import lightbox from 'lightbox2';
 import 'lightbox2/dist/css/lightbox.css';
 
+// import './assets/plugins/simplebar/css/simplebar.css';
+// import './assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css'
+
 
 
 import './assets/js/app.js';
-// import './assets/js/bootstrap.bundle.min.js';
+import './assets/js/bootstrap.bundle.min.js';
 import './assets/plugins/chartjs/js/chart.js';
 import './assets/plugins/chartjs/js/chartjs-custom.js';
 // import './assets/js/index3.js';
