@@ -1,5 +1,7 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
+import { useTextareaAutosize } from '@vueuse/core'
+const { textarea, input } = useTextareaAutosize()
 </script>
 <template>
  
@@ -286,7 +288,13 @@ import Layout from '../shared/Layout.vue';
                         <div class="chat-footer d-flex align-items-center">
                             <div class="flex-grow-1 pe-2">
                                 <div class="input-group">	<span class="input-group-text"><i class='bx bx-smile'></i></span>
-                                    <input type="text" class="form-control" placeholder="Type a message">
+                                    <!-- <input type="text" class="form-control" placeholder="Type a message"> -->
+                                    <textarea
+                                    ref="textarea"
+                                    
+                                    class="form-control"
+                                    placeholder="What's on your mind?"
+                                  />
                                 </div>
                             </div>
                             <div class="chat-footer-menu"> <a href="javascript:;"><i class='bx bx-file'></i></a>
@@ -315,4 +323,12 @@ import Layout from '../shared/Layout.vue';
     overflow-y: scroll;
     scrollbar-width: thin;
 }
+textarea {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  textarea::-webkit-scrollbar {
+    display: none;
+  }
 </style>
