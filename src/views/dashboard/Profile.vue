@@ -450,22 +450,9 @@ html.dark-theme .accordion-item {
     border: none;
 }
 
-/* .accordion-button.m::after {
-    color: #5A5959 !important;
-} */
-
 .accordion-button.m::after {
-    content: '\25BC';
-    /* Unicode for down arrow */
-    color: #5A5959;
-    /* Change the color of the arrow */
-    margin-left: auto;
-    /* Move the arrow to the right */
-    transition: transform 0.2s;
-    /* Add transition for smooth rotation */
+    color: #5A5959 !important;
 }
-
-
 
 .accordion-button::after {
     margin: auto !important;
