@@ -2,6 +2,43 @@
 import Layout from '../shared/Layout.vue';
 import { useTextareaAutosize } from '@vueuse/core'
 const { textarea, input } = useTextareaAutosize()
+
+import { ref, watch } from 'vue'
+import { useSpeechRecognition } from '@vueuse/core'
+
+const lang = ref('en-US')
+
+
+
+const speech = useSpeechRecognition({
+  lang,
+  continuous: true,
+})
+
+const color = ref('transparent')
+
+if (speech.isSupported.value) {
+  // @ts-expect-error missing types
+  const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList
+  const speechRecognitionList = new SpeechGrammarList()
+  
+
+
+}
+
+
+function start() {
+  color.value = 'transparent'
+  speech.result.value = ''
+  speech.start()
+}
+
+const { isListening, isSupported, stop, result } = speech
+let inputValue = result
+
+const selectedLanguage = ref(lang.value)
+watch(lang, lang => isListening.value ? null : selectedLanguage.value = lang)
+watch(isListening, isListening => isListening ? null : selectedLanguage.value = lang.value)
 </script>
 <template>
  
@@ -291,7 +328,7 @@ const { textarea, input } = useTextareaAutosize()
                                     <!-- <input type="text" class="form-control" placeholder="Type a message"> -->
                                     <textarea
                                     ref="textarea"
-                                    
+                                    v-model="inputValue"
                                     class="form-control"
                                     placeholder="What's on your mind?"
                                   />
@@ -299,7 +336,7 @@ const { textarea, input } = useTextareaAutosize()
                             </div>
                             <div class="chat-footer-menu"> <a href="javascript:;"><i class='bx bx-file'></i></a>
                                 <a href="javascript:;"><i class='bx bxs-contact'></i></a>
-                                <a href="javascript:;"><i class='bx bx-microphone'></i></a>
+                                <a v-if="!isListening" @click="start" href="javascript:;"><i class='bx bx-microphone'></i></a>
                                 <a href="javascript:;"><i class='bx bx-dots-horizontal-rounded'></i></a>
                             </div>
                         </div>
