@@ -2,6 +2,7 @@
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import UsersModal from './UsersModal.vue';
+
 </script>
 <template>
     <Layout>

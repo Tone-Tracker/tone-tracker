@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../views/auth/Login.vue'
+import Login from '../views/auth/Login.vue';
+import { useNProgress } from '@vueuse/integrations/useNProgress'
 import Dashboard from '../views/dashboard/Dashboard.vue';
 import Status from '../views/dashboard/Status.vue';
 import Report from '../views/dashboard/Report.vue';
@@ -9,6 +10,12 @@ import Warehouse from '../views/dashboard/Warehouse.vue';
 import Profile from '../views/dashboard/Profile.vue';
 import chat from './chat';
 import users from './users';
+
+const { isLoading } = useNProgress()
+
+function toggle() {
+  isLoading.value = !isLoading.value
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -72,6 +79,20 @@ const router = createRouter({
     }
     */
   ]
+})
+
+router.beforeResolve((to, from, next) => {
+  // If this isn't an initial page load.
+  if (to.name) {
+      // Start the route progress bar.
+      toggle()
+  }
+  next()
+})
+
+router.afterEach(() => {
+  // Complete the animation of the route progress bar.
+  NProgress.done()
 })
 
 export default router

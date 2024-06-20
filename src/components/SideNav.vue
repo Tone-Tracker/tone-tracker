@@ -1,8 +1,4 @@
-<script setup>
-const toggleClassActive = (myClass) => {
-    document.querySelector(myClass).classList.addClass("mm-active");
-}
-</script>
+
 <template>
     <div class="sidebar-wrapper" data-simplebar="true">
         <!-- <div class="sidebar-header">
@@ -273,7 +269,7 @@ const toggleClassActive = (myClass) => {
                             </router-link>
                         </li>
 
-                        <li class="side-nav__item" @click="toggleClassActive('status')">
+                        <li class="side-nav__item" >
                             <router-link to="/status">
                                 <div class="side-nav__link">
                                     <svg class="side-nav__icon" width="21" height="28" viewBox="0 0 21 28" fill="none"
