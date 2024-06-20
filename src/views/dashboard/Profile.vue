@@ -18,7 +18,7 @@ Date: 04/06/2024
                 <div class="row justify-content-space-between gap-5">
                     <div class="col-lg-5">
                         <div class="card-c">
-                            <div class="card-header-c">
+                            <div class="d-flex flex-column card-header-c">
                                 <div class="d-flex flex-column align-items-center text-center image-container">
                                     <img src="/src/assets/images/gallery/10.png" alt="Admin" class="w-100 zoom-image">
                                 </div>
@@ -27,7 +27,7 @@ Date: 04/06/2024
                                     <h4 class="text-center">John Doe</h4>
                                 </div>
 
-                                <div class="profile-imgs">
+                                <div class="profile-imgs mb-4">
                                     <div class="">
                                         <div class="col-img">
                                             <div class="gallery">
@@ -59,56 +59,182 @@ Date: 04/06/2024
                                 </div>
 
                             </div>
-                            <div>
+                            <div class="mb-1">
                                 <p class="text-white">Give lating</p>
                             </div>
-                            <div class="stars">
+                            <div class="stars mb-5">
                                 <span>
+
                                     <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
-                                            d="M21.5141 17.4989L21.506 17.4519L21.5403 17.4185L28.6095 10.5276L18.84 9.10806L18.7927 9.10114L18.7715 9.0582L14.4025 0.205488L10.0335 9.0582L10.0123 9.10114L9.96492 9.10806L0.195477 10.5276L7.26478 17.4185L7.29907 17.4519L7.29097 17.4989L5.62207 27.2291L14.3602 22.6351L14.4025 22.613L14.4448 22.6351L23.183 27.2291L21.5141 17.4989ZM14.4025 0L18.8531 9.018L28.8049 10.4641L21.6038 17.4837L23.3037 27.3954L14.4025 22.7156L5.50127 27.3954L7.20128 17.4837L0 10.4641L9.95182 9.018L14.4025 0Z"
-                                            fill="#262626" stroke="black" stroke-width="0.1" />
+                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
+                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
                                     </svg>
+
                                 </span>
                                 <span>
+
                                     <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
-                                            d="M21.5141 17.4989L21.506 17.4519L21.5403 17.4185L28.6095 10.5276L18.84 9.10806L18.7927 9.10114L18.7715 9.0582L14.4025 0.205488L10.0335 9.0582L10.0123 9.10114L9.96492 9.10806L0.195477 10.5276L7.26478 17.4185L7.29907 17.4519L7.29097 17.4989L5.62207 27.2291L14.3602 22.6351L14.4025 22.613L14.4448 22.6351L23.183 27.2291L21.5141 17.4989ZM14.4025 0L18.8531 9.018L28.8049 10.4641L21.6038 17.4837L23.3037 27.3954L14.4025 22.7156L5.50127 27.3954L7.20128 17.4837L0 10.4641L9.95182 9.018L14.4025 0Z"
-                                            fill="#262626" stroke="black" stroke-width="0.1" />
+                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
+                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
                                     </svg>
+
                                 </span>
                                 <span>
+
                                     <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
-                                            d="M21.5141 17.4989L21.506 17.4519L21.5403 17.4185L28.6095 10.5276L18.84 9.10806L18.7927 9.10114L18.7715 9.0582L14.4025 0.205488L10.0335 9.0582L10.0123 9.10114L9.96492 9.10806L0.195477 10.5276L7.26478 17.4185L7.29907 17.4519L7.29097 17.4989L5.62207 27.2291L14.3602 22.6351L14.4025 22.613L14.4448 22.6351L23.183 27.2291L21.5141 17.4989ZM14.4025 0L18.8531 9.018L28.8049 10.4641L21.6038 17.4837L23.3037 27.3954L14.4025 22.7156L5.50127 27.3954L7.20128 17.4837L0 10.4641L9.95182 9.018L14.4025 0Z"
-                                            fill="#262626" stroke="black" stroke-width="0.1" />
+                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
+                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
                                     </svg>
+
                                 </span>
                                 <span>
+
                                     <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
-                                            d="M21.5141 17.4989L21.506 17.4519L21.5403 17.4185L28.6095 10.5276L18.84 9.10806L18.7927 9.10114L18.7715 9.0582L14.4025 0.205488L10.0335 9.0582L10.0123 9.10114L9.96492 9.10806L0.195477 10.5276L7.26478 17.4185L7.29907 17.4519L7.29097 17.4989L5.62207 27.2291L14.3602 22.6351L14.4025 22.613L14.4448 22.6351L23.183 27.2291L21.5141 17.4989ZM14.4025 0L18.8531 9.018L28.8049 10.4641L21.6038 17.4837L23.3037 27.3954L14.4025 22.7156L5.50127 27.3954L7.20128 17.4837L0 10.4641L9.95182 9.018L14.4025 0Z"
-                                            fill="#262626" stroke="black" stroke-width="0.1" />
+                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
+                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
                                     </svg>
+
                                 </span>
                                 <span>
+
                                     <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
-                                            d="M21.5141 17.4989L21.506 17.4519L21.5403 17.4185L28.6095 10.5276L18.84 9.10806L18.7927 9.10114L18.7715 9.0582L14.4025 0.205488L10.0335 9.0582L10.0123 9.10114L9.96492 9.10806L0.195477 10.5276L7.26478 17.4185L7.29907 17.4519L7.29097 17.4989L5.62207 27.2291L14.3602 22.6351L14.4025 22.613L14.4448 22.6351L23.183 27.2291L21.5141 17.4989ZM14.4025 0L18.8531 9.018L28.8049 10.4641L21.6038 17.4837L23.3037 27.3954L14.4025 22.7156L5.50127 27.3954L7.20128 17.4837L0 10.4641L9.95182 9.018L14.4025 0Z"
-                                            fill="#262626" stroke="black" stroke-width="0.1" />
+                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
+                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
                                     </svg>
+
                                 </span>
+                            </div>
+
+                            <div class="mt-3">
+                                <h5 class="">Comment</h5>
+                            </div>
+
+                            <!-- comment -->
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+
+                                    <div id="collapseOne" class="accordion-collapse collapse show"
+                                        data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div>
+                                                <p class="text-white">Give lating</p>
+                                                <p class="text-white">Top-Notch Professionalism! Our experience with
+                                                    this promoter was
+                                                    marked
+                                                    by exceptional professionalism.
+                                                </p>
+                                                <p>11 August 2023</p>
+                                            </div>
+
+                                            <div>
+                                                <p class="text-white">Give lating</p>
+                                                <p class="text-white">Impressed by the promoter’s agility and
+                                                    adaptability. They responded
+                                                    swiftly to changes, making the entire process stress-free.
+                                                </p>
+                                                <p>8 September 2023</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button m" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseOne" aria-expanded="true"
+                                            aria-controls="collapseOne">
+                                        </button>
+                                    </h2>
+                                </div>
                             </div>
                         </div>
 
                         <div class="prmoters-jobs">
-                            <h5 class="text-white">Others promoters jobs</h5>
-                            <div>
+                            <!-- <h5 class="text-white">Others promoters jobs</h5> -->
+                            <div class="row mt-6  row-cols-xl-9 ">
+                                <div class="">
+                                    <h4 class="mb-2 mt-5 ml-2">Others promoters jobs</h4>
+                                </div>
+
+                                <div class="d-flex">
+                                    <div class="col-img">
+                                        <div class="gallery">
+                                            <a data-lightbox="image-1" data-title="My caption"
+                                                href="../../assets/images/avatars/avatar-1.png">
+                                                <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre"
+                                                    width="600" height="400">
+                                            </a>
+                                            <div class="desc">Mazisi Msebele</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-img">
+                                        <div class="gallery">
+                                            <a data-lightbox="image-1" data-title="My caption"
+                                                href="../../assets/images/avatars/avatar-2.png">
+                                                <img src="../../assets/images/avatars/avatar-2.png" alt="Forest"
+                                                    width="600" height="400">
+                                            </a>
+                                            <div class="desc">Dave Doe</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-img">
+                                        <div class="gallery">
+                                            <a data-lightbox="image-1" data-title="My caption"
+                                                href="../../assets/images/avatars/avatar-3.png">
+                                                <img src="../../assets/images/avatars/avatar-3.png"
+                                                    alt="Northern Lights" width="600" height="400">
+                                            </a>
+                                            <div class="desc">Nkanyiso Ncube</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-img">
+                                        <div class="gallery">
+                                            <a data-lightbox="image-1" data-title="My caption"
+                                                href="../../assets/images/avatars/avatar-4.png">
+                                                <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains"
+                                                    width="600" height="400">
+                                            </a>
+                                            <div class="desc">Rico Nyathi</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-img">
+                                        <div class="gallery">
+                                            <a href="../../assets/images/avatars/avatar-5.png" data-lightbox="image-1"
+                                                data-title="My caption">
+                                                <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains"
+                                                    width="600" height="400">
+                                            </a>
+                                            <div class="desc">Rico Nyathi</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-img">
+                                        <div class="gallery">
+                                            <a data-lightbox="image-1" data-title="My caption"
+                                                href="../../assets/images/avatars/avatar-6.png">
+                                                <img src="../../assets/images/avatars/avatar-6.png" alt="Mountains"
+                                                    width="600" height="400">
+                                            </a>
+                                            <div class="desc">Rico Nyathi</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="mt-2 text-center cursor-pointer d-flex justify-content-center align-items-center">
+                                    <span>Load More</span>
+                                    <i class='bx bx-chevron-down fs-2'></i>
+                                </div>
+                            </div>
+                            <!-- <div>
                                 <div>
                                     <div><img src="" alt=""></div>
                                     <p>David Mwakajumba</p>
@@ -129,7 +255,7 @@ Date: 04/06/2024
                                     <div><img src="" alt=""></div>
                                     <p>Gwakisa Mwakajumba</p>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
 
@@ -295,6 +421,34 @@ import BreadCrumb from '../../components/BreadCrumb.vue';
 
 </script>
 <style>
+/* //Acordion// */
+html.dark-theme .accordion-item {
+    /* color: #e4e5e6; */
+    background-color: #0F0F0F;
+    border: none;
+}
+
+.accordion-body {
+    padding: 0 0 0 0 !important;
+    background-color: #0F0F0F;
+}
+
+.accordion-button {
+    background-color: #0F0F0F !important;
+    border: none;
+}
+
+.accordion-button:not(.collapsed) {
+    margin-bottom: 10px;
+    /* Adjust the value as needed */
+}
+
+
+
+.accordion-button::after {
+    margin: auto !important;
+}
+
 div.gallery {
     margin: 5px;
     border: 1px solid #12181A;
