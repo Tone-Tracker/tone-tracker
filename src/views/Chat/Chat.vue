@@ -306,3 +306,13 @@ import Layout from '../shared/Layout.vue';
 
 	
 </template>
+<style>
+.chat-list {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+}
+.chat-content {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+}
+</style>

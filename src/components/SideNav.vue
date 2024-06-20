@@ -223,8 +223,8 @@ const toggleClassActive = (myClass) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 35px;
-    margin-bottom: 40px;
+    margin-top: 14px;
+    margin-bottom: 14px;
 }
 
 .gallery {

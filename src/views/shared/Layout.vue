@@ -2,8 +2,8 @@
   <div class="wrapper">
 
     <Header />
-    <!-- <SideNav /> -->
-    <Admin />
+    <SideNav /> 
+    <!-- <Admin /> -->
 
     <div class="overlay toggle-icon"></div>
 

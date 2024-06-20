@@ -7,12 +7,14 @@ import Activations from '../views/dashboard/Activations.vue';
 import Budget from '../views/dashboard/Budget.vue';
 import Warehouse from '../views/dashboard/Warehouse.vue';
 import Profile from '../views/dashboard/Profile.vue';
-import chat from './chat'
+import chat from './chat';
+import users from './users';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     ...chat,
+    ...users,
     {
       path: '/',
       name: 'home',
