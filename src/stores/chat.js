@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { firebaseApp } from '@/firebase.js'
 import { collection, addDoc } from 'firebase/firestore'
 import { useFirestore } from 'vuefire'
 
@@ -9,15 +10,14 @@ export const useChat = defineStore('chat', () => {
   
   async function sendMessage(payload) {
     console.log('payload', payload)
+ 
     const newDoc = await addDoc(collection(db, 'messages'), {
-      ...newProduct.value,
+      payload,
     }).then(doc=> {
       console.log('doc', doc)
     })
   
-    if (newDoc.id) {
-      router.push('/')
-    }
+    
   }
 
   return { sendMessage }
