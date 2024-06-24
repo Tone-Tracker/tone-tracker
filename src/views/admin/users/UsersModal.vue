@@ -6,13 +6,18 @@ import { required, email } from '@vuelidate/validators';
 
 const userStore = useUserStore();
 
-const form = reactive({
+const form = {
 	  firstName: '',
 	  lastName: '',
       email: '',
 	  phoneNumber: '',
       activationArea: '',
-    });
+	  location: [],
+	  topSize: "X_LARGE",
+          pantsSize: 30,
+          dressSize: "X_LARGE",
+          bio: "Angular developer",
+    };
 
 	const rules = {
 		firstName: { required },
@@ -24,8 +29,8 @@ const form = reactive({
 	const v$ = useVuelidate(rules, form)
 
 	const onSubmit = async () => {
-		const isFormCorrect = await v$.value.$validate();
-		if (!isFormCorrect) {
+		const isFormValid = await v$.value.$validate();
+		if (!isFormValid) {
 			return
 		}else{
 			userStore.submitUser(form)

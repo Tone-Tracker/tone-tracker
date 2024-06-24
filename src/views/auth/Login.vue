@@ -6,6 +6,9 @@ import { reactive } from 'vue';
 import router from '@/router';
 import { useMonitorSize } from '@/composables/useMonitorSize';
 import { useNetworkStatus } from '@/stores/networkStatus';
+import { useAuth } from '@/stores/auth';
+import useToaster from '@/composables/useToaster';
+import { useStorage } from '@vueuse/core'
 
 
 
@@ -14,10 +17,12 @@ setup(){
 
 	const screenSizes = useMonitorSize();
 	const isOnline = useNetworkStatus();
+	const auth = useAuth();
+	const toaster = useToaster();
 
 	const form = reactive({
-      email: 'dev@example.com',
-      password : '123456',
+      email: '',
+      password : '',
     });
 
 	const rules = {
@@ -27,14 +32,28 @@ setup(){
 	const v$ = useVuelidate(rules, form)
 
 	const onSubmit = async () => {
+		
 		if(!isOnline.online) {
-			alert("Please check your internet connection")
+			toaster.error("Check your internet connection");
 			return
 		}
 		const isFormCorrect = await v$.value.$validate();
 		if (!isFormCorrect) return;
-		router.push('dashboard')
+		auth.attempt(form)
+		  .then(function (response) {
+			       useStorage('token', response.data.accessToken)
+					toaster.success("Welcome back");
+					setTimeout(() => {
+						router.push('dashboard');
+					},1000)
+				}).catch(function (error) {
+					toaster.error("Invalid credentials");
+					console.log(error);
+		        });
+
+		
 	}
+
 	return {
 		form, v$,onSubmit,screenSizes,
 	}
@@ -75,7 +94,7 @@ setup(){
 									<div class="">
 
 										<div class="form-body">
-											<h5 class="mb-3 text-default">Log in {{online}}</h5>
+											<h5 class="mb-3 text-default">Log in</h5>
 											<form @submit.prevent="onSubmit" class="row g-3">
 												<div class="mb-3 col-12">
 													<label for="inputEmailAddress" class="form-label">User</label>
