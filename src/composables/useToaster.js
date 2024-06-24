@@ -14,6 +14,8 @@ import "vue3-toastify/dist/index.css";
  * 
  * `error` displays an error notification with the provided message for 2000 milliseconds.
  * 
+ * `warning` displays an warning notification with the provided message for 2000 milliseconds.
+ * 
  * @param {string} message - The message to be displayed in the notification.
  * @return {Object} An object with two functions: `success` and `error`.
  */
@@ -28,8 +30,13 @@ export default function useToaster() {
         toast.error(message, { autoClose: 2000 });
     };
 
+    const warning = (message) => {
+        toast.warning(message, { autoClose: 2000 });
+    };
+
     return {
         success,
         error,
+        warning
     };
 }

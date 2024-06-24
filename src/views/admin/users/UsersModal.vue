@@ -1,12 +1,22 @@
 <script setup>
 import { useUserStore } from '@/stores/userStore';
-import { reactive } from 'vue';
+import { ref,reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
+import useToaster from '@/composables/useToaster';
+
+const emit = defineEmits(['closeModal']);	
+const props = defineProps({
+	showModal: Boolean
+})
+console.log(props)
 
 const userStore = useUserStore();
+const toaster = useToaster();
+let showLoading = ref(false);
+let showModal = ref(props.showModal);
 
-const form = {
+const form = reactive({
 	  firstName: '',
 	  lastName: '',
       email: '',
@@ -17,7 +27,7 @@ const form = {
           pantsSize: 30,
           dressSize: "X_LARGE",
           bio: "Angular developer",
-    };
+    });
 
 	const rules = {
 		firstName: { required },
@@ -29,18 +39,30 @@ const form = {
 	const v$ = useVuelidate(rules, form)
 
 	const onSubmit = async () => {
+		
 		const isFormValid = await v$.value.$validate();
 		if (!isFormValid) {
 			return
 		}else{
+			showLoading.value = true;
 			userStore.submitUser(form)
+			.then(function (response) {
+				showLoading.value = false;
+				document.querySelector('.modal-backdrop').remove();
+		        emit('closeModal');
+				toaster.success("User created successfully");
+				}).catch(function (error) {
+					showLoading.value = false;
+					toaster.error("Error creating user");
+					console.log(error);
+		    });
 		}
 		
 	}
 
 </script>
 <template>
-    <div class="modal fade" id="create-user" tabindex="-1" aria-hidden="true">
+    <div v-if="showModal" class="modal fade" id="create-user" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -91,7 +113,10 @@ const form = {
 								 
 								  <div class="col-12">
 									  <div class="d-grid">
-                                         <button @click="onSubmit" type="button" class="btn maz-gradient-btn">Submit</button>
+										<button @click="onSubmit" class="btn maz-gradient-btn" type="button" 
+										   :disabled="v$.activationArea.$errors?.length > 0"> 
+											<span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+											Submit</button>
 									  </div>
 								  </div>
 							  </div> 

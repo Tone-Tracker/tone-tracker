@@ -47,7 +47,6 @@ import Warehouse from './svgs/Warehouse.vue';
                             <router-link to="/status">
                                 <div class="side-nav__link">
                                     <Status/>
-
                                 </div>
                                 <div class="menu-title">Status</div>
                             </router-link>
@@ -66,7 +65,6 @@ import Warehouse from './svgs/Warehouse.vue';
                             <router-link to="/budget">
                                 <div class="side-nav__link">
                                     <Budget/>
-
                                 </div>
                                 <div class="menu-title">Budget</div>
                             </router-link>
@@ -77,7 +75,6 @@ import Warehouse from './svgs/Warehouse.vue';
                             <a href="javascript:;">
                                 <div class="side-nav__link">
                                     <CRM/>
-
                                 </div>
                                 <div class="menu-title">CRM</div>
                             </a>

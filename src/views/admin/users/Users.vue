@@ -1,7 +1,28 @@
 <script setup>
+import { ref } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import UsersModal from './UsersModal.vue';
+
+let showModal = ref(true);
+const toggleModal = () => {
+	showModal.value = true
+}
+
+const hideModal = () => {
+	showModal.value = false
+}
+
+    const searchInput = ref('');
+    const debouncedValue = ref('');
+    let timeout = null;
+
+const onInput = () => {
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        debouncedValue.value = searchInput.value;
+      }, 300);
+  };
 
 </script>
 <template>
@@ -14,9 +35,11 @@ import UsersModal from './UsersModal.vue';
 					<div class="card-body">
 						<div class="d-lg-flex align-items-center mb-4 gap-3">
 							<div class="position-relative">
-								<input type="text" class="form-control ps-5 radius-30" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+								<input v-model="searchInput" @input="onInput"
+								type="text" class="form-control ps-5 radius-30" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
-						  <div class="ms-auto"><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+						  <div class="ms-auto">
+							<a @click="toggleModal" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user"  class="btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
 							<i class="bx bxs-plus-square"></i>Add User</a></div>
 						</div>
 						<div class="table-responsive">
@@ -45,7 +68,8 @@ import UsersModal from './UsersModal.vue';
 											</td>
 										<td>
 											<div class="d-flex order-actions">
-												<a href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class=""><i class='bx bxs-edit'></i></a>
+												<a href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
+													<i class='bx bxs-edit'></i></a>
 												<a href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
 											</div>
 										</td>
@@ -58,7 +82,10 @@ import UsersModal from './UsersModal.vue';
 					</div>
 				</div>
 
-<UsersModal/>
+				<UsersModal v-if="showModal"
+				:showModal="showModal"
+				@closeModal="hideModal()"
+				/>
 			</div>
 		</div>
     </Layout>
