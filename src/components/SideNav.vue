@@ -1,6 +1,7 @@
 
 <script setup>
 import AdminNav from './AdminNav.vue';
+import SubNavigation from './SubNavigation.vue';
 import Activation from './svgs/Activation.vue';
 import Budget from './svgs/Budget.vue';
 import CRM from './svgs/CRM.vue';
@@ -15,9 +16,10 @@ import Warehouse from './svgs/Warehouse.vue';
             <div>
                 <img style="width: 180px;" src="/src/assets/images/logo/white-logo.png" alt="">
             </div>
-            <!-- <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i> 
+           <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i> 
             </div>
-            -->
+          </div>
+           -->
         <div class="metismenu" id="menu">
             <div class="col-img">
                 <div class="gallery">
@@ -32,7 +34,8 @@ import Warehouse from './svgs/Warehouse.vue';
             </div>
             <div class="content">
                 <nav class="sidebar">
-                   <AdminNav/> 
+                   <!-- <AdminNav/>  -->
+                   <SubNavigation/> 
                     <ul class="side-nav d-none">
                         <li class="side-nav__item activation">
                             <router-link to="/activations">
