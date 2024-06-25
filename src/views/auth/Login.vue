@@ -32,6 +32,7 @@ setup(){
 	const v$ = useVuelidate(rules, form)
 
 	const onSubmit = async () => {
+		return router.push('/dashboard')
 		
 		if(!isOnline.online) {
 			toaster.error("Check your internet connection");
