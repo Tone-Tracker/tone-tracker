@@ -24,13 +24,13 @@ body {
 
 	overflow-x: hidden;
 
-	font-family: c,Roboto, sans-serif
+	font-family: c, Roboto, sans-serif
 }
 
 
 /* Force Remove dropdown arrow */
 .dropdown-toggle::after {
-    display: none !important;
+	display: none !important;
 }
 
 .maz-gradient-btn {
@@ -357,7 +357,7 @@ a {
 
 	letter-spacing: .5px;
 
-	border-radius: 0.25rem;
+	/* border-radius: 0.25rem; */
 
 	transition: all .3s ease-out
 }
