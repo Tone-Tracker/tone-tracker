@@ -46,12 +46,36 @@
                 </h2>
                 <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
                     <div class="accordion-body">
-                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
-                        collapse plugin adds the appropriate classes that we use to style each element. These classes
-                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
-                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
-                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
-                        does limit overflow.
+                        <div class="sidebar">
+                            <div class="menu-section">
+                                <h3>Projects</h3>
+                                <ul>
+                                    <li># Joburg Activations</li>
+                                    <li># Durban Activations</li>
+                                    <li># Cape Town Activations</li>
+                                </ul>
+                            </div>
+                            <div class="menu-section">
+                                <h3>Channels</h3>
+                                <ul>
+                                    <li># Marketing-team</li>
+                                    <li># Competitive</li>
+                                    <li># Announcements</li>
+                                    <li># Quarterly planning</li>
+                                </ul>
+                            </div>
+                            <div class="menu-section">
+                                <h3>Direct Messages</h3>
+                                <ul>
+                                    <li class="active">• Guest (You)</li>
+                                    <li>• Brandley Thomas</li>
+                                    <li>• Michael John</li>
+                                </ul>
+                            </div>
+                            <div class="menu-section">
+                                <h3>Communities</h3>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,7 +144,7 @@ export default {
 }
 
 .nav-list li {
-    margin: 15px 0;
+    /* margin: 15px 0; */
 }
 
 .nav-list a {
@@ -136,5 +160,36 @@ export default {
 
 .nav-list a:hover {
     text-decoration: underline;
+}
+
+/* //////////////////// */
+.menu-section {
+    margin-bottom: 20px;
+}
+
+.menu-section h3 {
+    padding-left: 20px;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #ccc;
+}
+
+.menu-section ul {
+    list-style: none;
+    padding: 0 25px;
+}
+
+.menu-section ul li {
+    padding: 0, 10px;
+    font-size: 1em;
+    color: #bbb;
+}
+
+.menu-section ul li.active {
+    /* color: #b06fcd; */
+}
+
+.menu-section ul li:hover {
+    color: #fff;
 }
 </style>
