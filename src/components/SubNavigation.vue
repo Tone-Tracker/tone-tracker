@@ -1,23 +1,62 @@
 <template>
-    <div class="side-nav">
-        <div class="profile">
-            <div class="profile-info">
-                <span class="name">Luc Belaire</span>
-                <span class="status">Guest</span>
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+
+        <div class="side-nav">
+            <div class="accordion-item">
+                <div class="accordion-header profile">
+                    <button class="d-flex align-items-start justify-content-between accordion-button" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                        aria-controls="panelsStayOpen-collapseOne">
+                        <div class="profile-info">
+                            <span class="name">Luc Belaire</span>
+                            <span class="status">Guest</span>
+                            <!-- <span class="edit-profile"> <button class="edit-profile-btn">
+                                    ✏️
+                                </button>
+                            </span> -->
+
+                        </div>
+
+
+                    </button>
+                </div>
+
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <ul class="nav-list">
+                            <li><a href="#"><span class="icon">💬</span> All</a></li>
+                            <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
+                            <li><a href="#"><span class="icon">📄</span> Briefs</a></li>
+                            <li><a href="#"><span class="icon">📤</span> Upload contract</a></li>
+                            <li><a href="#"><span class="icon">📨</span> Sent</a></li>
+                            <li><a href="#"><span class="icon">📩</span> Unread</a></li>
+                        </ul>
+
+                    </div>
+                </div>
             </div>
-            <button class="edit-profile-btn">
-                ✏️
-            </button>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="d-flex gap-2 justify-content-end flex-row-reverse accordion-button w-0 collapsed "
+                        type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo"
+                        aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                        Show more
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
+                        collapse plugin adds the appropriate classes that we use to style each element. These classes
+                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
+                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
+                        does limit overflow.
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <ul class="nav-list">
-            <li><a href="#"><span class="icon">💬</span> All</a></li>
-            <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
-            <li><a href="#"><span class="icon">📄</span> Briefs</a></li>
-            <li><a href="#"><span class="icon">📤</span> Upload contract</a></li>
-            <li><a href="#"><span class="icon">📨</span> Sent</a></li>
-            <li><a href="#"><span class="icon">📩</span> Unread</a></li>
-            <li><a href="#"><span class="icon">⬇️</span> Show more</a></li>
-        </ul>
     </div>
 </template>
 
@@ -28,19 +67,28 @@ export default {
 </script>
 
 <style scoped>
+.profile .accordion-button::after {
+    margin-bottom: 10px;
+}
+
+.accordion-button::after {
+    margin: 0 !important;
+}
+
 .side-nav {
     width: 250px;
     background-color: #000;
-    /* color: #fff; */
+    color: #fff;
     /* padding: 20px; */
     /* font-family: Arial, sans-serif; */
 }
 
 .profile {
+    /* padding: 20px; */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 4px;
 }
 
 .profile-info {
