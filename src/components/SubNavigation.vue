@@ -9,7 +9,7 @@
                         aria-controls="panelsStayOpen-collapseOne">
                         <div class="profile-info">
                             <span class="name">Luc Belaire</span>
-                            <span class="status">Guest</span>
+                            <span class="status"><span class="round-guest"></span>Guest</span>
                             <!-- <span class="edit-profile"> <button class="edit-profile-btn">
                                     ✏️
                                 </button>
@@ -125,9 +125,17 @@ export default {
     font-weight: bold;
 }
 
+.round-guest {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
+    margin-right: 7px;
+}
+
 .status {
     font-size: 14px;
-    color: red;
 }
 
 .edit-profile-btn {
@@ -185,9 +193,9 @@ export default {
     color: #bbb;
 }
 
-.menu-section ul li.active {
-    /* color: #b06fcd; */
-}
+
+/* color: #b06fcd; */
+
 
 .menu-section ul li:hover {
     color: #fff;
