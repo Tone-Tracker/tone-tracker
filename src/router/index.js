@@ -13,6 +13,7 @@ import users from './users';
 import brief from './brief';
 import job from './job';
 import upload from './upload';
+import teaching from './teaching';
 
 
 const { isLoading } = useNProgress()
@@ -29,6 +30,7 @@ const router = createRouter({
     ...brief,
     ...job,
     ...upload,
+    ...teaching,
     {
       path: '/',
       name: 'home',
