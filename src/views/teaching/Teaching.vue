@@ -42,3 +42,43 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
         </div>
     </Layout>
 </template>
+<style scoped>
+body {
+    background-color: #1c1c1c;
+    color: white;
+}
+
+.bg-black {
+    background-color: black !important;
+}
+
+.brief-card {
+    margin-bottom: 1rem;
+}
+
+.brief-card img {
+    width: 100%;
+    height: auto;
+}
+
+.new-badge {
+    background-color: orange;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    font-size: 0.8rem;
+}
+
+.btn-save {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-save:hover {
+    background-color: #0056b3;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+</style>
