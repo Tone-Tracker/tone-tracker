@@ -10,6 +10,8 @@ import Warehouse from '../views/dashboard/Warehouse.vue';
 import Profile from '../views/dashboard/Profile.vue';
 import chat from './chat';
 import users from './users';
+import brief from './brief';
+
 
 const { isLoading } = useNProgress()
 
@@ -22,6 +24,7 @@ const router = createRouter({
   routes: [
     ...chat,
     ...users,
+    ...brief,
     {
       path: '/',
       name: 'home',
