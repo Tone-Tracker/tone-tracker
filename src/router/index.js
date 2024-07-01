@@ -12,6 +12,7 @@ import chat from './chat';
 import users from './users';
 import brief from './brief';
 import job from './job';
+import upload from './upload';
 
 
 const { isLoading } = useNProgress()
@@ -27,6 +28,7 @@ const router = createRouter({
     ...users,
     ...brief,
     ...job,
+    ...upload,
     {
       path: '/',
       name: 'home',
