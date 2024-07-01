@@ -8,6 +8,11 @@ export const useUserStore = defineStore('useUserStore', () => {
   const isOnline = useNetworkStatus();
   const toaster = useToaster();
 
+  /**
+   * Generates a random password of length 8 using a predefined character set.
+   *
+   * @return {string} The randomly generated password.
+   */
   function generatePassword() {
     let chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let passwordLength = 8;
