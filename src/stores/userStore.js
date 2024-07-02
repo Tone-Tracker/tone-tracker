@@ -4,6 +4,7 @@ import { useNetworkStatus } from './networkStatus';
 import useToaster from '@/composables/useToaster';
 import { useAuth } from '@/stores/auth';
 import { ref, computed, reactive } from 'vue'
+import router from '@/router';
 
 export const useUserStore = defineStore('useUserStore', () => {
   const isOnline = useNetworkStatus();
@@ -31,11 +32,12 @@ export const useUserStore = defineStore('useUserStore', () => {
         toaster.warning("Check your internet connection");
         return
       }
-      const user = reactive({
+      const userData = reactive({
         email: form.email,
         firstName: form.firstName,
         lastName: form.lastName,
-        phone: form.phoneNumber,
+        role: form.role,
+        phone: form.phone,
         height: form.height,
         location: [],
         topSize: form.topSize,
@@ -45,14 +47,18 @@ export const useUserStore = defineStore('useUserStore', () => {
         password: generatePassword()
       });
       
-      return axios.post(`${import.meta.env.VITE_SERVER_URL}/register`, user, {
+      return axios.post(`${import.meta.env.VITE_SERVER_URL}/api/users`, userData, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${auth.token}`
         }
       })
     }
 
     const getUsers = () => {
+      if(!auth.token) {
+        router.push('/')
+      }
       return axios.get(`${import.meta.env.VITE_SERVER_URL}/api/users`,{
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +68,21 @@ export const useUserStore = defineStore('useUserStore', () => {
     }
 
     const updateUser = (id, data) => {
+      if(!auth.token) {
+        router.push('/')
+      }
       return axios.put(`${import.meta.env.VITE_SERVER_URL}/api/users/${id}`,data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${auth.token}`
+        }
+      })
+    }
+    const deleteUser = (id) => {
+      if(!auth.token) {
+        router.push('/')
+      }
+      return axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/users/${id}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth.token}`
@@ -71,5 +91,5 @@ export const useUserStore = defineStore('useUserStore', () => {
     }
     
   
-    return { submitUser,getUsers,updateUser }
+    return { submitUser,getUsers,updateUser,deleteUser }
   })

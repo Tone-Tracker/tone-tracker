@@ -10,8 +10,11 @@ const props = defineProps({
 	showModal: Boolean,
 	modalData: Object
 })
+
 const userStore = useUserStore();
 const toaster = useToaster();
+
+const ROLES = ['TTG_SUPER_ADMIN', 'TTG_HEAD_ADMIN', 'TTG_REGIONAL_MANAGER','TTG_ACTIVATION_MANAGER','TTG_TALENT','CLIENT','SUPPLIER']
 let showLoading = ref(false);
 let showModal = ref(props.showModal);
 let modalData = reactive({...props.modalData});
@@ -20,13 +23,14 @@ const form = reactive({
 	  firstName: '',
 	  lastName: '',
       email: '',
-	  phoneNumber: '',
+	  phone: '',
       activationArea: '',
 	  location: [],
-	  topSize: "X_LARGE",
-          pantsSize: 30,
-          dressSize: "X_LARGE",
-          bio: "Angular developer",
+	  role: "",
+	  topSize: "",
+          pantsSize: "",
+          dressSize: "",
+          bio: "",
     });
 
 watch(() => props.modalData, (newVal) => {
@@ -36,13 +40,14 @@ watch(() => props.modalData, (newVal) => {
 		firstName: modalData.value.firstName || '',
 		lastName: modalData.value.lastName || '',
 		email: modalData.value.email || '',
-		phoneNumber: modalData.value.phone || '',
+		phone: modalData.value.phone || '',
 		activationArea: modalData.value.activationArea || '',
 		location: modalData.value.location || [],
 		topSize: modalData.value.topSize || 'X_LARGE',
 		pantsSize: modalData.value.pantsSize || 30,
 		dressSize: modalData.value.dressSize || 'X_LARGE',
-		bio: modalData.value.bio || 'Angular developer'
+		bio: modalData.value.bio || '',
+		role: modalData.value.role || '',
 	});console.log('form', form)
 }, { deep: true });
 
@@ -50,8 +55,9 @@ watch(() => props.modalData, (newVal) => {
 		firstName: { required },
         email: { required, email },
 		lastName: { required },
-		phoneNumber: { required },
+		phone: { required },
 		activationArea: { required },
+		role: { required },
     }
 	const v$ = useVuelidate(rules, form)
 
@@ -121,16 +127,27 @@ watch(() => props.modalData, (newVal) => {
 								  </div>
 								  <div class="col-md-6">
 									<label for="cell" class="form-label">Cell Number</label>
-									<input v-model="form.phoneNumber" type="text" class="form-control" id="cell" >
-									<div class="input-errors" v-for="error of v$.phoneNumber.$errors" :key="error.$uid">
+									<input v-model="form.phone" type="text" class="form-control" id="cell" >
+									<div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
 										<div class="text-danger">Cell Number is required</div>
 									  </div>
 								  </div>
-                                  <div class="col-md-12">
+                                  <div class="col-md-6">
 									<label for="activation-area" class="form-label">Activation Area</label>
 									<input v-model="form.activationArea" type="text" class="form-control" id="activation-area" >
 									<div class="input-errors" v-for="error of v$.activationArea.$errors" :key="error.$uid">
 										<div class="text-danger">Activation Area is required</div>
+									  </div>
+								  </div>
+
+								  <div class="col-md-6">
+									<label for="activation-area" class="form-label">Role</label>
+									<select v-model="form.role" class="form-control" id="activation-area">
+										<option :value="''" :selected="true">Select Role</option>
+										<option v-for="role in ROLES" :key="role" :value="role">{{ role }}</option>
+									</select>
+									<div class="input-errors" v-for="error of v$.role.$errors" :key="error.$uid">
+										<div class="text-danger">Role is required</div>
 									  </div>
 								  </div>
 								 

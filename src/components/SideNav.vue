@@ -33,7 +33,7 @@ import Warehouse from './svgs/Warehouse.vue';
             </div> -->
             <div class="content">
                 <nav class="sidebar">
-                    <!-- <AdminNav/>  -->
+                     <!-- <AdminNav/> -->
                     <SubNavigation />
                     <ul class="side-nav d-none">
                         <li class="side-nav__item activation">

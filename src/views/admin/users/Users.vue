@@ -14,6 +14,33 @@ let showLoading = ref(false);
 let modalData = reactive({});
 
 onMounted(() => {
+	getAllUsers();
+})
+
+let showModal = ref(true);
+const toggleModal = () => {
+	showModal.value = true,
+	modalData.value = {}
+}
+
+const hideModal = () => {
+	showModal.value = false,
+	getAllUsers();
+}
+
+    const searchInput = ref('');
+
+const onInput = () => {
+	  console.log('searchInput',searchInput.value, users.value.content)
+	 if(searchInput.value) {
+		return users.value = users.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
+		|| user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
+	 }else{
+		getAllUsers();
+	 }
+  };
+
+  const getAllUsers = () => {
 	showLoading.value = true;
 	userStore.getUsers().then(function (response) {
 		showLoading.value = false;
@@ -24,32 +51,24 @@ onMounted(() => {
 	}).finally(function () {
 		showLoading.value = false;
 	})
-})
-
-let showModal = ref(true);
-const toggleModal = () => {
-	showModal.value = true,
-	modalData.value = {}
-}
-
-const hideModal = () => {
-	showModal.value = false
-}
-
-    const searchInput = ref('');
-    const debouncedValue = ref('');
-    let timeout = null;
-
-const onInput = () => {
-      if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        debouncedValue.value = searchInput.value;
-      }, 300);
-  };
+  }
 
   const showDetails = (user) => {
 	modalData.value = user;
   }
+
+  const deleteUser = (user) => {
+	if(confirm("Are you sure you want to delete this user?")) {
+		userStore.deleteUser(user.id).then(function (response) {
+		toaster.success("User deleted successfully");
+		//refetch data
+		getAllUsers();
+	   }).catch(function (error) {
+		toaster.error("Error deleting user");
+		console.log(error);
+	   })	
+  }
+}
 
 </script>
 <template>
@@ -97,7 +116,7 @@ const onInput = () => {
 											<div class="d-flex order-actions">
 												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
 													<i class='bx bxs-edit'></i></a>
-												<a href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
+												<a @click="deleteUser(user)" href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
 											</div>
 										</td>
 									</tr>
