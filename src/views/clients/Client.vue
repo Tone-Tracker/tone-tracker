@@ -6,12 +6,10 @@ import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import useToaster from '@/composables/useToaster';
 import { useClientStore } from '@/stores/useClient';
-import { useNetworkStatus } from '@/stores/networkStatus';
 
 
 const toaster = useToaster();
 const clientStore = useClientStore();
-const isOnline = useNetworkStatus();
 let clients = ref([]);
 let showLoading = ref(false);
 
@@ -24,7 +22,6 @@ const rules = { name: { required } }
 const v$ = useVuelidate(rules, form)
 
 const createClient = async () => {
-	if(!isOnline.online) {toaster.error("Check your internet connection");return}
 	const isFormValid = await v$.value.$validate();
 	if (!isFormValid) {
 		return
@@ -52,7 +49,6 @@ const getAllClients = () => {
 }
 
 const deleteClient = (client) => {
-  if(!isOnline.online) {toaster.error("Check your internet connection");return}
   if (confirm(`Are you sure you want to delete ${client.name}?`)) {
       clientStore.deleteClient(client.id).then(function (response) {
       toaster.success("Client deleted successfully");

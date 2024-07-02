@@ -1,49 +1,64 @@
 <script setup>
 import { onMounted, ref, reactive } from 'vue';
+import MultiSelect from 'primevue/multiselect';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import useToaster from '@/composables/useToaster';
-import { useClientStore } from '@/stores/useClient';
-import { useNetworkStatus } from '@/stores/networkStatus';
+import { useCampaignStore } from '@/stores/useCampaign';
+
+
+const cities = ref([
+    { name: 'New York', code: 'NY' },
+    { name: 'Rome', code: 'RM' },
+    { name: 'London', code: 'LDN' },
+    { name: 'Istanbul', code: 'IST' },
+    { name: 'Paris', code: 'PRS' }
+]);
+const selectedCities = ref();
+
 
 const toaster = useToaster();
-const clientStore = useClientStore();
-const isOnline = useNetworkStatus();
+const campaignStore = useCampaignStore();
 let clients = ref([]);
 let showLoading = ref(false);
 
-const form = reactive({ name: '' });
+const form = reactive(
+	{ name: '' },
+	{client_id: ''}
+);
 onMounted(() => {
   getAllClients();
 })
 
-const rules = { name: { required } }
+const rules = { 
+	name: { required },
+	client_id: { required }
+}
 const v$ = useVuelidate(rules, form)
 
 const createClient = async () => {
-	if(!isOnline.online) {toaster.error("Check your internet connection");return}
 	const isFormValid = await v$.value.$validate();
 	if (!isFormValid) {
 		return
 	}
-  clientStore.submitClient(form).then(function (response) {
-    toaster.success("Client created successfully");
+  campaignStore.submitClient(form).then(function (response) {
+    toaster.success("Campaign created successfully");
 	getAllClients();
   }).catch(function (error) {
-    toaster.error("Error creating client");
+    toaster.error("Error creating campaign");
     console.log(error);
   })
 }
 
 const getAllClients = () => {
   showLoading.value = true;
-  clientStore.getClients().then(function (response) {
+  campaignStore.getClients().then(function (response) {
     showLoading.value = false;
     clients.value = response.data.content.map(client => ({ ...client, isEditing: false }));
   }).catch(function (error) {
-    toaster.error("Error fetching users");
+    toaster.error("Error fetching campaigns");
     console.log(error);
   }).finally(function () {
     showLoading.value = false;
@@ -51,13 +66,12 @@ const getAllClients = () => {
 }
 
 const deleteClient = (client) => {
-  if(!isOnline.online) {toaster.error("Check your internet connection");return}
   if (confirm(`Are you sure you want to delete ${client.name}?`)) {
-      clientStore.deleteClient(client.id).then(function (response) {
-      toaster.success("Client deleted successfully");
+      campaignStore.deleteClient(client.id).then(function (response) {
+      toaster.success("Campaign deleted successfully");
       getAllClients(); 
     }).catch(function (error) {
-      toaster.error("Error deleting client");
+      toaster.error("Error deleting campaign");
       console.log(error);
     })
   }
@@ -70,9 +84,9 @@ const editClient = (client) => {
 
 const updateClient = (client) => {
   client.isEditing = false;
-   clientStore.updateClient(client).then(response => {
-    toaster.success("Client updated successfully");
-    getAllClients(); // Refetch clients after updating
+   campaignStore.updateClient(client).then(response => {
+    toaster.success("Campaign updated successfully");
+    getAllClients();
   }).catch(error => {
     toaster.error("Error updating client");
     console.log(error);
@@ -88,7 +102,7 @@ const vFocus = {
 	<Layout>
 	  <div class="page-wrapper">
 		<div class="page-content">
-		  <BreadCrumb title="Clients" icon="" />
+		  <BreadCrumb title="Campaigns" icon="" />
 		  <div class="card">
 			<div class="card-body">
 			  <div class="row">
@@ -100,8 +114,8 @@ const vFocus = {
 						  <thead class="table-light">
 							<tr>
 							  <th>#</th>
-							  <th>Name</th>
-							  <th>Date Created</th>
+							  <th>Campaign Name</th>
+							  <th>Client Name</th>
 							  <th>Action</th>
 							</tr>
 						  </thead>
@@ -143,13 +157,29 @@ const vFocus = {
 				  <div class="card w-100 radius-10">
 					<div class="card-body">
 					  <div class="table-responsive">
-						<div class="position-relative">
-						  <input v-model="form.name" @input="onInput" type="text" class="form-control ps-5 radius-30" placeholder="Client Name">
-						  <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-							<div class="text-danger">Client Name is required</div>
-						  </div>
-						</div>
-						<div class="ms-auto mt-6">
+						<form class="">
+							<div class="col-md-12">
+								<label for="input1" class="form-label">Campaign Name</label>
+								<input v-model="form.name" type="text" class="form-control" id="input1" />
+								<div class="input-errors" v-for="error of v$.client_id.$errors" :key="error.$uid">
+									<div class="text-danger">Campaign name is required</div>
+								  </div>
+							</div>
+							<div class="col-md-12">
+								<label for="input3" class="form-label">Choose Client</label>
+								<input v-model="form.client_id" type="text" class="form-control" id="input3" />
+								<div class="input-errors" v-for="error of v$.client_id.$errors" :key="error.$uid">
+									<div class="text-danger">Client is required</div>
+								  </div>
+							</div>
+							
+							<div class="card flex justify-center">
+								<MultiSelect v-model="selectedCities" :options="cities" optionLabel="name" filter placeholder="Select Cities"
+									:maxSelectedLabels="3" class="w-full md:w-80" />
+							</div>
+						</form>
+						
+						<div class="ms-auto mt-4">
 						  <a @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
 							<i class="bx bxs-plus-square"></i>Create Client
 						  </a>
@@ -168,8 +198,8 @@ const vFocus = {
   
 
 <style scoped>
-.mt-6{
-	margin-top: 2rem;
+.mt-4{
+	margin-top: 1rem;
 }
 .no-border-input {
     border: none;

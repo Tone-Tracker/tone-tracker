@@ -10,6 +10,7 @@ import $ from 'jquery';
 import lightbox from 'lightbox2';
 import 'lightbox2/dist/css/lightbox.css';
 
+
 // import './assets/plugins/simplebar/css/simplebar.css';
 // import './assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css'
 
@@ -25,6 +26,8 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
+import PrimeVue from 'primevue/config';
+import Aura from '@primevue/themes/aura';
 import router from './router'
 import { VueFire, VueFireAuth } from 'vuefire'
 import { firebaseApp } from '@/firebase.js'
@@ -38,6 +41,11 @@ app.use(VueFire, {
   })
 app.use(createPinia())
 app.use(router)
+app.use(PrimeVue, {
+  theme: {
+      preset: Aura
+  }
+});
 app.use(lightbox)
 app.config.globalProperties.$ = $
 
