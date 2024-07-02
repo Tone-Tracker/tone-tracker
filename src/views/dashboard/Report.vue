@@ -80,8 +80,13 @@ Date: 04/06/2024
                 <input type="checkbox" id="select">
                 <span>&#x2713;</span>
               </div>
+              <div>
+                <div class="desc">Mazisi Msebele</div>
+                <div><button class="btn btn-primary rounded-0 w-100">Add</button></div>
+              </div>
             </div>
-            <div class="desc">Mazisi Msebele</div>
+
+
           </div>
         </div>
         <div class=" col-img">
