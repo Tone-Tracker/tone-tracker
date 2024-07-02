@@ -441,7 +441,7 @@ html.dark-theme .accordion-item {
 
 .accordion-body {
     padding: 0 0 0 0 !important;
-    background-color: #0F0F0F;
+    background-color: #000;
 }
 
 .accordion-button {
