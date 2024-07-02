@@ -30,7 +30,7 @@ Date: 04/06/2024
                                 <div class="profile-imgs mb-4">
                                     <div class="">
                                         <div class="col-img">
-                                            <div class="gallery">
+                                            <div class="gallery ms-0">
                                                 <router-link to="/profile">
                                                     <img src="../../assets/images/avatars/avatar-1.png"
                                                         alt="Cinque Terre" width="600" height="400">
@@ -56,6 +56,17 @@ Date: 04/06/2024
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="mb-4">
+                                    <button
+                                        class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center">
+                                        <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" style="fill: #ffffff;transform: msFilter;">
+                                                <path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path>
+                                            </svg>
+                                        </span><span>Add</span>
+                                    </button>
                                 </div>
 
                             </div>
