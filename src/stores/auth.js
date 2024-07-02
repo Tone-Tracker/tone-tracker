@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { ref, computed } from 'vue'
 import axios from "axios";
 import router from '@/router';
 import useToaster from '@/composables/useToaster';
@@ -25,6 +26,13 @@ export const useAuth = defineStore('auth', () => {
       toaster.success("Logout successful");
       router.push('/')
     }
+
+    const token = computed(() => {
+      return localStorage.getItem('token')
+    })
+    const user = computed(() => {
+      return localStorage.getItem('user')
+    })
   
-    return { attempt, logout }
+    return { attempt, logout, token, user }
   })

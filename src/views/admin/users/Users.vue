@@ -1,12 +1,35 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import UsersModal from './UsersModal.vue';
+import { useUserStore } from '@/stores/userStore';
+import useToaster from '@/composables/useToaster';
+
+
+const userStore = useUserStore();
+const toaster = useToaster();
+let users = ref([]);
+let showLoading = ref(false);
+let modalData = reactive({});
+
+onMounted(() => {
+	showLoading.value = true;
+	userStore.getUsers().then(function (response) {
+		showLoading.value = false;
+		users.value = response.data
+	}).catch(function (error) {
+		toaster.error("Error fetching users");
+		console.log(error);
+	}).finally(function () {
+		showLoading.value = false;
+	})
+})
 
 let showModal = ref(true);
 const toggleModal = () => {
-	showModal.value = true
+	showModal.value = true,
+	modalData.value = {}
 }
 
 const hideModal = () => {
@@ -24,13 +47,16 @@ const onInput = () => {
       }, 300);
   };
 
+  const showDetails = (user) => {
+	modalData.value = user;
+  }
+
 </script>
 <template>
     <Layout>
         <div class="page-wrapper">
 			<div class="page-content">
                 <BreadCrumb title="All Users" icon="bx bxs-user-badge"/>
-				
 				<div class="card">
 					<div class="card-body">
 						<div class="d-lg-flex align-items-center mb-4 gap-3">
@@ -56,22 +82,31 @@ const onInput = () => {
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="i in 6">
-										<td>Mazisi</td>
-										<td>Msebele</td>
-										<td>mazisi@gmail.com</td>
-										<td>089 455 4322</td>
-										<td><div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class='bx bxs-circle align-middle me-1'></i>
+									<tr v-if="users?.content" v-for="user in users?.content" :key="user.id">
+										<td>{{user.firstName}}</td>
+										<td>{{user.lastName}}</td>
+										<td>{{user.email}}</td>
+										<td>{{user.phone}}</td>
+										<td>
+											<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class='bx bxs-circle align-middle me-1'></i>
 											Yes</div></td>
 											<td>
 												Johannesburg
 											</td>
 										<td>
 											<div class="d-flex order-actions">
-												<a href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
+												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
 													<i class='bx bxs-edit'></i></a>
 												<a href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
 											</div>
+										</td>
+									</tr>
+									<tr v-else>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td colspan="7" class="text-center">
+											<!-- <CustomSpinner v-if="showLoading"/> -->
 										</td>
 									</tr>
 									
@@ -84,6 +119,7 @@ const onInput = () => {
 
 				<UsersModal v-if="showModal"
 				:showModal="showModal"
+				:modalData="modalData"
 				@closeModal="hideModal()"
 				/>
 			</div>
