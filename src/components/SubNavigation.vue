@@ -27,7 +27,8 @@
                         <ul class="nav-list">
                             <li><a href="#"><span class="icon">💬</span> All</a></li>
                             <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
-                            <li><a href="#"><span class="icon">📄</span> Briefs</a></li>
+                            <!-- <li><a href="#"><span class="icon">📄</span> Briefs</a></li> -->
+                            <li><router-link to="/briefs"><span class="icon">📄</span> Briefs</router-link></li>
                             <li><a href="#"><span class="icon">📤</span> Upload contract</a></li>
                             <li><a href="#"><span class="icon">📨</span> Sent</a></li>
                             <li><a href="#"><span class="icon">📩</span> Unread</a></li>

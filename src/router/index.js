@@ -11,6 +11,9 @@ import Profile from '../views/dashboard/Profile.vue';
 import chat from './chat';
 import users from './users';
 import brief from './brief';
+import job from './job';
+import upload from './upload';
+import teaching from './teaching';
 
 
 const { isLoading } = useNProgress()
@@ -25,6 +28,9 @@ const router = createRouter({
     ...chat,
     ...users,
     ...brief,
+    ...job,
+    ...upload,
+    ...teaching,
     {
       path: '/',
       name: 'home',
@@ -72,29 +78,29 @@ const router = createRouter({
     },
 
 
-   /* {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
-    */
+    /* {
+       path: '/about',
+       name: 'about',
+       // route level code-splitting
+       // this generates a separate chunk (About.[hash].js) for this route
+       // which is lazy-loaded when the route is visited.
+       component: () => import('../views/AboutView.vue')
+     }
+     */
   ]
 })
 
 router.beforeResolve((to, from, next) => {
   // If this isn't an initial page load.
   if (to.name) {
-      // Start the route progress bar.
-      toggle()
+    // Start the route progress bar.
+    toggle()
   }
   next()
 })
 
 router.afterEach(() => {
-  
+
 })
 
 export default router

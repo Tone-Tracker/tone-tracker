@@ -1,4 +1,3 @@
-
 <script setup>
 import AdminNav from './AdminNav.vue';
 import SubNavigation from './SubNavigation.vue';
@@ -21,7 +20,7 @@ import Warehouse from './svgs/Warehouse.vue';
           </div>
            -->
         <div class="metismenu" id="menu">
-            <div class="col-img">
+            <!-- <div class="col-img">
                 <div class="gallery">
                     <div class="image-container position-relative">
                         <router-link to="/">
@@ -31,25 +30,25 @@ import Warehouse from './svgs/Warehouse.vue';
                         <div class="text-center text-sm">Dashboard</div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="content">
                 <nav class="sidebar">
-                   <AdminNav/> 
-                   <!-- <SubNavigation/>  -->
+                    <!-- <AdminNav/>  -->
+                    <SubNavigation />
                     <ul class="side-nav d-none">
                         <li class="side-nav__item activation">
                             <router-link to="/activations">
                                 <div class="side-nav__link">
-                                   <Activation/>
+                                    <Activation />
                                 </div>
                                 <div class="menu-title">Activation</div>
                             </router-link>
                         </li>
 
-                        <li class="side-nav__item" >
+                        <li class="side-nav__item">
                             <router-link to="/status">
                                 <div class="side-nav__link">
-                                    <Status/>
+                                    <Status />
                                 </div>
                                 <div class="menu-title">Status</div>
                             </router-link>
@@ -58,7 +57,7 @@ import Warehouse from './svgs/Warehouse.vue';
                         <li class="side-nav__item">
                             <router-link to="/report">
                                 <div class="side-nav__link">
-                                    <Report/>
+                                    <Report />
                                 </div>
                                 <div class="menu-title">Report</div>
                             </router-link>
@@ -67,7 +66,7 @@ import Warehouse from './svgs/Warehouse.vue';
                         <li class="side-nav__item">
                             <router-link to="/budget">
                                 <div class="side-nav__link">
-                                    <Budget/>
+                                    <Budget />
                                 </div>
                                 <div class="menu-title">Budget</div>
                             </router-link>
@@ -77,17 +76,17 @@ import Warehouse from './svgs/Warehouse.vue';
                         <li class="side-nav__item">
                             <a href="javascript:;">
                                 <div class="side-nav__link">
-                                    <CRM/>
+                                    <CRM />
                                 </div>
                                 <div class="menu-title">CRM</div>
                             </a>
                         </li>
-                       
+
 
                         <li class="side-nav__item">
                             <router-link to="/warehouse">
                                 <div class="side-nav__link">
-                                    <Warehouse/>
+                                    <Warehouse />
                                 </div>
                                 <div class="menu-title">Warehousing</div>
                             </router-link>
