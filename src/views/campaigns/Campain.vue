@@ -8,7 +8,6 @@ import useToaster from '@/composables/useToaster';
 import { useClientStore } from '@/stores/useClient';
 import { useNetworkStatus } from '@/stores/networkStatus';
 
-
 const toaster = useToaster();
 const clientStore = useClientStore();
 const isOnline = useNetworkStatus();

@@ -33,8 +33,8 @@ const hideModal = () => {
 const onInput = () => {
 	  console.log('searchInput',searchInput.value, users.value.content)
 	 if(searchInput.value) {
-		return users.value = users.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
-		|| user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
+		// return users.value = users.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
+		// || user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
 	 }else{
 		getAllUsers();
 	 }
