@@ -1,6 +1,14 @@
 <script setup>
+import { ref } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
+
+const showDropdown = ref(false);
+
+const toggleDropdown = () => {
+    showDropdown.value = !showDropdown.value;
+};
+
 </script>
 
 <template>
@@ -14,7 +22,18 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
                     <div class="table-container-colour p-5">
                         <div class="d-flex justify-content-between">
                             <h5>Database</h5>
-                            <h5>Filter</h5>
+                            <div class="filter-dropdown">
+                                <h5 style="display: inline;">Filter</h5>
+                                <img src="https://img.icons8.com/ios-filled/20/ffffff/filter.png" alt="Filter Icon"
+                                    class="filter-icon" @click="toggleDropdown" />
+                                <div v-show="showDropdown" class="filter-dropdown-content">
+                                    <a href="#">Gauteng Central</a>
+                                    <a href="#">Eastern Region</a>
+                                    <a href="#">Western Region</a>
+                                    <a href="#">Clear Filter</a>
+                                </div>
+                            </div>
+
                         </div>
                         <table class="table table-dark table-bordered">
                             <thead>
@@ -149,5 +168,41 @@ body {
 .table-dark thead th {
     padding: 10px !important;
     border: none !important;
+}
+
+/* Filter dropdown styling */
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #1e90ff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.filter-dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.filter-dropdown-content a:hover {
+    background-color: #0056b3;
+}
+
+.filter-icon {
+    width: 20px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.show {
+    display: block;
 }
 </style>
