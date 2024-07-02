@@ -13,10 +13,36 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
                         <!-- Code here -->
                         <div class="container my-5">
                             <div class="row g-4">
-                                <div v-for="i in 4" class="col-md-4 col-lg-3">
+                                <!-- <div v-for="i in 4" class="col-md-4 col-lg-3">
                                     <div class="job-item">
                                         <img src="../../assets/images/company-logo.png" alt="Luc Belair">
                                         <span>Luc Belair</span>
+                                    </div>
+                                </div> -->
+                                <div v-for="i in 4" class="col-md-4 col-lg-3">
+                                    <div class="job-item">
+                                        <div class="image-container">
+                                            <img src="../../assets/images/Component 102 – 1.png" alt="Luc Belair">
+                                            <span>Luc Belair</span>
+                                        </div>
+                                        <div class="details">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>Activation progress:</div>
+                                                <div>38%</div>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>Leads:</div>
+                                                <div>102,000</div>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>Activations completed:</div>
+                                                <div>10</div>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>Ongoing activations:</div>
+                                                <div>15</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -36,8 +62,12 @@ body {
 }
 
 .job-item {
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.image-container {
     position: relative;
-    overflow: hidden;
     border: 2px solid #fff;
 }
 
@@ -57,10 +87,25 @@ body {
     text-align: center;
     font-size: 1.2em;
     border-radius: 8px;
-    /* Optional: adds rounded corners to the background */
+    transition: opacity 0.3s ease-in-out;
 }
 
-.job-item.new::after {
+.job-item .details {
+    background-color: #333;
+    padding: 10px;
+    text-align: left;
+    font-size: 1em;
+    /* border-radius: 8px; */
+    display: none;
+    white-space: pre-line;
+    color: white;
+}
+
+.job-item:hover .details {
+    display: block;
+}
+
+.job-item.new .image-container::after {
     content: 'New';
     position: absolute;
     top: 10px;
@@ -73,7 +118,7 @@ body {
     z-index: 1;
 }
 
-.job-item::before {
+.image-container::before {
     content: '';
     position: absolute;
     top: 0;
@@ -82,5 +127,11 @@ body {
     bottom: 0;
     border: 2px solid #fff;
     z-index: 0;
+}
+
+.details p {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
 }
 </style>
