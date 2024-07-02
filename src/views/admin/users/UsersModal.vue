@@ -1,20 +1,20 @@
 <script setup>
 import { useUserStore } from '@/stores/userStore';
-import { ref,reactive } from 'vue';
+import { ref,reactive, watch } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import useToaster from '@/composables/useToaster';
 
 const emit = defineEmits(['closeModal']);	
 const props = defineProps({
-	showModal: Boolean
+	showModal: Boolean,
+	modalData: Object
 })
-console.log(props)
-
 const userStore = useUserStore();
 const toaster = useToaster();
 let showLoading = ref(false);
 let showModal = ref(props.showModal);
+let modalData = reactive({...props.modalData});
 
 const form = reactive({
 	  firstName: '',
@@ -29,6 +29,23 @@ const form = reactive({
           bio: "Angular developer",
     });
 
+watch(() => props.modalData, (newVal) => {
+	Object.assign(modalData, newVal);
+	
+	Object.assign(form, {
+		firstName: modalData.value.firstName || '',
+		lastName: modalData.value.lastName || '',
+		email: modalData.value.email || '',
+		phoneNumber: modalData.value.phone || '',
+		activationArea: modalData.value.activationArea || '',
+		location: modalData.value.location || [],
+		topSize: modalData.value.topSize || 'X_LARGE',
+		pantsSize: modalData.value.pantsSize || 30,
+		dressSize: modalData.value.dressSize || 'X_LARGE',
+		bio: modalData.value.bio || 'Angular developer'
+	});console.log('form', form)
+}, { deep: true });
+
 	const rules = {
 		firstName: { required },
         email: { required, email },
@@ -39,12 +56,18 @@ const form = reactive({
 	const v$ = useVuelidate(rules, form)
 
 	const onSubmit = async () => {
-		
 		const isFormValid = await v$.value.$validate();
 		if (!isFormValid) {
 			return
-		}else{
+		}
 			showLoading.value = true;
+			if(modalData.value.id){
+				showLoading.value = true;
+				return userStore.updateUser(modalData.value.id, form).then(function (response) {
+					console.log(response)
+				})
+			}else{
+		
 			userStore.submitUser(form)
 			.then(function (response) {
 				showLoading.value = false;
@@ -56,7 +79,7 @@ const form = reactive({
 					toaster.error("Error creating user");
 					console.log(error);
 		    });
-		}
+			}
 		
 	}
 
@@ -116,7 +139,8 @@ const form = reactive({
 										<button @click="onSubmit" class="btn maz-gradient-btn" type="button" 
 										   :disabled="v$.activationArea.$errors?.length > 0"> 
 											<span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-											Submit</button>
+											{{ modalData.value?.id ? 'Update' : 'Submit' }}
+										</button>
 									  </div>
 								  </div>
 							  </div> 
