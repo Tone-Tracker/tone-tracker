@@ -31,7 +31,7 @@ Date: 04/06/2024
             </div>
             <p class="text-white">View live data</p>
           </div>
-          <div><button class="btn rounded-0 btn-primary">Download report</button></div>
+          <div class="align-self-end mb-4"><button class="btn rounded-0 btn-primary">Download report</button></div>
 
 
         </div>
