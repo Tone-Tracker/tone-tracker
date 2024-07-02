@@ -14,7 +14,7 @@ const props = defineProps({
 const userStore = useUserStore();
 const toaster = useToaster();
 
-const ROLES = ['TTG_SUPER_ADMIN', 'TTG_HEAD_ADMIN', 'TTG_REGIONAL_MANAGER','TTG_ACTIVATION_MANAGER','TTG_TALENT','CLIENT','SUPPLIER']
+const ROLES = ['TTG_SUPER_ADMIN', 'TTG_HEAD_ADMIN', 'TTG_REGIONAL_MANAGER','TTG_ACTIVATION_MANAGER','TTG_TALENT','CLIENT','SUPPLIER'];
 let showLoading = ref(false);
 let showModal = ref(props.showModal);
 let modalData = reactive({...props.modalData});
@@ -48,7 +48,7 @@ watch(() => props.modalData, (newVal) => {
 		dressSize: modalData.value.dressSize || 'X_LARGE',
 		bio: modalData.value.bio || '',
 		role: modalData.value.role || '',
-	});console.log('form', form)
+	});
 }, { deep: true });
 
 	const rules = {
