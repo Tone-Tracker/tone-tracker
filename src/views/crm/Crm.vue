@@ -3,10 +3,10 @@ import { ref } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 
-const showDropdown = ref(false);
+let showDropdown = ref(null);
 
 const toggleDropdown = () => {
-    showDropdown.value = !showDropdown.value;
+    showDropdown.value.classList.toggle('show');
 };
 
 </script>
@@ -26,7 +26,7 @@ const toggleDropdown = () => {
                                 <h5 style="display: inline;">Filter</h5>
                                 <img src="https://img.icons8.com/ios-filled/20/ffffff/filter.png" alt="Filter Icon"
                                     class="filter-icon" @click="toggleDropdown" />
-                                <div v-show="showDropdown" class="filter-dropdown-content">
+                                <div ref="showDropdown" class="filter-dropdown-content">
                                     <a href="#">Gauteng Central</a>
                                     <a href="#">Eastern Region</a>
                                     <a href="#">Western Region</a>
