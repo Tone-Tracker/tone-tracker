@@ -15,7 +15,7 @@ const toggleDropdown = () => {
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <BreadCrumb title="CRM" icon="" />
+                <BreadCrumb title="CRM" icon="bx bxs-calculator" />
 
                 <!-- Code here -->
                 <div class="container">
@@ -104,8 +104,8 @@ const toggleDropdown = () => {
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="text-right">
-                            <button class="btn btn-secondary btn-export rounded-0 mb-0">Export</button>
+                        <div class="text-end">
+                            <button class="btn btn-secondary btn-export rounded-0 mb-0 mx-2">Export</button>
                             <button class="btn btn-primary btn-download rounded-0 mb-0">Download</button>
                         </div>
                     </div>

@@ -2,22 +2,22 @@ import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
 
 export const useCampaignStore = defineStore('useCampaign', () => {
-    function submitClient(form) {
-      return axiosInstance.post(`/api/clients`,form);
+    function submitCampaign(form) {
+      return axiosInstance.post(`/api/campaigns`,form);
     }
 
-    const getClients = () => {
-      return axiosInstance.get(`/api/clients`);
+    const getCampaigns = () => {
+      return axiosInstance.get(`/api/campaigns`);
     }
 
-    const updateClient = (client) => {
+    const updateCampaign = (client) => {
       let obj = {name: client.name}
-      return axiosInstance.put(`/api/clients/${client.id}`,obj);
+      return axiosInstance.put(`/api/campaigns/${client.id}`,obj);
     }
-    const deleteClient = (id) => {
-      return axiosInstance.delete(`/api/clients/${id}`);
+    const deleteCampaign = (id) => {
+      return axiosInstance.delete(`/api/campaigns/${id}`);
     }
     
   
-    return { submitClient,getClients,updateClient,deleteClient }
+    return { submitCampaign,getCampaigns,updateCampaign,deleteCampaign }
   })

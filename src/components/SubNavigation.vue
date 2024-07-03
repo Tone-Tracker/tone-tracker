@@ -29,6 +29,9 @@
                             <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
                             <!-- <li><a href="#"><span class="icon">📄</span> Briefs</a></li> -->
                             <li><router-link to="/briefs"><span class="icon">📄</span> Briefs</router-link></li>
+                            <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li>
+                            <li><router-link to="/users"><span class="icon">📄</span> Users</router-link></li>
+                            <li><router-link to="/crm"><span class="icon">📄</span> CRM</router-link></li>
                             <li><a href="#"><span class="icon">📤</span> Upload contract</a></li>
                             <li><a href="#"><span class="icon">📨</span> Sent</a></li>
                             <li><a href="#"><span class="icon">📩</span> Unread</a></li>
