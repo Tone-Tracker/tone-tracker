@@ -1,9 +1,11 @@
 <script setup>
+import { onClickOutside } from '@vueuse/core'
 import { ref } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 
 let showDropdown = ref(null);
+onClickOutside(showDropdown, event => showDropdown.value.classList.remove('show'));
 
 const toggleDropdown = () => {
     showDropdown.value.classList.toggle('show');
