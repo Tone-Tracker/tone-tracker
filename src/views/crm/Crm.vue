@@ -20,7 +20,7 @@ const toggleDropdown = () => {
                 <BreadCrumb title="CRM" icon="bx bxs-calculator" />
 
                 <!-- Code here -->
-                <div class="container">
+                <div class="">
                     <div class="table-container-colour p-5">
                         <div class="d-flex justify-content-between">
                             <h5>Database</h5>

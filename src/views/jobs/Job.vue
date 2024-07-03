@@ -11,14 +11,8 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
                 <div class="card">
                     <div class="card-body">
                         <!-- Code here -->
-                        <div class="container my-5">
+                        <div class="">
                             <div class="row g-4">
-                                <!-- <div v-for="i in 4" class="col-md-4 col-lg-3">
-                                    <div class="job-item">
-                                        <img src="../../assets/images/company-logo.png" alt="Luc Belair">
-                                        <span>Luc Belair</span>
-                                    </div>
-                                </div> -->
                                 <div v-for="i in 4" class="col-md-4 col-lg-3">
                                     <div class="job-item">
                                         <div class="image-container">
@@ -54,12 +48,7 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
     </Layout>
 </template>
 <style scoped>
-body {
-    background-color: #111;
-    color: white;
-    margin: 0;
-    padding: 0;
-}
+
 
 .job-item {
     margin-bottom: 20px;

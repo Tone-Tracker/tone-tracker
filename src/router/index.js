@@ -17,6 +17,7 @@ import teaching from './teaching';
 import crm from './crm';
 import client from './client';
 import campaigns from './campaigns';
+import task from './task';
 
 
 const { isLoading } = useNProgress()
@@ -37,6 +38,7 @@ const router = createRouter({
     ...crm,
     ...client,
     ...campaigns,
+    ...task,
     {
       path: '/',
       name: 'home',

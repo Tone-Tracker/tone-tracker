@@ -14,7 +14,7 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
                 <div class="card">
                     <div class="card-body">
                         <!-- Code here -->
-                        <div class="container">
+                        <div class="">
                             <div>
                                 <div class="bg-dark mb-4"><button class="btn rounded-0 btn-primary">+ New</button></div>
                             </div>
