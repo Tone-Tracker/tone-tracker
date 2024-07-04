@@ -178,7 +178,7 @@
       </div>
 
       <div class="row">
-        <div class="col-12 col-lg-4">
+        <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
           <div class="card radius-10">
             <div class="card-body">
               <div class="">
@@ -210,8 +210,8 @@
           </div>
         </div>
 
-        <div class="col-12 col-lg-8 d-flex">
-          <div class="card radius-10 w-100">
+        <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12">
+          <!-- <div class="card radius-10 w-100">
             <div class="card-header">
               <div class="d-flex align-items-center">
                 <div>
@@ -289,11 +289,12 @@
                 </table>
               </div>
             </div>
-          </div>
+          </div> -->
+          <Newtask/>  
         </div>
       </div>
 
-      <div class="card">
+      <div class="card bg-primary p-5">
         <div class="card-body">
           <div class="my-table" style="padding-left: 7rem;padding-right: 7rem;">
             <div class="col-12">
@@ -368,7 +369,7 @@
         </div>
       </div>
 
-      <div class="row mt-6 row-cols-xl-9">
+      <div class="row my-6 row-cols-xl-9">
         <div class="">
           <h4 class="mb-2 ml-2">Gallery</h4>
         </div>
@@ -377,7 +378,6 @@
             <a data-lightbox="image-1" data-title="My caption" href="../../assets/images/avatars/avatar-1.png">
               <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid">
             </a>
-            <div class="desc">Mazisi Msebele</div>
           </div>
         </div>
         <div class="col-img">
@@ -385,7 +385,6 @@
             <a data-lightbox="image-1" data-title="My caption" href="../../assets/images/avatars/avatar-2.png">
               <img src="../../assets/images/avatars/avatar-2.png" alt="Forest" class="img-fluid">
             </a>
-            <div class="desc">Dave Doe</div>
           </div>
         </div>
         <div class="col-img">
@@ -393,7 +392,6 @@
             <a data-lightbox="image-1" data-title="My caption" href="../../assets/images/avatars/avatar-3.png">
               <img src="../../assets/images/avatars/avatar-3.png" alt="Northern Lights" class="img-fluid">
             </a>
-            <div class="desc">Nkanyiso Ncube</div>
           </div>
         </div>
         <div class="col-img">
@@ -401,7 +399,6 @@
             <a data-lightbox="image-1" data-title="My caption" href="../../assets/images/avatars/avatar-4.png">
               <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains" class="img-fluid">
             </a>
-            <div class="desc">Rico Nyathi</div>
           </div>
         </div>
         <div class="col-img">
@@ -409,7 +406,6 @@
             <a href="../../assets/images/avatars/avatar-5.png" data-lightbox="image-1" data-title="My caption">
               <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains" class="img-fluid">
             </a>
-            <div class="desc">Rico Nyathi</div>
           </div>
         </div>
         <div class="col-img">
@@ -417,7 +413,6 @@
             <a data-lightbox="image-1" data-title="My caption" href="../../assets/images/avatars/avatar-6.png">
               <img src="../../assets/images/avatars/avatar-6.png" alt="Mountains" class="img-fluid">
             </a>
-            <div class="desc">Rico Nyathi</div>
           </div>
         </div>
         <div class="mt-2 text-center cursor-pointer d-flex justify-content-center align-items-center">
@@ -425,6 +420,16 @@
           <i class='bx bx-chevron-down fs-2'></i>
         </div>
       </div>
+
+      
+       <!-- <div class="row mt-6 row-cols-xl-9 row ms-3 me-3">
+            <div class="my-4">
+              <h4 class="">Gallery</h4>
+            </div>
+            <div v-for="i in 12" class="col-lg-4 col-md-3 col-sm-6">
+                <img src="../../assets/images/avatars/avatar-1.png" class="img-fluid" alt="Image 1">
+            </div>
+      </div> -->
     </div>
     <!--start switcher-->
   </Layout>
@@ -433,6 +438,8 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
+import Newtask from '../../components/Newtask.vue';
+import ImageGallery from '../../components/ImageGallery.vue';
 </script>
 
 <style scoped>
@@ -490,6 +497,7 @@ div.gallery img {
   position: relative;
   display: inline-block;
   width: 200px;
+  
 }
 
 .gallery {
@@ -592,4 +600,25 @@ html.dark-theme .table th {
     padding-right: 1rem;
   }
 }
+
+/* ///////////// */
+.img-fluid {
+            /* border-radius: 8px; */
+            transition: transform 0.2s;
+        }
+
+        .img-fluid:hover {
+            transform: scale(1.05);
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        @media (max-width: 576px) {
+            .col-sm-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
 </style>
