@@ -5,10 +5,13 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
 import UsersModal from './UsersModal.vue';
 import { useUserStore } from '@/stores/userStore';
 import useToaster from '@/composables/useToaster';
-
+import { useAuth } from '@/stores/auth';
 
 const userStore = useUserStore();
 const toaster = useToaster();
+const auth = useAuth();
+const currentUser = JSON.parse(auth.user);
+
 let users = ref([]);
 let showLoading = ref(false);
 let modalData = reactive({});
@@ -58,6 +61,7 @@ const onInput = () => {
   }
 
   const deleteUser = (user) => {
+	if(isMyProfile(user)) return
 	if(confirm("Are you sure you want to delete this user?")) {
 		userStore.deleteUser(user.id).then(function (response) {
 		toaster.success("User deleted successfully");
@@ -68,6 +72,10 @@ const onInput = () => {
 		console.log(error);
 	   })	
   }
+}
+
+const isMyProfile = (user) => {
+	return user.id === currentUser.id
 }
 
 </script>
@@ -116,7 +124,10 @@ const onInput = () => {
 											<div class="d-flex order-actions">
 												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
 													<i class='bx bxs-edit'></i></a>
-												<a @click="deleteUser(user)" href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
+												<a @click="deleteUser(user)" href="javascript:;" class="ms-3">
+													<i v-if="!isMyProfile(user)" class='bx bxs-trash'></i>
+													<i v-if="isMyProfile(user)" class='bx bx-stop-circle text-danger cursor-no-drop'></i>
+												</a>
 											</div>
 										</td>
 									</tr>

@@ -10,7 +10,9 @@ File: app.css
 
 */
 
-
+.cursor-no-drop {
+	cursor: not-allowed
+}
 
 body {
 
@@ -41,7 +43,7 @@ body {
 }
 
 /* 
-This style was created by: Mazisi Msebele to reset btn border-radiusn globally
+This style was created by: Mazisi Msebele to reset btn border-radius globally
 */
 .btn{
 	border-radius: 0px !important;

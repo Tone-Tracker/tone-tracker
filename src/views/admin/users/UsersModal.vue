@@ -1,9 +1,10 @@
 <script setup>
 import { useUserStore } from '@/stores/userStore';
-import { ref,reactive, watch } from 'vue';
+import { ref,reactive, watch, onMounted } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import useToaster from '@/composables/useToaster';
+import { useAuth } from '@/stores/auth';
 
 const emit = defineEmits(['closeModal']);	
 const props = defineProps({
@@ -13,8 +14,21 @@ const props = defineProps({
 
 const userStore = useUserStore();
 const toaster = useToaster();
+const auth = useAuth();
 
-const ROLES = ['TTG_SUPER_ADMIN', 'TTG_HEAD_ADMIN', 'TTG_REGIONAL_MANAGER','TTG_ACTIVATION_MANAGER','TTG_TALENT','CLIENT','SUPPLIER'];
+const ROLES = ref([]);
+
+onMounted(() => {
+	getRoles();
+});
+const getRoles = async () => {
+	auth.getRoles().then(function (response) {
+		ROLES.value = response.data;
+		console.log(ROLES.value);
+	})
+}
+
+
 let showLoading = ref(false);
 let showModal = ref(props.showModal);
 let modalData = reactive({...props.modalData});
