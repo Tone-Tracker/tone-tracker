@@ -1,23 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue'
-import axios from "axios";
+import axiosInstance from '@/axiosInstance';
 import router from '@/router';
 import useToaster from '@/composables/useToaster';
 
 export const useAuth = defineStore('auth', () => {
-
-    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const toaster = useToaster();
    
-    function attempt(form) {      
-     return axios.post(`${SERVER_URL}/authenticate`, {
-        email: form.email,
-        password: form.password
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })    
+    function attempt(form) { 
+      return axiosInstance.post(`/authenticate`,form,);  
     }
 
     const logout = () => {

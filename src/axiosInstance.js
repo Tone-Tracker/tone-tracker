@@ -8,6 +8,7 @@ import { useAuth } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 import { useNetworkStatus } from './stores/networkStatus';
 import useToaster from './composables/useToaster';
+import router from '@/router';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -27,7 +28,7 @@ axiosInstance.interceptors.request.use(
     if (auth.token) {
       config.headers['Authorization'] = `Bearer ${auth.token}`;
     } else {
-      const router = useRouter();
+      // const router = useRouter();
       router.push('/');
     }
     return config;

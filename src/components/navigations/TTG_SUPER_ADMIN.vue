@@ -1,3 +1,17 @@
+<script setup>
+import { useOnline } from '@vueuse/core'
+
+const online = useOnline()
+
+const isOnline = online;
+const props = defineProps({
+    user: Object
+});
+
+const getRoleName = () => {
+    return props.user.role == 'TTG_SUPER_ADMIN' ? 'Super User' : 'Admin'
+}
+</script>
 <template>
     <div class="accordion" id="accordionPanelsStayOpenExample">
 
@@ -8,8 +22,8 @@
                         data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
                         aria-controls="panelsStayOpen-collapseOne">
                         <div class="profile-info">
-                            <span class="name">Luc Belaire</span>
-                            <span class="status"><span class="round-guest"></span>Guest</span>
+                            <span class="name">{{user.firstName}} {{user.lastName}}</span>
+                            <span class="status"><span class="round-guest online" :class="{'online': isOnline, 'offline': !isOnline}"</span>{{ getRoleName() }}</span>
                             <!-- <span class="edit-profile"> <button class="edit-profile-btn">
                                     ✏️
                                 </button>
@@ -26,15 +40,14 @@
                     <div class="accordion-body">
                         <ul class="nav-list">
                             <li><a href="#"><span class="icon">💬</span> All</a></li>
-                            <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
-                            <!-- <li><a href="#"><span class="icon">📄</span> Briefs</a></li> -->
+                            <li><router-link to="/users"><span class="icon">📄</span> Users</router-link></li>
                             <li><router-link to="/briefs"><span class="icon">📄</span> Briefs</router-link></li>
                             <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li>
-                            <li><router-link to="/users"><span class="icon">📄</span> Users</router-link></li>
                             <li><router-link to="/crm"><span class="icon">📄</span> CRM</router-link></li>
                             <li><router-link to="/jobs"><span class="icon">📄</span> Jobs</router-link></li>
                             <li><router-link to="/upload"><span class="icon">📤</span> Upload contract</router-link></li>
                             <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li>
+                            <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
                             <li><a href="#"><span class="icon">📨</span> Sent</a></li>
                             <li><a href="#"><span class="icon">📩</span> Unread</a></li>
                         </ul>
@@ -136,8 +149,13 @@ export default {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: red;
     margin-right: 7px;
+}
+.online{
+    background-color: #15ca20 !important
+}
+.offline{
+    background-color: #fd3550!important
 }
 
 .status {
