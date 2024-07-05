@@ -1,15 +1,19 @@
 <script setup>
-import AdminNav from './AdminNav.vue';
-import SubNavigation from './SubNavigation.vue';
-import Activation from './svgs/Activation.vue';
-import Budget from './svgs/Budget.vue';
-import CRM from './svgs/CRM.vue';
-import Report from './svgs/Report.vue';
-import Status from './svgs/Status.vue';
-import Warehouse from './svgs/Warehouse.vue';
+import CLIENT from './navigations/CLIENT.vue';
+import TTG_SUPER_ADMIN from './navigations/TTG_SUPER_ADMIN.vue';
+import { useAuth } from '@/stores/auth';
+
+const auth = useAuth();
+const user = JSON.parse(auth.user);
+
+const getUserRole = (role) => {
+    return user.role == role
+};
+
 </script>
 <template>
-    <div class="sidebar-wrapper" data-simplebar="true">
+   
+    <div class="sidebar-wrapper" data-simplebar="true" >
         <!-- <div class="sidebar-header">
 
             <div>
@@ -17,8 +21,9 @@ import Warehouse from './svgs/Warehouse.vue';
             </div>
            <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i> 
             </div>
-          </div>
+          </div>v-if="user.role == 'TTG_SUPER_ADMIN'"
            -->
+         
         <div class="metismenu" id="menu">
             <!-- <div class="col-img">
                 <div class="gallery">
@@ -34,74 +39,10 @@ import Warehouse from './svgs/Warehouse.vue';
             <div class="content">
                 <nav class="sidebar">
                      <!-- <AdminNav/> -->
-                    <SubNavigation />
-                    <ul class="side-nav d-none">
-                        <li class="side-nav__item activation">
-                            <router-link to="/activations">
-                                <div class="side-nav__link">
-                                    <Activation />
-                                </div>
-                                <div class="menu-title">Activation</div>
-                            </router-link>
-                        </li>
-
-                        <li class="side-nav__item">
-                            <router-link to="/status">
-                                <div class="side-nav__link">
-                                    <Status />
-                                </div>
-                                <div class="menu-title">Status</div>
-                            </router-link>
-                        </li>
-
-                        <li class="side-nav__item">
-                            <router-link to="/report">
-                                <div class="side-nav__link">
-                                    <Report />
-                                </div>
-                                <div class="menu-title">Report</div>
-                            </router-link>
-                        </li>
-
-                        <li class="side-nav__item">
-                            <router-link to="/budget">
-                                <div class="side-nav__link">
-                                    <Budget />
-                                </div>
-                                <div class="menu-title">Budget</div>
-                            </router-link>
-                        </li>
-
-
-                        <li class="side-nav__item">
-                            <a href="javascript:;">
-                                <div class="side-nav__link">
-                                    <CRM />
-                                </div>
-                                <div class="menu-title">CRM</div>
-                            </a>
-                        </li>
-
-
-                        <li class="side-nav__item">
-                            <router-link to="/warehouse">
-                                <div class="side-nav__link">
-                                    <Warehouse />
-                                </div>
-                                <div class="menu-title">Warehousing</div>
-                            </router-link>
-                        </li>
-
-                        <li class="side-nav__item">
-                            <router-link to="/chat">
-                                <div class="side-nav__link">
-                                    <i class='bx bxs-chat h2 mx-4'></i>
-                                </div>
-                                <div class="menu-title">Chat</div>
-                            </router-link>
-                        </li>
-
-                    </ul>
+                    <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
+                    <CLIENT v-if="getUserRole('CLIENT')" :user="user"
+                    />
+                    
                 </nav>
 
             </div>

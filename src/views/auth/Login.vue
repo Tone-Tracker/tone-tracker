@@ -5,7 +5,6 @@ import { required, email } from '@vuelidate/validators';
 import { reactive } from 'vue';
 import router from '@/router';
 import { useMonitorSize } from '@/composables/useMonitorSize';
-import { useNetworkStatus } from '@/stores/networkStatus';
 import { useAuth } from '@/stores/auth';
 import useToaster from '@/composables/useToaster';
 import { useStorage } from '@vueuse/core'
@@ -16,7 +15,6 @@ export default {
 setup(){
 
 	const screenSizes = useMonitorSize();
-	const isOnline = useNetworkStatus();
 	const auth = useAuth();
 	const toaster = useToaster();
 
@@ -33,16 +31,12 @@ setup(){
 
 	const onSubmit = async () => {
 		// return router.push('/dashboard')
-		
-		if(!isOnline.online) {
-			toaster.error("Check your internet connection");
-			return
-		}
 		const isFormCorrect = await v$.value.$validate();
 		if (!isFormCorrect) return;
 		auth.attempt(form)
 		  .then(function (response) {
-			       useStorage('token', response.data.accessToken)
+			       useStorage('token', response.data.accessToken);
+				   useStorage('user', response.data.user);
 					toaster.success("Welcome back");
 					setTimeout(() => {
 						router.push('dashboard');
@@ -126,7 +120,7 @@ setup(){
 														<!-- <router-link to="/dashboard" type="submit"
 															class="btn p-3 maz-gradient-btn">Continue</router-link> -->
 															<button type="submit" 
-															class="btn p-3 maz-gradient-btn">Continue</button>
+															class="btn p-3 maz-gradient-btn text-white">Continue</button>
 													</div>
 												</div>
 
