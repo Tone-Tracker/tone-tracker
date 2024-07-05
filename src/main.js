@@ -22,6 +22,10 @@ import './assets/plugins/chartjs/js/chart.js';
 import './assets/plugins/chartjs/js/chartjs-custom.js';
 // import './assets/js/index3.js';
 
+import ConfirmationService from 'primevue/confirmationservice';
+import ConfirmPopup from 'primevue/confirmpopup';
+
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -45,8 +49,9 @@ app.use(PrimeVue, {
   theme: {
       preset: Aura
   }
-});
+},);
+app.use(ConfirmationService);
 app.use(lightbox)
 app.config.globalProperties.$ = $
-
+app.component('ConfirmPopup', ConfirmPopup);
 app.mount('#app')

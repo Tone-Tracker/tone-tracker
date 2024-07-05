@@ -3836,7 +3836,8 @@ input::placeholder {
 .form-control:focus {
 	outline: none !important;
 	box-shadow: none !important;
-	border-color: initial !important;
+	/* border-color: initial !important; */
+	border-color: #34d399 !important;
 }
 
 

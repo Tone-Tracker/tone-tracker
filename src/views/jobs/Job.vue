@@ -55,14 +55,17 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
     cursor: pointer;
 }
 
+
+
 .image-container {
     position: relative;
     border: 2px solid #fff;
+    height: 14rem;
 }
 
 .job-item img {
     width: 100%;
-    height: auto;
+    height: 14rem;
     display: block;
 }
 
@@ -74,9 +77,10 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
     background-color: rgba(0, 0, 0, 0.7);
     padding: 10px;
     text-align: center;
-    font-size: 1.2em;
+    font-size: 1.5em;
     border-radius: 8px;
     transition: opacity 0.3s ease-in-out;
+    font-weight: 700;
 }
 
 .job-item .details {
