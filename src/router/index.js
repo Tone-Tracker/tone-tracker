@@ -18,6 +18,7 @@ import crm from './crm';
 import client from './client';
 import campaigns from './campaigns';
 import task from './task';
+import adminActivations from './adminActivations';
 
 
 const { isLoading } = useNProgress()
@@ -39,6 +40,7 @@ const router = createRouter({
     ...client,
     ...campaigns,
     ...task,
+    ...adminActivations,
     {
       path: '/',
       name: 'home',
