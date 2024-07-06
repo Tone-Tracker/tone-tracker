@@ -3,12 +3,15 @@ import { onMounted, ref, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import Layout from '@/views/shared/Layout.vue';
+import { useConfirm } from "primevue/useconfirm";
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import useToaster from '@/composables/useToaster';
 import { useRegion } from '@/stores/useRegion';
 
 const toaster = useToaster();
 const regionStore = useRegion();
+const confirm = useConfirm();
+
 let clients = ref([]);
 let regions = ref([]);
 
@@ -50,15 +53,14 @@ const getRegions = async () => {
 
 
 const deleteRegion = (region) => {
-    if (confirm(`Are you sure you want to delete ${region.name}?`)) {
-        regionStore.deleteRegion(region.id).then(function (response) {
+            regionStore.deleteRegion(region.id).then(function (response) {
             toaster.success("Region deleted successfully");
             getRegions();
         }).catch(function (error) {
             toaster.error("Error deleting region");
             console.log(error);
         });
-    }
+    
 };
 
 const editClient = (client) => {
@@ -77,6 +79,29 @@ const update = (client) => {
     });
 };
 
+const deleteRecord = (event, region) => {
+    confirm.require({
+        target: event.currentTarget,
+        message: 'Do you want to delete this region?',
+        // icon: 'bx bx-trash text-danger',
+		icon: '',
+        rejectProps: {
+            label: 'Cancel',
+            severity: '',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Delete',
+            severity: 'danger'
+        },
+        accept: () => {
+			deleteRegion(region);
+        },
+        reject: () => {
+            //do nothing
+        }
+    });
+};
 
 const vFocus = {
     mounted: (el) => el.focus()
@@ -120,9 +145,10 @@ const vFocus = {
                                                                 <a v-else @click="update(region)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bx-check text-success'></i>
                                                                 </a>
-                                                                <a @click="deleteRegion(region)" href="javascript:;" class="ms-3">
+                                                                <a @click="deleteRecord($event,region)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash'></i>
                                                                 </a>
+                                                                <ConfirmPopup></ConfirmPopup>
                                                             </div>
                                                         </td>
                                                     </tr>

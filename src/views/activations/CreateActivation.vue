@@ -53,8 +53,6 @@ const getCampaigns = async () => {
 
 
 let showLoading = ref(false);
-let editForm = reactive({});
-
 
 const form = reactive({
 	  name: '',
@@ -70,28 +68,11 @@ const form = reactive({
 
     const getActivationById = async () => {
         activation.getActivationById(activationId.value).then(function (response) {
-            console.log(response.data);
-            form.campaign = response.data.campaign;
+            campaign = campaigns.value.find(campaign => campaign.id === response.data.campaign)?.name;//bind campaign on autocomplete
             Object.assign(form, response.data);
         })
     }
 
-
-// watch(() => props.editForm, (newVal) => {
-// 	Object.assign(editForm, newVal);
-	
-// 	Object.assign(form, {
-// 		name: editForm.value.name || '',
-// 		budget: editForm.value.budget || '',
-// 		campaign: editForm.value.campaign || '',
-// 		region: editForm.value.region_id || '',
-// 		startDate: editForm.value.startDate || '',
-// 		endDate: editForm.value.endDate || '',
-// 		targetGroup: editForm.value.targetGroup || '',
-//         brief: editForm.value.brief || '',
-// 		painPoints: editForm.value.painPoints || ''
-// 	});
-// }, { deep: true });
 
 	const rules = {
 		name: { required },
@@ -111,23 +92,21 @@ const form = reactive({
 		if (!isFormValid) {
 			return
 		}
-			// showLoading.value = true;
-			// if(modalData.value.id){
-			// 	showLoading.value = true;
-			// 	return activation.updateUser(modalData.value.id, form).then(function (response) {
-			// 		console.log(response)
-			// 	})
-			// }else{
+			if(activationId.value){
+				return activation.update(activationId.value, form).then(function (response) {
+					toaster.success("Activation updated successfully");
+				})
+			}else{
 		
 			activation.submit(form)
 			.then(function (response) {
 		        emit('closeModal');
-				toaster.success("User created successfully");
+				toaster.success("Activation created successfully");
 				}).catch(function (error) {
 					toaster.error("Error creating user");
 					console.log(error);
 		    });
-			// }
+		 }
 		
 	}
 	const search = (event) => {
@@ -148,28 +127,28 @@ const onCampaignChange = (event) => {
     <Layout>
         <div class="page-wrapper">
 			<div class="page-content">
-                <BreadCrumb title="Activations" icon="bx bxs-user-badge"/>
+                <BreadCrumb :title="activationId ? 'Edit Activation' : 'Create Activation'" icon="bx bxs-user-badge"/>
 				<div class="card">
 					<div class="card-body">
 						<div class="row">
                             <div class="col-lg-12">
                              <div class="border border-3 p-4 rounded">
                                <div class="row g-3">
-                                 <div class="col-md-6">
+                                 <div class="col-md-4">
                                      <label for="name" class="form-label">Activation Name</label>
                                      <input v-model="form.name" type="text" class="form-control" id="name" >
                                      <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                                          <div class="text-danger">First Name is required</div>
                                        </div>
                                    </div>
-                                   <!-- <div class="col-md-6 card">
+                                   <!-- <div class="col-md-4 card">
                                     <label for="budget" class="form-label">Budget</label>
                                     <InputNumber v-model="value1" inputId="currency-us" mode="currency" currency="ZAR" locale="en-US" fluid />
                                     <div class="input-errors" v-for="error of v$.budget.$errors" :key="error.$uid">
                                         <div class="text-danger">Budget is required</div>
                                       </div>
                                   </div> -->
-                                   <div class="col-md-6">
+                                   <div class="col-md-4">
                                      <label for="budget" class="form-label">Budget</label>
                                      <input v-model="form.budget" type="text" class="form-control" id="budget" >
                                      <div class="input-errors" v-for="error of v$.budget.$errors" :key="error.$uid">
@@ -177,7 +156,7 @@ const onCampaignChange = (event) => {
                                        </div>
                                    </div> 
  
-                                   <div class="card maz-top flex justify-center col-md-6">
+                                   <div class="card maz-top flex justify-center col-md-4">
                                      <label for="input1" class="form-label">Select Campaign</label>
                                      <AutoComplete  v-model="campaign" forceSelection dropdown :suggestions="dropdownItems" 
                                          @item-select="onCampaignChange" @complete="search" field="name" />
@@ -187,7 +166,7 @@ const onCampaignChange = (event) => {
                                  </div>
  
  
-                                   <div class="col-md-6">
+                                   <div class="col-md-4 mt-custom">
                                      <label for="region" class="form-label">Region</label>
                                      <select v-model="form.region" class="form-control" id="activation-area">
                                          <option :value="''" :selected="true">Select Region</option>
@@ -197,14 +176,14 @@ const onCampaignChange = (event) => {
                                          <div class="text-danger">Region is required</div>
                                        </div>
                                    </div>
-                                   <div class="col-md-4">
+                                   <div class="col-md-4 mt-custom">
                                     <label for="brief" class="form-label">Brief</label>
                                     <input v-model="form.brief" type="text" class="form-control" id="brief" >
                                     <div class="input-errors" v-for="error of v$.brief.$errors" :key="error.$uid">
                                         <div class="text-danger">Start Date is required</div>
                                       </div>
                                   </div>
-                                   <div class="col-md-4">
+                                   <div class="col-md-4 mt-custom">
                                      <label for="start-date" class="form-label">Start Date</label>
                                      <input v-model="form.startDate" type="date" class="form-control" id="start-date" >
                                      <div class="input-errors" v-for="error of v$.startDate.$errors" :key="error.$uid">
@@ -220,7 +199,7 @@ const onCampaignChange = (event) => {
                                        </div>
                                    </div>
  
-                                   <div class="col-md-6">
+                                   <div class="col-md-4">
                                      <label for="targetGroup" class="form-label">Target Group</label>
                                      <input v-model="form.targetGroup" type="text" class="form-control" id="targetGroup" >
                                      <div class="input-errors" v-for="error of v$.targetGroup.$errors" :key="error.$uid">
@@ -228,7 +207,7 @@ const onCampaignChange = (event) => {
                                        </div>
                                    </div>
  
-                                   <div class="col-md-6">
+                                   <div class="col-md-4">
                                      <label for="campaign" class="form-label">Pin Points</label>
                                      <input v-model="form.painPoints" type="text" class="form-control" id="painPoints" >
                                      <div class="input-errors" v-for="error of v$.painPoints.$errors" :key="error.$uid">
@@ -277,6 +256,9 @@ const onCampaignChange = (event) => {
 
 .upload-section {
     margin: 20px 0;
+}
+.mt-custom{
+    margin-top: -9px !important;
 }
 
 .file-upload-label {

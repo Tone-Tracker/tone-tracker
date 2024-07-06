@@ -19,6 +19,7 @@ import client from './client';
 import campaigns from './campaigns';
 import task from './task';
 import adminactivations from './adminactivations';
+import promoter from './promoter';
 import region from './region';
 
 
@@ -34,6 +35,7 @@ const router = createRouter({
   routes: [
     ...chat,
     ...users,
+    ...promoter,
     ...brief,
     ...job,
     ...upload,

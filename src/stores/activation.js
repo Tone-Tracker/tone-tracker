@@ -11,9 +11,8 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.get(`/api/activations`);
     }
 
-    const update = (client) => {
-      let obj = {name: client.name}
-      return axiosInstance.put(`/api/activations/${client.id}`,obj);
+    const update = (id,formData) => {
+      return axiosInstance.put(`/api/activations/${id}`,formData);
     }
     const deleteActivation = (id) => {
       return axiosInstance.delete(`/api/activations/${id}`);

@@ -3,6 +3,7 @@ import CLIENT from './navigations/CLIENT.vue';
 import TTG_SUPER_ADMIN from './navigations/TTG_SUPER_ADMIN.vue';
 import TTG_REGIONAL_MANAGER from './navigations/TTG_REGIONAL_MANAGER.vue';
 import TTG_HEAD_ADMIN from './navigations/TTG_HEAD_ADMIN.vue';
+import TTG_ACTIVATION_MANAGER from './navigations/TTG_ACTIVATION_MANAGER.vue';
 
 import { useAuth } from '@/stores/auth';
 
@@ -46,6 +47,7 @@ const getUserRole = (role) => {
                     <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/>
                     <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/>
                     <CLIENT v-if="getUserRole('CLIENT')" :user="user"/>
+                    <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/>
                     
                 </nav>
 
