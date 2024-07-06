@@ -61,10 +61,7 @@ const onInput = () => {
 	})
   }
 
-  const showDetails = (activation) => {
-	modalData.value = activation;
-  }
-
+ 
   const deleteActivation = (activ) => {
 		activation.deleteActivation(activ.id).then(function (response) {
 		toaster.success("Activation deleted successfully");
@@ -154,8 +151,8 @@ const getCampaignName = (campaign_id) => {
 										<td>{{activation.targetGroup}}</td>
 										<td>
 											<div class="d-flex order-actions">
-												<a @click="showDetails(activation)" href="javascript:;" class="">
-													<i class='bx bxs-edit'></i></a>
+												<router-link :to="`/edit-activation/${activation.id}`" class="">
+													<i class='bx bxs-edit'></i></router-link>
 												<a @click="deleteRecord($event,activation)" label="Delete" severity="danger" href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
 												<ConfirmPopup></ConfirmPopup>
 											</div>

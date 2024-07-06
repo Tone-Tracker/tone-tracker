@@ -1,5 +1,6 @@
 <script setup>
 import { useActivation } from '@/stores/activation';
+import { useRoute } from 'vue-router';
 import InputNumber from 'primevue/inputnumber';
 import Layout from '@/views/shared/Layout.vue';
 import AutoComplete from 'primevue/autocomplete';
@@ -12,27 +13,32 @@ import { useRegion } from '@/stores/useRegion';
 import { useCampaignStore } from '@/stores/useCampaign';
 
 let campaign = ref(null);
-const emit = defineEmits(['closeModal']);	
-const props = defineProps({
-	showModal: Boolean,
-	modalData: Object
-})
-
 
 
 const activation = useActivation();
 const toaster = useToaster();
+const route = useRoute();
 const regionStore = useRegion();
 const campaignStore = useCampaignStore();
 
 let campaigns = ref([]);
+let activationId = ref(null);//For edit
 let dropdownItems = ref([]);
 const regions = ref([]);
 
 onMounted(() => {
 	getRegions();
 	getCampaigns();
+    activationId.value = route.params.id;
+    activationId.value ? getActivationById() : null;
 });
+
+
+
+watch(() => route.params.id, (newId) => {
+    activationId.value = newId;
+    });
+
 const getRegions = async () => {
 	regionStore.getRegions().then(function (response) {
 		regions.value = response.data.content;
@@ -47,7 +53,7 @@ const getCampaigns = async () => {
 
 
 let showLoading = ref(false);
-let modalData = reactive({...props.modalData});
+let editForm = reactive({});
 
 
 const form = reactive({
@@ -62,21 +68,30 @@ const form = reactive({
 	  painPoints: ""
     });
 
-watch(() => props.modalData, (newVal) => {
-	Object.assign(modalData, newVal);
+    const getActivationById = async () => {
+        activation.getActivationById(activationId.value).then(function (response) {
+            console.log(response.data);
+            form.campaign = response.data.campaign;
+            Object.assign(form, response.data);
+        })
+    }
+
+
+// watch(() => props.editForm, (newVal) => {
+// 	Object.assign(editForm, newVal);
 	
-	Object.assign(form, {
-		name: modalData.value.name || '',
-		budget: modalData.value.budget || '',
-		campaign: modalData.value.campaign || '',
-		region: modalData.value.region_id || '',
-		startDate: modalData.value.startDate || '',
-		endDate: modalData.value.endDate || '',
-		targetGroup: modalData.value.targetGroup || '',
-        brief: modalData.value.brief || '',
-		painPoints: modalData.value.painPoints || ''
-	});
-}, { deep: true });
+// 	Object.assign(form, {
+// 		name: editForm.value.name || '',
+// 		budget: editForm.value.budget || '',
+// 		campaign: editForm.value.campaign || '',
+// 		region: editForm.value.region_id || '',
+// 		startDate: editForm.value.startDate || '',
+// 		endDate: editForm.value.endDate || '',
+// 		targetGroup: editForm.value.targetGroup || '',
+//         brief: editForm.value.brief || '',
+// 		painPoints: editForm.value.painPoints || ''
+// 	});
+// }, { deep: true });
 
 	const rules = {
 		name: { required },
@@ -240,7 +255,7 @@ const onCampaignChange = (event) => {
                                        <div class="d-grid">
                                          <button @click="onSubmit" class="btn maz-gradient-btn" type="button"> 
                                              <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                             {{ modalData.value?.id ? 'Update' : 'Submit' }}
+                                             {{ activationId ?  'Update' : 'Submit' }}
                                          </button>
                                        </div>
                                    </div>

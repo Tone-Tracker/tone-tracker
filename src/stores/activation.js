@@ -18,7 +18,11 @@ export const useActivation = defineStore('activation', () => {
     const deleteActivation = (id) => {
       return axiosInstance.delete(`/api/activations/${id}`);
     }
+
+    const getActivationById = (id) => {
+      return axiosInstance.get(`/api/activations/${id}`);
+    }
     
   
-    return { submit,getActivations,update,deleteActivation }
+    return { submit,getActivations,update,deleteActivation,getActivationById }
   })

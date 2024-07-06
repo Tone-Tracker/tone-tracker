@@ -10,5 +10,10 @@ export default [
                 path: '/create-activation',
                 name: 'create-activation',
                 component: CreateActivation,
+        },
+        {
+                path: '/edit-activation/:id',
+                name: 'edit-activation',
+                component: CreateActivation,
         }
 ]
