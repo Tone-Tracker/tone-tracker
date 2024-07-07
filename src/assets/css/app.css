@@ -9,6 +9,20 @@ Email: mazisimsebele18@gmail.com
 File: app.css
 
 */
+
+/* Hide arrows in input type number for Chrome, Safari, Edge, and Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide arrows in input type number for Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
 .online{
     background-color: #15ca20 !important
 }

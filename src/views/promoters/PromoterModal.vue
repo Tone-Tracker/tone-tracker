@@ -9,7 +9,8 @@ import { useAuth } from '@/stores/auth';
 const emit = defineEmits(['closeModal']);	
 const props = defineProps({
 	showModal: Boolean,
-	modalData: Object
+	modalData: Object,
+	users: Array
 })
 
 const userStore = useUserStore();
@@ -24,7 +25,6 @@ onMounted(() => {
 const getRoles = async () => {
 	auth.getRoles().then(function (response) {
 		ROLES.value = response.data;
-		console.log(ROLES.value);
 	})
 }
 
