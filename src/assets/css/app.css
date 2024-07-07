@@ -10,6 +10,16 @@ File: app.css
 
 */
 
+/* Override all input primevue input background */
+.p-inputtext {
+    background: #12181a !important;
+}
+.p-select-label{
+	background: #12181a !important;
+}
+.p-select-dropdown{
+	background: #3f3f46 !important;
+}
 /* Hide arrows in input type number for Chrome, Safari, Edge, and Opera */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
@@ -3830,12 +3840,12 @@ form select.error:focus {
 
 
 
-input::placeholder {
+/* input::placeholder {
 
 	color: #000 !important;
 
 	opacity: .3 !important
-}
+} */
 
 
 

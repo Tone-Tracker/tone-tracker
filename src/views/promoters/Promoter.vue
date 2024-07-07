@@ -224,8 +224,11 @@ const deleteRecord = (event, promoter) => {
                 </span>
               </div>
               <div class="ms-auto">
-                <a  @click="openPosition('top')" class="btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+                <a  @click="openPosition('top')" class="btn mr-2 maz-gradient-btn radius-30 mt-2 mt-lg-0">
                   <i class="bx bxs-plus-square"></i>Add Promoter</a>
+                  <label for="csv-file" class="mx-2 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+                    <i class="bx bx-import"></i>Upload CSV</label>
+                    <input type="file" id="csv-file" ref="file" hidden />
               </div>
             </div>
             <div class="table-responsive">

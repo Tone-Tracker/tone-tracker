@@ -87,6 +87,11 @@ const router = createRouter({
     },
 
     {
+      path: '/profile/:id',
+      name: 'profile',
+      component: Profile
+    },
+    {
       path: '/profile',
       name: 'profile',
       component: Profile
