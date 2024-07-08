@@ -20,6 +20,11 @@ File: app.css
 .p-select-dropdown{
 	background: #3f3f46 !important;
 }
+
+.risk-finished {
+    background-color: #15ca20 !important;
+    color: white;
+}
 /* Hide arrows in input type number for Chrome, Safari, Edge, and Opera */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {

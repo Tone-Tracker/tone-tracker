@@ -121,7 +121,7 @@ export default {
 }
 
 .side-nav {
-    width: 250px;
+    width: 240px;
     background-color: #000;
     color: #fff;
     /* padding: 20px; */

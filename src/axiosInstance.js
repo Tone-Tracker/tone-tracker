@@ -22,7 +22,7 @@ axiosInstance.interceptors.request.use(
     const isOnline = useNetworkStatus();
     const toaster = useToaster();
     if (!isOnline.online) {
-      return toaster.error('Check your internet connection');
+      //return toaster.error('Check your internet connection');
     }
     const auth = useAuth();
     if (auth.token) {

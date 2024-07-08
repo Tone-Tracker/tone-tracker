@@ -104,7 +104,7 @@ const getTasks = async () => {
   taskStore.getTasks().then(response => {
     tasks.value = response.data.content;
   }).catch(error => {
-    toaster.error("Error fetching activations");
+    toaster.error("Error fetching tasks");
     console.log(error);
   }).finally(() => {
     //

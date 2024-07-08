@@ -6,10 +6,14 @@ import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import useToaster from '@/composables/useToaster';
 import { useClientStore } from '@/stores/useClient';
+import { useConfirm } from "primevue/useconfirm";
+
 
 
 const toaster = useToaster();
 const clientStore = useClientStore();
+const confirm = useConfirm();
+
 let clients = ref([]);
 let showLoading = ref(false);
 
@@ -76,6 +80,29 @@ const updateClient = (client) => {
   })
 }
 
+
+const deleteRecord = (event, client) => {
+  confirm.require({
+    target: event.currentTarget,
+    message: 'Do you want to delete this client?',
+    icon: '',
+    rejectProps: {
+      label: 'Cancel',
+      severity: '',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Delete',
+      severity: 'danger'
+    },
+    accept: () => {
+		deleteClient(client);
+    },
+    reject: () => {
+      // do nothing
+    }
+  });
+};
 const vFocus = {
   mounted: (el) => el.focus()
 }
@@ -118,9 +145,10 @@ const vFocus = {
 								  <a v-else @click="updateClient(client)" href="javascript:;" class="ms-3">
 									<i class='bx bx-check text-success'></i>
 								  </a>
-								  <a @click="deleteClient(client)" href="javascript:;" class="ms-3">
+								  <a @click="deleteRecord($event,client)" href="javascript:;" class="ms-3">
 									<i class='bx bxs-trash'></i>
 								  </a>
+								  <ConfirmPopup></ConfirmPopup>
 								</div>
 							  </td>
 							</tr>
@@ -128,7 +156,7 @@ const vFocus = {
 							  <td></td>
 							  <td></td>
 							  <td></td>
-							  <td colspan="7" class="text-center"></td>
+							  <td colspan="7" class="text-center text-danger">No clients found</td>
 							</tr>
 						  </tbody>
 						</table>

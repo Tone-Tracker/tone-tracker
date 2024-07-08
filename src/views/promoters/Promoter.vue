@@ -12,6 +12,9 @@ import { required } from '@vuelidate/validators';
 import { usePromoter } from '@/stores/promoter';
 import useToaster from '@/composables/useToaster';
 import { useConfirm } from "primevue/useconfirm";
+import { usePrimeVue } from 'primevue/config';
+import FileUpload from 'primevue/fileupload';
+import Button from 'primevue/button';
 import { useUserStore } from '@/stores/userStore';
 import Badge from 'primevue/badge';
 
@@ -55,10 +58,21 @@ const v$ = useVuelidate(rules, form);
 
 const onSubmit = async () => {
 	const isFormValid = await v$.value.$validate();
-	if (!isFormValid) {
-    console.log('fuckit')
-		return;
-	}
+	if (!isFormValid) {return;}
+  let formData = new FormData();
+  formData.append('user', form.user);
+  formData.append('dressSize', form.dressSize);
+  formData.append('pantsSize', form.pantsSize);
+  formData.append('client', form.client);
+  formData.append('topSize', form.topSize);
+  formData.append('height', form.height);
+  formData.append('bio', form.bio);
+  //loop files and append to form data
+  for (let i = 0; i < files.value.length; i++) {
+    formData.append('files', files.value[i]);
+  }
+  
+  
   if(isEdit.value){
     promoterStore.updatePromoter(promoterId.value,form).then(function (response) {
         toaster.success("Promoter updated successfully");
@@ -69,7 +83,7 @@ const onSubmit = async () => {
         console.log(error);
     });
   } else {  
-    promoterStore.submitPromoter(form).then(function (response) {
+    promoterStore.submitPromoter(formData).then(function (response) {
         toaster.success("Promoter created successfully");
         visible.value = false;
         getAllPromoters();
@@ -206,6 +220,55 @@ const deleteRecord = (event, promoter) => {
     }
   });
 };
+
+const $primevue = usePrimeVue();
+
+const totalSize = ref(0);
+const totalSizePercent = ref(0);
+const files = ref([]);
+
+const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
+    removeFileCallback(index);
+    totalSize.value -= parseInt(formatSize(file.size));
+    totalSizePercent.value = totalSize.value / 10;
+};
+
+const onClearTemplatingUpload = (clear) => {
+    clear();
+    totalSize.value = 0;
+    totalSizePercent.value = 0;
+};
+
+const onSelectedFiles = (event) => {
+    files.value = event.files;
+    files.value.forEach((file) => {
+        totalSize.value += parseInt(formatSize(file.size));
+    });
+};
+
+const uploadEvent = (callback) => {
+    totalSizePercent.value = totalSize.value / 10;
+    callback();
+};
+
+const onTemplatedUpload = () => {
+    // toast.add({ severity: "info", summary: "Success", detail: "File Uploaded", life: 3000 });
+};
+
+const formatSize = (bytes) => {
+    const k = 1024;
+    const dm = 3;
+    const sizes = $primevue.config.locale.fileSizeTypes;
+
+    if (bytes === 0) {
+        return `0 ${sizes[0]}`;
+    }
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+
+    return `${formattedSize} ${sizes[i]}`;
+};
 </script>
 
 <template>
@@ -329,15 +392,71 @@ const deleteRecord = (event, promoter) => {
           </div>
         </div>
 
-        
-        <div class="col-12">
-          <div class="d-grid">
-          <button @click="onSubmit" class="btn maz-gradient-btn" type="button"> 
-            {{ isEdit ? 'Update' : 'Submit' }}
-          </button>
-          </div>
-        </div>
       </div> 
+
+      <FileUpload name="demo[]" url="/api/upload" @upload="onTemplatedUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
+        <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-4">
+                <div class="d-flex gap-2">
+                    <Button @click="chooseCallback()"  class="btn btn-outline-secondary rounded">
+                        <i class='bx bx-images fs-4 text-white'></i>
+                    </Button>
+                    <!-- <Button @click="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" class="btn btn-outline-success rounded" :disabled="!files || files.length === 0">
+                        <i class='bx bx-cloud-upload fs-2'></i>
+                    </Button> -->
+                    <!-- <Button @click="clearCallback()" icon="bx bx-x-circle" class="btn btn-outline-danger rounded" :disabled="!files || files.length === 0">
+                      <i class='bx bx-x-circle fs-2'></i>
+                    </Button> -->
+                </div>
+            </div>
+        </template>
+        <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
+            <div class="d-flex flex-column gap-8 pt-1">
+                <div v-if="files.length > 0">
+                    <div class="d-flex flex-wrap gap-4">
+                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="p-8 rounded-border d-flex flex-column border border-surface align-items-center gap-4">
+                            <div>
+                                <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                            </div>
+                            <span class="fw-semibold text-ellipsis max-w-60 text-nowrap overflow-hidden">{{ file.name }}</span>
+                            <div>{{ formatSize(file.size) }}</div>
+                            <a  @click="onRemoveTemplatingFile(file, removeFileCallback, index)" class="cursor-pointer">
+                              <i class='bx bx-x-circle fs-2 text-danger'></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+    
+                <div v-if="uploadedFiles.length > 0">
+                    <h5>Completed</h5>
+                    <div class="d-flex flex-wrap gap-4">
+                        <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="p-8 rounded-border d-flex flex-column border border-surface align-items-center gap-4">
+                            <div>
+                                <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                            </div>
+                            <span class="fw-semibold text-ellipsis max-w-60 text-nowrap overflow-hidden">{{ file.name }}</span>
+                            <div>{{ formatSize(file.size) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template #empty>
+            <div class="d-flex align-items-center justify-content-center flex-column">
+                <i class="pi pi-cloud-upload border-2 rounded-circle p-8 fs-1 text-muted" />
+                <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
+            </div>
+        </template>
+    </FileUpload>
+    
+    
+    <div class="col-12 mt-4">
+      <div class="d-grid">
+      <button @click="onSubmit" class="btn maz-gradient-btn" type="button"> 
+        {{ isEdit ? 'Update' : 'Submit' }}
+      </button>
+      </div>
+    </div>
 	</Dialog>
 
   </Layout>
@@ -350,5 +469,17 @@ const deleteRecord = (event, promoter) => {
 
 .p-dialog-mask {
   align-items:start !important;
+}
+.btn-outline-secondary {
+  height: 2rem !important;
+}
+
+.p-button:not(:disabled):hover {
+  background: transparent;
+  border: 0;
+}
+.p-button {
+  background: transparent;
+  border: 0;
 }
 </style>
