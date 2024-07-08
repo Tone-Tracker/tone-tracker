@@ -71,59 +71,10 @@ Date: 04/06/2024
 
                             </div>
                             <div class="mb-1">
-                                <p class="text-white">Give lating</p>
+                                <p class="text-white">Give Rating</p>
                             </div>
-                            <div class="stars mb-5">
-                                <span>
-
-                                    <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
-                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
-                                    </svg>
-
-                                </span>
-                                <span>
-
-                                    <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
-                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
-                                    </svg>
-
-                                </span>
-                                <span>
-
-                                    <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
-                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
-                                    </svg>
-
-                                </span>
-                                <span>
-
-                                    <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
-                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
-                                    </svg>
-
-                                </span>
-                                <span>
-
-                                    <svg width="29" height="28" viewBox="0 0 29 28" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M18.9869 9.05932L28.8712 10.4956L21.7188 17.4675L23.4073 27.3121L14.5665 22.6641L5.72569 27.3121L7.41406 17.4675L0.261719 10.4956L10.146 9.05932L14.5665 0.102539L18.9869 9.05932Z"
-                                            fill="#544E4E" stroke="black" stroke-width="0.1" />
-                                    </svg>
-
-                                </span>
+                            <div class="card flex justify-center">
+                                <Rating v-model="value" />
                             </div>
 
                             <div class="mt-3">
@@ -138,7 +89,7 @@ Date: 04/06/2024
                                         data-bs-parent="#accordionExample">
                                         <div class="accordion-body">
                                             <div>
-                                                <p class="text-white">Give lating</p>
+                                                <p class="text-white">Give Rating</p>
                                                 <p class="text-white">Top-Notch Professionalism! Our experience with
                                                     this promoter was
                                                     marked
@@ -148,7 +99,7 @@ Date: 04/06/2024
                                             </div>
 
                                             <div>
-                                                <p class="text-white">Give lating</p>
+                                                <p class="text-white">Give Rating</p>
                                                 <p class="text-white">Impressed by the promoter’s agility and
                                                     adaptability. They responded
                                                     swiftly to changes, making the entire process stress-free.
@@ -429,6 +380,11 @@ Date: 04/06/2024
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
+import Rating from 'primevue/rating';
+import { ref } from 'vue';
+
+
+const value = ref(null);
 
 </script>
 <style>
