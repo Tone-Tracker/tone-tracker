@@ -5,6 +5,7 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
 import AutoComplete from 'primevue/autocomplete';
 import InputText from 'primevue/inputtext';
+import ConfirmPopup from 'primevue/confirmpopup';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import DatePicker from 'primevue/datepicker';
@@ -14,6 +15,8 @@ import { useActivation } from '@/stores/activation';
 import { useTask } from '@/stores/task';
 import { onMounted, ref, reactive } from 'vue';
 import useToaster from '@/composables/useToaster';
+import { useConfirm } from "primevue/useconfirm";
+
 
 
 const visible = ref(false);
@@ -26,6 +29,7 @@ const dropdownItems = ref([]);
 const activationStore = useActivation();
 const toaster = useToaster();
 const taskStore = useTask();
+const confirm = useConfirm();
 
 onMounted(() => {
     getActivations();
@@ -63,16 +67,28 @@ const v$ = useVuelidate(rules, form);
 
 const onSubmit = async () => {
     const isFormValid = await v$.value.$validate();
-    if (!isFormValid) {
-        return;
-    }
-    taskStore.submit(form).then(function (response) {
-        toaster.success("Activation created successfully");
-        getActivations();
+    if (!isFormValid) {return;}
+    if(isEdit.value){
+        taskStore.update(taskId.value,form).then(function (response) {
+            toaster.success("Task updated successfully");
+            visible.value = false;
+            getTasks();
+        }).catch(function (error) {
+            toaster.error("Error updating task");
+            console.log(error);
+        });
+    } 
+    else {
+        taskStore.submit(form).then(function (response) {
+        toaster.success("Task created successfully");
+        visible.value = false;
+        getTasks();
     }).catch(function (error) {
-        toaster.error("Error creating activation");
+        toaster.error("Error creating task");
         console.log(error);
     });
+    }
+    
 };
 
 const onStatusChange = (event) => {
@@ -119,10 +135,94 @@ const getActivationName =  (id) => {
     return activations.value.find(activation => activation.id === id).name;
 }
 
-const openModal = (pos) => {  
+const taskId = ref(null);
+const isEdit = ref(false);
+const openModal = (pos,task) => {
+    if(task) {//edit
+    isEdit.value = true;
+    taskId.value=task.id;
+    form.activation = task.activation;
+    activation.value = activations.value.find(activation => activation.id === task.activation).name;
+    status.value = statuses.value.find(stat => stat.code === task.status);
+    form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
+    Object.assign(form, {
+    // status: task.status,
+     plannedEndDate: task.plannedEndDate,
+     timeRecord: task.timeRecord,
+     completion: task.completion,
+     jobNumber: Number(task.jobNumber),
+     activation: task.activation
+    })
+  }else{
+    isEdit.value = false;
+    taskId.value = null;
+    activation.value = null;
+    status.value = null;
+    form.activation = null;
+    Object.assign(form, {
+     status: null,
+     plannedEndDate: null,
+     timeRecord: null,
+     completion: null,
+     jobNumber: null,
+     activation: null
+    })
+  }  
     position.value = pos;
     visible.value = true;
 }
+
+const getStatus = (status) => {
+    return statuses.value.find(stat => stat.code === status).name;
+}
+
+const getClass = (status) => {
+    if(status === 'FINISHED') {
+        return 'risk-finished';
+    } else if(status === 'PLANNED') {
+        return 'risk-planned';
+    } else if(status === 'ONTRACK') {
+        return 'risk-on-track';
+    } else if(status === 'DELAYED') {
+        return 'risk-delayed';
+    } else if(status === 'ATRISK') {
+        return 'risk-at-risk';
+    }
+}
+
+const deleteTask = (task) => {
+  taskStore.deleteTask(task.id).then(function (response) {
+    toaster.success("Task deleted successfully");
+    getTasks();
+  }).catch(function (error) {
+    toaster.error("Error deleting task");
+    console.log(error);
+  });
+}
+
+
+const deleteRecord = (event, task) => {
+  confirm.require({
+    target: event.currentTarget,
+    message: 'Do you want to delete this task?',
+    icon: '',
+    rejectProps: {
+      label: 'Cancel',
+      severity: '',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Delete',
+      severity: 'danger'
+    },
+    accept: () => {
+      deleteTask(task);
+    },
+    reject: () => {
+      // do nothing
+    }
+  });
+};
 
 </script>
 <template>
@@ -147,17 +247,32 @@ const openModal = (pos) => {
                                             <th>Time Record</th>
                                             <th>Project Responsible</th>
                                             <th>Completion</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="task in tasks" :key="task.id" class="table-dark-black">
                                             <td>{{ getActivationName(task.activation) }}</td>
                                             <td>{{ task.jobNumber }}</td>
-                                            <td class="risk-at-risk">{{task.status}}</td>
+                                            <td  :class="getClass(task.status)">
+                                                {{ getStatus(task.status) }}
+                                            </td>
                                             <td>{{task.plannedEndDate}}</td>
                                             <td>{{task.timeRecord}}</td>
                                             <td>--To be Decided--</td>
                                             <td>{{task.completion}}</td>
+                                            <td>
+                                                <div class="d-flex order-actions">
+                                                  <a @click="openModal('top',task)" href="javascript:;" >
+                                                    <i class='bx bxs-edit'></i>
+                                                  </a>
+                                                  <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-3">
+                                                    <i class='bx bxs-trash'></i>
+                                                  </a>
+                                                  <ConfirmPopup></ConfirmPopup>
+                                                </div>
+                                                
+                                              </td>
                                         </tr>
                                        
                                     </tbody>
@@ -167,7 +282,7 @@ const openModal = (pos) => {
                     </div>
                 </div>
             </div>
-            <Dialog v-model:visible="visible" modal header="Add Task" :style="{ width: '50rem' }">
+            <Dialog v-model:visible="visible" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
 
                 <form @submit.prevent="onSubmit" class="row g-3">
                     <div class="col-md-6">
@@ -231,7 +346,7 @@ const openModal = (pos) => {
 
                     <div class="modal-footer">
                         <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-                        <button type="submit" class="btn maz-gradient-btn w-100">Submit</button>
+                        <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
                     </div>
                     
                 </form>
@@ -281,6 +396,10 @@ const openModal = (pos) => {
 
 .risk-planned {
     background-color: #ffa500;
+    color: white;
+}
+.risk-finished {
+    background-color: #15ca20 !important;
     color: white;
 }
 

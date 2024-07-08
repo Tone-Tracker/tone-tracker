@@ -40,6 +40,7 @@ const getRoleName = () => {
                     <div class="accordion-body">
                         <ul class="nav-list">
                             <li><router-link to="/jobs"><span class="icon">💬</span> All</router-link></li>
+                            <li><router-link to="/admin-activations"><span class="icon">📄</span> Activations</router-link></li>
                             <li><router-link to="/promoters"><span class="icon">📄</span> Promoters</router-link></li>
                             <li><router-link to="/briefs"><span class="icon">📄</span> Briefs</router-link></li>
                             <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li>
