@@ -31,6 +31,10 @@ axiosInstance.interceptors.request.use(
       // const router = useRouter();
       router.push('/');
     }
+    
+    if (config.useMultipartFormData) {
+      config.headers['Content-Type'] = 'multipart/form-data';
+    }
     return config;
   },
   (error) => {
