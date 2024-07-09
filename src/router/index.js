@@ -21,6 +21,7 @@ import task from './task';
 import adminactivations from './adminactivations';
 import promoter from './promoter';
 import region from './region';
+import warehouse from './warehouse';
 
 
 
@@ -46,6 +47,7 @@ const router = createRouter({
     ...task,
     ...adminactivations,
     ...region,
+    ...warehouse,
     {
       path: '/',
       name: 'home',

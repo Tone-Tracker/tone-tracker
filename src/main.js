@@ -1,4 +1,3 @@
-import './assets/css/app.css';
 import './assets/css/bootstrap.min.css';
 import './assets/css/bootstrap-extended.css';
 import './assets/css/dark-theme.css';
@@ -9,6 +8,8 @@ import './assets/css/semi-dark.css';
 import $ from 'jquery';
 import lightbox from 'lightbox2';
 import 'lightbox2/dist/css/lightbox.css';
+
+import './assets/css/app.css';
 
 
 // import './assets/plugins/simplebar/css/simplebar.css';
@@ -24,6 +25,7 @@ import './assets/plugins/chartjs/js/chartjs-custom.js';
 
 import ConfirmationService from 'primevue/confirmationservice';
 import ConfirmPopup from 'primevue/confirmpopup';
+import Tooltip from 'primevue/tooltip';
 
 
 import { createApp } from 'vue'
@@ -50,6 +52,7 @@ app.use(PrimeVue, {
       preset: Aura
   }
 },);
+app.directive('tooltip', Tooltip);
 app.use(ConfirmationService);
 app.use(lightbox)
 app.config.globalProperties.$ = $
