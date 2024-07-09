@@ -225,13 +225,14 @@ const openModal = (pos,type,warehouse=null) => {
 
 
 const deleteWarehouse = (model) => {
-  warehouseStore.deleteWarehouse(model.id).then(function (response) {
-    toaster.success("Warehouse deleted successfully");
-    getWarehouses();
-  }).catch(function (error) {
-    toaster.error("Error deleting warehouse");
-    console.log(error);
-  });
+    if(!window.confirm("Are you sure you want to delete this warehouse?")){return};
+    warehouseStore.deleteWarehouse(model.id).then(function (response) {
+        toaster.success("Warehouse deleted successfully");
+        getWarehouses();
+    }).catch(function (error) {
+        toaster.error("Error deleting warehouse");
+        console.log(error);
+    });
 }
 
 const deleteUnit= (model) => {
@@ -270,6 +271,10 @@ const deleteRecord = (event, model) => {
 
 const getWarehouseName = (warehouse) => {
     return warehouses.value.find(w => w.id === warehouse).name
+}
+
+const getUnitsByWarehouse = (warehouse) => {
+    return allUnits.value.filter(u => u.warehouse === warehouse.id);
 }
 
 
@@ -335,7 +340,7 @@ const items = (warehouse) => [
                                                     <td>{{warehouse.numberOfUnits}}</td>
                                                     <td>
                                                         <div class="d-flex order-actions">
-                                                            <SplitButton
+                                                            <SplitButton @click="getUnitsByWarehouse(warehouse)"
                                                             class="text-white" label="Units" icon="bx bx-cog fs-4" dropdownIcon="text-white fs-4 bx bx-chevron-down" 
                                                             :model="items(warehouse)"
                                                              />
