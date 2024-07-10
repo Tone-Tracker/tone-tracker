@@ -274,7 +274,9 @@ const getWarehouseName = (warehouse) => {
 }
 
 const getUnitsByWarehouse = (warehouse) => {
-    return allUnits.value.filter(u => u.warehouse === warehouse.id);
+    let filtered = allUnits.value.filter(u => u.warehouse === warehouse.id);
+    console.log(filtered)
+    return allUnits.value = [...filtered]
 }
 
 
@@ -332,7 +334,7 @@ const items = (warehouse) => [
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="warehouse in warehouses" :key="warehouse.id" class="table-dark-black">
+                                                <tr v-if="warehouses.length > 0" v-for="warehouse in warehouses" :key="warehouse.id" class="table-dark-black">
                                                     <td>{{warehouse.name}}</td>
                                                     <td>{{warehouse.capacity}}</td>
                                                     <td>{{ getRegionName(warehouse.region) }}</td>
@@ -348,6 +350,15 @@ const items = (warehouse) => [
                                                         
                                                       </td>
                                                 </tr>
+                                                <tr v-else>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td class="text-danger">No warehouses found.</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                
                                                
                                             </tbody>
                                         </table>
@@ -378,7 +389,7 @@ const items = (warehouse) => [
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="unit in allUnits" :key="unit.id" class="table-dark-black">
+                                        <tr v-if="allUnits.length > 0" v-for="unit in allUnits" :key="unit.id" class="table-dark-black">
                                             <td>{{unit.name}}</td>
                                             <td>{{unit.capacity}}</td>
                                             <td>{{ getWarehouseName(unit.warehouse) }}</td>
@@ -394,6 +405,13 @@ const items = (warehouse) => [
                                                 </div>
                                                 
                                               </td>
+                                        </tr>
+                                        <tr v-else>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-danger">No units found.</td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                        
                                     </tbody>

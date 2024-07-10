@@ -92,7 +92,6 @@ const onSubmit = async () => {
 };
 
 const onStatusChange = (event) => {
-    console.log(event.value.code);
     form.status = event.value.code;
 }
 
@@ -235,7 +234,7 @@ const deleteRecord = (event, task) => {
                             <div class="table-container-colour pt-2 p-5">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h5>Main tasks to set up</h5>
-                                    <button type="button" class="btn maz-gradient-btn" @click="openModal('top')">Add New Task</button>
+                                    <button type="button" class="btn maz-gradient-btn" @click="openModal('top')" >Add New Task</button>
                                 </div>
                                 <table class="table table-dark table-bordered">
                                     <thead>

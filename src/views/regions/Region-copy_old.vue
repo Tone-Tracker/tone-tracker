@@ -5,29 +5,21 @@ import { required } from '@vuelidate/validators';
 import Layout from '@/views/shared/Layout.vue';
 import { useConfirm } from "primevue/useconfirm";
 import BreadCrumb from '@/components/BreadCrumb.vue';
-import Dialog from 'primevue/dialog';
 import Select from 'primevue/select';
 import useToaster from '@/composables/useToaster';
 import { useRegion } from '@/stores/useRegion';
-import { useUserStore } from '@/stores/userStore';
 
 const toaster = useToaster();
 const regionStore = useRegion();
 const confirm = useConfirm();
-const userStore = useUserStore();
 
 let clients = ref([]);
 let regions = ref([]);
-const visible = ref(false);
-const position = ref('top');
-const regionalManager = ref(null);
-const regionalManagers = ref([]);
 
 const form = reactive({name: ''});
 
 onMounted(() => {
   getRegions();
-  getRegionalManagers();
 });
 
 const rules = { 
@@ -50,16 +42,6 @@ const createRegion = async () => {
     });
 };
 
-const getRegionalManagers = async () => {
-    userStore.getUsers().then(function (response) {
-        let users = response.data.content.filter(user => user.role === 'TTG_REGIONAL_MANAGER');
-        regionalManagers.value = users;
-    }).catch(function (error) {
-        toaster.error("Error fetching regions");
-        console.log(error);
-    }).finally(function () {
-    });
-};
 const getRegions = async () => {
     regionStore.getRegions().then(function (response) {
         regions.value = response.data.content;
@@ -125,11 +107,6 @@ const deleteRecord = (event, region) => {
 const vFocus = {
     mounted: (el) => el.focus()
 };
-
-const openModal = (pos,region) => {
-    position.value = pos;
-    visible.value = true;
-}
 </script>
 
 <template>
@@ -160,7 +137,7 @@ const openModal = (pos,region) => {
                                                         <td v-else>
                                                             <input v-focus type="text" v-model="region.name" @blur="update(region)" @keyup.enter="update(region)" class="no-border-input"/>
                                                         </td>
-                                                        <td>mmmmm</td>
+                                                        <td>Manger</td>
                                                         <td>
                                                             <div class="d-flex order-actions">
                                                                 <a v-if="!region.isEditing" @click="editClient(region)" href="javascript:;">
@@ -169,16 +146,12 @@ const openModal = (pos,region) => {
                                                                 <a v-else @click="update(region)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bx-check text-success'></i>
                                                                 </a>
-                                                                <a  @click="openModal('top',region)" href="javascript:;" class="ms-3">
-                                                                    <i class='bx bx-user text-success'></i>
-                                                                </a>
                                                                 <a @click="deleteRecord($event,region)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash'></i>
                                                                 </a>
                                                                 <ConfirmPopup></ConfirmPopup>
                                                             </div>
                                                         </td>
-                                                       
                                                     </tr>
                                                     <tr v-else>
                                                         <td colspan="7" class="text-center text-danger">No regions found.</td>
@@ -201,7 +174,15 @@ const openModal = (pos,region) => {
                                                         <div class="text-danger">Region name is required</div>
                                                     </div>
                                                 </div>
-                                                
+                                                <!-- <div class="col-md-12">
+                                                    <div class="card my-card flex justify-center">
+                                                        <label for="input1" class="form-label">Regional Manager</label>
+                                                        <Select v-model="status" @change="onStatusChange($event)" :options="statuses" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" />
+                                                           <div class="input-errors" v-for="error of v$.status.$errors" :key="error.$uid">
+                                                           <div class="text-danger">Risk is required</div>
+                                                        </div>
+                                                </div>                        
+                                                </div> -->
                                                 
                                             </form>
                                             <div class="ms-auto mt-4">
@@ -218,22 +199,6 @@ const openModal = (pos,region) => {
                 </div>
             </div>
         </div>
-        <Dialog v-model:visible="visible" modal header="Add Regional Manager'" :style="{ width: '25rem' }">
-{{ regionalManagers }}
-            <form @submit.prevent="onSubmit" class="row g-3">
-                <div class="col-md-12">
-                    <div class="card my-card flex justify-center">
-                        <label for="input1" class="form-label">Regional Manager</label>
-                        <Select v-model="regionalManager" @change="onStatusChange($event)" :options="regionalManagers" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" />
-                          
-                </div>                        
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
-                </div>
-                
-            </form>
-        </Dialog>
     </Layout>
 </template>
 

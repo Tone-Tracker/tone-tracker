@@ -17,13 +17,16 @@ import FileUpload from 'primevue/fileupload';
 import Button from 'primevue/button';
 import { useUserStore } from '@/stores/userStore';
 import Badge from 'primevue/badge';
+import { useSizes } from '@/stores/sizes';
 
 const promoterStore = usePromoter();
 const toaster = useToaster();
 const userStore = useUserStore();
 const confirm = useConfirm();
+const sizeStore = useSizes();
 
 let users = ref([]);
+let sizes = ref([]);
 let promoters = ref([]);
 let showLoading = ref(false);
 let searchInput = ref('');
@@ -42,6 +45,7 @@ const form = reactive({
 onMounted(() => {
   getAllPromoters();
   getAllUsers();
+  getAllSizes();
 });
 
 
@@ -59,18 +63,18 @@ const v$ = useVuelidate(rules, form);
 const onSubmit = async () => {
 	const isFormValid = await v$.value.$validate();
 	if (!isFormValid) {return;}
-  let formData = new FormData();
-  formData.append('user', form.user);
-  formData.append('dressSize', form.dressSize);
-  formData.append('pantsSize', form.pantsSize);
-  formData.append('client', form.client);
-  formData.append('topSize', form.topSize);
-  formData.append('height', form.height);
-  formData.append('bio', form.bio);
-  //loop files and append to form data
-  for (let i = 0; i < files.value.length; i++) {
-    formData.append('files', files.value[i]);
-  }
+  // let formData = new FormData();
+  // formData.append('user', form.user);
+  // formData.append('dressSize', form.dressSize);
+  // formData.append('pantsSize', form.pantsSize);
+  // formData.append('client', form.client);
+  // formData.append('topSize', form.topSize);
+  // formData.append('height', form.height);
+  // formData.append('bio', form.bio);
+  // //loop files and append to form data
+  // for (let i = 0; i < files.value.length; i++) {
+  //   formData.append('files', files.value[i]);
+  // }
   
   
   if(isEdit.value){
@@ -83,7 +87,7 @@ const onSubmit = async () => {
         console.log(error);
     });
   } else {  
-    promoterStore.submitPromoter(formData).then(function (response) {
+    promoterStore.submitPromoter(form).then(function (response) {
         toaster.success("Promoter created successfully");
         visible.value = false;
         getAllPromoters();
@@ -106,11 +110,23 @@ const onInput = () => {
   }
 };
 
+
+const getAllSizes = async () => {
+  showLoading.value = true;
+  sizeStore.getSizes().then(response => {
+    sizes.value = response.data;
+  }).catch(error => {
+    toaster.error("Error fetching users");
+    console.log(error);
+  }).finally(() => {
+    showLoading.value = false;
+  });
+};
 const getAllPromoters = async () => {
   showLoading.value = true;
   promoterStore.getPromoters().then(response => {
     showLoading.value = false;
-    promoters.value = response.data;
+    promoters.value = response.data.content;
   }).catch(error => {
     toaster.error("Error fetching users");
     console.log(error);
@@ -308,7 +324,7 @@ const formatSize = (bytes) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="promoters" v-for="promoter in promoters" :key="promoter.id">
+                  <tr v-if="promoters.length > 0" v-for="promoter in promoters" :key="promoter.id">
                     <td>{{ getFullName(promoter) }}</td>
                     <td> <Badge :value="promoter.height" severity="success"></Badge></td>
                     <td><Badge :value="promoter.dressSize" severity="info"></Badge></td>
@@ -331,10 +347,7 @@ const formatSize = (bytes) => {
                     </td>
                   </tr>
                   <tr v-else>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td colspan="7" class="text-center"></td>
+                    <td colspan="7" class="text-center text-danger">No promoters found.</td>
                   </tr>
                 </tbody>
               </table>
@@ -358,14 +371,18 @@ const formatSize = (bytes) => {
      <div class="row g-3">
       <div class="col-md-3">
         <label for="dress_size" class="form-label">Dress Size</label>
-        <input v-model="form.dressSize" type="number" class="form-control" id="dress_size" >
+        <select v-model="form.dressSize" class="form-control" id="dress_size" >
+          <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
+        </select>
         <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
           <div class="text-danger">Dress Size is required</div>
           </div>
         </div>
         <div class="col-md-3">
         <label for="pantsSize" class="form-label">Pants Size</label>
-        <input v-model="form.pantsSize" type="number" class="form-control" id="pantsSize" >
+        <select v-model="form.pantsSize" class="form-control" id="pantsSize" >
+          <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
+        </select>
         <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
           <div class="text-danger">Pants Size is required</div>
           </div>
@@ -374,12 +391,14 @@ const formatSize = (bytes) => {
         <label for="height" class="form-label">Height</label>
         <input v-model="form.height" type="number" class="form-control" id="height" >
         <div class="input-errors" v-for="error of v$.height.$errors" :key="error.$uid">
-          <div class="text-danger">Email is required</div>
+          <div class="text-danger">Height is required</div>
           </div>
         </div>
         <div class="col-md-3">
         <label for="top-size" class="form-label">Top Size</label>
-        <input v-model="form.topSize" type="number" class="form-control" id="top-size" >
+        <select v-model="form.topSize" class="form-control" id="top-size" >
+          <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
+        </select>
         <div class="input-errors" v-for="error of v$.topSize.$errors" :key="error.$uid">
           <div class="text-danger">Top Size is required</div>
           </div>

@@ -35,6 +35,7 @@ setup(){
 		if (!isFormCorrect) return;
 		auth.attempt(form)
 		  .then(function (response) {
+			
 			       useStorage('token', response.data.accessToken);
 				   useStorage('user', response.data.user);
 					toaster.success("Welcome back");

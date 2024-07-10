@@ -25,10 +25,11 @@ axiosInstance.interceptors.request.use(
       //return toaster.error('Check your internet connection');
     }
     const auth = useAuth();
-    if (auth.token) {
+    if (localStorage.getItem('token')) {
       config.headers['Authorization'] = `Bearer ${auth.token}`;
     } else {
       // const router = useRouter();
+      console.log('no token');
       router.push('/');
     }
     

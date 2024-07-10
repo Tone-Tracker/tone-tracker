@@ -22,6 +22,7 @@ import adminactivations from './adminactivations';
 import promoter from './promoter';
 import region from './region';
 import warehouse from './warehouse';
+import staff from './staff';
 
 
 
@@ -48,6 +49,7 @@ const router = createRouter({
     ...adminactivations,
     ...region,
     ...warehouse,
+    ...staff,
     {
       path: '/',
       name: 'home',

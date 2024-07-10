@@ -9,7 +9,7 @@ const props = defineProps({
 });
 
 const getRoleName = () => {
-    return props.user.role == 'TTG_ACTIVATION_MANAGER' ? 'Activations Manager' : 'Admin'
+    return props.user.role == 'TTG_ACTIVATION_MANAGER' ? 'Activations Manager' : ''
 }
 </script>
 <template>
@@ -44,6 +44,7 @@ const getRoleName = () => {
                             <li><router-link to="/promoters"><span class="icon">📄</span> Promoters</router-link></li>
                             <li><router-link to="/briefs"><span class="icon">📄</span> Briefs</router-link></li>
                             <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li>
+                            <li><router-link to="/admin-warehouse"><span class="icon">📄</span> Warehouse & Units</router-link></li>
                             <li><router-link to="/teaching"><span class="icon">📄</span> Learning & Teaching</router-link></li>
                             <!-- <li><router-link to="/crm"><span class="icon">📄</span> CRM</router-link></li> -->
                             <li><router-link to="/jobs"><span class="icon">📄</span> Jobs</router-link></li>

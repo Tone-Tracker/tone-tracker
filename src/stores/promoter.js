@@ -6,7 +6,7 @@ export const usePromoter = defineStore('promoter', () => {
   
     function submitPromoter(form) {
       return axiosInstance.post(`/api/promoters`,form,{
-        useMultipartFormData: true
+        useMultipartFormData: false
       });
     }
 
