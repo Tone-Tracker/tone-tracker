@@ -26,7 +26,7 @@ const staffMembers = ref([]);
 let showLoading = ref(false);
 let position = ref('top');
 const visible = ref(false);
-const user = ref(null);
+let user = ref(null);
 const isEdit = ref(false);
 
 const form = reactive({
@@ -54,7 +54,18 @@ const getStaffMembers = async () => {
 	})
 }
 
-const openModal = (pos) => {
+const openModal = (pos,staff=null) => {
+	if(staff) {
+		isEdit.value = true;
+		user.value = users.value.content.find(user => user.id == staff.user)?.firstName + ' ' + users.value.content.find(user => user.id == staff.user)?.lastName;
+		form.bio = staff.bio;
+		//form.user = staff.user;
+		form.id = staff.id;
+	}else{
+		isEdit.value = false;
+		form.user = null;
+		form.bio = null;
+	}
     position.value = pos;
     visible.value = true;
 }
@@ -76,17 +87,36 @@ const onInput = () => {
 	if (!isFormValid) {
 		return;
 	}
+
+	if(isEdit.value) {
+		return updateStaff(form)
+	}
 	staff.createStaff(form).then(function (response) {
 		toaster.success("Staff member created successfully");
 		visible.value = false;
 		form.user = '';
 		form.bio = null;
 		//refetch data
-		getAllUsers();
+		getStaffMembers();
 	   }).catch(function (error) {
 		toaster.error("Error creating staff member");
 		console.log(error);
 	   })
+  }
+
+  const updateStaff = async (form) => {
+	console.log(form)
+	staff.updateStaff(form.id,form).then(function (response) {
+			toaster.success("Staff member updated successfully");
+			visible.value = false;
+			form.user = '';
+			form.bio = null;
+			//refetch data
+			getStaffMembers();
+		   }).catch(function (error) {
+			toaster.error("Error updating staff member");
+			console.log(error);
+		   });
   }
   const getAllUsers = async () => {
 	showLoading.value = true;
@@ -108,21 +138,17 @@ const onInput = () => {
   }
 
 
-  const deleteUser = (user) => {
-	if(isMyProfile(user)) return
-		userStore.deleteUser(user.id).then(function (response) {
-		toaster.success("User deleted successfully");
+  const deleteStaff = (staffMember) => {
+	   staff.deleteStaff(staffMember.id).then(function (response) {
+		toaster.success("Staff member deleted successfully");
 		//refetch data
-		getAllUsers();
+		getStaffMembers();
 	   }).catch(function (error) {
-		toaster.error("Error deleting user");
+		toaster.error("Error deleting staff member");
 		console.log(error);
 	   })	
 }
 
-const isMyProfile = (user) => {
-	return user.id === currentUser.id
-}
 
 const onUserChange = (event) => {
     form.user = users.value.content.find(user => user.firstName + ' ' + user.lastName === event.value)?.id;
@@ -133,10 +159,10 @@ const search = (event) => {
 	let myObj = users.value.content.filter(user => user.firstName.toLowerCase().includes(query))
     mappedUsers.value = myObj.map(u => u.firstName + ' ' + u.lastName);
 };
-const deleteRecord = (event, user) => {
+const deleteRecord = (event, staff) => {
     confirm.require({
         target: event.currentTarget,
-        message: 'Do you want to delete this user?',
+        message: 'Do you want to delete this staff?',
         // icon: 'bx bx-trash text-danger',
 		icon: '',
         rejectProps: {
@@ -149,7 +175,7 @@ const deleteRecord = (event, user) => {
             severity: 'danger'
         },
         accept: () => {
-			deleteUser(user);
+			deleteStaff(staff);
         },
         reject: () => {
             //do nothing
@@ -208,11 +234,10 @@ const getUserDetails = (user,dataType) => {
 										<td>{{ getUserDetails(user,'role')}}</td>
 										<td>
 											<div class="d-flex order-actions">
-												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
+												<a @click="openModal('top',user)" href="javascript:;" class="">
 													<i class='bx bxs-edit'></i></a>
 												<a @click="deleteRecord($event,user)" href="javascript:;" class="ms-3">
-													<i v-if="!isMyProfile(user)" class='bx bxs-trash'></i>
-													<i v-if="isMyProfile(user)" class='bx bx-stop-circle text-danger cursor-no-drop'></i>
+													<i class='bx bxs-trash text-danger'></i>
 												</a>
 												<ConfirmPopup></ConfirmPopup>
 											</div>
