@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
  <template>
-  <!--<header>
+  <!-- <header>
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
