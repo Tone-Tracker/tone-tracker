@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import useToaster from '@/composables/useToaster';
@@ -7,7 +7,18 @@ import { useActivation } from '@/stores/activation';
 import { useRegion } from '@/stores/useRegion';
 import { useCampaignStore } from '@/stores/useCampaign';
 import { useConfirm } from "primevue/useconfirm";
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
+const campaignId = ref(route.query.campaign);
+
+
+watch(
+  () => route.query.campaign,
+  (newCampaignId) => {
+    campaignId.value = newCampaignId;
+  }
+);
 
 const activation = useActivation();
 const toaster = useToaster();
@@ -17,20 +28,19 @@ const campaignStore = useCampaignStore();
 const searchInput = ref('');
 let activations = ref([]);
 let showLoading = ref(false);
-let modalData = reactive({});
 const regions = ref([]);
-const campaigns = ref([]);
+const campaignName = ref([]);
 
 onMounted(() => {
-	getActivations();
+	getActivationsByCampaignId();
 	getRegions();
-	getCampaigns();
+	getCampaignName();
 })
 
 
-const getCampaigns = async () => {
-	campaignStore.getCampaigns().then(function (response) {
-		campaigns.value = response.data;
+const getCampaignName = async () => {
+	campaignStore.getCampaignName(campaignId.value).then(function (response) {
+		campaignName.value = response.data.name;
 	})
 }
 
@@ -44,20 +54,19 @@ const onInput = () => {
 		// return activations.value = activations.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
 		// || user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
 	 }else{
-		getActivations();
+		getActivationsByCampaignId();
 	 }
   };
 
-  const getActivations = async () => {
+  const getActivationsByCampaignId = async () => {
 	showLoading.value = true;
-	activation.getActivations().then(function (response) {
-		showLoading.value = false;
+	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
+		console.log(response.data)
 		activations.value = response.data.content
 	}).catch(function (error) {
 		toaster.error("Error fetching activations");
 		console.log(error);
 	}).finally(function () {
-		showLoading.value = false;
 	})
   }
 
@@ -66,7 +75,7 @@ const onInput = () => {
 		activation.deleteActivation(activ.id).then(function (response) {
 		toaster.success("Activation deleted successfully");
 		//refetch data
-		getActivations();
+		getActivationsByCampaignId();
 	   }).catch(function (error) {
 		toaster.error("Error deleting user");
 		console.log(error);
@@ -102,10 +111,7 @@ const getRegionName = (region) => {
     return regions.value.find(r => r.id === region).name
 }
 
-const getCampaignName = (campaign_id) => {
-	if(!campaign_id) return ''
-    return campaigns.value.find(c => c.id === campaign_id).name
-}
+
 
 </script>
 <template>
@@ -118,11 +124,11 @@ const getCampaignName = (campaign_id) => {
 						<div class="d-lg-flex align-items-center mb-4 gap-3">
 							<div class="position-relative">
 								<input v-model="searchInput" @input="onInput"
-								type="text" class="form-control ps-5 radius-30" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+								type="text" class="form-control ps-5" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
 						  <div class="ms-auto">
-							<router-link to="/create-activation"  class="btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
-							<i class="bx bxs-plus-square"></i>Add</router-link></div>
+							<router-link :to="`/create-activation?campaign=${campaignId}&name=${campaignName}`"  class="btn maz-gradient-btn mt-2 mt-lg-0">
+							<i class="bx bxs-plus-square"></i>Create Activation</router-link></div>
 						</div>
 						<div class="table-responsive">
 							<table class="table mb-0">
@@ -142,19 +148,19 @@ const getCampaignName = (campaign_id) => {
 								<tbody>
 									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
-										<td>{{ getCampaignName(activation.campaign) }}</td>
+										<td>{{ campaignName }}</td>
 										<td>{{ getRegionName(activation.region) }}</td>
-										<td>{{activation.budget}}</td>
+										<td>R {{activation.budget}}</td>
 										<td>{{activation.startDate}}</td>
 										<td>{{activation.endDate}}</td>
 										<td>{{activation.painPoints}}</td>
 										<td>{{activation.targetGroup}}</td>
 										<td>
 											<div class="d-flex order-actions">
-												<router-link :to="`/edit-activation/${activation.id}`" class="">
+												<router-link :to="`/create-activation?activation=${activation.id}&campaign=${campaignId}&name=${campaignName}`" class="">
 													<i class='bx bxs-edit'></i></router-link>
-													<router-link to="/tasks" class="ms-3">
-														<i class='bx bxs-bullseye'></i>
+													<router-link :to="`/tasks?activation=${activation.id}&name=${activation.name}`" class="ms-3">
+														<i class='bx bxs-bullseye text-success'></i>
 													</router-link>
 												<a @click="deleteRecord($event,activation)" label="Delete" severity="danger" href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
 												<ConfirmPopup></ConfirmPopup>

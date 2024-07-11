@@ -18,7 +18,11 @@ export const useClientStore = defineStore('useClientStore', () => {
     const deleteClient = (id) => {
       return axiosInstance.delete(`/api/clients/${id}`);
     }
+
+    const  getClientByClientId = (id) => {
+      return axiosInstance.get(`/api/clients/${id}`);
+    }
     
   
-    return { submitClient,getClients,updateClient,deleteClient }
+    return {getClientByClientId, submitClient,getClients,updateClient,deleteClient }
   })

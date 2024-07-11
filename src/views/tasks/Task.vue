@@ -8,6 +8,7 @@ import InputText from 'primevue/inputtext';
 import ConfirmPopup from 'primevue/confirmpopup';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
+import { useRoute } from 'vue-router';
 import DatePicker from 'primevue/datepicker';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
@@ -18,22 +19,20 @@ import useToaster from '@/composables/useToaster';
 import { useConfirm } from "primevue/useconfirm";
 
 
+const route = useRoute();
+const activationName = ref(route.query.name);
+const activation = ref(route.query.activation);
 
 const visible = ref(false);
-const activations = ref([]);
 const tasks = ref([]);
-const activation = ref(null);
 const position = ref('top');
-const dropdownItems = ref([]);
 
-const activationStore = useActivation();
 const toaster = useToaster();
 const taskStore = useTask();
 const confirm = useConfirm();
 
 onMounted(() => {
-    getActivations();
-    getTasks();
+    getTasksByActivationId();
 })
 
 
@@ -52,7 +51,7 @@ const form = reactive({
 	timeRecord: null,
     completion: null,
     jobNumber: null,
-    activation: null
+    activation: activation.value
 });
 
 const rules = { 
@@ -61,7 +60,7 @@ const rules = {
 	timeRecord: { required },
 	jobNumber: { required },
 	completion: { required },
-    activation: { required },
+    activation: { required }
 };
 const v$ = useVuelidate(rules, form);
 
@@ -72,7 +71,7 @@ const onSubmit = async () => {
         taskStore.update(taskId.value,form).then(function (response) {
             toaster.success("Task updated successfully");
             visible.value = false;
-            getTasks();
+            getTasksByActivationId();
         }).catch(function (error) {
             toaster.error("Error updating task");
             console.log(error);
@@ -82,7 +81,7 @@ const onSubmit = async () => {
         taskStore.submit(form).then(function (response) {
         toaster.success("Task created successfully");
         visible.value = false;
-        getTasks();
+        getTasksByActivationId();
     }).catch(function (error) {
         toaster.error("Error creating task");
         console.log(error);
@@ -99,9 +98,9 @@ const onPlannedEndDateChange = (event) => {
     form.plannedEndDate = moment(event).format('YYYY-MM-DD');
 }
 
-const getTasks = async () => {
-  taskStore.getTasks().then(response => {
-    tasks.value = response.data.content;
+const getTasksByActivationId = async () => {
+  taskStore.getTasksByActivationId(activation.value).then(response => {
+    tasks.value = response.data;
   }).catch(error => {
     toaster.error("Error fetching tasks");
     console.log(error);
@@ -109,30 +108,9 @@ const getTasks = async () => {
     //
   });
 };
-const getActivations = async () => {
-  activationStore.getActivations().then(response => {
-    activations.value = response.data.content;
-    dropdownItems.value = [...activations.value];
-  }).catch(error => {
-    toaster.error("Error fetching activations");
-    console.log(error);
-  }).finally(() => {
-    //
-  });
-};
 
-const search = (event) => {
-    const query = event.query.toLowerCase();
-	let myObj = activations.value.filter(activation => activation.name.toLowerCase().includes(query));
-    dropdownItems.value = myObj.map(activation => activation.name);
-};
 
-const onActivationChange = (event) => {
-	form.activation = activations.value.find(activation => activation.name === event.value).id;
-};
-const getActivationName =  (id) => {
-    return activations.value.find(activation => activation.id === id).name;
-}
+
 
 const taskId = ref(null);
 const isEdit = ref(false);
@@ -140,8 +118,7 @@ const openModal = (pos,task) => {
     if(task) {//edit
     isEdit.value = true;
     taskId.value=task.id;
-    form.activation = task.activation;
-    activation.value = activations.value.find(activation => activation.id === task.activation).name;
+    // form.activation = task.activation;
     status.value = statuses.value.find(stat => stat.code === task.status);
     form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
     Object.assign(form, {
@@ -150,21 +127,21 @@ const openModal = (pos,task) => {
      timeRecord: task.timeRecord,
      completion: task.completion,
      jobNumber: Number(task.jobNumber),
-     activation: task.activation
+    //  activation: task.activation
     })
   }else{
-    isEdit.value = false;
-    taskId.value = null;
-    activation.value = null;
-    status.value = null;
-    form.activation = null;
+    // isEdit.value = false;
+    // taskId.value = null;
+    // activation.value = null;
+    // status.value = null;
+    // form.activation = null;
     Object.assign(form, {
      status: null,
      plannedEndDate: null,
      timeRecord: null,
      completion: null,
      jobNumber: null,
-     activation: null
+    //  activation: null
     })
   }  
     position.value = pos;
@@ -192,7 +169,7 @@ const getClass = (status) => {
 const deleteTask = (task) => {
   taskStore.deleteTask(task.id).then(function (response) {
     toaster.success("Task deleted successfully");
-    getTasks();
+    getTasksByActivationId();
   }).catch(function (error) {
     toaster.error("Error deleting task");
     console.log(error);
@@ -229,6 +206,7 @@ const deleteRecord = (event, task) => {
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb title="Tasks" icon="bx bx-task" />
+                <h4 class="mx-2">{{activationName}}</h4>
                 <div class="card">
                     <div class="card-body">
                             <div class="table-container-colour pt-2 p-5">
@@ -248,10 +226,10 @@ const deleteRecord = (event, task) => {
                                             <th>Completion</th>
                                             <th>Actions</th>
                                         </tr>
-                                    </thead>
+                                    </thead>{{ tasks }}
                                     <tbody>
-                                        <tr v-for="task in tasks" :key="task.id" class="table-dark-black">
-                                            <td>{{ getActivationName(task.activation) }}</td>
+                                        <tr v-if="tasks.length > 0" v-for="task in tasks" :key="task.id" class="table-dark-black">
+                                            <td>{{ activationName }}</td>
                                             <td>{{ task.jobNumber }}</td>
                                             <td  :class="getClass(task.status)">
                                                 {{ getStatus(task.status) }}
@@ -274,6 +252,11 @@ const deleteRecord = (event, task) => {
                                                 
                                               </td>
                                         </tr>
+                                        <tr v-else>
+                                            <td colspan="7" class="text-center text-danger">
+                                                No tasks found.
+                                            </td>
+                                        </tr>
                                        
                                     </tbody>
                                 </table>
@@ -287,13 +270,9 @@ const deleteRecord = (event, task) => {
                 <form @submit.prevent="onSubmit" class="row g-3">
                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">
-                            <label for="input1" class="form-label">Select Activation</label>
-                             <AutoComplete v-model="activation" forceSelection dropdown :suggestions="dropdownItems" 
-                              @item-select="onActivationChange" @complete="search" field="name" placeholder="Select Activation" />
-                               <div class="input-errors" v-for="error of v$.activation.$errors" :key="error.$uid">
-                               <div class="text-danger">Activation is required</div>
-                                </div>
-                        </div>
+                            <label for="input1" class="form-label">Activation</label>
+                             <InputText v-model="activationName" disabled />
+                        </div> 
                     </div>
                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">

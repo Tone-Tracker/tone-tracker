@@ -18,6 +18,10 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.delete(`/api/tasks/${id}`);
     }
 
+    const getTasksByActivationId = (id) => {
+      return axiosInstance.get(`/api/tasks/activation/${id}`);
+    }
+
   
-    return { submit,getTasks,update,deleteTask }
+    return { submit,getTasks,update,deleteTask,getTasksByActivationId }
   })

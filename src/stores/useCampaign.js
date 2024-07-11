@@ -9,6 +9,9 @@ export const useCampaignStore = defineStore('useCampaign', () => {
     const getCampaigns = () => {
       return axiosInstance.get(`/api/campaigns`);
     }
+    const getCampaignName = (campaignId) => {
+      return axiosInstance.get(`/api/campaigns/${campaignId}`);
+    }
 
     const updateCampaign = (client) => {
       let obj = {name: client.name}
@@ -17,7 +20,11 @@ export const useCampaignStore = defineStore('useCampaign', () => {
     const deleteCampaign = (id) => {
       return axiosInstance.delete(`/api/campaigns/${id}`);
     }
+
+    const  getCampaignsByClientId = (id) => {
+      return axiosInstance.get(`/api/campaigns/client/${id}`);
+    }
     
   
-    return { submitCampaign,getCampaigns,updateCampaign,deleteCampaign }
+    return { getCampaignName,submitCampaign,getCampaigns,updateCampaign,deleteCampaign,getCampaignsByClientId }
   })

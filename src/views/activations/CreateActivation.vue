@@ -1,36 +1,38 @@
 <script setup>
 import { useActivation } from '@/stores/activation';
 import { useRoute } from 'vue-router';
-import InputNumber from 'primevue/inputnumber';
 import Layout from '@/views/shared/Layout.vue';
-import AutoComplete from 'primevue/autocomplete';
+import DatePicker from 'primevue/datepicker';
 import BreadCrumb from '@/components/BreadCrumb.vue';
+import InputNumber from 'primevue/inputnumber';
+import InputText from 'primevue/inputtext';
 import { ref,reactive, watch, onMounted } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import useToaster from '@/composables/useToaster';
 import { useRegion } from '@/stores/useRegion';
-import { useCampaignStore } from '@/stores/useCampaign';
+import moment from 'moment';
 
-let campaign = ref(null);
+const route = useRoute();
+const campaignId = ref(route.query.campaign);
+const campaignName = ref(route.query.name);
+const activationId = ref(route.query.activation);
+
 
 
 const activation = useActivation();
 const toaster = useToaster();
-const route = useRoute();
-const regionStore = useRegion();
-const campaignStore = useCampaignStore();
 
-let campaigns = ref([]);
-let activationId = ref(null);//For edit
-let dropdownItems = ref([]);
+const regionStore = useRegion();
+
+
 const regions = ref([]);
 
 onMounted(() => {
 	getRegions();
-	getCampaigns();
-    activationId.value = route.params.id;
-    activationId.value ? getActivationById() : null;
+    if(activationId.value) {//Its edit
+        getActivationById();
+    }
 });
 
 
@@ -39,26 +41,20 @@ watch(() => route.params.id, (newId) => {
     activationId.value = newId;
     });
 
+
+
 const getRegions = async () => {
 	regionStore.getRegions().then(function (response) {
 		regions.value = response.data.content;
 	})
 }
-const getCampaigns = async () => {
-	campaignStore.getCampaigns().then(function (response) {
-		campaigns.value = response.data;
-		dropdownItems.value = [...campaigns.value];
-	})
-}
 
-
-let showLoading = ref(false);
 
 const form = reactive({
 	  name: '',
-	  budget: '',
-      campaign: '',
-	  region_id: '',
+	  budget: null,
+      campaign: campaignId.value,
+	  region: '',
       startDate: '',
 	  endDate: '',
       brief: "",
@@ -67,12 +63,11 @@ const form = reactive({
     });
 
     const getActivationById = async () => {
-        activation.getActivationById(activationId.value).then(function (response) {
-            campaign = campaigns.value.find(campaign => campaign.id === response.data.campaign)?.name;//bind campaign on autocomplete
-            Object.assign(form, response.data);
-        })
-    }
-
+    activation.getActivationById(activationId.value).then(function (response) {
+        console.log(response.data);
+        Object.assign(form, response.data);
+    })
+}
 
 	const rules = {
 		name: { required },
@@ -100,7 +95,6 @@ const form = reactive({
 		
 			activation.submit(form)
 			.then(function (response) {
-		        emit('closeModal');
 				toaster.success("Activation created successfully");
 				}).catch(function (error) {
 					toaster.error("Error creating user");
@@ -109,16 +103,8 @@ const form = reactive({
 		 }
 		
 	}
-	const search = (event) => {
-    const query = event.query.toLowerCase();
-	let myObj = campaigns.value.filter(client => client.name?.toLowerCase().includes(query));
-	dropdownItems.value = myObj.map(client => client.name);
-};
+	
 
-const onCampaignChange = (event) => {
-	form.campaign = campaigns.value.find(campaign => campaign.name === event.value).id;
-	console.log(form.campaign);
-};
 
 
 </script>
@@ -128,6 +114,7 @@ const onCampaignChange = (event) => {
         <div class="page-wrapper">
 			<div class="page-content">
                 <BreadCrumb :title="activationId ? 'Edit Activation' : 'Create Activation'" icon="bx bxs-user-badge"/>
+                <h4 class="mx-2">{{campaignName}}</h4>
 				<div class="card">
 					<div class="card-body">
 						<div class="row">
@@ -138,38 +125,27 @@ const onCampaignChange = (event) => {
                                      <label for="name" class="form-label">Activation Name</label>
                                      <input v-model="form.name" type="text" class="form-control" id="name" >
                                      <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-                                         <div class="text-danger">First Name is required</div>
+                                         <div class="text-danger">Activation Name is required</div>
                                        </div>
                                    </div>
-                                   <!-- <div class="col-md-4 card">
+                                   <div class="col-md-4 maz-top flex justify-center card">
                                     <label for="budget" class="form-label">Budget</label>
-                                    <InputNumber v-model="value1" inputId="currency-us" mode="currency" currency="ZAR" locale="en-US" fluid />
+                                    <InputNumber v-model="form.budget" inputId="currency-us" mode="currency" currency="ZAR" locale="en-US" fluid />
                                     <div class="input-errors" v-for="error of v$.budget.$errors" :key="error.$uid">
                                         <div class="text-danger">Budget is required</div>
                                       </div>
-                                  </div> -->
-                                   <div class="col-md-4">
-                                     <label for="budget" class="form-label">Budget</label>
-                                     <input v-model="form.budget" type="text" class="form-control" id="budget" >
-                                     <div class="input-errors" v-for="error of v$.budget.$errors" :key="error.$uid">
-                                         <div class="text-danger">Budget is required</div>
-                                       </div>
-                                   </div> 
+                                  </div> 
  
                                    <div class="card maz-top flex justify-center col-md-4">
-                                     <label for="input1" class="form-label">Select Campaign</label>
-                                     <AutoComplete  v-model="campaign" forceSelection dropdown :suggestions="dropdownItems" 
-                                         @item-select="onCampaignChange" @complete="search" field="name" />
-                                     <div class="input-errors" v-for="error of v$.campaign.$errors" :key="error.$uid">
-                                         <div class="text-danger">Campaign is required</div>
-                                     </div>
+                                     <label for="input1" class="form-label">Campaign</label>
+                                     <InputText v-model="campaignName" disabled="disabled" class="form-control" id="activation-area"/>
                                  </div>
  
  
                                    <div class="col-md-4 mt-custom">
                                      <label for="region" class="form-label">Region</label>
                                      <select v-model="form.region" class="form-control" id="activation-area">
-                                         <option :value="''" :selected="true">Select Region</option>
+                                         <option :value="''" :selected="true" :disabled="disabled">Select Region</option>
                                          <option v-for="region in regions" :key="region" :value="region.id">{{ region.name }}</option>
                                      </select>
                                      <div class="input-errors" v-for="error of v$.region.$errors" :key="error.$uid">
@@ -180,34 +156,41 @@ const onCampaignChange = (event) => {
                                     <label for="brief" class="form-label">Brief</label>
                                     <input v-model="form.brief" type="text" class="form-control" id="brief" >
                                     <div class="input-errors" v-for="error of v$.brief.$errors" :key="error.$uid">
-                                        <div class="text-danger">Start Date is required</div>
+                                        <div class="text-danger">Brief is required</div>
                                       </div>
                                   </div>
-                                   <div class="col-md-4 mt-custom">
-                                     <label for="start-date" class="form-label">Start Date</label>
-                                     <input v-model="form.startDate" type="date" class="form-control" id="start-date" >
-                                     <div class="input-errors" v-for="error of v$.startDate.$errors" :key="error.$uid">
-                                         <div class="text-danger">Start Date is required</div>
-                                       </div>
+                                   <div class="col-md-4 card justify-center mt-custom">
+
+                                    <div class="card fuck-top flex justify-center">
+                                        <label for="input1" class="form-label">Start Date</label>
+                                        <DatePicker v-model="form.startDate" showButtonBar showIcon fluid :showOnFocus="true" />
+                                           <div class="input-errors" v-for="error of v$.startDate.$errors" :key="error.$uid">
+                                           <div class="text-danger">Start Date is required</div>
+                                        </div>
+                                     </div> 
                                    </div>
                                    
-                                   <div class="col-md-4">
-                                     <label for="end-date" class="form-label">End Date</label>
-                                     <input v-model="form.endDate" type="date" class="form-control" id="end-date" >
-                                     <div class="input-errors" v-for="error of v$.endDate.$errors" :key="error.$uid">
-                                         <div class="text-danger">End Date is required</div>
-                                       </div>
+                                   <div class="col-md-4 mt-custom">
+
+                                    <div class="card fuck-top flex justify-center">
+                                        <label for="input1" class="form-label">End Date</label>
+                                        <DatePicker v-model="form.endDate" showButtonBar showIcon fluid :showOnFocus="true" />
+                                           <div class="input-errors" v-for="error of v$.endDate.$errors" :key="error.$uid">
+                                           <div class="text-danger">End Date is required</div>
+                                        </div>
+                                     </div> 
+
                                    </div>
  
-                                   <div class="col-md-4">
+                                   <div class="col-md-4  mt-custom">
                                      <label for="targetGroup" class="form-label">Target Group</label>
                                      <input v-model="form.targetGroup" type="text" class="form-control" id="targetGroup" >
                                      <div class="input-errors" v-for="error of v$.targetGroup.$errors" :key="error.$uid">
                                          <div class="text-danger">Target Group is required</div>
                                        </div>
                                    </div>
- 
-                                   <div class="col-md-4">
+
+                                   <div class="col-md-4 mt-custom">
                                      <label for="campaign" class="form-label">Pin Points</label>
                                      <input v-model="form.painPoints" type="text" class="form-control" id="painPoints" >
                                      <div class="input-errors" v-for="error of v$.painPoints.$errors" :key="error.$uid">
@@ -233,7 +216,6 @@ const onCampaignChange = (event) => {
                                    <div class="col-12">
                                        <div class="d-grid">
                                          <button @click="onSubmit" class="btn maz-gradient-btn" type="button"> 
-                                             <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                              {{ activationId ?  'Update' : 'Submit' }}
                                          </button>
                                        </div>
@@ -259,6 +241,19 @@ const onCampaignChange = (event) => {
 }
 .mt-custom{
     margin-top: -9px !important;
+}
+
+.my-card {
+    box-shadow: 0 0rem 0rem rgb(0 0 0 / 20%) !important;
+    margin-bottom: -15px;
+}
+
+.fuck-top{
+    margin-top: -.9rem !important;
+}
+
+.p-datepicker {
+    margin-top: -.4rem !important;
 }
 
 .file-upload-label {

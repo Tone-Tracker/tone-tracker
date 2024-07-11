@@ -1,6 +1,5 @@
 <script setup>
-import { onMounted, ref, reactive } from 'vue';
-import AutoComplete from 'primevue/autocomplete';
+import { onMounted, ref,watch, reactive } from 'vue';
 import FileUpload from 'primevue/fileupload';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
@@ -10,6 +9,18 @@ import useToaster from '@/composables/useToaster';
 import { useCampaignStore } from '@/stores/useCampaign';
 import { useClientStore } from '@/stores/useClient';
 import { useConfirm } from "primevue/useconfirm";
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const clientId = ref(route.query.client);
+
+
+watch(
+  () => route.query.client,
+  (newClientId) => {
+    clientId.value = newClientId;
+  }
+);
 
 
 const toaster = useToaster();
@@ -18,24 +29,19 @@ const clientStore = useClientStore();
 const confirm = useConfirm();
 
 let clients = ref([]);
-let dropdownItems = ref([]);
+const clientName = ref('');
 let campaigns = ref([]);
-let client_id=ref(null);
 
 const form = reactive({
 	name: '',
-	client: null
+	client: clientId.value
 });
 
 onMounted(() => {
-  getAllClients();
-  getAllCampaigns();
+  getClientName();
+  getCampaignsByClientId();
 });
-const search = (event) => {
-    const query = event.query.toLowerCase();
-	let myObj = clients.value.filter(client => client.name.toLowerCase().includes(query));
-    dropdownItems.value = myObj.map(client => client.name);
-};
+
 
 const rules = { 
 	name: { required },
@@ -50,15 +56,16 @@ const createCampaign = async () => {
 	}
     campaignStore.submitCampaign(form).then(function (response) {
         toaster.success("Campaign created successfully");
-        getAllCampaigns();
+        getCampaignsByClientId();
     }).catch(function (error) {
         toaster.error("Error creating campaign");
         console.log(error);
     });
 };
 
-const getAllCampaigns = async () => {
-    campaignStore.getCampaigns().then(function (response) {
+const getCampaignsByClientId = async () => {
+    campaignStore.getCampaignsByClientId(clientId.value).then(function (response) {
+        console.log(response.data);
         campaigns.value = response.data;
     }).catch(function (error) {
         toaster.error("Error fetching campaigns");
@@ -66,12 +73,10 @@ const getAllCampaigns = async () => {
     }).finally(function () {
     });
 };
-const getAllClients = async () => {
-    clientStore.getClients().then(function (response) {
-        clients.value = response.data.content;
-        dropdownItems.value = [...clients.value];
+const getClientName = async () => {
+    clientStore.getClientByClientId(clientId.value).then(function (response) {
+        clientName.value = response.data.name;
     }).catch(function (error) {
-        toaster.error("Error fetching clients");
         console.log(error);
     }).finally(function () {
         
@@ -81,7 +86,7 @@ const getAllClients = async () => {
 const deleteCampaign = (campaign) => {
         campaignStore.deleteCampaign(campaign.id).then(function (response) {
             toaster.success("Campaign deleted successfully");
-            getAllCampaigns();
+            getCampaignsByClientId();
         }).catch(function (error) {
             toaster.error("Error deleting campaign");
             console.log(error);
@@ -94,17 +99,13 @@ const editClient = (client) => {
     client.isEditing = true;
 };
 
-const onClientChange = (event) => {
-	form.client = clients.value.find(client => client.name === event.value).id;
-	console.log(form.client_id);
-};
 
 
 const updateCampaign = (client) => {
     client.isEditing = false;
     campaignStore.updateCampaign(client).then(response => {
         toaster.success("Campaign updated successfully");
-        getAllClients();
+        getClientName();
     }).catch(error => {
         toaster.error("Error updating client");
         console.log(error);
@@ -118,7 +119,7 @@ const fileUpload = (event) => {
 const deleteRecord = (event, campaign) => {
     confirm.require({
         target: event.currentTarget,
-        message: 'Do you want to delete this campaign?',
+        message: 'Do you wish to delete this campaign?',
         // icon: 'bx bx-trash text-danger',
 		icon: '',
         rejectProps: {
@@ -138,11 +139,6 @@ const deleteRecord = (event, campaign) => {
         }
     });
 };
-
-const getClientName = (client_id) => {
-    if(!client_id) return '';
-    return clients.value.find(client => client.id === client_id).name
-}
 
 const vFocus = {
     mounted: (el) => el.focus()
@@ -171,13 +167,13 @@ const vFocus = {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-if="campaigns" v-for="(campaign, index) in campaigns" :key="campaign.id">
+                                                    <tr v-if="campaigns.length > 0" v-for="(campaign, index) in campaigns" :key="campaign.id">
                                                         <td>{{ index + 1 }}</td>
                                                         <td v-if="!campaign.isEditing">{{ campaign.name }}</td>
                                                         <td v-else>
                                                             <input v-focus type="text" v-model="campaign.name" @blur="updateCampaign(campaign)" @keyup.enter="updateCampaign(campaign)" class="no-border-input"/>
                                                         </td>
-                                                        <td>{{ getClientName(campaign.client)}}</td>
+                                                        <td>{{ clientName }}</td>
                                                         <td>
                                                             <div class="d-flex order-actions">
                                                                 <a v-if="!campaign.isEditing" @click="editClient(campaign)" href="javascript:;">
@@ -186,8 +182,8 @@ const vFocus = {
                                                                 <a v-else @click="updateCampaign(campaign)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bx-check text-success'></i>
                                                                 </a>
-                                                                <router-link to="/admin-activations" class="ms-3">
-                                                                    <i class='bx bxs-bullseye'></i>
+                                                                <router-link :to="`/admin-activations?campaign=${campaign.id}`" v-tooltip.bottom="'View Activations'" class="ms-3">
+                                                                    <i class='bx bxs-bullseye text-success'></i>
                                                                 </router-link>
                                                                 <a @click="deleteRecord($event,campaign)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash'></i>
@@ -197,10 +193,7 @@ const vFocus = {
                                                         </td>
                                                     </tr>
                                                     <tr v-else>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td colspan="7" class="text-center"></td>
+                                                        <td colspan="7" class="text-center text-danger">{{ clientName }} has no campaigns.</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -218,14 +211,6 @@ const vFocus = {
                                                     <input v-model="form.name" type="text" class="form-control" id="input1" />
                                                     <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                                                         <div class="text-danger">Campaign name is required</div>
-                                                    </div>
-                                                </div>
-                                                <div class="card flex justify-center">
-													<label for="input1" class="form-label">Choose Client</label>
-                                                    <AutoComplete v-model="client_id" forceSelection dropdown :suggestions="dropdownItems" 
-														@item-select="onClientChange" @complete="search" field="name" />
-                                                    <div class="input-errors" v-for="error of v$.client.$errors" :key="error.$uid">
-                                                        <div class="text-danger">Client is required</div>
                                                     </div>
                                                 </div>
                                                 <div class="card flex justify-center">

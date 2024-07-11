@@ -139,7 +139,7 @@ const vFocus = {
 							  <td>
 
 								<button type="button" class="btn btn-primary">
-									<RouterLink to="/campaigns">View Campaign</RouterLink>
+									<RouterLink :to="`/campaigns?client=${client.id}`">View Campaign</RouterLink>
 									 <!-- <span class="badge bg-dark">4</span> -->
 								</button>
 								
@@ -160,9 +160,6 @@ const vFocus = {
 							  </td>
 							</tr>
 							<tr v-else>
-							  <td></td>
-							  <td></td>
-							  <td></td>
 							  <td colspan="7" class="text-center text-danger">No clients found</td>
 							</tr>
 						  </tbody>
@@ -176,13 +173,13 @@ const vFocus = {
 					<div class="card-body">
 					  <div class="table-responsive">
 						<div class="position-relative">
-						  <input v-model="form.name" @input="onInput" type="text" class="form-control ps-5 radius-30" placeholder="Client Name">
+						  <input v-model="form.name" @input="onInput" type="text" class="form-control ps-5 " placeholder="Client Name">
 						  <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
 							<div class="text-danger">Client Name is required</div>
 						  </div>
 						</div>
 						<div class="ms-auto mt-6">
-						  <a @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+						  <a @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn  mt-2 mt-lg-0">
 							<i class="bx bxs-plus-square"></i>Create Client
 						  </a>
 						</div>
