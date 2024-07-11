@@ -29,9 +29,8 @@
               >
                 {{ suggestion }}
               </li>
-          </ul>
+            </ul>
           </div>
-          
         </div>
 
         <div class="user-box dropdown px-3">
@@ -44,32 +43,45 @@
   </header>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      query: '',
-      suggestions: ['Project Alpha', 'Project Beta', 'Project Gamma', 'Project Delta'],
-      filteredSuggestions: []
-    };
-  },
-  methods: {
-    onInput() {
-      if (this.query.length > 0) {
-        this.filteredSuggestions = this.suggestions.filter(suggestion =>
-          suggestion.toLowerCase().includes(this.query.toLowerCase())
-        );
-      } else {
-        this.filteredSuggestions = [];
-      }
-    },
-    selectSuggestion(suggestion) {
-      this.query = suggestion;
-      this.filteredSuggestions = [];
-    }
+<script setup>
+import { ref } from 'vue';
+
+const query = ref('');
+const suggestions = ['Project Alpha', 'Project Beta', 'Project Gamma', 'Project Delta'];
+const filteredSuggestions = ref([]);
+
+const onInput = () => {
+  if (query.value.length > 0) {
+    filteredSuggestions.value = suggestions.filter(suggestion =>
+      suggestion.toLowerCase().includes(query.value.toLowerCase())
+    );
+  } else {
+    filteredSuggestions.value = [];
   }
 };
+
+const selectSuggestion = (suggestion) => {
+  query.value = suggestion;
+  filteredSuggestions.value = [];
+};
 </script>
+
+<style>
+/* Add your styles here */
+.suggestions-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.suggestions-list li {
+  cursor: pointer;
+  padding: 5px;
+}
+.suggestions-list li:hover {
+  background-color: #eee;
+}
+</style>
+
 
 <style scoped>
 .form-control {
@@ -136,7 +148,7 @@ html.dark-theme .input-group-text {
   position: absolute;
   top: 100%;
   left: 43px;
-  width: 592.05px;
+  width: 89.1%;;
   background-color: #1C1C1C;
   border: 1px solid #000000;
   z-index: 1000;
