@@ -136,7 +136,7 @@ const getAllPromoters = async () => {
 };
 const getAllUsers = async () => {
   showLoading.value = true;
-  userStore.getUsers().then(response => {
+  userStore.getUserByRole('TTG_TALENT').then(response => {
     users.value = response.data.content;
     dropdownItems.value = [...users.value];
   }).catch(error => {
@@ -168,10 +168,6 @@ let promoterId = ref(null);
 
 const position = ref('top');
 const dropdownItems = ref([]);
-
-const getFullName = (promoter) => {
-   return users.value.find(user => user.id === promoter.user).firstName + ' ' + users.value.find(user => user.id === promoter.user).lastName
-}
 
 const search = (event) => {
     const query = event.query.toLowerCase();
@@ -325,7 +321,7 @@ const formatSize = (bytes) => {
                 </thead>
                 <tbody>
                   <tr v-if="promoters.length > 0" v-for="promoter in promoters" :key="promoter.id">
-                    <td>{{ getFullName(promoter) }}</td>
+                    <td>{{ promoter.userDetails.firstName }}{{ promoter.userDetails.lastName }}</td>
                     <td> <Badge :value="promoter.height" severity="success"></Badge></td>
                     <td><Badge :value="promoter.dressSize" severity="info"></Badge></td>
                     <td><Badge :value="promoter.pantsSize" severity="warn"></Badge></td>

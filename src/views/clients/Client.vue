@@ -125,18 +125,25 @@ const vFocus = {
 							<tr>
 							  <th>#</th>
 							  <th>Name</th>
-							  <th>Date Created</th>
+							  <th>View Campaign</th>
 							  <th>Action</th>
 							</tr>
 						  </thead>
 						  <tbody>
-							<tr v-if="clients" v-for="(client, index) in clients" :key="client.id">
+							<tr v-if="clients.length > 0" v-for="(client, index) in clients" :key="client.id">
 							  <td>{{ index + 1 }}</td>
 							  <td v-if="!client.isEditing">{{ client.name }}</td>
 							  <td v-else>
 								<input v-focus type="text" v-model="client.name" @blur="updateClient(client)" @keyup.enter="updateClient(client)" class="no-border-input"/>
 							  </td>
-							  <td></td>
+							  <td>
+
+								<button type="button" class="btn btn-primary">
+									<RouterLink to="/campaigns">View Campaign</RouterLink>
+									 <!-- <span class="badge bg-dark">4</span> -->
+								</button>
+								
+								</td>
 							  <td>
 								<div class="d-flex order-actions">
 								  <a v-if="!client.isEditing" @click="editClient(client)" href="javascript:;">

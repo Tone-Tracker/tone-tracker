@@ -38,13 +38,13 @@ $(function() {
 		}), 
 
 		
-		$(".toggle-icon").click(function() {
+		
 			$(".wrapper").hasClass("toggled") ? ($(".wrapper").removeClass("toggled"), $(".sidebar-wrapper").unbind("hover")) : ($(".wrapper").addClass("toggled"), $(".sidebar-wrapper").hover(function() {
 				$(".wrapper").addClass("sidebar-hovered")
 			}, function() {
 				$(".wrapper").removeClass("sidebar-hovered")
 			}))
-		}),
+		
 		$(document).ready(function() {
 			$(window).on("scroll", function() {
 				$(this).scrollTop() > 300 ? $(".back-to-top").fadeIn() : $(".back-to-top").fadeOut()

@@ -40,6 +40,27 @@ const getUserRole = (role) => {
                     </div>
                 </div>
             </div> -->
+
+            <ul class="metismenu mm-show" id="menu">
+				<li>
+					<a href="javascript:;" class="has-arrow">
+						<div class="parent-icon"><i class="bx bx-home-alt"></i>
+						</div>
+						<div class="menu-title">Dashboard</div>
+					</a>
+					<ul class="mm-collapse">
+						<li> <a href="index.html"><i class="bx bx-radio-circle"></i>Default</a>
+						</li>
+						<li> <a href="index2.html"><i class="bx bx-radio-circle"></i>Alternate</a>
+						</li>
+						<li> <a href="index3.html"><i class="bx bx-radio-circle"></i>Graphical</a>
+						</li>
+					</ul>
+				</li>
+				
+				
+			
+			</ul>
             <div class="content">
                 <nav class="sidebar">
                      <!-- <AdminNav/> -->

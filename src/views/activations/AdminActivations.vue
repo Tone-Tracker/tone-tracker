@@ -153,6 +153,9 @@ const getCampaignName = (campaign_id) => {
 											<div class="d-flex order-actions">
 												<router-link :to="`/edit-activation/${activation.id}`" class="">
 													<i class='bx bxs-edit'></i></router-link>
+													<router-link to="/tasks" class="ms-3">
+														<i class='bx bxs-bullseye'></i>
+													</router-link>
 												<a @click="deleteRecord($event,activation)" label="Delete" severity="danger" href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
 												<ConfirmPopup></ConfirmPopup>
 											</div>

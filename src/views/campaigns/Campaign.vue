@@ -186,6 +186,9 @@ const vFocus = {
                                                                 <a v-else @click="updateCampaign(campaign)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bx-check text-success'></i>
                                                                 </a>
+                                                                <router-link to="/admin-activations" class="ms-3">
+                                                                    <i class='bx bxs-bullseye'></i>
+                                                                </router-link>
                                                                 <a @click="deleteRecord($event,campaign)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash'></i>
                                                                 </a>

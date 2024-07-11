@@ -20,15 +20,19 @@ const selectedClient = ref('');
 const tasks = ref([]);
 const users = ref([]);
 const clients = ref([]);
-
+const promoters = ref([]);
 
 const clientStore = useClientStore();
 const taskStore = useTask();
 const userStore = useUserStore();
+const promoterStore = usePromoter();
+
 onMounted(() => {
+  getAllPromoters();
     getUsers();
     getTasks();
 	  getAllClients();
+    
 });
 
 const statuses = ref([
@@ -52,7 +56,7 @@ const getTasks = async () => {
 
 const getUsers = async () => {
 	userStore.getUsers().then(function (response) {
-    console.log(response.data)
+    
 		users.value = response.data.content
 	}).catch(function (error) {
 		toaster.error("Error fetching promoter");
@@ -61,6 +65,19 @@ const getUsers = async () => {
 		//
 	})
   }
+  
+
+  const getAllPromoters = async () => {
+  
+  userStore.getUserByRole('TTG_TALENT').then(response => {
+    promoters.value = response.data.content;
+  }).catch(error => {
+    toaster.error("Error fetching users");
+    console.log(error);
+  }).finally(() => {
+    
+  });
+};
 
 const getAllClients = () => {
   clientStore.getClients().then(function (response) {
@@ -112,7 +129,7 @@ const redirectToProfile = (user) => {
           <div class="">
             <h4 class="mb-2 ml-2">Available Promoters</h4>
           </div>
-          <div v-for="user in users" :key="user.id" class="col-img ">
+          <div v-for="user in promoters" :key="user.id" class="col-img ">
             <div  class="gallery">
             
                 <!-- <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid"> -->

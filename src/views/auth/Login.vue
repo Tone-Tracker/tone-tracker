@@ -40,7 +40,12 @@ setup(){
 				   useStorage('user', response.data.user);
 					toaster.success("Welcome back");
 					setTimeout(() => {
-						router.push('dashboard');
+						if(response.data.user.role == 'TTG_SUPER_ADMIN'){
+							router.push('/clients');
+						}else{
+							router.push('dashboard');
+						}
+						
 					},1000)
 				}).catch(function (error) {
 					toaster.error("Invalid credentials");

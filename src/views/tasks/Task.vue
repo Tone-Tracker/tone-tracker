@@ -38,12 +38,12 @@ onMounted(() => {
 
 
     const statuses = ref([
-    { name: 'Finished', code: 'FINISHED' },
-    { name: 'Planned', code: 'PLANNED' },
-    { name: 'On Track', code: 'ONTRACK' },
-    { name: 'Delayed', code: 'DELAYED' },
-    { name: 'At Risk', code: 'ATRISK' }
-]);
+        { name: 'Finished', code: 'FINISHED' },
+        { name: 'Planned', code: 'PLANNED' },
+        { name: 'On Track', code: 'ONTRACK' },
+        { name: 'Delayed', code: 'DELAYED' },
+        { name: 'At Risk', code: 'ATRISK' }
+    ]);
 
 const status = ref(null);
 const form = reactive({
@@ -265,6 +265,7 @@ const deleteRecord = (event, task) => {
                                                   <a @click="openModal('top',task)" href="javascript:;" >
                                                     <i class='bx bxs-edit'></i>
                                                   </a>
+                                                  
                                                   <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-3">
                                                     <i class='bx bxs-trash'></i>
                                                   </a>
