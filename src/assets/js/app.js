@@ -24,18 +24,18 @@ $(function() {
 
 
 
-		$(".dark-mode").on("click", function() {
-			alert("dark mode")
+		// $(".dark-mode").on("click", function() {
+		// 	alert("dark mode")
 
-			if($(".dark-mode-icon i").attr("class") == 'bx bx-sun') {
-				$(".dark-mode-icon i").attr("class", "bx bx-moon");
-				$("html").attr("class", "light-theme")
-			} else {
-				$(".dark-mode-icon i").attr("class", "bx bx-sun");
-				$("html").attr("class", "dark-theme")
-			}
+		// 	if($(".dark-mode-icon i").attr("class") == 'bx bx-sun') {
+		// 		$(".dark-mode-icon i").attr("class", "bx bx-moon");
+		// 		$("html").attr("class", "light-theme")
+		// 	} else {
+		// 		$(".dark-mode-icon i").attr("class", "bx bx-sun");
+		// 		$("html").attr("class", "dark-theme")
+		// 	}
 
-		}), 
+		// }), 
 
 		
 		
@@ -116,47 +116,9 @@ $(function() {
 			$("html").addClass("color-header headercolor8"), $("html").removeClass("headercolor1 headercolor2 headercolor4 headercolor5 headercolor6 headercolor7 headercolor3")
 		})
 		
-	// sidebar colors 
-	$('#sidebarcolor1').click(theme1);
-	$('#sidebarcolor2').click(theme2);
-	$('#sidebarcolor3').click(theme3);
-	$('#sidebarcolor4').click(theme4);
-	$('#sidebarcolor5').click(theme5);
-	$('#sidebarcolor6').click(theme6);
-	$('#sidebarcolor7').click(theme7);
-	$('#sidebarcolor8').click(theme8);
 
-	function theme1() {
-		$('html').attr('class', 'color-sidebar sidebarcolor1');
-	}
 
-	function theme2() {
-		$('html').attr('class', 'color-sidebar sidebarcolor2');
-	}
-
-	function theme3() {
-		$('html').attr('class', 'color-sidebar sidebarcolor3');
-	}
-
-	function theme4() {
-		$('html').attr('class', 'color-sidebar sidebarcolor4');
-	}
-
-	function theme5() {
-		$('html').attr('class', 'color-sidebar sidebarcolor5');
-	}
-
-	function theme6() {
-		$('html').attr('class', 'color-sidebar sidebarcolor6');
-	}
-
-	function theme7() {
-		$('html').attr('class', 'color-sidebar sidebarcolor7');
-	}
-
-	function theme8() {
-		$('html').attr('class', 'color-sidebar sidebarcolor8');
-	}
+	
 	
 	
 });
