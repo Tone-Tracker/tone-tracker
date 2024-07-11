@@ -1,30 +1,20 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue'
-import axios from "axios";
+import axiosInstance from '@/axiosInstance';
 import router from '@/router';
-import useToaster from '@/composables/useToaster';
 
 export const useAuth = defineStore('auth', () => {
-
-    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-    const toaster = useToaster();
    
-    function attempt(form) {      
-     return axios.post(`${SERVER_URL}/authenticate`, {
-        email: form.email,
-        password: form.password
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })    
+    function attempt(form) { 
+      return axiosInstance.post(`/authenticate`,form,);  
     }
 
     const logout = () => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      toaster.success("Logout successful");
-      router.push('/')
+      router.push('/').then(() => {
+        window.location.reload()
+      })
     }
 
     const token = computed(() => {
@@ -34,5 +24,8 @@ export const useAuth = defineStore('auth', () => {
       return localStorage.getItem('user')
     })
   
-    return { attempt, logout, token, user }
+    const getRoles = () => {
+        return axiosInstance.get(`/api/roles`);
+    }
+    return { attempt, logout, token, user,getRoles }
   })

@@ -129,7 +129,6 @@
   </script>
   
   <style scoped>
-  @import 'https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css';
   
   body {
     background-color: #1e1e1e;

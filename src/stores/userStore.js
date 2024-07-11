@@ -41,6 +41,10 @@ export const useUserStore = defineStore('useUserStore', () => {
       return axiosInstance.get(`/api/users`);
     }
 
+    const createStaffMember = (data) => {
+      return axiosInstance.post(`/api/users`,data);
+    }
+
     const updateUser = (id, data) => {
       return axiosInstance.put(`/api/users/${id}`,data);
     }
@@ -48,5 +52,5 @@ export const useUserStore = defineStore('useUserStore', () => {
       return axiosInstance.delete(`/api/users/${id}`);
     }
       
-    return { submitUser,getUsers,updateUser,deleteUser }
+    return { submitUser,createStaffMember,getUsers,updateUser,deleteUser }
   })

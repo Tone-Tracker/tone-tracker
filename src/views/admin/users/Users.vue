@@ -5,10 +5,15 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
 import UsersModal from './UsersModal.vue';
 import { useUserStore } from '@/stores/userStore';
 import useToaster from '@/composables/useToaster';
-
+import { useAuth } from '@/stores/auth';
+import { useConfirm } from "primevue/useconfirm";
 
 const userStore = useUserStore();
 const toaster = useToaster();
+const auth = useAuth();
+const confirm = useConfirm();
+const currentUser = JSON.parse(auth.user);
+
 let users = ref([]);
 let showLoading = ref(false);
 let modalData = reactive({});
@@ -40,7 +45,7 @@ const onInput = () => {
 	 }
   };
 
-  const getAllUsers = () => {
+  const getAllUsers = async () => {
 	showLoading.value = true;
 	userStore.getUsers().then(function (response) {
 		showLoading.value = false;
@@ -58,7 +63,7 @@ const onInput = () => {
   }
 
   const deleteUser = (user) => {
-	if(confirm("Are you sure you want to delete this user?")) {
+	if(isMyProfile(user)) return
 		userStore.deleteUser(user.id).then(function (response) {
 		toaster.success("User deleted successfully");
 		//refetch data
@@ -67,9 +72,35 @@ const onInput = () => {
 		toaster.error("Error deleting user");
 		console.log(error);
 	   })	
-  }
 }
 
+const isMyProfile = (user) => {
+	return user.id === currentUser.id
+}
+
+const deleteRecord = (event, user) => {
+    confirm.require({
+        target: event.currentTarget,
+        message: 'Do you want to delete this user?',
+        // icon: 'bx bx-trash text-danger',
+		icon: '',
+        rejectProps: {
+            label: 'Cancel',
+            severity: '',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Delete',
+            severity: 'danger'
+        },
+        accept: () => {
+			deleteUser(user);
+        },
+        reject: () => {
+            //do nothing
+        }
+    });
+};
 </script>
 <template>
     <Layout>
@@ -116,7 +147,11 @@ const onInput = () => {
 											<div class="d-flex order-actions">
 												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
 													<i class='bx bxs-edit'></i></a>
-												<a @click="deleteUser(user)" href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
+												<a @click="deleteRecord($event,user)" href="javascript:;" class="ms-3">
+													<i v-if="!isMyProfile(user)" class='bx bxs-trash'></i>
+													<i v-if="isMyProfile(user)" class='bx bx-stop-circle text-danger cursor-no-drop'></i>
+												</a>
+												<ConfirmPopup></ConfirmPopup>
 											</div>
 										</td>
 									</tr>

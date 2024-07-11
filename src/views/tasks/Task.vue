@@ -1,14 +1,227 @@
 <script setup>
+import moment from 'moment';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
-import TaskModal from './TaskModal.vue';
+import Dialog from 'primevue/dialog';
+import AutoComplete from 'primevue/autocomplete';
+import InputText from 'primevue/inputtext';
+import ConfirmPopup from 'primevue/confirmpopup';
+import InputNumber from 'primevue/inputnumber';
+import Select from 'primevue/select';
+import DatePicker from 'primevue/datepicker';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+import { useActivation } from '@/stores/activation';
+import { useTask } from '@/stores/task';
 import { onMounted, ref, reactive } from 'vue';
+import useToaster from '@/composables/useToaster';
+import { useConfirm } from "primevue/useconfirm";
 
-let showModal = ref(true);
 
-const hideModal = () => {
-	showModal.value = false
+
+const visible = ref(false);
+const activations = ref([]);
+const tasks = ref([]);
+const activation = ref(null);
+const position = ref('top');
+const dropdownItems = ref([]);
+
+const activationStore = useActivation();
+const toaster = useToaster();
+const taskStore = useTask();
+const confirm = useConfirm();
+
+onMounted(() => {
+    getActivations();
+    getTasks();
+})
+
+
+    const statuses = ref([
+    { name: 'Finished', code: 'FINISHED' },
+    { name: 'Planned', code: 'PLANNED' },
+    { name: 'On Track', code: 'ONTRACK' },
+    { name: 'Delayed', code: 'DELAYED' },
+    { name: 'At Risk', code: 'ATRISK' }
+]);
+
+const status = ref(null);
+const form = reactive({
+    status: '',
+	plannedEndDate: null,
+	timeRecord: null,
+    completion: null,
+    jobNumber: null,
+    activation: null
+});
+
+const rules = { 
+    status: { required },
+	plannedEndDate: { required },
+	timeRecord: { required },
+	jobNumber: { required },
+	completion: { required },
+    activation: { required },
+};
+const v$ = useVuelidate(rules, form);
+
+const onSubmit = async () => {
+    const isFormValid = await v$.value.$validate();
+    if (!isFormValid) {return;}
+    if(isEdit.value){
+        taskStore.update(taskId.value,form).then(function (response) {
+            toaster.success("Task updated successfully");
+            visible.value = false;
+            getTasks();
+        }).catch(function (error) {
+            toaster.error("Error updating task");
+            console.log(error);
+        });
+    } 
+    else {
+        taskStore.submit(form).then(function (response) {
+        toaster.success("Task created successfully");
+        visible.value = false;
+        getTasks();
+    }).catch(function (error) {
+        toaster.error("Error creating task");
+        console.log(error);
+    });
+    }
+    
+};
+
+const onStatusChange = (event) => {
+    form.status = event.value.code;
 }
+
+const onPlannedEndDateChange = (event) => {
+    form.plannedEndDate = moment(event).format('YYYY-MM-DD');
+}
+
+const getTasks = async () => {
+  taskStore.getTasks().then(response => {
+    tasks.value = response.data.content;
+  }).catch(error => {
+    toaster.error("Error fetching tasks");
+    console.log(error);
+  }).finally(() => {
+    //
+  });
+};
+const getActivations = async () => {
+  activationStore.getActivations().then(response => {
+    activations.value = response.data.content;
+    dropdownItems.value = [...activations.value];
+  }).catch(error => {
+    toaster.error("Error fetching activations");
+    console.log(error);
+  }).finally(() => {
+    //
+  });
+};
+
+const search = (event) => {
+    const query = event.query.toLowerCase();
+	let myObj = activations.value.filter(activation => activation.name.toLowerCase().includes(query));
+    dropdownItems.value = myObj.map(activation => activation.name);
+};
+
+const onActivationChange = (event) => {
+	form.activation = activations.value.find(activation => activation.name === event.value).id;
+};
+const getActivationName =  (id) => {
+    return activations.value.find(activation => activation.id === id).name;
+}
+
+const taskId = ref(null);
+const isEdit = ref(false);
+const openModal = (pos,task) => {
+    if(task) {//edit
+    isEdit.value = true;
+    taskId.value=task.id;
+    form.activation = task.activation;
+    activation.value = activations.value.find(activation => activation.id === task.activation).name;
+    status.value = statuses.value.find(stat => stat.code === task.status);
+    form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
+    Object.assign(form, {
+    // status: task.status,
+     plannedEndDate: task.plannedEndDate,
+     timeRecord: task.timeRecord,
+     completion: task.completion,
+     jobNumber: Number(task.jobNumber),
+     activation: task.activation
+    })
+  }else{
+    isEdit.value = false;
+    taskId.value = null;
+    activation.value = null;
+    status.value = null;
+    form.activation = null;
+    Object.assign(form, {
+     status: null,
+     plannedEndDate: null,
+     timeRecord: null,
+     completion: null,
+     jobNumber: null,
+     activation: null
+    })
+  }  
+    position.value = pos;
+    visible.value = true;
+}
+
+const getStatus = (status) => {
+    return statuses.value.find(stat => stat.code === status).name;
+}
+
+const getClass = (status) => {
+    if(status === 'FINISHED') {
+        return 'risk-finished';
+    } else if(status === 'PLANNED') {
+        return 'risk-planned';
+    } else if(status === 'ONTRACK') {
+        return 'risk-on-track';
+    } else if(status === 'DELAYED') {
+        return 'risk-delayed';
+    } else if(status === 'ATRISK') {
+        return 'risk-at-risk';
+    }
+}
+
+const deleteTask = (task) => {
+  taskStore.deleteTask(task.id).then(function (response) {
+    toaster.success("Task deleted successfully");
+    getTasks();
+  }).catch(function (error) {
+    toaster.error("Error deleting task");
+    console.log(error);
+  });
+}
+
+
+const deleteRecord = (event, task) => {
+  confirm.require({
+    target: event.currentTarget,
+    message: 'Do you want to delete this task?',
+    icon: '',
+    rejectProps: {
+      label: 'Cancel',
+      severity: '',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Delete',
+      severity: 'danger'
+    },
+    accept: () => {
+      deleteTask(task);
+    },
+    reject: () => {
+      // do nothing
+    }
+  });
+};
 
 </script>
 <template>
@@ -18,78 +231,49 @@ const hideModal = () => {
                 <BreadCrumb title="Tasks" icon="bx bx-task" />
                 <div class="card">
                     <div class="card-body">
-                            <div class="table-container-colour p-5">
+                            <div class="table-container-colour pt-2 p-5">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h5>Main tasks to set up</h5>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">Add New Task</button>
+                                    <button type="button" class="btn maz-gradient-btn" @click="openModal('top')" >Add New Task</button>
                                 </div>
                                 <table class="table table-dark table-bordered">
                                     <thead>
                                         <tr class="table-dark-color">
-                                            <th>Project</th>
+                                            <th>Activation</th>
                                             <th>Task</th>
                                             <th>Risk</th>
                                             <th>Planned End date</th>
                                             <th>Time Record</th>
                                             <th>Project Responsible</th>
                                             <th>Completion</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="table-dark-black">
-                                            <td>Project 1</td>
-                                            <td>0021</td>
-                                            <td class="risk-at-risk">At risk</td>
-                                            <td>08-09-2023</td>
-                                            <td>04:00:00</td>
-                                            <td>Brandley</td>
-                                            <td>17%</td>
+                                        <tr v-for="task in tasks" :key="task.id" class="table-dark-black">
+                                            <td>{{ getActivationName(task.activation) }}</td>
+                                            <td>{{ task.jobNumber }}</td>
+                                            <td  :class="getClass(task.status)">
+                                                {{ getStatus(task.status) }}
+                                            </td>
+                                            <td>{{task.plannedEndDate}}</td>
+                                            <td>{{task.timeRecord}}</td>
+                                            <td>--To be Decided--</td>
+                                            <td>{{task.completion}}</td>
+                                            <td>
+                                                <div class="d-flex order-actions">
+                                                  <a @click="openModal('top',task)" href="javascript:;" >
+                                                    <i class='bx bxs-edit'></i>
+                                                  </a>
+                                                  <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-3">
+                                                    <i class='bx bxs-trash'></i>
+                                                  </a>
+                                                  <ConfirmPopup></ConfirmPopup>
+                                                </div>
+                                                
+                                              </td>
                                         </tr>
-                                        <tr class="table-dark-light">
-                                            <td>Project 2</td>
-                                            <td>0034</td>
-                                            <td class="risk-on-track">On track</td>
-                                            <td>08-09-2023</td>
-                                            <td>05:10:00</td>
-                                            <td>Michael</td>
-                                            <td>28%</td>
-                                        </tr>
-                                        <tr class="table-dark-black">
-                                            <td>Project 3</td>
-                                            <td>0042</td>
-                                            <td class="risk-on-track">On track</td>
-                                            <td>08-09-2023</td>
-                                            <td>08:13:00</td>
-                                            <td>John</td>
-                                            <td>34%</td>
-                                        </tr>
-                                        <tr class="table-dark-light">
-                                            <td>Project 4</td>
-                                            <td>0051</td>
-                                            <td class="risk-planned">Planned</td>
-                                            <td>08-09-2023</td>
-                                            <td>00:18:00</td>
-                                            <td>Thomas</td>
-                                            <td>10%</td>
-                                        </tr>
-                                        <tr class="table-dark-black">
-                                            <td>Project 5</td>
-                                            <td>0058</td>
-                                            <td class="risk-on-track">On track</td>
-                                            <td>08-09-2023</td>
-                                            <td>13:05:00</td>
-                                            <td>Mark</td>
-                                            <td>94%</td>
-                                        </tr>
-                                        <tr class="table-dark-light">
-                                            <td>Project 6</td>
-                                            <td>0060</td>
-                                            <td class="risk-delayed">Delayed</td>
-                                            <td>08-09-2023</td>
-                                            <td>06:32:00</td>
-                                            <td>Sid</td>
-                                            <td>25%</td>
-                                        </tr>
+                                       
                                     </tbody>
                                 </table>
                             </div>
@@ -97,39 +281,78 @@ const hideModal = () => {
                     </div>
                 </div>
             </div>
-            <TaskModal v-if="showModal"
-            :showModal="showModal"
-            :modalData="modalData"
-            @closeModal="hideModal()"
-            />
+            <Dialog v-model:visible="visible" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
+
+                <form @submit.prevent="onSubmit" class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Select Activation</label>
+                             <AutoComplete v-model="activation" forceSelection dropdown :suggestions="dropdownItems" 
+                              @item-select="onActivationChange" @complete="search" field="name" placeholder="Select Activation" />
+                               <div class="input-errors" v-for="error of v$.activation.$errors" :key="error.$uid">
+                               <div class="text-danger">Activation is required</div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Job Number</label>
+                            <InputNumber v-model="form.jobNumber" inputId="withoutgrouping" :useGrouping="false" fluid />
+                               <div class="input-errors" v-for="error of v$.jobNumber.$errors" :key="error.$uid">
+                               <div class="text-danger">Job Number is required</div>
+                            </div>
+                    </div>                        
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Risk</label>
+                            <Select v-model="status" @change="onStatusChange($event)" :options="statuses" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" />
+                               <div class="input-errors" v-for="error of v$.status.$errors" :key="error.$uid">
+                               <div class="text-danger">Risk is required</div>
+                            </div>
+                    </div>                        
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Planned End Date</label>
+                            <DatePicker v-model="form.plannedEndDate" @date-select="onPlannedEndDateChange($event)" showButtonBar showIcon fluid :showOnFocus="true" />
+                               <div class="input-errors" v-for="error of v$.plannedEndDate.$errors" :key="error.$uid">
+                               <div class="text-danger">End date is required</div>
+                            </div>
+                    </div>                        
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Time Record</label>
+                               <InputNumber v-model="form.timeRecord" inputId="withoutgrouping" fluid />
+                               <div class="input-errors" v-for="error of v$.timeRecord.$errors" :key="error.$uid">
+                               <div class="text-danger">Time Record is required</div>
+                            </div>
+                    </div>                        
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Completion</label>
+                               <InputText type="text" v-model="form.completion" />
+                               <div class="input-errors" v-for="error of v$.completion.$errors" :key="error.$uid">
+                               <div class="text-danger">Completion is required</div>
+                            </div>
+                    </div>                        
+                    </div>
+
+                    <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
+                    </div>
+                    
+                </form>
+            </Dialog>
     </Layout>
 </template>
 <style scoped>
-.crm-header {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    padding-left: 0;
-}
-
-.crm-header img {
-    width: 50px;
-    margin-right: 15px;
-}
-
-.crm-header h1 {
-    margin: 0;
-}
-
-.table-dark {
-    background-color: #2c2c2c;
-}
-
-.btn-export,
-.btn-download {
-    margin: 10px 0;
-}
-
 .table-container-colour {
     background-color: #212020 !important;
 }
@@ -153,53 +376,12 @@ const hideModal = () => {
     border: none !important;
 }
 
-.filter-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.filter-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #1e90ff;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-}
-
-.filter-dropdown-content a {
-    color: white;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.filter-dropdown-content a:hover {
-    background-color: #0056b3;
-}
-
-.filter-icon {
-    width: 20px;
-    margin-left: 10px;
-    cursor: pointer;
-}
 
 .show {
     display: block;
 }
 
-.modal-content {
-    background-color: #1e1e1e;
-    color: white;
-}
 
-.modal-header,
-.modal-footer {
-    border: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
 .risk-at-risk {
     background-color: #ff0055;
@@ -215,76 +397,19 @@ const hideModal = () => {
     background-color: #ffa500;
     color: white;
 }
+.risk-finished {
+    background-color: #15ca20 !important;
+    color: white;
+}
 
 .risk-delayed {
     background-color: #b200ff;
     color: white;
 }
 
-.submit-button {
-    background: linear-gradient(90deg, #9b00ff, #00d2ff);
-    border: none;
+.my-card {
+    box-shadow: 0 0rem 0rem rgb(0 0 0 / 20%) !important;
+    margin-bottom: -15px;
 }
 
-.form-control {
-    background-color: transparent;
-    border: 1px solid #5e5e5e;
-    color: white;
-}
-
-.form-control:focus {
-    background-color: #1e1e1e;
-    border-color: #5e5e5e;
-}
-
-.btn-primary {
-    background: linear-gradient(90deg, #9b00ff, #00d2ff);
-    border: none;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(90deg, #9b00ff, #00d2ff);
-    opacity: 0.8;
-}
-
-.custom-close {
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 20px;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.custom-close:hover {
-    background-color: #555;
-}
-
-
-.form-custom {
-    border-radius: 5px;
-    border: 2px solid #5e5e5e;
-    margin: 0px;
-    padding: 20px;
-}
-
-.modal-header {
-    border-bottom: 1px solid #5e5e5e;
-}
-
-.modal-dialog {
-    max-width: 800px;
-}
-
-.space {
-    display: flex;
-    gap: 15px;
-}
-
-input:focus,
-button:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
 </style>

@@ -10,7 +10,57 @@ File: app.css
 
 */
 
+/* Override all input primevue input background */
+.p-inputtext {
+    background: #12181a !important;
+}
+.p-select-label{
+	background: #12181a !important;
+}
+.p-select-dropdown{
+	background: #3f3f46 !important;
+}
 
+.risk-finished {
+    background-color: #15ca20 !important;
+    color: white;
+}
+/* Hide arrows in input type number for Chrome, Safari, Edge, and Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide arrows in input type number for Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
+.online{
+    background-color: #15ca20 !important
+}
+.offline{
+    background-color: #fd3550!important
+}
+
+.round-guest {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 7px;
+}
+
+
+.status {
+    font-size: 14px;
+}
+
+.cursor-no-drop {
+	cursor: not-allowed
+}
 
 body {
 
@@ -41,7 +91,7 @@ body {
 }
 
 /* 
-This style was created by: Mazisi Msebele to reset btn border-radiusn globally
+This style was created by: Mazisi Msebele to reset btn border-radius globally
 */
 .btn{
 	border-radius: 0px !important;
@@ -3795,12 +3845,12 @@ form select.error:focus {
 
 
 
-input::placeholder {
+/* input::placeholder {
 
 	color: #000 !important;
 
 	opacity: .3 !important
-}
+} */
 
 
 
@@ -3834,7 +3884,8 @@ input::placeholder {
 .form-control:focus {
 	outline: none !important;
 	box-shadow: none !important;
-	border-color: initial !important;
+	/* border-color: initial !important; */
+	border-color: #34d399 !important;
 }
 
 

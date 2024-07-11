@@ -1,92 +1,85 @@
 <script setup>
 import { onMounted, ref, reactive } from 'vue';
-import AutoComplete from 'primevue/autocomplete';
-import FileUpload from 'primevue/fileupload';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import Layout from '@/views/shared/Layout.vue';
-import BreadCrumb from '@/components/BreadCrumb.vue';
-import useToaster from '@/composables/useToaster';
-import { useCampaignStore } from '@/stores/useCampaign';
-import { useClientStore } from '@/stores/useClient';
 import { useConfirm } from "primevue/useconfirm";
-
+import BreadCrumb from '@/components/BreadCrumb.vue';
+import Dialog from 'primevue/dialog';
+import Select from 'primevue/select';
+import useToaster from '@/composables/useToaster';
+import { useRegion } from '@/stores/useRegion';
+import { useUserStore } from '@/stores/userStore';
 
 const toaster = useToaster();
-const campaignStore = useCampaignStore();
-const clientStore = useClientStore();
+const regionStore = useRegion();
 const confirm = useConfirm();
+const userStore = useUserStore();
 
 let clients = ref([]);
-let dropdownItems = ref([]);
-let campaigns = ref([]);
-let client_id=ref(null);
+let regions = ref([]);
+const visible = ref(false);
+const position = ref('top');
+const regionalManager = ref(null);
+const regionalManagers = ref([]);
 
-const form = reactive({
-	name: '',
-	client: null
-});
+const form = reactive({name: ''});
 
 onMounted(() => {
-  getAllClients();
-  getAllCampaigns();
+  getRegions();
+  getRegionalManagers();
 });
-const search = (event) => {
-    const query = event.query.toLowerCase();
-	let myObj = clients.value.filter(client => client.name.toLowerCase().includes(query));
-    dropdownItems.value = myObj.map(client => client.name);
-};
 
 const rules = { 
-	name: { required },
-	client: { required }
+	name: { required }
 };
 const v$ = useVuelidate(rules, form);
 
-const createCampaign = async () => {
+const createRegion = async () => {
 	const isFormValid = await v$.value.$validate();
 	if (!isFormValid) {
 		return;
 	}
-    campaignStore.submitCampaign(form).then(function (response) {
-        toaster.success("Campaign created successfully");
-        getAllCampaigns();
-    }).catch(function (error) {
-        toaster.error("Error creating campaign");
-        console.log(error);
-    });
-};
-
-const getAllCampaigns = async () => {
-    campaignStore.getCampaigns().then(function (response) {
-        campaigns.value = response.data;
-    }).catch(function (error) {
-        toaster.error("Error fetching campaigns");
-        console.log(error);
-    }).finally(function () {
-    });
-};
-const getAllClients = async () => {
-    clientStore.getClients().then(function (response) {
-        clients.value = response.data.content;
-        dropdownItems.value = [...clients.value];
-    }).catch(function (error) {
-        toaster.error("Error fetching clients");
-        console.log(error);
-    }).finally(function () {
-        
-    });
-};
-
-const deleteCampaign = (campaign) => {
-        campaignStore.deleteCampaign(campaign.id).then(function (response) {
-            toaster.success("Campaign deleted successfully");
-            getAllCampaigns();
+    regionStore.submit(form).then(function (response) {
+        toaster.success("Region created successfully");        
+        // form.name = '';v$.value.$reset;
+        getRegions();
         }).catch(function (error) {
-            toaster.error("Error deleting campaign");
+        toaster.error("Error creating region");
+        console.log(error);
+    });
+};
+
+const getRegionalManagers = async () => {
+    userStore.getUsers().then(function (response) {
+        let users = response.data.content.filter(user => user.role === 'TTG_REGIONAL_MANAGER');
+        regionalManagers.value = users;
+    }).catch(function (error) {
+        toaster.error("Error fetching regions");
+        console.log(error);
+    }).finally(function () {
+    });
+};
+const getRegions = async () => {
+    regionStore.getRegions().then(function (response) {
+        regions.value = response.data.content;
+    }).catch(function (error) {
+        toaster.error("Error fetching regions");
+        console.log(error);
+    }).finally(function () {
+    });
+};
+
+
+const deleteRegion = (region) => {
+            regionStore.deleteRegion(region.id).then(function (response) {
+            toaster.success("Region deleted successfully");
+            getRegions();
+        }).catch(function (error) {
+            toaster.error("Error deleting region");
             console.log(error);
         });
-  
+    
 };
 
 const editClient = (client) => {
@@ -94,31 +87,21 @@ const editClient = (client) => {
     client.isEditing = true;
 };
 
-const onClientChange = (event) => {
-	form.client = clients.value.find(client => client.name === event.value).id;
-	console.log(form.client_id);
-};
-
-
-const updateCampaign = (client) => {
+const update = (client) => {
     client.isEditing = false;
-    campaignStore.updateCampaign(client).then(response => {
-        toaster.success("Campaign updated successfully");
-        getAllClients();
+    regionStore.update(client).then(response => {
+        toaster.success("Region updated successfully");
+        getRegions();
     }).catch(error => {
         toaster.error("Error updating client");
         console.log(error);
     });
 };
 
-const fileUpload = (event) => {
-    console.log(event);
-};
-
-const deleteRecord = (event, campaign) => {
+const deleteRecord = (event, region) => {
     confirm.require({
         target: event.currentTarget,
-        message: 'Do you want to delete this campaign?',
+        message: 'Do you want to delete this region?',
         // icon: 'bx bx-trash text-danger',
 		icon: '',
         rejectProps: {
@@ -131,7 +114,7 @@ const deleteRecord = (event, campaign) => {
             severity: 'danger'
         },
         accept: () => {
-			deleteCampaign(campaign);
+			deleteRegion(region);
         },
         reject: () => {
             //do nothing
@@ -139,21 +122,21 @@ const deleteRecord = (event, campaign) => {
     });
 };
 
-const getClientName = (client_id) => {
-    if(!client_id) return '';
-    return clients.value.find(client => client.id === client_id).name
-}
-
 const vFocus = {
     mounted: (el) => el.focus()
 };
+
+const openModal = (pos,region) => {
+    position.value = pos;
+    visible.value = true;
+}
 </script>
 
 <template>
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <BreadCrumb title="Campaigns" icon="" />
+                <BreadCrumb title="Regions" icon="bx bx-map" />
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -165,39 +148,40 @@ const vFocus = {
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>Campaign Name</th>
-                                                        <th>Client Name</th>
+                                                        <th>Region Name</th>
+                                                        <th>Regional Manager</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-if="campaigns" v-for="(campaign, index) in campaigns" :key="campaign.id">
+                                                    <tr v-if="regions.length > 0" v-for="(region, index) in regions" :key="region.id">
                                                         <td>{{ index + 1 }}</td>
-                                                        <td v-if="!campaign.isEditing">{{ campaign.name }}</td>
+                                                        <td v-if="!region.isEditing">{{ region.name }}</td>
                                                         <td v-else>
-                                                            <input v-focus type="text" v-model="campaign.name" @blur="updateCampaign(campaign)" @keyup.enter="updateCampaign(campaign)" class="no-border-input"/>
+                                                            <input v-focus type="text" v-model="region.name" @blur="update(region)" @keyup.enter="update(region)" class="no-border-input"/>
                                                         </td>
-                                                        <td>{{ getClientName(campaign.client)}}</td>
+                                                        <td>mmmmm</td>
                                                         <td>
                                                             <div class="d-flex order-actions">
-                                                                <a v-if="!campaign.isEditing" @click="editClient(campaign)" href="javascript:;">
+                                                                <a v-if="!region.isEditing" @click="editClient(region)" href="javascript:;">
                                                                     <i class='bx bxs-edit'></i>
                                                                 </a>
-                                                                <a v-else @click="updateCampaign(campaign)" href="javascript:;" class="ms-3">
+                                                                <a v-else @click="update(region)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bx-check text-success'></i>
                                                                 </a>
-                                                                <a @click="deleteRecord($event,campaign)" href="javascript:;" class="ms-3">
+                                                                <a  @click="openModal('top',region)" href="javascript:;" class="ms-3">
+                                                                    <i class='bx bx-user text-success'></i>
+                                                                </a>
+                                                                <a @click="deleteRecord($event,region)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash'></i>
                                                                 </a>
                                                                 <ConfirmPopup></ConfirmPopup>
                                                             </div>
                                                         </td>
+                                                       
                                                     </tr>
                                                     <tr v-else>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td colspan="7" class="text-center"></td>
+                                                        <td colspan="7" class="text-center text-danger">No regions found.</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -211,27 +195,18 @@ const vFocus = {
                                         <div class="table-responsive">
                                             <form class="">
                                                 <div class="col-md-12">
-                                                    <label for="input1" class="form-label">Campaign Name</label>
+                                                    <label for="input1" class="form-label">Region Name</label>
                                                     <input v-model="form.name" type="text" class="form-control" id="input1" />
                                                     <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-                                                        <div class="text-danger">Campaign name is required</div>
+                                                        <div class="text-danger">Region name is required</div>
                                                     </div>
                                                 </div>
-                                                <div class="card flex justify-center">
-													<label for="input1" class="form-label">Choose Client</label>
-                                                    <AutoComplete v-model="client_id" forceSelection dropdown :suggestions="dropdownItems" 
-														@item-select="onClientChange" @complete="search" field="name" />
-                                                    <div class="input-errors" v-for="error of v$.client.$errors" :key="error.$uid">
-                                                        <div class="text-danger">Client is required</div>
-                                                    </div>
-                                                </div>
-                                                <div class="card flex justify-center">
-                                                    <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" customUpload @uploader="fileUpload($event)" />
-                                                </div>
+                                                
+                                                
                                             </form>
                                             <div class="ms-auto mt-4">
-                                                <a @click="createCampaign" href="javascript:;" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                                                    <i class="bx bxs-plus-square"></i>Create Client
+                                                <a @click="createRegion" href="javascript:;" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+                                                    <i class="bx bxs-plus-square"></i>Create
                                                 </a>
                                             </div>
                                         </div>
@@ -243,6 +218,22 @@ const vFocus = {
                 </div>
             </div>
         </div>
+        <Dialog v-model:visible="visible" modal header="Add Regional Manager'" :style="{ width: '25rem' }">
+{{ regionalManagers }}
+            <form @submit.prevent="onSubmit" class="row g-3">
+                <div class="col-md-12">
+                    <div class="card my-card flex justify-center">
+                        <label for="input1" class="form-label">Regional Manager</label>
+                        <Select v-model="regionalManager" @change="onStatusChange($event)" :options="regionalManagers" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" />
+                          
+                </div>                        
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
+                </div>
+                
+            </form>
+        </Dialog>
     </Layout>
 </template>
 

@@ -1,3 +1,82 @@
+<script setup>
+import Layout from '../shared/Layout.vue';
+import BreadCrumb from '../../components/BreadCrumb.vue';
+import { onMounted, ref } from 'vue';
+import { useClientStore } from '@/stores/useClient';
+import { useActivation } from '@/stores/activation';
+import { useTask } from '@/stores/task';
+import { useRoute, useRouter } from 'vue-router';
+import TaskTable from '@/components/TaskTable.vue';
+
+const route = useRoute();
+const router = useRouter();
+
+
+const selectedClient = ref('');
+
+const tasks = ref([]);
+const activations = ref([]);
+const clients = ref([]);
+
+
+const clientStore = useClientStore();
+const taskStore = useTask();
+const activation = useActivation();
+onMounted(() => {
+    getActivations();
+    getTasks();
+	getAllClients();
+});
+
+const statuses = ref([
+    { name: 'Finished', code: 'FINISHED' },
+    { name: 'Planned', code: 'PLANNED' },
+    { name: 'On Track', code: 'ONTRACK' },
+    { name: 'Delayed', code: 'DELAYED' },
+    { name: 'At Risk', code: 'ATRISK' }
+]);
+
+const getTasks = async () => {
+  taskStore.getTasks().then(response => {
+    tasks.value = response.data.content;
+  }).catch(error => {
+    toaster.error("Error fetching tasks");
+    console.log(error);
+  }).finally(() => {
+    //
+  });
+};
+
+const getActivations = async () => {
+	activation.getActivations().then(function (response) {
+		activations.value = response.data.content
+	}).catch(function (error) {
+		toaster.error("Error fetching activations");
+		console.log(error);
+	}).finally(function () {
+		//
+	})
+  }
+
+const getAllClients = () => {
+  clientStore.getClients().then(function (response) {
+    clients.value = response.data.content;
+  }).catch(function (error) {
+    toaster.error("Error fetching users");
+    console.log(error);
+  }).finally(function () {
+    ///
+  })
+}
+
+
+const onClientChange = (event) => {
+	let client = selectedClient.value;
+	const currentPath = route.path;
+	router.push({ path: currentPath, query: { client } });
+}
+
+</script>
 <template>
 	<Layout>
 		<!--start page wrapper -->
@@ -73,12 +152,10 @@
 
 						<div class="d-flex align-items-center justify-content-space-between gap-3">
 							<div class="dropdown ms-auto">
-								<select class="form-select form-select-sm bg-maz-light"
+								<select v-model="selectedClient" @change="onClientChange($event)" class="form-select form-select-sm bg-maz-light"
 									aria-label=".form-select-sm example">
-									<option selected="">Client:</option>
-									<option value="1">Telkom</option>
-									<option value="2">Microsoft</option>
-									<option value="3">Vodacom</option>
+									<option :selected="true" :value="''">Client:</option>
+									<option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}</option>
 								</select>
 							</div>
 							<div class="dropdown ms-auto">
@@ -379,73 +456,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="card-body">
-								<div class="table-responsive table table-dark table-striped">
-									<table class="table align-middle mb-0">
-										<thead class="table-light">
-											<tr>
-												<th>Project</th>
-												<th>Task</th>
-												<th>Risk</th>
-												<th>Planned End-Date</th>
-												<th>Time Record</th>
-												<th>Project Responsible</th>
-												<th>Completion</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr class="maz-table-row-height">
-												<td>Project 1</td>
-												<td>5822</td>
-												<td style="background-color: #D1345B; text-align: center">At Risk</td>
-												<td>03-06-2020</td>
-												<td>18:00:00</td>
-												<td>Bransley</td>
-												<td>45%</td>
-											</tr>
-
-											<tr class="maz-table-row-height">
-												<td>Project 2</td>
-												<td>4620</td>
-												<td style="background-color: #1E90D9; text-align: center">On Track</td>
-												<td>05-06-2023</td>
-												<td>18:00:00</td>
-												<td>John Doe</td>
-												<td>80%</td>
-											</tr>
-
-											<tr class="maz-table-row-height">
-												<td>Project 3</td>
-												<td>6890</td>
-												<td style="background: #FE9947; text-align: center">Planned</td>
-												<td>06-06-2023</td>
-												<td>18:00:00</td>
-												<td>Dave</td>
-												<td>22%</td>
-											</tr>
-
-											<tr class="maz-table-row-height">
-												<td>Project 4</td>
-												<td>3765</td>
-												<td style="background-color: #1E90D9; text-align: center">On Track</td>
-												<td>14-07-2024</td>
-												<td>18:00:00</td>
-												<td>Msebele</td>
-												<td>22%</td>
-											</tr>
-											<tr class="maz-table-row-height">
-												<td>Project 5</td>
-												<td>9240</td>
-												<td style="background-color: #A639B6; text-align: center">Delayed</td>
-												<td>18-06-2025</td>
-												<td>18:00:00</td>
-												<td>Dave</td>
-												<td>12%</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
+							<TaskTable :statuses="statuses" :tasks="tasks"/>
 						</div>
 					</div>
 
@@ -876,11 +887,6 @@
 
 	</Layout>
 </template>
-<script setup>
-import Layout from '../shared/Layout.vue';
-import BreadCrumb from '../../components/BreadCrumb.vue';
-</script>
-
 <style>
 .maz-height {
 	font-size: 3rem;

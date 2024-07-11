@@ -1,4 +1,3 @@
-import './assets/css/app.css';
 import './assets/css/bootstrap.min.css';
 import './assets/css/bootstrap-extended.css';
 import './assets/css/dark-theme.css';
@@ -9,6 +8,8 @@ import './assets/css/semi-dark.css';
 import $ from 'jquery';
 import lightbox from 'lightbox2';
 import 'lightbox2/dist/css/lightbox.css';
+
+import './assets/css/app.css';
 
 
 // import './assets/plugins/simplebar/css/simplebar.css';
@@ -21,6 +22,11 @@ import './assets/js/bootstrap.bundle.min.js';
 import './assets/plugins/chartjs/js/chart.js';
 import './assets/plugins/chartjs/js/chartjs-custom.js';
 // import './assets/js/index3.js';
+
+import ConfirmationService from 'primevue/confirmationservice';
+import ConfirmPopup from 'primevue/confirmpopup';
+import Tooltip from 'primevue/tooltip';
+
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -45,8 +51,10 @@ app.use(PrimeVue, {
   theme: {
       preset: Aura
   }
-});
+},);
+app.directive('tooltip', Tooltip);
+app.use(ConfirmationService);
 app.use(lightbox)
 app.config.globalProperties.$ = $
-
+app.component('ConfirmPopup', ConfirmPopup);
 app.mount('#app')

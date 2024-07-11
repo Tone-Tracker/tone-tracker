@@ -1,15 +1,23 @@
 <script setup>
-import AdminNav from './AdminNav.vue';
-import SubNavigation from './SubNavigation.vue';
-import Activation from './svgs/Activation.vue';
-import Budget from './svgs/Budget.vue';
-import CRM from './svgs/CRM.vue';
-import Report from './svgs/Report.vue';
-import Status from './svgs/Status.vue';
-import Warehouse from './svgs/Warehouse.vue';
+import CLIENT from './navigations/CLIENT.vue';
+import TTG_SUPER_ADMIN from './navigations/TTG_SUPER_ADMIN.vue';
+import TTG_REGIONAL_MANAGER from './navigations/TTG_REGIONAL_MANAGER.vue';
+import TTG_HEAD_ADMIN from './navigations/TTG_HEAD_ADMIN.vue';
+import TTG_ACTIVATION_MANAGER from './navigations/TTG_ACTIVATION_MANAGER.vue';
+
+import { useAuth } from '@/stores/auth';
+
+const auth = useAuth();
+const user = JSON.parse(auth.user);
+
+const getUserRole = (role) => {
+    return user.role == role
+};
+
 </script>
 <template>
-    <div class="sidebar-wrapper" data-simplebar="true">
+   
+    <div class="sidebar-wrapper" data-simplebar="true" >
         <!-- <div class="sidebar-header">
 
             <div>
@@ -17,8 +25,9 @@ import Warehouse from './svgs/Warehouse.vue';
             </div>
            <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i> 
             </div>
-          </div>
+          </div>v-if="user.role == 'TTG_SUPER_ADMIN'"
            -->
+         
         <div class="metismenu" id="menu">
             <!-- <div class="col-img">
                 <div class="gallery">
@@ -34,74 +43,12 @@ import Warehouse from './svgs/Warehouse.vue';
             <div class="content">
                 <nav class="sidebar">
                      <!-- <AdminNav/> -->
-                    <SubNavigation />
-                    <ul class="side-nav d-none">
-                        <li class="side-nav__item activation">
-                            <router-link to="/activations">
-                                <div class="side-nav__link">
-                                    <Activation />
-                                </div>
-                                <div class="menu-title">Activation</div>
-                            </router-link>
-                        </li>
-
-                        <li class="side-nav__item">
-                            <router-link to="/status">
-                                <div class="side-nav__link">
-                                    <Status />
-                                </div>
-                                <div class="menu-title">Status</div>
-                            </router-link>
-                        </li>
-
-                        <li class="side-nav__item">
-                            <router-link to="/report">
-                                <div class="side-nav__link">
-                                    <Report />
-                                </div>
-                                <div class="menu-title">Report</div>
-                            </router-link>
-                        </li>
-
-                        <li class="side-nav__item">
-                            <router-link to="/budget">
-                                <div class="side-nav__link">
-                                    <Budget />
-                                </div>
-                                <div class="menu-title">Budget</div>
-                            </router-link>
-                        </li>
-
-
-                        <li class="side-nav__item">
-                            <a href="javascript:;">
-                                <div class="side-nav__link">
-                                    <CRM />
-                                </div>
-                                <div class="menu-title">CRM</div>
-                            </a>
-                        </li>
-
-
-                        <li class="side-nav__item">
-                            <router-link to="/warehouse">
-                                <div class="side-nav__link">
-                                    <Warehouse />
-                                </div>
-                                <div class="menu-title">Warehousing</div>
-                            </router-link>
-                        </li>
-
-                        <li class="side-nav__item">
-                            <router-link to="/chat">
-                                <div class="side-nav__link">
-                                    <i class='bx bxs-chat h2 mx-4'></i>
-                                </div>
-                                <div class="menu-title">Chat</div>
-                            </router-link>
-                        </li>
-
-                    </ul>
+                    <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
+                    <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/>
+                    <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/>
+                    <CLIENT v-if="getUserRole('CLIENT')" :user="user"/>
+                    <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/>
+                    
                 </nav>
 
             </div>
@@ -115,136 +62,3 @@ import Warehouse from './svgs/Warehouse.vue';
 
     <!--end navigation-->
 </template>
-<style scoped>
-/* ///////iner navigation//////// */
-.accordion-button::after {
-    margin: 0 !important;
-    /* display: none !important; */
-}
-
-.accordion-button {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0px;
-}
-
-.accordion-button:not(.collapsed) {
-    margin-bottom: 0px;
-}
-
-.metismenu {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 0 0 0 0 !important;
-}
-
-.metismenu a {
-    color: #fff !important;
-}
-
-.sidebar-wrapper .metismenu li+li {
-    margin: 0px;
-}
-
-.metismenu div {
-    flex: 1;
-    /* Each item takes equal space */
-    width: 100%;
-    /* Ensure each item takes 100% width */
-}
-
-.sidebar-wrapper {
-    background-color: #000000 !important;
-    border-right: none !important;
-    /* width: 281px; */
-
-}
-
-.col-img {
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 14px;
-    margin-bottom: 14px;
-}
-
-.gallery {
-    border: none !important;
-}
-
-.gallery:hover {
-    background-color: transparent !important;
-}
-
-.gallery img {
-    width: 47% !important;
-}
-
-.menu-title {
-    text-transform: capitalize;
-}
-
-svg {
-    max-width: 1.8rem;
-}
-
-.col-img {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.metismenu {
-    background-color: #000000 !important;
-}
-
-/* /////////////////////////////// */
-
-
-.side-nav .side-nav__item {
-    background-color: #1C1C1C !important;
-}
-
-.side-nav__link:link§,
-.side-nav__item:visited {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-    display: flex !important;
-    align-items: center !important;
-    gap: 20px !important;
-}
-
-.side-nav__link {
-    border: none !important;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sidebar-wrapper .metismenu ul {
-    background-color: #1C1C1C !important;
-    /* background-color: #fff !zz; */
-    border: none !important;
-
-}
-
-.sidebar-wrapper .metismenu ul a {
-    padding: 10px 32px 10px 32px !important;
-    border-radius: 0 !important;
-    color: #fff !important;
-    border-bottom: solid 2px #000000;
-
-}
-
-.activation-icon {
-    max-width: 2rem;
-}
-</style>

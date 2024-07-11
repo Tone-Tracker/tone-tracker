@@ -18,7 +18,12 @@ import crm from './crm';
 import client from './client';
 import campaigns from './campaigns';
 import task from './task';
-import adminActivations from './adminActivations';
+import adminactivations from './adminactivations';
+import promoter from './promoter';
+import region from './region';
+import warehouse from './warehouse';
+import staff from './staff';
+
 
 
 const { isLoading } = useNProgress()
@@ -32,6 +37,7 @@ const router = createRouter({
   routes: [
     ...chat,
     ...users,
+    ...promoter,
     ...brief,
     ...job,
     ...upload,
@@ -40,7 +46,10 @@ const router = createRouter({
     ...client,
     ...campaigns,
     ...task,
-    ...adminActivations,
+    ...adminactivations,
+    ...region,
+    ...warehouse,
+    ...staff,
     {
       path: '/',
       name: 'home',
@@ -81,6 +90,11 @@ const router = createRouter({
       component: Report
     },
 
+    {
+      path: '/profile/:id',
+      name: 'profile',
+      component: Profile
+    },
     {
       path: '/profile',
       name: 'profile',

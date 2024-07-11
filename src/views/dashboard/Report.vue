@@ -1,41 +1,100 @@
+<script setup>
+import Layout from '../shared/Layout.vue';
+import BreadCrumb from '../../components/BreadCrumb.vue';
+import { onMounted, ref } from 'vue';
+import { useClientStore } from '@/stores/useClient';
+import { usePromoter } from '@/stores/promoter';
+import { useTask } from '@/stores/task';
+import { useRoute, useRouter } from 'vue-router';
+import TaskTable from '@/components/TaskTable.vue';
+import { useUserStore } from '@/stores/userStore';
+import Image from 'primevue/image';
+
+
+const route = useRoute();
+const router = useRouter();
+
+
+const selectedClient = ref('');
+
+const tasks = ref([]);
+const users = ref([]);
+const clients = ref([]);
+
+
+const clientStore = useClientStore();
+const taskStore = useTask();
+const userStore = useUserStore();
+onMounted(() => {
+    getUsers();
+    getTasks();
+	  getAllClients();
+});
+
+const statuses = ref([
+    { name: 'Finished', code: 'FINISHED' },
+    { name: 'Planned', code: 'PLANNED' },
+    { name: 'On Track', code: 'ONTRACK' },
+    { name: 'Delayed', code: 'DELAYED' },
+    { name: 'At Risk', code: 'ATRISK' }
+]);
+
+const getTasks = async () => {
+  taskStore.getTasks().then(response => {
+    tasks.value = response.data.content;
+  }).catch(error => {
+    toaster.error("Error fetching tasks");
+    console.log(error);
+  }).finally(() => {
+    //
+  });
+};
+
+const getUsers = async () => {
+	userStore.getUsers().then(function (response) {
+    console.log(response.data)
+		users.value = response.data.content
+	}).catch(function (error) {
+		toaster.error("Error fetching promoter");
+		console.log(error);
+	}).finally(function () {
+		//
+	})
+  }
+
+const getAllClients = () => {
+  clientStore.getClients().then(function (response) {
+    clients.value = response.data.content;
+  }).catch(function (error) {
+    toaster.error("Error fetching users");
+    console.log(error);
+  }).finally(function () {
+    ///
+  })
+}
+
+
+const redirectToProfile = (user) => {
+	let client = user.id;
+	router.push({ path: '/profile', query: { client } });
+}
+</script>
 <template>
   <Layout>
     <!--start page wrapper -->
     <div class="page-wrapper">
       <div class="page-content">
         <BreadCrumb title="Report" icon="bx bx-line-chart" />
-        <!-- <div class="main-dashboard-head d-flex justify-content-between flex-wrap">
-          <div>
-            <div class="d-flex align-items-center gap-3 justify-content-center">
-              <span>
-                <svg class="page-icon" width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M66.758 64.117H60.9583V61.2084H58.0497V64.117H52.2587V61.2084H49.3501V64.117H43.5504V61.2084H40.6418V64.117H34.8421V61.2084H31.9335V64.117H26.1337V61.2084H23.2251V64.117H10.4499L25.7476 54.9239L33.318 32.7989L44.5634 52.5639L66.3547 16.2559L61.3792 13.266L44.697 41.0631L31.9944 18.7378L20.9378 51.0399L5.79975 60.1372V0.25H0V69.9167H69.6667V61.2084H66.7581L66.758 64.117ZM66.758 0.25H69.6666V3.15858H66.758V0.25ZM58.0497 0.25H60.9583V3.15858H58.0497V0.25ZM49.3501 0.25H52.2587V3.15858H49.3501L49.3501 0.25ZM40.6417 0.25H43.5503V3.15858H40.6418L40.6417 0.25ZM31.9334 0.25H34.842V3.15858H31.9335L31.9334 0.25ZM23.2251 0.25H26.1336V3.15858H23.2251L23.2251 0.25ZM14.5167 0.25H17.4253V3.15858H14.5168L14.5167 0.25ZM5.80839 0.25H8.71697V3.15858H5.80846L5.80839 0.25ZM66.758 8.95834H69.6666V11.8669H66.758V8.95834ZM58.0497 8.95834H60.9583V11.8669H58.0497V8.95834ZM49.3501 8.95834H52.2587V11.8669H49.3501L49.3501 8.95834ZM40.6417 8.95834H43.5503V11.8669H40.6418L40.6417 8.95834ZM31.9334 8.95834H34.842V11.8669H31.9335L31.9334 8.95834ZM23.2251 8.95834H26.1336V11.8669H23.2251L23.2251 8.95834ZM14.5167 8.95834H17.4253V11.8669H14.5168L14.5167 8.95834ZM5.80839 8.95834H8.71697V11.8669H5.80846L5.80839 8.95834ZM66.758 17.658H69.6666V20.5666H66.758V17.658ZM49.3501 17.658H52.2587V20.5666H49.3501L49.3501 17.658ZM40.6417 17.658H43.5503V20.5666H40.6418L40.6417 17.658ZM23.2251 17.658H26.1336V20.5666H23.2251L23.2251 17.658ZM14.5167 17.658H17.4253V20.5666H14.5168L14.5167 17.658ZM5.80839 17.658H8.71698V20.5666H5.80846L5.80839 17.658ZM66.758 26.3663H69.6666V29.2749H66.758V26.3663ZM40.6417 26.3663H43.5503V29.2749H40.6418L40.6417 26.3663ZM23.2251 26.3663H26.1337V29.2749H23.2251L23.2251 26.3663ZM14.5167 26.3663H17.4253V29.2749H14.5168L14.5167 26.3663ZM5.80839 26.3663H8.71698V29.2749H5.80846L5.80839 26.3663ZM66.758 35.0804H69.6666V37.989H66.758V35.0804ZM58.0497 35.0804H60.9583V37.989H58.0497V35.0804ZM14.5167 35.0804H17.4253V37.989H14.5168L14.5167 35.0804ZM5.80839 35.0804H8.71698V37.989H5.80846L5.80839 35.0804ZM66.758 43.7888H69.6666V46.6973H66.758V43.7888ZM58.0497 43.7888H60.9583V46.6973H58.0497V43.7888ZM31.9334 43.7888H34.842V46.6973H31.9335L31.9334 43.7888ZM14.5167 43.7888H17.4253V46.6973H14.5168L14.5167 43.7888ZM5.80839 43.7888H8.71698V46.6973H5.80846L5.80839 43.7888ZM66.758 52.4884H69.6666V55.397H66.758V52.4884ZM58.0497 52.4884H60.9583V55.397H58.0497V52.4884ZM49.3501 52.4884H52.2587V55.397H49.3501L49.3501 52.4884ZM31.9334 52.4884H34.842V55.397H31.9335L31.9334 52.4884ZM5.80839 52.4884H8.71697V55.397H5.80846L5.80839 52.4884Z"
-                    fill="url(#paint0_linear_56_14949)" />
-                  <defs>
-                    <linearGradient id="paint0_linear_56_14949" x1="0.00018188" y1="69.9162" x2="69.6661" y2="69.9162" gradientUnits="userSpaceOnUse">
-                      <stop offset="1" stop-color="#0080D4" />
-                      <stop stop-color="#A83BBA" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </span>
-              <span class="font-welcome">Report</span>
-            </div>
-            <p class="text-white">View live data</p>
-          </div>
-          <div class="align-self-end mb-4"><button class="btn rounded-0 btn-primary">Download report</button></div>
-        </div> -->
-
         <div class="row row-cols-xl-9">
           <div class="d-flex align-items-center justify-content-between ms-2">
-            <h4 class="mb-2 ml-2">Promoters</h4>
+            <h4 class="mb-2 ml-2">Projects</h4>
             <div class="align-self-end mb-4"><button class="btn rounded-0 btn-primary">Download report</button></div>
           </div>
           <div class="ms-2">
             <h4 class="mb-2 ml-2">Team</h4>
           </div>
           <div class="d-flex gap-5">
+
             <div class="col-img">
              <div class="gallery">
               <div class="asc py-3">TTG Head Office Super User</div>
@@ -44,22 +103,8 @@
               </router-link>
             </div>
           </div>
-          <div class="col-img">
-            <div class="gallery">
-              <div class="asc py-3">TTG Head Office Admin</div>
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-2.png" alt="Forest" class="img-fluid">
-              </router-link>
-            </div>
-          </div>
-          <div class="col-img">
-            <div class="gallery">
-              <div class="asc py-3">TTG Regional Manager</div>
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-3.png" alt="Northern Lights" class="img-fluid">
-              </router-link>
-            </div>
-          </div></div>
+        
+        </div>
        
         </div>
 
@@ -67,54 +112,37 @@
           <div class="">
             <h4 class="mb-2 ml-2">Available Promoters</h4>
           </div>
-          <div class="col-img ">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid">
-              </router-link>
+          <div v-for="user in users" :key="user.id" class="col-img ">
+            <div  class="gallery">
+            
+                <!-- <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid"> -->
+                <div class="card flex justify-center">
+                  <Image alt="Image" preview>
+                      <template #previewicon>
+                        <i class='bx bx-search-alt-2' ></i>
+                      </template>
+                      <template #image>
+                          <img src="https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg" alt="image" width="250" />
+                      </template>
+                      <template #preview="slotProps">
+                          <img src="https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                      </template>
+                  </Image>
+                  </div>
+             
               <div class="checkbox">
                 <input type="checkbox" id="select">
                 <span>&#x2713;</span>
               </div>
               <div>
-                <div class="desc">Mazisi Msebele</div>
+                <div class="desc cursor-pointer" @click="redirectToProfile(user)">
+                  {{ user.firstName }} {{ user.lastName }}</div>
                 <div><button class="btn btn-primary rounded-0 w-100">Add</button></div>
               </div>
             </div>
           </div>
     
-          <div class="col-img">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-3.png" alt="Northern Lights" class="img-fluid">
-              </router-link>
-              <div class="desc">Nkanyiso Ncube</div>
-            </div>
-          </div>
-          <div class="col-img">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains" class="img-fluid">
-              </router-link>
-              <div class="desc">Rico Nyathi</div>
-            </div>
-          </div>
-          <div class="col-img">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains" class="img-fluid">
-              </router-link>
-              <div class="desc">Rico Nyathi</div>
-            </div>
-          </div>
-          <div class="col-img">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-6.png" alt="Mountains" class="img-fluid">
-              </router-link>
-              <div class="desc">Rico Nyathi</div>
-            </div>
-          </div>
+         
         </div>
 
         <div class="row mt-6 row-cols-xl-9 gap-4">
@@ -137,38 +165,7 @@
             </div>
           </div>
     
-          <div class="col-img">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-3.png" alt="Northern Lights" class="img-fluid">
-              </router-link>
-              <div class="desc">Nkanyiso Ncube</div>
-            </div>
-          </div>
-          <div class="col-img">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains" class="img-fluid">
-              </router-link>
-              <div class="desc">Rico Nyathi</div>
-            </div>
-          </div>
-          <div class="col-img">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains" class="img-fluid">
-              </router-link>
-              <div class="desc">Rico Nyathi</div>
-            </div>
-          </div>
-          <div class="col-img">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-6.png" alt="Mountains" class="img-fluid">
-              </router-link>
-              <div class="desc">Rico Nyathi</div>
-            </div>
-          </div>
+        
         </div>
      
       </div>
@@ -211,86 +208,8 @@
         </div>
 
         <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12">
-          <!-- <div class="card radius-10 w-100">
-            <div class="card-header">
-              <div class="d-flex align-items-center">
-                <div>
-                  <h6 class="mb-0">Main Tasks To Set Up</h6>
-                </div>
-                <div class="dropdown ms-auto">
-
-                </div>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive table table-dark table-striped">
-                <table class="table align-middle mb-0">
-                  <thead class="table-light">
-                    <tr>
-                      <th>Project</th>
-                      <th>Task</th>
-                      <th>Risk</th>
-                      <th>Planned End-Date</th>
-                      <th>Time Record</th>
-                      <th>Project Responsible</th>
-                      <th>Completion</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="maz-table-row-height">
-                      <td>Project 1</td>
-                      <td>5822</td>
-                      <td style="background-color: #D1345B; text-align: center">At Risk</td>
-                      <td>03-06-2020</td>
-                      <td>18:00:00</td>
-                      <td>Bransley</td>
-                      <td>45%</td>
-                    </tr>
-
-                    <tr class="maz-table-row-height">
-                      <td>Project 2</td>
-                      <td>4620</td>
-                      <td style="background-color: #1E90D9; text-align: center">On Track</td>
-                      <td>05-06-2023</td>
-                      <td>18:00:00</td>
-                      <td>John Doe</td>
-                      <td>80%</td>
-                    </tr>
-
-                    <tr class="maz-table-row-height">
-                      <td>Project 3</td>
-                      <td>6890</td>
-                      <td style="background: #FE9947; text-align: center">Planned</td>
-                      <td>06-06-2023</td>
-                      <td>18:00:00</td>
-                      <td>Dave</td>
-                      <td>22%</td>
-                    </tr>
-
-                    <tr class="maz-table-row-height">
-                      <td>Project 4</td>
-                      <td>3765</td>
-                      <td style="background-color: #1E90D9; text-align: center">On Track</td>
-                      <td>14-07-2024</td>
-                      <td>18:00:00</td>
-                      <td>Msebele</td>
-                      <td>22%</td>
-                    </tr>
-                    <tr class="maz-table-row-height">
-                      <td>Project 5</td>
-                      <td>9240</td>
-                      <td style="background-color: #A639B6; text-align: center">Delayed</td>
-                      <td>18-06-2025</td>
-                      <td>18:00:00</td>
-                      <td>Dave</td>
-                      <td>12%</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div> -->
-          <Newtask/>  
+         
+          <TaskTable :tasks="tasks" :statuses="statuses"/>  
         </div>
       </div>
 
@@ -435,12 +354,7 @@
   </Layout>
 </template>
 
-<script setup>
-import Layout from '../shared/Layout.vue';
-import BreadCrumb from '../../components/BreadCrumb.vue';
-import Newtask from '../../components/Newtask.vue';
-import ImageGallery from '../../components/ImageGallery.vue';
-</script>
+
 
 <style scoped>
 @import 'lightbox2/dist/css/lightbox.css';
