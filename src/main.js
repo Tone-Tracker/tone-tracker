@@ -22,6 +22,7 @@ import './assets/js/bootstrap.bundle.min.js';
 import './assets/plugins/chartjs/js/chart.js';
 import './assets/plugins/chartjs/js/chartjs-custom.js';
 // import './assets/js/index3.js';
+import './assets/js/pace.min.js';
 
 import ConfirmationService from 'primevue/confirmationservice';
 import ConfirmPopup from 'primevue/confirmpopup';
