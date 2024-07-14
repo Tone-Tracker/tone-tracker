@@ -10,14 +10,17 @@ import Select from 'primevue/select';
 import useToaster from '@/composables/useToaster';
 import { useRegion } from '@/stores/useRegion';
 import { useUserStore } from '@/stores/userStore';
+import { useStaff } from '@/stores/staff';
 
 const toaster = useToaster();
 const regionStore = useRegion();
 const confirm = useConfirm();
 const userStore = useUserStore();
+const staff = useStaff();
 
 let clients = ref([]);
 let regions = ref([]);
+let staffMembers = ref([]);
 const visible = ref(false);
 const position = ref('top');
 const regionalManager = ref(null);
@@ -28,6 +31,7 @@ const form = reactive({name: ''});
 onMounted(() => {
   getRegions();
   getRegionalManagers();
+  getStaff();
 });
 
 const rules = { 
@@ -50,16 +54,51 @@ const createRegion = async () => {
     });
 };
 
+const getStaff = async () => {
+    staff.getStaff().then(function (response) {
+        staffMembers.value = response.data.content;
+    }).catch(function (error) {
+        toaster.error("Error fetching staff members");
+        console.log(error);
+    });
+}
+
 const getRegionalManagers = async () => {
-    userStore.getUsers().then(function (response) {
+    userStore.getUserByRole('TTG_REGIONAL_MANAGER').then(function (response) {
         let users = response.data.content.filter(user => user.role === 'TTG_REGIONAL_MANAGER');
-        regionalManagers.value = users;
+         regionalManagers.value = users.map(user => {
+            return {
+                name: user.firstName + ' ' + user.lastName,
+                id: user.id
+            }
+        }
+        );
+        
     }).catch(function (error) {
         toaster.error("Error fetching regions");
         console.log(error);
     }).finally(function () {
     });
 };
+
+const regionalManagerForm = reactive({region: '', staff: ''});
+
+const onRegManagerChange = (event) => {
+    let reg = staffMembers.value.find(regMan => regMan.user === event.value.id);
+    regionalManagerForm.staff = reg.id;
+}
+
+const submitRegionalManager = async () => {
+    regionStore.addRegionalManager(regionalManagerForm).then(function (response) {
+        toaster.success("Regional Manager added successfully");
+        regionalManagerForm.staff = '';
+        visible.value = false;
+        getRegions();
+        }).catch(function (error) {
+        toaster.error("Error adding regional manager");
+        console.log(error);
+    });
+}
 const getRegions = async () => {
     regionStore.getRegions().then(function (response) {
         regions.value = response.data.content;
@@ -122,14 +161,31 @@ const deleteRecord = (event, region) => {
     });
 };
 
+const getRegionManagerName = (region) => {
+    console.log('region', region)
+    console.log(staffMembers.value)
+    staffMembers.value.forEach(staff => {
+        if (staff.user === region.staff) {
+            
+            return staff.user.firstName + ' ' + staff.user.lastName
+        }
+    })
+}
+
 const vFocus = {
     mounted: (el) => el.focus()
 };
-
+let regionName = ref('');
 const openModal = (pos,region) => {
+    if(region) {
+        regionName.value = region.name;
+    }
     position.value = pos;
     visible.value = true;
+    regionalManagerForm.region = region.id;
 }
+
+
 </script>
 
 <template>
@@ -160,7 +216,7 @@ const openModal = (pos,region) => {
                                                         <td v-else>
                                                             <input v-focus type="text" v-model="region.name" @blur="update(region)" @keyup.enter="update(region)" class="no-border-input"/>
                                                         </td>
-                                                        <td>mmmmm</td>
+                                                        <td>{{ getRegionManagerName(region) }}</td>
                                                         <td>
                                                             <div class="d-flex order-actions">
                                                                 <a v-if="!region.isEditing" @click="editClient(region)" href="javascript:;">
@@ -218,17 +274,16 @@ const openModal = (pos,region) => {
                 </div>
             </div>
         </div>
-        <Dialog v-model:visible="visible" modal header="Add Regional Manager'" :style="{ width: '25rem' }">
-{{ regionalManagers }}
-            <form @submit.prevent="onSubmit" class="row g-3">
+        <Dialog v-model:visible="visible" modal :header="`Add ${regionName} Regional Manager`" :style="{ width: '25rem' }">
+            <form @submit.prevent="submitRegionalManager" class="row g-3">
                 <div class="col-md-12">
                     <div class="card my-card flex justify-center">
                         <label for="input1" class="form-label">Regional Manager</label>
-                        <Select v-model="regionalManager" @change="onStatusChange($event)" :options="regionalManagers" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" />
+                        <Select v-model="regionalManager" @change="onRegManagerChange($event)" :options="regionalManagers" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" />
                           
                 </div>                        
                 </div>
-                <div class="modal-footer">
+                <div class="mt-4">
                     <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
                 </div>
                 

@@ -18,7 +18,11 @@ export const useRegion = defineStore('region', () => {
     const deleteRegion = (id) => {
       return axiosInstance.delete(`/api/regions/${id}`);
     }
+
+    const addRegionalManager = (data) => {
+      return axiosInstance.post(`/api/regionalManagers`,data);
+    }
     
   
-    return { submit,getRegions,update,deleteRegion }
+    return { submit,getRegions,update,deleteRegion,addRegionalManager }
   })

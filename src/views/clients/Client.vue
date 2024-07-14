@@ -53,7 +53,6 @@ const getAllClients = () => {
 }
 
 const deleteClient = (client) => {
-  if (confirm(`Are you sure you want to delete ${client.name}?`)) {
       clientStore.deleteClient(client.id).then(function (response) {
       toaster.success("Client deleted successfully");
       getAllClients(); 
@@ -61,7 +60,7 @@ const deleteClient = (client) => {
       toaster.error("Error deleting client");
       console.log(error);
     })
-  }
+  
 }
 
 const editClient = (client) => {

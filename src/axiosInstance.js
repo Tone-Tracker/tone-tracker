@@ -5,9 +5,7 @@
  */
 import axios from 'axios';
 import { useAuth } from '@/stores/auth';
-import { useRouter } from 'vue-router';
 import { useNetworkStatus } from './stores/networkStatus';
-import useToaster from './composables/useToaster';
 import router from '@/router';
 
 const axiosInstance = axios.create({
@@ -20,7 +18,6 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const isOnline = useNetworkStatus();
-    const toaster = useToaster();
     if (!isOnline.online) {
       //return toaster.error('Check your internet connection');
     }

@@ -43,13 +43,13 @@ const getRoleName = () => {
                             <li><router-link to="/admin-activations"><span class="icon">📄</span> Activations</router-link></li>
                             <li><router-link to="/promoters"><span class="icon">📄</span> Promoters</router-link></li>
                             <li><router-link to="/briefs"><span class="icon">📄</span> Briefs</router-link></li>
-                            <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li>
+                            <!-- <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li> -->
                             <li><router-link to="/admin-warehouse"><span class="icon">📄</span> Warehouse & Units</router-link></li>
                             <li><router-link to="/teaching"><span class="icon">📄</span> Learning & Teaching</router-link></li>
                             <!-- <li><router-link to="/crm"><span class="icon">📄</span> CRM</router-link></li> -->
                             <li><router-link to="/jobs"><span class="icon">📄</span> Jobs</router-link></li>
                             <li><router-link to="/upload"><span class="icon">📤</span> Upload contract</router-link></li>
-                            <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li>
+                            <!-- <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li> -->
                             <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
                             <li><a href="#"><span class="icon">📨</span> Sent</a></li>
                             <li><a href="#"><span class="icon">📩</span> Unread</a></li>
