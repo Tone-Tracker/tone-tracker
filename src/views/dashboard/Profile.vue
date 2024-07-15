@@ -59,7 +59,7 @@ Date: 04/06/2024
                                 </div>
                                 <div class="mb-4">
                                     <button
-                                        class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center">
+                                    @click="openDialog" class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center">
                                         <span>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" style="fill: #ffffff;transform: msFilter;">
@@ -374,17 +374,172 @@ Date: 04/06/2024
 
             </div>
         </div>
+
+        
         <!--start switcher-->
     </Layout>
+
+
+    <Dialog v-model:visible="visible" modal header="Add Promoter" :style="{ width: '50rem' }">
+      <div class="card flex justify-center">
+        <label for="input1" class="form-label">Choose User</label>
+        <AutoComplete v-model="form.user" forceSelection dropdown :suggestions="dropdownItems" 
+          @item-select="onUserChange" @complete="search" field="name" />
+        <div class="input-errors" v-for="error of v$.user.$errors" :key="error.$uid">
+          <div class="text-danger">User is required</div>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label for="dress_size" class="form-label">Dress Size</label>
+          <select v-model="form.dressSize" class="form-control" id="dress_size" >
+            <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
+          </select>
+          <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
+            <div class="text-danger">Dress Size is required</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="pantsSize" class="form-label">Pants Size</label>
+          <select v-model="form.pantsSize" class="form-control" id="pantsSize" >
+            <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
+          </select>
+          <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
+            <div class="text-danger">Pants Size is required</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="height" class="form-label">Height</label>
+          <input v-model="form.height" type="number" class="form-control" id="height" >
+          <div class="input-errors" v-for="error of v$.height.$errors" :key="error.$uid">
+            <div class="text-danger">Height is required</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="top-size" class="form-label">Top Size</label>
+          <select v-model="form.topSize" class="form-control" id="top-size" >
+            <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
+          </select>
+          <div class="input-errors" v-for="error of v$.topSize.$errors" :key="error.$uid">
+            <div class="text-danger">Top Size is required</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="bio" class="form-label">Bio</label>
+          <textarea v-model="form.bio" rows="5" cols="100" class="form-control"></textarea>
+          <div class="input-errors" v-for="error of v$.bio.$errors" :key="error.$uid">
+            <div class="text-danger">Bio is required</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 mt-4">
+        <div class="d-grid">
+          <button @click="onSubmit" class="btn maz-gradient-btn" type="button">Submit</button>
+        </div>
+      </div>
+    </Dialog>
 </template>
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
 import Rating from 'primevue/rating';
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
+import Dialog from 'primevue/dialog';
+import AutoComplete from 'primevue/autocomplete';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+import { usePromoter } from '@/stores/promoter';
+import useToaster from '@/composables/useToaster';
+import { useUserStore } from '@/stores/userStore';
+import { useSizes } from '@/stores/sizes';
+
+const promoterStore = usePromoter();
+const toaster = useToaster();
+const userStore = useUserStore();
+const sizeStore = useSizes();
 
 
 const value = ref(null);
+const visible = ref(false);
+const users = ref([]);
+const sizes = ref([]);
+const dropdownItems = ref([]);
+
+
+const form = reactive({
+  user: null,
+  dressSize: null,
+  pantsSize: null,
+  topSize: null,
+  height: null,
+  bio: null
+});
+
+const rules = { 
+  user: { required },
+  dressSize: { required },
+  pantsSize: { required },
+  height: { required },
+  topSize: { required },
+  bio: { required },
+};
+
+const v$ = useVuelidate(rules, form);
+
+const onSubmit = async () => {
+  const isFormValid = await v$.value.$validate();
+  if (!isFormValid) return;
+  
+  promoterStore.submitPromoter(form).then(function (response) {
+    toaster.success("Promoter created successfully");
+    visible.value = false;
+    // You might want to refresh the promoter data here
+  }).catch(function (error) {
+    toaster.error("Error creating promoter");
+    console.log(error);
+  });
+};
+
+const openDialog = () => {
+  visible.value = true;
+};
+
+const getAllSizes = async () => {
+  sizeStore.getSizes().then(response => {
+    sizes.value = response.data;
+  }).catch(error => {
+    toaster.error("Error fetching sizes");
+    console.log(error);
+  });
+};
+
+const getAllUsers = async () => {
+  userStore.getUserByRole('TTG_TALENT').then(response => {
+    users.value = response.data.content;
+    dropdownItems.value = [...users.value];
+  }).catch(error => {
+    toaster.error("Error fetching users");
+    console.log(error);
+  });
+};
+
+const search = (event) => {
+  const query = event.query.toLowerCase();
+  let myObj = users.value.filter(user => user.firstName.toLowerCase().includes(query));
+  dropdownItems.value = myObj.map(user => user.firstName + ' ' + user.lastName);
+};
+
+const onUserChange = (event) => {
+  form.user = users.value.find(user => user.firstName + ' ' + user.lastName === event.value).id;
+};
+
+////////////////
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  getAllUsers();
+  getAllSizes();
+});
 
 </script>
 <style>
