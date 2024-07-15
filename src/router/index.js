@@ -23,6 +23,7 @@ import promoter from './promoter';
 import region from './region';
 import warehouse from './warehouse';
 import staff from './staff';
+import admincontact from './admincontact';
 
 
 
@@ -50,6 +51,7 @@ const router = createRouter({
     ...region,
     ...warehouse,
     ...staff,
+    ...admincontact,
     {
       path: '/',
       name: 'home',

@@ -47,6 +47,7 @@ const getRoleName = () => {
                         <ul class="nav-list">
                             <li><a href="#"><span class="icon">💬</span> All</a></li>
                             <li><router-link to="/users"><span class="icon"><i class='bx bxs-user-rectangle'></i></span> Users</router-link></li>
+                            <li><router-link to="/admin-contacts"><span class="icon"><i class='bx bxs-user-rectangle'></i></span> Admin</router-link></li>
                             <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
                             <li><a href="#"><span class="icon">📨</span> Sent</a></li>
                             <li><a href="#"><span class="icon">📩</span> Unread</a></li>
