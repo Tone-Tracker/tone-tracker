@@ -81,7 +81,17 @@ Date: 04/06/2024
                                             </div>
                                             <div class="modal-body">
                                                 <!-- Add your form or content here -->
-                                                <p>Add your form fields or content for adding a new item.</p>
+                                                <div class="drag-drop-area">
+                                                    <input type="file" id="fileInput" multiple style="display: none;">
+                                                    <div class="drag-drop-text">
+                                                        <i class='bx bx-cloud-upload fs-1 mb-2'></i>
+                                                        <p>Drag and drop files here or click to select</p>
+                                                    </div>
+                                                    <button class="btn btn-outline-light mt-2"
+                                                        onclick="document.getElementById('fileInput').click()">Select
+                                                        Files</button>
+                                                </div>
+                                                <div id="fileList" class="mt-3"></div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
@@ -507,5 +517,44 @@ div.desc {
 
 .btn-close {
     color: #ffffff;
+}
+
+/* //////////drag and drop///////////////// */
+.drag-drop-area {
+    border: 2px dashed #5A5959;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.drag-drop-area:hover,
+.drag-drop-area.drag-over {
+    background-color: #2a2a2a;
+}
+
+.drag-drop-text {
+    color: #5A5959;
+}
+
+#fileList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.file-item {
+    background-color: #2a2a2a;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.file-item .remove-file {
+    cursor: pointer;
+    color: #ff6b6b;
 }
 </style>
