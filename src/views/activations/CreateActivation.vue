@@ -152,13 +152,7 @@ const form = reactive({
                                          <div class="text-danger">Region is required</div>
                                        </div>
                                    </div>
-                                   <div class="col-md-4 mt-custom">
-                                    <label for="brief" class="form-label">Brief</label>
-                                    <input v-model="form.brief" type="text" class="form-control" id="brief" >
-                                    <div class="input-errors" v-for="error of v$.brief.$errors" :key="error.$uid">
-                                        <div class="text-danger">Brief is required</div>
-                                      </div>
-                                  </div>
+                                   
                                    <div class="col-md-4 card justify-center mt-custom">
 
                                     <div class="card fuck-top flex justify-center">
@@ -191,8 +185,16 @@ const form = reactive({
                                    </div>
 
                                    <div class="col-md-4 mt-custom">
+                                    <label for="brief" class="form-label">Brief</label>
+                                    <textarea v-model="form.brief" class="form-control" id="brief" ></textarea>
+                                    <div class="input-errors" v-for="error of v$.brief.$errors" :key="error.$uid">
+                                        <div class="text-danger">Brief is required</div>
+                                      </div>
+                                  </div>
+
+                                   <div class="col-md-4 mt-custom">
                                      <label for="campaign" class="form-label">Pin Points</label>
-                                     <input v-model="form.painPoints" type="text" class="form-control" id="painPoints" >
+                                     <textarea v-model="form.painPoints" type="text" class="form-control" id="painPoints" ></textarea>
                                      <div class="input-errors" v-for="error of v$.painPoints.$errors" :key="error.$uid">
                                          <div class="text-danger">Pin Points is required</div>
                                        </div>

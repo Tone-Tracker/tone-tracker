@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
-import { reactive } from 'vue';
+import { reactive,ref } from 'vue';
 import router from '@/router';
 import { useMonitorSize } from '@/composables/useMonitorSize';
 import { useAuth } from '@/stores/auth';
@@ -13,6 +13,8 @@ import { useStorage } from '@vueuse/core'
 
 export default {
 setup(){
+
+const loading = ref(false);
 
 	const screenSizes = useMonitorSize();
 	const auth = useAuth();
@@ -31,6 +33,7 @@ setup(){
 
 	const onSubmit = async () => {
 		// return router.push('/dashboard')
+		loading.value = true;
 		const isFormCorrect = await v$.value.$validate();
 		if (!isFormCorrect) return;
 		auth.attempt(form)
@@ -52,7 +55,9 @@ setup(){
 				}).catch(function (error) {
 					toaster.error("Invalid credentials");
 					console.log(error);
-		        });
+				}).finally(function () {
+					loading.value = false;
+				});
 
 		
 	}
@@ -127,8 +132,12 @@ setup(){
 													<div class="d-grid">
 														<!-- <router-link to="/dashboard" type="submit"
 															class="btn p-3 maz-gradient-btn">Continue</router-link> -->
+															
 															<button type="submit" 
-															class="btn p-3 maz-gradient-btn text-white">Continue</button>
+															class="btn p-3 maz-gradient-btn text-white">
+															<div v-if="loading" class="spinner-border text-white" role="status"> <span class="visually-hidden">Loading...</span>
+															</div>
+															{{ loading ? 'Loading...' : 'Continue'}} </button>
 													</div>
 												</div>
 
