@@ -75,28 +75,40 @@ Date: 04/06/2024
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="addModalLabel">Add New Item</h5>
+                                                <h5 class="modal-title" id="addModalLabel">Add images</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <!-- Add your form or content here -->
-                                                <div class="drag-drop-area">
-                                                    <input type="file" id="fileInput" multiple style="display: none;">
+                                                <div class="drag-drop-area" :class="{ 'drag-over': isDragOver }"
+                                                    @dragover.prevent="isDragOver = true"
+                                                    @dragleave.prevent="isDragOver = false" @drop.prevent="onDrop"
+                                                    @click="$refs.fileInput.click()">
+                                                    <input type="file" ref="fileInput" @change="onFileSelected" multiple
+                                                        style="display: none;">
                                                     <div class="drag-drop-text">
                                                         <i class='bx bx-cloud-upload fs-1 mb-2'></i>
                                                         <p>Drag and drop files here or click to select</p>
                                                     </div>
-                                                    <button class="btn btn-outline-light mt-2"
-                                                        onclick="document.getElementById('fileInput').click()">Select
-                                                        Files</button>
+                                                    <button class="btn btn-outline-light mt-2">Select Files</button>
                                                 </div>
-                                                <div id="fileList" class="mt-3"></div>
+                                                <div class="file-list mt-3">
+                                                    <div v-for="(file, index) in files" :key="index" class="file-item">
+                                                        <span>{{ file.name }}</span>
+                                                        <span class="remove-file" @click="removeFile(index)">×</span>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                                <div class="col-12 mt-4">
+                                                    <div class="d-grid">
+                                                        <button @click="onSubmit" class="btn maz-gradient-btn"
+                                                            type="button">
+                                                            {{ isEdit ? 'Update' : 'Submit' }}
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -418,6 +430,26 @@ import { ref } from 'vue';
 
 
 const value = ref(null);
+//////////drag and drop/////////////////////////////////////////
+const isDragOver = ref(false);
+const files = ref([]);
+
+const onDrop = (e) => {
+    isDragOver.value = false;
+    handleFiles(e.dataTransfer.files);
+};
+
+const onFileSelected = (e) => {
+    handleFiles(e.target.files);
+};
+
+const handleFiles = (fileList) => {
+    files.value = [...files.value, ...Array.from(fileList)];
+};
+
+const removeFile = (index) => {
+    files.value.splice(index, 1);
+};
 
 </script>
 <style>
