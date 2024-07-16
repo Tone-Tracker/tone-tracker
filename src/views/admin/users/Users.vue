@@ -112,10 +112,10 @@ const deleteRecord = (event, user) => {
 						<div class="d-lg-flex align-items-center mb-4 gap-3">
 							<div class="position-relative">
 								<input v-model="searchInput" @input="onInput"
-								type="text" class="form-control ps-5 radius-30" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+								type="text" class="form-control ps-5" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
 						  <div class="ms-auto">
-							<a @click="toggleModal" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user"  class="btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+							<a @click="toggleModal" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user"  class="btn maz-gradient-btn mt-2 mt-lg-0">
 							<i class="bx bxs-plus-square"></i>Add User</a></div>
 						</div>
 						<div class="table-responsive">
