@@ -2,56 +2,38 @@
 import Layout from '@/views/shared/Layout.vue';
 import Checkbox from 'primevue/checkbox';
 import BreadCrumb from '@/components/BreadCrumb.vue';
-import { ref } from 'vue';
+import InputMask from 'primevue/inputmask';
+import InputText from 'primevue/inputtext';
+import { ref,reactive } from 'vue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, email } from '@vuelidate/validators';
 
 const authoritativeForm = ref(null);
+const showModal = ref(true);
 
-// vueCopy < script setup >
+const form = reactive({
+	name: '',
+	phone: '',
+	email: '',
+});
 
+const rules = {
+		name: { required },
+		phone: { required },
+        email: { required, email } 
+    }
 
-
-
-// New refs for form inputs and validation
-const newName = ref('');
-const newPhone = ref('');
-const newEmail = ref('');
-const formErrors = ref({});
-
-// Function to validate form
-const validateForm = () => {
-	formErrors.value = {};
-
-	if (!newName.value.trim()) {
-		formErrors.value.name = 'Name is required';
-	}
-
-	if (!newPhone.value.trim()) {
-		formErrors.value.phone = 'Phone number is required';
-	} else if (!/^\+?[1-9]\d{1,14}$/.test(newPhone.value)) {
-		formErrors.value.phone = 'Invalid phone number';
-	}
-
-	if (!newEmail.value.trim()) {
-		formErrors.value.email = 'Email is required';
-	} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail.value)) {
-		formErrors.value.email = 'Invalid email address';
-	}
-
-	return Object.keys(formErrors.value).length === 0;
-};
-
+	const v$ = useVuelidate(rules, form)
 // Function to handle form submission
-const handleSubmit = () => {
-	if (validateForm()) {
-		// Add new contact logic here
-		console.log('New contact:', { name: newName.value, phone: newPhone.value, email: newEmail.value });
-		// Clear form
-		newName.value = '';
-		newPhone.value = '';
-		newEmail.value = '';
-		// Close modal
-		// You might need to use refs or other methods to interact with Bootstrap modal
-	}
+const handleSubmit = async () => {
+	const isFormCorrect = await v$.value.$validate();
+		if (!isFormCorrect) return;
+		console.log(form);
+		//on success hide modal
+		showModal.value = false;
+		document.querySelector('.modal-backdrop').remove();
+
+
 };
 
 </script>
@@ -138,7 +120,7 @@ const handleSubmit = () => {
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Billing Contacts</h5>
 							<div class="btn-group">
-								<button class="btn btn-secondary rounded-0 btn-sm" data-bs-toggle="modal"
+								<button @click="showModal=true" class="btn btn-secondary rounded-0 btn-sm" data-bs-toggle="modal"
 									data-bs-target="#addContactModal">Add</button>
 								<button class="btn btn-secondary rounded-0 btn-sm">Delete</button>
 							</div>
@@ -168,7 +150,7 @@ const handleSubmit = () => {
 			</div>
 
 			<!-- Add Contact Modal -->
-			<div class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="addContactModalLabel"
+			<div v-if="showModal" class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="addContactModalLabel"
 				aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -177,27 +159,43 @@ const handleSubmit = () => {
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
-							<form @submit.prevent="handleSubmit">
-								<div class="mb-3">
+
+							<div class="row g-3">
+								<div class="col-md-12">
 									<label for="name" class="form-label">Name</label>
-									<input type="text" class="form-control" id="name" v-model="newName"
-										:class="{ 'is-invalid': formErrors.name }">
-									<div class="invalid-feedback" v-if="formErrors.name">{{ formErrors.name }}</div>
-								</div>
-								<div class="mb-3">
-									<label for="phone" class="form-label">Phone Number</label>
-									<input type="tel" class="form-control" id="phone" v-model="newPhone"
-										:class="{ 'is-invalid': formErrors.phone }">
-									<div class="invalid-feedback" v-if="formErrors.phone">{{ formErrors.phone }}</div>
-								</div>
-								<div class="mb-3">
-									<label for="email" class="form-label">Email Address</label>
-									<input type="email" class="form-control" id="email" v-model="newEmail"
-										:class="{ 'is-invalid': formErrors.email }">
-									<div class="invalid-feedback" v-if="formErrors.email">{{ formErrors.email }}</div>
-								</div>
-								<button type="submit" class="btn btn-primary">Add Contact</button>
-							</form>
+									<InputText type="text" v-model="form.name" fluid />
+									<div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
+										<div class="text-danger">First Name is required</div>
+									  </div>
+								  </div>
+								 
+								  <div class="col-md-12">
+									<div class="">
+										<label for="phone" class="form-label" >Phone</label>
+										<InputMask id="phone" v-model="form.phone" mask="(999) 999-9999" placeholder="(999) 999-9999" fluid />
+									</div>
+									<div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
+										<div class="text-danger">Phone Number is required</div>
+									  </div>
+								  </div>
+                                
+
+								  <div class="col-md-12">
+									<label for="activation-area" class="form-label">Email</label>
+									<InputText type="text" v-model="form.email" fluid />
+									<div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+										<div class="text-danger">Email is required</div>
+									  </div>
+								  </div>
+								 
+								  <div class="col-12">
+									  <div class="d-grid">
+										<button @click="handleSubmit" class="btn maz-gradient-btn" type="button" >
+											 Add Contact
+										</button>
+									  </div>
+								  </div>
+							  </div> 
 						</div>
 					</div>
 				</div>
@@ -286,5 +284,9 @@ td {
 	border-top: #555 2px solid;
 	border-left: #555 2px solid;
 	border-right: #555 2px solid;
+}
+
+.p-inputtext {
+	width: 100%;
 }
 </style>
