@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useAuth } from '@/stores/auth';
 import { useNetworkStatus } from './stores/networkStatus';
 import router from '@/router';
+import useToaster from './composables/useToaster';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -19,7 +20,8 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const isOnline = useNetworkStatus();
     if (!isOnline.online) {
-      //return toaster.error('Check your internet connection');
+      const toaster = useToaster();
+      //return toaster.error('Internet connection lost.');
     }
     const auth = useAuth();
     if (localStorage.getItem('token')) {

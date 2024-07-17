@@ -5,6 +5,7 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
 import useToaster from '@/composables/useToaster';
 import { useActivation } from '@/stores/activation';
 import AutoComplete from 'primevue/autocomplete';
+import InputText from 'primevue/inputtext';
 import { useRegion } from '@/stores/useRegion';
 import SplitButton from 'primevue/splitbutton';
 import Dialog from 'primevue/dialog';
@@ -12,8 +13,15 @@ import { useCampaignStore } from '@/stores/useCampaign';
 import { useConfirm } from "primevue/useconfirm";
 import { useRoute } from 'vue-router';
 import URLrouter from '@/router';
+import { useStaff } from '@/stores/staff';
+import { useUserStore } from '@/stores/userStore';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+
 
 const route = useRoute();
+const userStore = useUserStore();
+const staff = useStaff();
 const campaignId = ref(route.query.campaign);
 
 
@@ -31,16 +39,51 @@ const campaignStore = useCampaignStore();
 
 const searchInput = ref('');
 let activations = ref([]);
+let users = ref([]);
+let mappedUsers = ref([]);
+let staffMembers = ref([]);
 let showLoading = ref(false);
 const regions = ref([]);
 const campaignName = ref([]);
+
+
 
 onMounted(() => {
 	getActivationsByCampaignId();
 	getRegions();
 	getCampaignName();
-})
+	getAllUsers();
 
+});
+
+const getAllUsers = async () => {
+	showLoading.value = true;
+	userStore.getUserByRole('TTG_ACTIVATION_MANAGER').then(function (response) {
+		users.value = response.data;
+		getStaffMembers();
+		mappedUsers.value = response.data.map(user => {
+			return {
+				name: `${user.firstName} ${user.lastName}`,
+				id: user.id
+			}
+		})
+	}).catch(function (error) {
+		// toaster.error("Error fetching users");
+		console.log(error);
+	}).finally(function () {
+		showLoading.value = false;
+	})
+  }
+
+const getStaffMembers = async () => {
+	staff.getStaff().then(function (response) {
+		console.log('Staffs',response)
+		staffMembers.value = response.data.content;
+	}).catch(function (error) {
+		// toaster.error("Error fetching staff members");
+		console.log(error);
+	})
+}
 
 const getCampaignName = async () => {
 	campaignStore.getCampaignName(campaignId.value).then(function (response) {
@@ -65,10 +108,9 @@ const onInput = () => {
   const getActivationsByCampaignId = async () => {
 	showLoading.value = true;
 	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
-		console.log(response.data)
 		activations.value = response.data.content
 	}).catch(function (error) {
-		toaster.error("Error fetching activations");
+		// toaster.error("Error fetching activations");
 		console.log(error);
 	}).finally(function () {
 	})
@@ -144,15 +186,39 @@ const items = (activation) => [
 const visible = ref(false);
 const position = ref('top');
 let editForm = ref({
-	staff: null
+	staff: null,
+	activation: null
 });
+
+const rules = { 
+    staff: { required },
+	activation: { required }
+};
+const v$ = useVuelidate(rules, editForm);
 
 const openModal = (pos,activation) => {   
     position.value = pos;
     visible.value = true;
-	editForm.staff = activation;
+	editForm.activation = activation;
 }
 
+
+const onUserChange = (event) => {
+    let selectedUser = users.value.content.find(user => user.firstName + ' ' + user.lastName === event.value)?.id;
+	console.log('selectedUser',selectedUser)
+	//loop through staff members and find the staff member with the same id
+	editForm.staff = staffMembers.value.find(staff => staff.user === selectedUser)?.id;
+	console.log('staff',staffMembers.value)
+	editForm.staff = selectedUser
+	console.log('editForm',editForm)
+}
+
+const search = (event) => {
+    const query = event.query.toLowerCase();
+	console.log(users.value)
+	let myObj = users.value.content.filter(user => user.firstName.toLowerCase().includes(query))
+    mappedUsers.value = myObj.map(u => u.firstName + ' ' + u.lastName);
+};
 
 </script>
 <template>
@@ -238,14 +304,14 @@ const openModal = (pos,activation) => {
 				</div>                        
 				</div>
 				<div class="col-md-12">
-					<!-- <div class="card my-card flex justify-center">
+					<div class="card my-card flex justify-center">
 						<label for="input1" class="form-label">Select Staff</label>
 						<AutoComplete v-model="editForm.staff" forceSelection dropdown :suggestions="mappedUsers" 
                               @item-select="onUserChange($event)" @complete="search" field="name" placeholder="Select Staff" />
 						   <div class="input-errors" v-for="error of v$.staff.$errors" :key="error.$uid">
 						   <div class="text-danger">User is required</div>
 						</div>
-				</div>                          -->
+				</div>     
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn maz-gradient-btn w-100">'Submit'</button>
