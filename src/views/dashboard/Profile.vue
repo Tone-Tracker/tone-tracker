@@ -19,8 +19,8 @@ Date: 04/06/2024
                     <div class="col-lg-5">
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
-                                <div class="d-flex flex-column align-items-center text-center image-container">
-                                    <img src="/src/assets/images/gallery/10.png" alt="Admin" class="w-100 zoom-image">
+                                <div class="image-container">
+                                    <img src="/src/assets/images/gallery/10.png" alt="Admin" class=" zoom-image" style="width: 400px; height: auto;">
                                 </div>
 
                                 <div class="mt-3">
