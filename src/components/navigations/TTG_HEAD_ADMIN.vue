@@ -45,12 +45,12 @@ const getRoleName = () => {
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <ul class="nav-list">
-                            <li><a href="#"><span class="icon">💬</span> All</a></li>
-                            <li><router-link to="/users"><span class="icon"><i class='bx bxs-user-rectangle'></i></span> Users</router-link></li>
+                            <li><router-link to="/jobs"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
+                            <li><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
                             <li><router-link to="/admin-contacts"><span class="icon"><i class='bx bxs-user-rectangle'></i></span> Admin</router-link></li>
-                            <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
-                            <li><a href="#"><span class="icon">📨</span> Sent</a></li>
-                            <li><a href="#"><span class="icon">📩</span> Unread</a></li>
+                            <li><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
+                            <li><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
+                            <li><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
                         </ul>
 
                     </div>

@@ -1,4 +1,5 @@
 <script setup>
+
 import { useOnline } from '@vueuse/core'
 
 const online = useOnline()
@@ -39,20 +40,17 @@ const getRoleName = () => {
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <ul class="nav-list">
-                            <li><router-link to="/jobs"><span class="icon">💬</span> All</router-link></li>
-                            <li><router-link to="/admin-activations"><span class="icon">📄</span> Activations</router-link></li>
-                            <li><router-link to="/promoters"><span class="icon">📄</span> Promoters</router-link></li>
-                            <li><router-link to="/briefs"><span class="icon">📄</span> Briefs</router-link></li>
-                            <!-- <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li> -->
-                            <li><router-link to="/admin-warehouse"><span class="icon">📄</span> Warehouse & Units</router-link></li>
-                            <li><router-link to="/teaching"><span class="icon">📄</span> Learning & Teaching</router-link></li>
-                            <!-- <li><router-link to="/crm"><span class="icon">📄</span> CRM</router-link></li> -->
-                            <li><router-link to="/jobs"><span class="icon">📄</span> Jobs</router-link></li>
-                            <li><router-link to="/upload"><span class="icon">📤</span> Upload contract</router-link></li>
-                            <!-- <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li> -->
-                            <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
-                            <li><a href="#"><span class="icon">📨</span> Sent</a></li>
-                            <li><a href="#"><span class="icon">📩</span> Unread</a></li>
+                            <li><router-link to="/jobs"><i class='bx bx-chat'></i> All</router-link></li>
+    <li><router-link to="/admin-activations"><i class='bx bx-calendar-event'></i> Activations</router-link></li>
+    <li><router-link to="/promoters"><i class='bx bx-group'></i> Promoters</router-link></li>
+    <li><router-link to="/briefs"><i class='bx bx-file'></i> Briefs</router-link></li>
+    <li><router-link to="/admin-warehouse"><i class='bx bx-store'></i> Warehouse & Units</router-link></li>
+    <li><router-link to="/teaching"><i class='bx bx-book-open'></i> Learning & Teaching</router-link></li>
+    <li><router-link to="/jobs"><i class='bx bx-briefcase'></i> Jobs</router-link></li>
+    <li><router-link to="/upload"><i class='bx bx-upload'></i> Upload contract</router-link></li>
+    <li><a href="#"><i class='bx bx-envelope'></i> Message center</a></li>
+    <li><a href="#"><i class='bx bx-send'></i> Sent</a></li>
+    <li><a href="#"><i class='bx bx-envelope-open'></i> Unread</a></li>
                         </ul>
 
                     </div>
