@@ -24,6 +24,8 @@ import region from './region';
 import warehouse from './warehouse';
 import staff from './staff';
 import admincontact from './admincontact';
+import forgotpassword from './forgotpassword';
+import resertpassword from './resertpassword';
 
 
 
@@ -52,6 +54,8 @@ const router = createRouter({
     ...warehouse,
     ...staff,
     ...admincontact,
+    ...forgotpassword,
+    ...resertpassword,
 
     {
       path: '/',
