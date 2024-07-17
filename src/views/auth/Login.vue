@@ -140,6 +140,9 @@ const loading = ref(false);
 															{{ loading ? 'Loading...' : 'Continue'}} </button>
 													</div>
 												</div>
+												<div class="mt-3 text-center">
+													<router-link to="/forgot-password">Forgot Password?</router-link>
+												</div>
 
 											</form>
 										</div>

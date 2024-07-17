@@ -52,6 +52,7 @@ const router = createRouter({
     ...warehouse,
     ...staff,
     ...admincontact,
+
     {
       path: '/',
       name: 'home',
