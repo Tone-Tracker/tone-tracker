@@ -39,7 +39,7 @@ const getRoleName = () => {
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <ul class="nav-list">
-                            <li><router-link to="/jobs"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
+                            <li><router-link to="/jobs"><span class="icon"><i class='bx  bx-chat'></i></span> All</router-link></li>
                             <li><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
                             <li><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
                             <!-- <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li> -->
@@ -224,5 +224,9 @@ export default {
 
 .menu-section ul li:hover {
     color: #fff;
+}
+
+.nav-list i {
+    font-size: 1.5rem; /* Adjust this value as needed */
 }
 </style>

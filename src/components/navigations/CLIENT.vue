@@ -303,4 +303,9 @@ svg {
 .activation-icon {
     max-width: 2rem;
 }
+
+/* //icon// */
+.nav-list i {
+    font-size: 1.5rem; /* Adjust this value as needed */
+}
 </style>

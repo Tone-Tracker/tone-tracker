@@ -227,4 +227,9 @@ export default {
 .menu-section ul li:hover {
     color: #fff;
 }
+
+/* //icon// */
+.nav-list i {
+    font-size: 1.5rem; /* Adjust this value as needed */
+}
 </style>
