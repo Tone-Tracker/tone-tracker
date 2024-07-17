@@ -102,20 +102,18 @@ import Warehouse from '../svgs/Warehouse.vue';
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <ul class="nav-list">
-                            <li><a href="#"><span class="icon">💬</span> All</a></li>
-                            <li><a href="#"><span class="icon">✉️</span> Message center</a></li>
-                            <!-- <li><a href="#"><span class="icon">📄</span> Briefs</a></li> -->
-                            <li><router-link to="/briefs"><span class="icon">📄</span> Briefs</router-link></li>
-                            <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li>
-                            <li><router-link to="/users"><span class="icon">📄</span> Users</router-link></li>
-                            <li><router-link to="/crm"><span class="icon">📄</span> CRM</router-link></li>
-                            <li><router-link to="/jobs"><span class="icon">📄</span> Jobs</router-link></li>
-                            <li><router-link to="/upload"><span class="icon">📤</span> Upload contract</router-link></li>
-                            <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li>
-                            <li><a href="#"><span class="icon">📨</span> Sent</a></li>
-                            <li><a href="#"><span class="icon">📩</span> Unread</a></li>
+                            <li><a href="#"><i class='bx bx-chat'></i> All</a></li>
+                            <li><a href="#"><i class='bx bx-envelope'></i> Message center</a></li>
+                            <li><router-link to="/briefs"><i class='bx bx-file'></i> Briefs</router-link></li>
+                            <li><router-link to="/campaigns"><i class='bx bx-bullseye'></i> Campaigns</router-link></li>
+                            <li><router-link to="/users"><i class='bx bx-user'></i> Users</router-link></li>
+                            <li><router-link to="/crm"><i class='bx bx-briefcase'></i> CRM</router-link></li>
+                            <li><router-link to="/jobs"><i class='bx bx-briefcase-alt-2'></i> Jobs</router-link></li>
+                            <li><router-link to="/upload"><i class='bx bx-upload'></i> Upload contract</router-link></li>
+                            <li><router-link to="/tasks"><i class='bx bx-task'></i> Tasks</router-link></li>
+                            <li><a href="#"><i class='bx bx-send'></i> Sent</a></li>
+                            <li><a href="#"><i class='bx bx-envelope-open'></i> Unread</a></li>
                         </ul>
-
                     </div>
                 </div>
             </div>
