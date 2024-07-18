@@ -61,7 +61,7 @@ const getAllUsers = async () => {
 	userStore.getUserByRole('TTG_ACTIVATION_MANAGER').then(function (response) {
 		users.value = response.data;
 		getStaffMembers();
-		mappedUsers.value = response.data.map(user => {
+		mappedUsers.value = response.data.content.map(user => {
 			return {
 				name: `${user.firstName} ${user.lastName}`,
 				id: user.id
@@ -205,12 +205,11 @@ const openModal = (pos,activation) => {
 
 const onUserChange = (event) => {
     let selectedUser = users.value.content.find(user => user.firstName + ' ' + user.lastName === event.value)?.id;
-	console.log('selectedUser',selectedUser)
-	//loop through staff members and find the staff member with the same id
-	editForm.staff = staffMembers.value.find(staff => staff.user === selectedUser)?.id;
-	console.log('staff',staffMembers.value)
-	editForm.staff = selectedUser
+	let staff = staffMembers.value.find(staff => staff.user === selectedUser)?.id;
+	editForm.staff = staff;
+
 	console.log('editForm',editForm)
+	
 }
 
 const search = (event) => {
