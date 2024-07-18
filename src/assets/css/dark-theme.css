@@ -370,7 +370,7 @@ html.dark-theme .sidebar-wrapper .sidebar-header .toggle-btn:active {
 	background: rgb(255 255 255 / 25%)
 }
 html.dark-theme .sidebar-wrapper .metismenu a {
-	color: #9ea4aa
+	color: #fff
 }
 html.dark-theme .sidebar-wrapper .metismenu .mm-active>a, html.dark-theme .sidebar-wrapper .metismenu a:active, html.dark-theme .sidebar-wrapper .metismenu a:focus, html.dark-theme .sidebar-wrapper .metismenu a:hover {
 	color: #fff;

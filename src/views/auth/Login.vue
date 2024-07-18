@@ -36,7 +36,10 @@ const loading = ref(false);
 		// return router.push('/dashboard')
 		loading.value = true;
 		const isFormCorrect = await v$.value.$validate();
-		if (!isFormCorrect) return;
+		if (!isFormCorrect){
+			loading.value=false
+			 return;
+		}
 		auth.attempt(form)
 		  .then(function (response) {
 			
@@ -64,7 +67,7 @@ const loading = ref(false);
 	}
 
 	return {
-		form, v$,onSubmit,screenSizes,
+		form, v$,onSubmit,screenSizes,loading
 	}
 }
 
@@ -135,10 +138,10 @@ const loading = ref(false);
 															class="btn p-3 maz-gradient-btn">Continue</router-link> -->
 															
 															<button type="submit" 
-															class="btn p-3 maz-gradient-btn text-white">
-															<div v-if="loading" class="spinner-border text-white" role="status"> <span class="visually-hidden">Loading...</span>
+															class="btn p-3 maz-gradient-btn text-white d-flex justify-content-center align-items-center">
+															<div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
 															</div>
-															{{ loading ? 'Loading...' : 'Continue'}} </button>
+															{{ loading ? '' : 'Continue'}} </button>
 													</div>
 												</div>
 												<div class="mt-3 text-center">

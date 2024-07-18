@@ -51,52 +51,31 @@ export default {
 </script>
 
 <template>
-  <div class="logo-light"></div>
-  <div class="shoes"></div>
-  <div class="container-login">
-    <div class="section-authentication-cover">
-      <div class="login-cover">
-        <div class="row g-0">
-          <div class="col-12 col-xl-7 col-xxl-8 auth-cover-left align-items-center d-none d-xl-flex">
-            <div class="card shadow-none bg-transparent shadow-none rounded-0 mb-0">
-              <div class="card-body">
-              </div>
+  <div class="container-forgot-password">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="mb-3 text-default">Forgot Password</h5>
+        <form @submit.prevent="onSubmit" class="row g-3">
+          <div class="mb-3 col-12">
+            <label for="inputEmailAddress" class="form-label">Email Address</label>
+            <input v-model="form.email" type="email" class="form-control custom-input" id="inputEmailAddress">
+            <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+              <div class="text-danger">{{ error.$message }}</div>
             </div>
           </div>
-          <div class="col-12 col-xl-5 col-xxl-4 auth-cover-right align-items-center justify-content-center">
-            <div class="card rounded-0 m-3 shadow-none bg-transparent mb-0">
-              <div class="card-body p-sm-5">
-                <div class="">
-                  <div class="form-body">
-                    <h5 class="mb-3 text-default">Forgot Password</h5>
-                    <form @submit.prevent="onSubmit" class="row g-3">
-                      <div class="mb-3 col-12">
-                        <label for="inputEmailAddress" class="form-label">Email</label>
-                        <input v-model="form.email" type="email" class="form-control custom-input"
-                          id="inputEmailAddress">
-                        <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-                          <div class="text-danger">{{ error.$message }}</div>
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <div class="d-grid">
-                          <button type="submit" class="btn p-3 maz-gradient-btn text-white">
-                            <div v-if="loading" class="spinner-border text-white" role="status">
-                              <span class="visually-hidden">Loading...</span>
-                            </div>
-                            {{ loading ? 'Sending...' : 'Send Reset Instructions' }}
-                          </button>
-                        </div>
-                      </div>
-                      <div class="mt-3 text-center">
-                        <router-link to="/login">Back to Login</router-link>
-                      </div>
-                    </form>
-                  </div>
+          <div class="col-12">
+            <div class="d-grid">
+              <button type="submit" class="btn p-3 maz-gradient-btn text-white">
+                <div v-if="loading" class="spinner-border text-white" role="status">
+                  <span class="visually-hidden">Loading...</span>
                 </div>
-              </div>
+                {{ loading ? 'Sending...' : 'Send Reset Instructions' }}
+              </button>
             </div>
           </div>
+        </form>
+        <div class="mt-3 text-center">
+          <router-link to="/login">Back to Login</router-link>
         </div>
       </div>
     </div>
