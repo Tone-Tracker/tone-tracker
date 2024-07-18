@@ -59,7 +59,7 @@ export default {
             <label for="inputEmailAddress" class="form-label">Email Address</label>
             <input v-model="form.email" type="email" class="form-control custom-input" id="inputEmailAddress">
             <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-              <div class="text-danger">{{ error.$message }}</div>
+              <div class="text-danger">Email address is required.</div>
             </div>
           </div>
           <div class="col-12">
@@ -74,7 +74,7 @@ export default {
           </div>
         </form>
         <div class="mt-3 text-center">
-          <router-link to="/login">Back to Login</router-link>
+          <router-link to="/">Back to Login</router-link>
         </div>
       </div>
     </div>
