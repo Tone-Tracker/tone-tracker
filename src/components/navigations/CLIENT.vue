@@ -18,7 +18,7 @@ import Warehouse from '../svgs/Warehouse.vue';
                     </div>
                     <div class="menu-title">Activation</div>
                 </a>
-                <div id="activationMenu" class="accordion-collapse collapse" data-bs-parent="#accordionPanelsStayOpenExample">
+                <div id="activationMenu" class="accordion-collapse collapse bg-dark" data-bs-parent="#accordionPanelsStayOpenExample">
                     <div class="accordion-body">
                         <div>
                             <div class="side-nav__link">
@@ -26,10 +26,10 @@ import Warehouse from '../svgs/Warehouse.vue';
                     </div> 
                     <div class="menu-title  text-center">Activation</div>
                         </div>
-                        <ul class="nav-list">
-                            <li><a href="#">Region</a></li>
-                            <li><a href="#">Brand</a></li>
-                            <li><a href="#">Activation</a></li>
+                        <ul class="nav-list background-navlist">
+                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Region</a></li>
+                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Brand</a></li>
+                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Activation</a></li>
                         </ul>
                     </div>
                 </div>
@@ -322,5 +322,16 @@ svg {
 /* //icon// */
 .nav-list i {
     font-size: 1.5rem; /* Adjust this value as needed */
+}
+
+.in-list {
+    width: 90%;
+}
+
+.sidebar-wrapper .metismenu ul a {
+    padding-left: 0 !important;
+}
+.background-navlist {
+    background-color: black !important;
 }
 </style>
