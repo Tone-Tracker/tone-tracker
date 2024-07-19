@@ -11,13 +11,28 @@ import Warehouse from '../svgs/Warehouse.vue';
     <div class="accordion" id="accordionPanelsStayOpenExample">
 
         <ul class="side-nav">
-            <li class="side-nav__item activation">
-                <router-link to="/activations">
+             <li class="side-nav__item activation">
+                <a href="javascript:;" data-bs-toggle="collapse" data-bs-target="#activationMenu" aria-expanded="false" aria-controls="activationMenu">
                     <div class="side-nav__link">
                         <Activation />
                     </div>
                     <div class="menu-title">Activation</div>
-                </router-link>
+                </a>
+                <div id="activationMenu" class="accordion-collapse collapse" data-bs-parent="#accordionPanelsStayOpenExample">
+                    <div class="accordion-body">
+                        <div>
+                            <div class="side-nav__link">
+                        <Activation />
+                    </div> 
+                    <div class="menu-title  text-center">Activation</div>
+                        </div>
+                        <ul class="nav-list">
+                            <li><a href="#">Region</a></li>
+                            <li><a href="#">Brand</a></li>
+                            <li><a href="#">Activation</a></li>
+                        </ul>
+                    </div>
+                </div>
             </li>
 
             <li class="side-nav__item">
