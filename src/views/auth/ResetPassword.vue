@@ -22,6 +22,7 @@ export default {
       token: ''  // This should be populated from the URL or route params
     });
 
+
     const rules = {
       password: { required, minLength: minLength(8) },
       confirmPassword: { required, sameAsPassword: sameAs(form.password) },
