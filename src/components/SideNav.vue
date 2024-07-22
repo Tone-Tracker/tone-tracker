@@ -28,7 +28,7 @@ const getUserRole = (role) => {
           </div>v-if="user.role == 'TTG_SUPER_ADMIN'"
            -->
          
-        <div class="metismenu" id="menu">
+        <div class="metismenu p-0" id="menu">
             <!-- <div class="col-img">
                 <div class="gallery">
                     <div class="image-container position-relative">
