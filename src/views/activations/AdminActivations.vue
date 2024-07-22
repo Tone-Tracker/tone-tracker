@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, reactive,ref, watch } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import useToaster from '@/composables/useToaster';
@@ -163,7 +163,7 @@ const items = (activation) => [
         label: 'Edit',
         icon: 'bx bx-edit-alt fs-4',
         command: () => {
-            URLrouter.push(`/create-activation?activation=${activation.id}&campaign=${campaignId.value}&name=${campaignName.value}`);
+            URLrouter.push(`/create-activation?activation=${activation.id}&campaign=${campaignId.value}&manager=${getUserName(activation)}&name=${campaignName.value}`);
         }
     },
     {
@@ -185,7 +185,7 @@ const items = (activation) => [
 
 const visible = ref(false);
 const position = ref('top');
-let editForm = ref({
+const editForm = reactive({
 	staff: null,
 	activation: null
 });
@@ -195,23 +195,59 @@ const rules = {
 	activation: { required }
 };
 const v$ = useVuelidate(rules, editForm);
-
+const activationName = ref(null);
+const activationEdit = reactive({});
 const openModal = (pos,activation) => {   
+	Object.assign(activationEdit, activation)
+	activationName.value = activation.name
     position.value = pos;
     visible.value = true;
-	editForm.activation = activation;
+	editForm.activation = activation.id;
+	activationId.value = activation.id;
 }
 
-
+let staffValue = ref(null);
+const activationId = ref(null);
 const onUserChange = (event) => {
-    let selectedUser = users.value.content.find(user => user.firstName + ' ' + user.lastName === event.value)?.id;
+    let selectedUser = users.value.content.find(user => user.firstName + ' ' + user.lastName === staffValue.value)?.id;
 	let staff = staffMembers.value.find(staff => staff.user === selectedUser)?.id;
 	editForm.staff = staff;
-
-	console.log('editForm',editForm)
+	if(!staff){
+		toaster.error("Make sure this user is added as staff member.");
+		return 
+	}
+	editForm.staff = staff;
 	
 }
+const addActivationManager = () => {
+	const form = reactive({
+	  name:  activationEdit.name,
+	  budget: activationEdit.budget,
+      campaign: activationEdit.campaign,
+	  region: activationEdit.region,
+      startDate: activationEdit.startDate,
+	  endDate: activationEdit.endDate,
+      brief: activationEdit.brief,
+	  targetGroup: activationEdit.targetGroup,
+	  painPoints: activationEdit.painPoints,
+	  staff: editForm.staff
+});
+	if(activationId.value){
+		return activation.update(activationId.value, form).then(function (response) {
+			toaster.success("Activation updated successfully");
+			visible.value = false;
+			getActivationsByCampaignId();
+		}).catch(function (error) {
+			toaster.error("Error updating activation");
+			console.log(error);
+		})
+	}
+}
 
+const getUserName = (activation) => {
+	if(!activation.staff) return '';
+	return users.value.content.find(user => user.id === activation.staff)?.firstName + ' ' + users.value.content.find(user => user.id === activation.staff)?.lastName
+}
 const search = (event) => {
     const query = event.query.toLowerCase();
 	console.log(users.value)
@@ -246,8 +282,7 @@ const search = (event) => {
 										<th>Budget</th>
 										<th>Start Date</th>
 										<th>End Date</th>
-										<th>Pain Points</th>
-										<th>Target Group</th>
+										<th>Activation Manager</th>
 										<th>Actions</th>
 									</tr>
 								</thead>
@@ -259,8 +294,8 @@ const search = (event) => {
 										<td>R {{activation.budget}}</td>
 										<td>{{activation.startDate}}</td>
 										<td>{{activation.endDate}}</td>
-										<td>{{activation.painPoints}}</td>
-										<td>{{activation.targetGroup}}</td>
+										<td>{{ getUserName(activation) }}
+										</td>
 										<td>
 											<div class="d-flex order-actions">
 												<!-- <router-link :to="`/create-activation?activation=${activation.id}&campaign=${campaignId}&name=${campaignName}`" class="">
@@ -295,25 +330,25 @@ const search = (event) => {
 
 		<Dialog v-model:visible="visible" modal header="Add Activation Manager" :style="{ width: '30rem' }">
              
-              <form class="row g-3" >
+              <form class="row g-3" @submit.prevent="addActivationManager">
 				<div class="col-md-12">
 					<div class="card my-card flex justify-center">
-						<label for="input1" class="form-label">Unit Name</label>
-						   <InputText type="text" v-model="editForm.activation" />
+						<label for="input1" class="form-label">Activation Name</label>
+						   <InputText type="text" v-model="activationName" :disabled="true" />
 				</div>                        
 				</div>
 				<div class="col-md-12">
 					<div class="card my-card flex justify-center">
 						<label for="input1" class="form-label">Select Staff</label>
-						<AutoComplete v-model="editForm.staff" forceSelection dropdown :suggestions="mappedUsers" 
-                              @item-select="onUserChange($event)" @complete="search" field="name" placeholder="Select Staff" />
+						<AutoComplete v-model="staffValue" forceSelection dropdown :suggestions="mappedUsers" 
+                              @item-select="onUserChange($event)" @complete="search" field="name" placeholder="Select Staff Member" />
 						   <div class="input-errors" v-for="error of v$.staff.$errors" :key="error.$uid">
 						   <div class="text-danger">User is required</div>
 						</div>
 				</div>     
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn maz-gradient-btn w-100">'Submit'</button>
+					<button type="submit" class="btn maz-gradient-btn w-100">Submit</button>
 				</div>
 				
 			</form>
