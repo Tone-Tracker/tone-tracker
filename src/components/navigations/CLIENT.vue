@@ -130,7 +130,7 @@ import Warehouse from '../svgs/Warehouse.vue';
             <li class="side-nav__item">
                 <router-link to="/chat">
                     <div class="side-nav__link">
-                        <i class='bx bxs-chat h2 mx-4'></i>
+                        <i class='bx bxs-chat fs-3 mx-2'></i>
                     </div>
                     <div class="menu-title">Chat</div>
                 </router-link>
@@ -232,6 +232,7 @@ export default {
 </script>
 
 <style scoped>
+
 /* ///////iner navigation//////// */
 .accordion-button::after {
     margin: 0 !important;
