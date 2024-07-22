@@ -148,7 +148,7 @@ html.dark-theme .input-group-text {
   position: absolute;
   top: 100%;
   left: 43px;
-  width: 89.1%;;
+  width: 84%;;
   background-color: #1C1C1C;
   border: 1px solid #000000;
   z-index: 1000;
