@@ -24,12 +24,12 @@ import Warehouse from '../svgs/Warehouse.vue';
                             <div class="side-nav__link">
                                 <Activation />
                             </div> 
-                            <div class="menu-title text-center">Activation</div>
+                            <div class="menu-title text-center mb-3">Activation</div>
                         </div>
                         <div class="accordion" id="activationSubMenu">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed mb-2 rounded-0" type="button" data-bs-toggle="collapse" data-bs-target="#regionCollapse" aria-expanded="false" aria-controls="regionCollapse">
+                                    <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#regionCollapse" aria-expanded="false" aria-controls="regionCollapse">
                                         Region
                                     </button>
                                 </h2>
@@ -45,7 +45,7 @@ import Warehouse from '../svgs/Warehouse.vue';
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#brandCollapse" aria-expanded="false" aria-controls="brandCollapse">
+                                    <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#brandCollapse" aria-expanded="false" aria-controls="brandCollapse">
                                         Brand
                                     </button>
                                 </h2>
@@ -61,7 +61,7 @@ import Warehouse from '../svgs/Warehouse.vue';
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#activationSubCollapse" aria-expanded="false" aria-controls="activationSubCollapse">
+                                    <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#activationSubCollapse" aria-expanded="false" aria-controls="activationSubCollapse">
                                         Activation
                                     </button>
                                 </h2>
