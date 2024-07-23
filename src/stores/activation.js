@@ -3,16 +3,16 @@ import axiosInstance from '@/axiosInstance';
 
 export const useActivation = defineStore('activation', () => {
 
-    function submit(form) {
-      return axiosInstance.post(`/api/activations`,form);
+    function submit(formData, config) {
+      return axiosInstance.post(`/api/activations`,formData, config);
     }
 
     const getActivations = () => {
       return axiosInstance.get(`/api/activations`);
     }
 
-    const update = (id,formData) => {
-      return axiosInstance.put(`/api/activations/${id}`,formData);
+    const update = (id,form) => {
+      return axiosInstance.put(`/api/activations/${id}`,form);
     }
     const deleteActivation = (id) => {
       return axiosInstance.delete(`/api/activations/${id}`);

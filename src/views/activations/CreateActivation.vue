@@ -22,6 +22,8 @@ const activationId = ref(route.query.activation);
 
 const activation = useActivation();
 const toaster = useToaster();
+const selectedFile = ref(null);
+
 
 const regionStore = useRegion();
 
@@ -82,18 +84,31 @@ const form = reactive({
     }
 	const v$ = useVuelidate(rules, form)
 
+    const onFileChange = (event) => {
+    selectedFile.value = event.target.files[0];
+}
+
 	const onSubmit = async () => {
 		const isFormValid = await v$.value.$validate();
 		if (!isFormValid) {
 			return
 		}
+
+        const formData = new FormData();
+        formData.append('briefFile', selectedFile.value);
+        formData.append('ActivationDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
+
+        const config = {
+        useMultipartFormData: true // Add this flag to the request config
+         };
+
 			if(activationId.value){
 				return activation.update(activationId.value, form).then(function (response) {
 					toaster.success("Activation updated successfully");
 				})
 			}else{
 		
-			activation.submit(form)
+			activation.submit(formData, config)
 			.then(function (response) {
 				toaster.success("Activation created successfully");
 				}).catch(function (error) {
@@ -101,11 +116,8 @@ const form = reactive({
 					console.log(error);
 		    });
 		 }
-		
 	}
 	
-
-
 
 </script>
 <template>
@@ -203,7 +215,7 @@ const form = reactive({
                                    
                                    <div class="upload-section">
                                     <label for="file-upload" class="file-upload-label">
-                                        <input type="file" id="file-upload">
+                                        <input type="file" @change="onFileChange" class="form-control" id="file-upload">
                                         <div
                                             class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
                                             <div class="fs-1">+</div>
