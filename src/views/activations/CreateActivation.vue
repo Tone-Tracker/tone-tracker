@@ -23,6 +23,8 @@ const activationId = ref(route.query.activation);
 const loading = ref(false);
 const activation = useActivation();
 const toaster = useToaster();
+const selectedFile = ref(null);
+
 
 const regionStore = useRegion();
 
@@ -83,20 +85,32 @@ const form = reactive({
     }
 	const v$ = useVuelidate(rules, form)
 
+    const onFileChange = (event) => {
+    selectedFile.value = event.target.files[0];
+}
+
 	const onSubmit = async () => {
 		const isFormValid = await v$.value.$validate();
 		if (!isFormValid) {
 			return
 		}
-            loading.value = true;
-			if(activationId.value){                
+
+        const formData = new FormData();
+        formData.append('briefFile', selectedFile.value);
+        formData.append('ActivationDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
+
+        const config = {
+        useMultipartFormData: true // Add this flag to the request config
+         };
+
+			if(activationId.value){
 				return activation.update(activationId.value, form).then(function (response) {
                     loading.value = false;
 					toaster.success("Activation updated successfully");
 				})
 			}else{
 		
-			activation.submit(form)
+			activation.submit(formData, config)
 			.then(function (response) {
                 loading.value = false;
 				toaster.success("Activation created successfully");
@@ -108,11 +122,8 @@ const form = reactive({
                 loading.value = false;
             });
 		 }
-		
 	}
 	
-
-
 
 </script>
 <template>
@@ -214,9 +225,9 @@ const form = reactive({
  
                                    
                                    <div class="upload-section">
-                                    <div for="file-upload" class="file-upload-label">
-                                        
-                                        <label for="file-upload"
+                                    <label for="file-upload" class="file-upload-label">
+                                        <input type="file" @change="onFileChange" class="form-control" id="file-upload">
+                                        <div
                                             class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
                                             <input type="file" id="file-upload" hidden>
                                             <div class="fs-1">+</div>

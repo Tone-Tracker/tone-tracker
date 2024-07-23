@@ -66,7 +66,7 @@ async function initMap() {
   // Set LatLng and title text for the markers. The first marker (Boynton Pass)
   // receives the initial focus when tab is pressed. Use arrow keys to move
   // between markers; press tab again to cycle through the map controls.
-  const tourStops = [
+  const activations = [
     {
       position: { lat: -26.038240, lng: 28.213280 },
       title: "Norkem Park",
@@ -89,7 +89,7 @@ async function initMap() {
     },
   ];
 
-  tourStops.forEach(markerData => {
+  activations.forEach(markerData => {
     const marker = new AdvancedMarkerElement({
       map,
       position: markerData.position,
@@ -110,7 +110,7 @@ async function initMap() {
   const infoWindow = new InfoWindow();
 
   // Create the markers.
-  tourStops.forEach(({ position, title }, i) => {
+  activations.forEach(({ position, title }, i) => {
     const pin = new PinElement({
       glyph: `${i + 1}`,
       scale: 1.5,
