@@ -16,10 +16,11 @@ import moment from 'moment';
 const route = useRoute();
 const campaignId = ref(route.query.campaign);
 const campaignName = ref(route.query.name);
+const activationManager = ref(route.query.manager);
 const activationId = ref(route.query.activation);
 
 
-
+const loading = ref(false);
 const activation = useActivation();
 const toaster = useToaster();
 const selectedFile = ref(null);
@@ -104,17 +105,22 @@ const form = reactive({
 
 			if(activationId.value){
 				return activation.update(activationId.value, form).then(function (response) {
+                    loading.value = false;
 					toaster.success("Activation updated successfully");
 				})
 			}else{
 		
 			activation.submit(formData, config)
 			.then(function (response) {
+                loading.value = false;
 				toaster.success("Activation created successfully");
 				}).catch(function (error) {
+                    loading.value = false;
 					toaster.error("Error creating user");
 					console.log(error);
-		    });
+            }).finally(function () {
+                loading.value = false;
+            });
 		 }
 	}
 	
@@ -126,7 +132,10 @@ const form = reactive({
         <div class="page-wrapper">
 			<div class="page-content">
                 <BreadCrumb :title="activationId ? 'Edit Activation' : 'Create Activation'" icon="bx bxs-user-badge"/>
-                <h4 class="mx-2">{{campaignName}}</h4>
+                <div class="d-flex ">
+                    <h5 class="mx-2">Campaign: {{campaignName}}</h5>
+                    <h5 class="mx-2">Activation Manager: <span class="maz-gradient-txt">{{activationManager}}</span></h5>
+                </div>
 				<div class="card">
 					<div class="card-body">
 						<div class="row">
@@ -154,7 +163,7 @@ const form = reactive({
                                  </div>
  
  
-                                   <div class="col-md-4 mt-custom">
+                                   <div class="col-md-3 mt-custom">
                                      <label for="region" class="form-label">Region</label>
                                      <select v-model="form.region" class="form-control" id="activation-area">
                                          <option :value="''" :selected="true" :disabled="disabled">Select Region</option>
@@ -165,7 +174,7 @@ const form = reactive({
                                        </div>
                                    </div>
                                    
-                                   <div class="col-md-4 card justify-center mt-custom">
+                                   <div class="col-md-3 card justify-center mt-custom">
 
                                     <div class="card fuck-top flex justify-center">
                                         <label for="input1" class="form-label">Start Date</label>
@@ -176,7 +185,7 @@ const form = reactive({
                                      </div> 
                                    </div>
                                    
-                                   <div class="col-md-4 mt-custom">
+                                   <div class="col-md-3 card justify-center mt-custom">
 
                                     <div class="card fuck-top flex justify-center">
                                         <label for="input1" class="form-label">End Date</label>
@@ -188,7 +197,7 @@ const form = reactive({
 
                                    </div>
  
-                                   <div class="col-md-4  mt-custom">
+                                   <div class="col-md-3 mt-custom">
                                      <label for="targetGroup" class="form-label">Target Group</label>
                                      <input v-model="form.targetGroup" type="text" class="form-control" id="targetGroup" >
                                      <div class="input-errors" v-for="error of v$.targetGroup.$errors" :key="error.$uid">
@@ -196,21 +205,23 @@ const form = reactive({
                                        </div>
                                    </div>
 
-                                   <div class="col-md-4 mt-custom">
-                                    <label for="brief" class="form-label">Brief</label>
-                                    <textarea v-model="form.brief" class="form-control" id="brief" ></textarea>
-                                    <div class="input-errors" v-for="error of v$.brief.$errors" :key="error.$uid">
-                                        <div class="text-danger">Brief is required</div>
+                                  <div class="text-areas-container">
+                                    <div class="col-md-12 mt-custom-2">
+                                        <label for="brief" class="form-label">Brief</label>
+                                        <textarea v-model="form.brief" class="form-control" id="brief" ></textarea>
+                                        <div class="input-errors" v-for="error of v$.brief.$errors" :key="error.$uid">
+                                            <div class="text-danger">Brief is required</div>
+                                          </div>
                                       </div>
-                                  </div>
-
-                                   <div class="col-md-4 mt-custom">
-                                     <label for="campaign" class="form-label">Pin Points</label>
-                                     <textarea v-model="form.painPoints" type="text" class="form-control" id="painPoints" ></textarea>
-                                     <div class="input-errors" v-for="error of v$.painPoints.$errors" :key="error.$uid">
-                                         <div class="text-danger">Pin Points is required</div>
+    
+                                       <div class="col-md-12 mt-custom-2">
+                                         <label for="campaign" class="form-label">Pin Points</label>
+                                         <textarea v-model="form.painPoints" type="text" class="form-control" id="painPoints" ></textarea>
+                                         <div class="input-errors" v-for="error of v$.painPoints.$errors" :key="error.$uid">
+                                             <div class="text-danger">Pin Points is required</div>
+                                           </div>
                                        </div>
-                                   </div>
+                                  </div>
  
                                    
                                    <div class="upload-section">
@@ -218,18 +229,20 @@ const form = reactive({
                                         <input type="file" @change="onFileChange" class="form-control" id="file-upload">
                                         <div
                                             class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
+                                            <input type="file" id="file-upload" hidden>
                                             <div class="fs-1">+</div>
                                             <div class="mb-6">
                                                 <span class="fs-5">Upload file</span>
                                             </div>
-                                        </div>
+                                        </label>
 
-                                    </label>
+                                    </div>
                                 </div>
 
                                    <div class="col-12">
                                        <div class="d-grid">
-                                         <button @click="onSubmit" class="btn maz-gradient-btn" type="button"> 
+                                         <button @click="onSubmit" :disabled="loading" class="btn maz-gradient-btn d-flex justify-content-center align-items-center" type="button"> 
+                                            <div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span></div>
                                              {{ activationId ?  'Update' : 'Submit' }}
                                          </button>
                                        </div>
@@ -255,6 +268,10 @@ const form = reactive({
 }
 .mt-custom{
     margin-top: -9px !important;
+}
+
+.mt-custom-2{
+    margin-top: 2rem !important;
 }
 
 .my-card {
@@ -301,5 +318,8 @@ const form = reactive({
 
 .upload-button:hover {
     background-color: #0056b3;
+}
+.text-areas-container{
+    margin-top: -5rem;
 }
 </style>
