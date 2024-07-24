@@ -9,7 +9,7 @@
           <img class="logo" src="/src/assets/images/logo/white-logo.png" alt="Logo">
         </div>
 
-        <div class="search-bar-container d-none d-lg-flex w-100 justify-content-center">
+        <div class="search-bar-container d-none text-center d-lg-flex w-100 justify-content-center">
           <div class="input-group custom-width-70">
             <span class="input-group-text" id="addon-wrapping"><i class='bx bx-search'></i></span>
             <input
@@ -92,11 +92,7 @@ const selectSuggestion = (suggestion) => {
   /* border: 1px solid #000000 !important; */
   border-top: 1px solid #000000 !important;
   border-bottom: 1px solid #000000 !important;
-  text-align: center;
-  color: white !important;
-}
-
-.form-control::placeholder {
+  border-right: 1px solid #000000 !important;
   text-align: center;
   color: white !important;
 }
@@ -104,6 +100,11 @@ const selectSuggestion = (suggestion) => {
 .form-control:focus {
   border-left: 0;
   outline: 0;
+}
+
+.form-control::placeholder {
+  text-align: center;
+  color: white !important;
 }
 
 .search-bar-container {
@@ -196,4 +197,5 @@ html.dark-theme .input-group-text {
     width: 150px;
   }
 }
+
 </style>

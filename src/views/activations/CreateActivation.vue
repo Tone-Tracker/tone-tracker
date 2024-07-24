@@ -227,7 +227,7 @@ const form = reactive({
                                    <div class="upload-section">
                                     <label for="file-upload" class="file-upload-label">
                                         <input type="file" @change="onFileChange" class="form-control" id="file-upload">
-                                        <div
+                                        
                                             class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
                                             <input type="file" id="file-upload" hidden>
                                             <div class="fs-1">+</div>
@@ -255,7 +255,7 @@ const form = reactive({
 				</div>
 
 			</div>
-		</div>
+		
     </Layout>
 </template>
 <style>
