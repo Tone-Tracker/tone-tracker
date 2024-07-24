@@ -94,7 +94,7 @@ export default {
                         </div>
                       </div>
                       <div class="mt-3 text-center">
-                        <router-link to="/login">Back to Login</router-link>
+                        <router-link to="/">Back to Login</router-link>
                       </div>
                     </form>
                   </div>
