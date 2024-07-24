@@ -17,19 +17,25 @@
                                         :center="center"
                                         :zoom="9"
                                       >
-                                        <Marker  v-for="(location, i) in locations" :options="{ position: location }">
-                                          <InfoWindow >
-                                            <div id="content">
-                                              <h3 style="color: #000">{{ location.title }}</h3>
-                                              <p style="color: #000">
-                                                The API key included in the script element that loads the API has expired or is not recognized by the system. 
-                                              You may receive this error after creating a new API key if you try to use the key before it is recognized by the system.
-                                               Wait a few minutes and try again, or you may need to generate a new API key in the Cloud Console.
-                                              To get an API key, click the button below.
-                                              </p>
+                                      <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
+                                          <InfoWindow>
+                                            <div class="info-window-content">
+                                              <div class="header">
+                                                <h3>Team: 01</h3>
+                                                <p>CPC: R 2.00</p>
+                                              </div>
+                                              <div class="dates">
+                                                <p>Start / End date: 22 Jan - 28 Jun</p>
+                                                <p>Current Cost: R 25,000.00</p>
+                                                <p>Leads generated: 100,000</p>
+                                              </div>
+                                              <div class="activation">
+                                                <h4>{{ location.title }}</h4>
+                                                <p>247 New Brunswick Rd Aph 282</p>
+                                              </div>
                                             </div>
                                           </InfoWindow>
-                                        </Marker>
+                                      </Marker>
                                       </GoogleMap>
 
                                 </div>
@@ -79,6 +85,67 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* ///////// */
+/* Global styles to target Google Maps InfoWindow */
+.gm-style .gm-style-iw-c {
+  background: linear-gradient(to right, #6e44ff, #2196f3) !important;
+  padding: 20px !important; /* Add padding to create space for the gradient border */
+}
+
+.gm-style .gm-style-iw-d {
+  overflow: hidden !important;
+  background-color: black !important;
+}
+
+/* Remove the default close button */
+.gm-ui-hover-effect {
+  display: none !important;
+}
+</style>
+
+<style scoped>
+.info-window-content {
+  font-family: Arial, sans-serif;
+  color: white;
+  padding: 10px;
+  background-color: black;
+  border-radius: 8px; /* Slightly smaller than the outer container to show gradient */
+  width: 250px;
+}
+
+.info-window-content .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.info-window-content h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.info-window-content p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.info-window-content .dates {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 0;
+  margin: 10px 0;
+}
+
+.info-window-content .activation {
+  margin-top: 10px;
+}
+
+.info-window-content h4 {
+  font-size: 16px;
+  margin: 0 0 5px 0;
+}
+/* /////////////// */
 .gm-style-iw-d{
     color:red !important;
 }
