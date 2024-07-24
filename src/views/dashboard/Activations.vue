@@ -25,13 +25,13 @@
                                                 <h3>Team: 01</h3>
                                                 <p>CPC: R 2.00</p>
                                               </div>
-                                              <div class="dates">
+                                              <div class="dates mb-4">
                                                 <p>Start / End date: 22 Jan - 28 Jun</p>
                                                 <p>Current Cost: R 25,000.00</p>
                                                 <p>Leads generated: 100,000</p>
                                               </div>
                                               <div class="activation">
-                                                <h4>{{ location.title }}</h4>
+                                                <h3>{{ location.title }}</h3>
                                                 <p>247 New Brunswick Rd Aph 282</p>
                                               </div>
                                             </div>
@@ -92,14 +92,19 @@ onMounted(() => {
 .gm-style .gm-style-iw-c {
   background: linear-gradient(to right, #6e44ff, #2196f3) !important;
   padding: 12px !important; /* Add padding to create space for the gradient border */
+  
   border-radius: 35px !important;
 }
+
+.gm-style .gm-style-iw-tc::after {
+  background: none !important;
+}
+
 
 .gm-style .gm-style-iw-d {
   border-radius: 35px;
   width: 300px;
   padding: 20px;
-  line-height: 0.5;
   overflow: hidden !important;
   background-color: black !important;
 }
@@ -125,9 +130,9 @@ onMounted(() => {
 }
 
 .info-window-content .header {
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; */
   margin-bottom: 10px;
 }
 
@@ -140,11 +145,6 @@ onMounted(() => {
   font-size: 14px;
   margin: 5px 0;
 }
-
-
-
-
-
 </style>
 
 <style scoped>
