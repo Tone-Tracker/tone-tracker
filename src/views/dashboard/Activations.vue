@@ -19,7 +19,8 @@
                                       >
                                       <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
                                           <InfoWindow>
-                                            <div class="info-window-content">
+                                            <div class="info-window-container">
+                                              <div class="info-window-content">
                                               <div class="header">
                                                 <h3>Team: 01</h3>
                                                 <p>CPC: R 2.00</p>
@@ -34,6 +35,8 @@
                                                 <p>247 New Brunswick Rd Aph 282</p>
                                               </div>
                                             </div>
+                                            </div>
+                                            
                                           </InfoWindow>
                                       </Marker>
                                       </GoogleMap>
@@ -84,17 +87,25 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-/* ///////// */
+<style>
 /* Global styles to target Google Maps InfoWindow */
 .gm-style .gm-style-iw-c {
   background: linear-gradient(to right, #6e44ff, #2196f3) !important;
-  padding: 20px !important; /* Add padding to create space for the gradient border */
+  padding: 12px !important; /* Add padding to create space for the gradient border */
+  border-radius: 35px !important;
 }
 
 .gm-style .gm-style-iw-d {
+  border-radius: 35px;
+  width: 300px;
+  padding: 20px;
+  line-height: 0.5;
   overflow: hidden !important;
   background-color: black !important;
+}
+
+.gm-style-iw-ch {
+  padding-top: 0;
 }
 
 /* Remove the default close button */
@@ -130,22 +141,16 @@ onMounted(() => {
   margin: 5px 0;
 }
 
-.info-window-content .dates {
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 10px 0;
-  margin: 10px 0;
-}
 
-.info-window-content .activation {
-  margin-top: 10px;
-}
 
-.info-window-content h4 {
-  font-size: 16px;
-  margin: 0 0 5px 0;
-}
+
+
+</style>
+
+<style scoped>
+
 /* /////////////// */
+
 .gm-style-iw-d{
     color:red !important;
 }
