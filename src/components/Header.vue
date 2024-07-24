@@ -66,7 +66,8 @@ const selectSuggestion = (suggestion) => {
 };
 </script>
 
-<style>
+<style scoped>
+
 /* Add your styles here */
 .suggestions-list {
   list-style-type: none;
@@ -88,7 +89,9 @@ const selectSuggestion = (suggestion) => {
   background-color: #1C1C1C !important;
   border-left: 0 !important;
   border-top-left-radius: 0;
-  border: 1px solid #000000 !important;
+  /* border: 1px solid #000000 !important; */
+  border-top: 1px solid #000000 !important;
+  border-bottom: 1px solid #000000 !important;
   text-align: center;
   color: white !important;
 }
@@ -148,7 +151,7 @@ html.dark-theme .input-group-text {
   position: absolute;
   top: 100%;
   left: 43px;
-  width: 89.1%;;
+  width: 84%;;
   background-color: #1C1C1C;
   border: 1px solid #000000;
   z-index: 1000;

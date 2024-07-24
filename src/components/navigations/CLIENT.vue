@@ -11,26 +11,71 @@ import Warehouse from '../svgs/Warehouse.vue';
     <div class="accordion" id="accordionPanelsStayOpenExample">
 
         <ul class="side-nav">
-             <li class="side-nav__item activation">
+            <li class="side-nav__item activation ">
                 <a href="javascript:;" data-bs-toggle="collapse" data-bs-target="#activationMenu" aria-expanded="false" aria-controls="activationMenu">
                     <div class="side-nav__link">
                         <Activation />
                     </div>
                     <div class="menu-title">Activation</div>
                 </a>
-                <div id="activationMenu" class="accordion-collapse collapse bg-dark" data-bs-parent="#accordionPanelsStayOpenExample">
+                <div id="activationMenu" class="accordion-collapse collapse bg-black p-3" data-bs-parent="#accordionPanelsStayOpenExample">
                     <div class="accordion-body">
                         <div>
                             <div class="side-nav__link">
-                        <Activation />
-                    </div> 
-                    <div class="menu-title  text-center">Activation</div>
+                                <Activation />
+                            </div> 
+                            <div class="menu-title text-center mb-3">Activation</div>
                         </div>
-                        <ul class="nav-list background-navlist">
-                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Region</a></li>
-                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Brand</a></li>
-                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Activation</a></li>
-                        </ul>
+                        <div class="accordion" id="activationSubMenu">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#regionCollapse" aria-expanded="false" aria-controls="regionCollapse">
+                                        Region
+                                    </button>
+                                </h2>
+                                <div id="regionCollapse" class="accordion-collapse collapse" data-bs-parent="#activationSubMenu">
+                                    <div class="accordion-body">
+                                        <!-- Add Region sub-items here -->
+                                        <ul class="nav-list background-navlist">
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Sub-Region 1</a></li>
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Sub-Region 2</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#brandCollapse" aria-expanded="false" aria-controls="brandCollapse">
+                                        Brand
+                                    </button>
+                                </h2>
+                                <div id="brandCollapse" class="accordion-collapse collapse" data-bs-parent="#activationSubMenu">
+                                    <div class="accordion-body">
+                                        <!-- Add Brand sub-items here -->
+                                        <ul class="nav-list background-navlist">
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Brand 1</a></li>
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Brand 2</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#activationSubCollapse" aria-expanded="false" aria-controls="activationSubCollapse">
+                                        Activation
+                                    </button>
+                                </h2>
+                                <div id="activationSubCollapse" class="accordion-collapse collapse" data-bs-parent="#activationSubMenu">
+                                    <div class="accordion-body">
+                                        <!-- Add Activation sub-items here -->
+                                        <ul class="nav-list background-navlist">
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Activation 1</a></li>
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Activation 2</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </li>
@@ -85,7 +130,7 @@ import Warehouse from '../svgs/Warehouse.vue';
             <li class="side-nav__item">
                 <router-link to="/chat">
                     <div class="side-nav__link">
-                        <i class='bx bxs-chat h2 mx-4'></i>
+                        <i class='bx bxs-chat fs-3 mx-2'></i>
                     </div>
                     <div class="menu-title">Chat</div>
                 </router-link>
@@ -187,6 +232,7 @@ export default {
 </script>
 
 <style scoped>
+
 /* ///////iner navigation//////// */
 .accordion-button::after {
     margin: 0 !important;
@@ -196,7 +242,7 @@ export default {
 .accordion-button {
     position: relative;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     gap: 0px;
 }
@@ -284,6 +330,7 @@ svg {
 
 .side-nav__link:link§,
 .side-nav__item:visited {
+    background-color: #1C1C1C !important;
     color: #fff;
     text-decoration: none;
     display: block;
