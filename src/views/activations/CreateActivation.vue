@@ -234,10 +234,11 @@ const form = reactive({
                                             <div class="mb-6">
                                                 <span class="fs-5">Upload file</span>
                                             </div>
-                                            </div>
+                                            
                                         </label>
-                                        
+                                        </div>
                                     </div>
+                                    
                                 </div>
 
                                    <div class="col-12">
@@ -255,8 +256,6 @@ const form = reactive({
 					</div>
 				</div>
 
-			</div>
-		</div>
     </Layout>
 </template>
 <style>
