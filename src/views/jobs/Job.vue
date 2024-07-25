@@ -44,10 +44,76 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
                     </div>
                 </div>
             </div>
+
+
+
+            <div class="pin-container position-relative d-inline-block text-center">
+                <div class="card bg-dark text-white p-3 rounded-3" style="width: 300px; border: none;">
+                    <div class="card-body">
+                        <p class="mb-2 fw-bold">Team: 01</p>
+                        <p class="mb-1">CPC: R 2.00</p>
+                        <p class="mb-1">Start / finish date: 22 Jan - 28 Jan</p>
+                        <p class="mb-1">Current cost: R 25 000,00</p>
+                        <p class="mb-4">Leads generated: 100 000</p>
+                        <p class="mb-2 fw-bold">Joburg Activation</p>
+                        <p class="mb-0">939 New Brunswick Rd Apt. 282</p>
+                    </div>
+                </div>
+                <div class="pin-arrow position-absolute"></div>
+            </div>
+            
+
+            
+
         </div>
     </Layout>
 </template>
 <style scoped>
+
+
+.pin-container {
+    position: relative;
+}
+
+.card {
+    background: linear-gradient(90deg, #522a84, #df3f7f);
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    background-color: #343a40;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.card .fw-bold {
+    font-weight: 700;
+}
+
+.card p {
+    margin-bottom: 8px;
+}
+
+.pin-arrow {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #df3f7f;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 14px;
+}
+
+
+
+
+
+
+
+
+
 
 
 .job-item {

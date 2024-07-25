@@ -355,7 +355,7 @@ svg {
 }
 
 .sidebar-wrapper .metismenu ul a {
-    padding: 10px 32px 10px 32px !important;
+    padding: 10px 12px 10px 32px !important;
     border-radius: 0 !important;
     color: #fff !important;
     border-bottom: solid 2px #000000;

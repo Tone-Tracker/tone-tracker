@@ -10,6 +10,10 @@ File: app.css
 
 */
 
+.accordion-button {
+    padding: 8px !important;
+}
+
 /* Override all input primevue input background */
 .p-inputtext {
 	background: #12181a !important;

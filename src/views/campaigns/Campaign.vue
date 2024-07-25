@@ -186,7 +186,7 @@ const vFocus = {
                                                                     <i class='bx bxs-bullseye text-success'></i>
                                                                 </router-link>
                                                                 <a @click="deleteRecord($event,campaign)" href="javascript:;" class="ms-3">
-                                                                    <i class='bx bxs-trash'></i>
+                                                                    <i class='bx bxs-trash text-danger'></i>
                                                                 </a>
                                                                 <ConfirmPopup></ConfirmPopup>
                                                             </div>

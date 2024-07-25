@@ -399,7 +399,7 @@ const items = (warehouse) => [
                                                     <i class='bx bxs-edit'></i>
                                                   </a>
                                                   <a @click="deleteRecord($event,unit)" href="javascript:;" class="ms-3">
-                                                    <i class='bx bxs-trash'></i>
+                                                    <i class='bx bxs-trash text-danger'></i>
                                                   </a>
                                                   <ConfirmPopup></ConfirmPopup>
                                                 </div>

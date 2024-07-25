@@ -245,7 +245,7 @@ const deleteRecord = (event, task) => {
                                                   </a>
                                                   
                                                   <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-3">
-                                                    <i class='bx bxs-trash'></i>
+                                                    <i class='bx bxs-trash text-danger'></i>
                                                   </a>
                                                   <ConfirmPopup></ConfirmPopup>
                                                 </div>

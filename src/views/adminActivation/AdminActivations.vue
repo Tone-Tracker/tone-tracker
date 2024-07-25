@@ -116,7 +116,7 @@ const onInput = () => {
 											<div class="d-flex order-actions">
 												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
 													<i class='bx bxs-edit'></i></a>
-												<a @click="deleteUser(user)" href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
+												<a @click="deleteUser(user)" href="javascript:;" class="ms-3"><i class='bx bxs-trash text-danger'></i></a>
 											</div>
 										</td>
 									</tr>

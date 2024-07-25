@@ -148,7 +148,7 @@ const deleteRecord = (event, user) => {
 												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
 													<i class='bx bxs-edit'></i></a>
 												<a @click="deleteRecord($event,user)" href="javascript:;" class="ms-3">
-													<i v-if="!isMyProfile(user)" class='bx bxs-trash'></i>
+													<i v-if="!isMyProfile(user)" class='bx bxs-trash text-danger'></i>
 													<i v-if="isMyProfile(user)" class='bx bx-stop-circle text-danger cursor-no-drop'></i>
 												</a>
 												<ConfirmPopup></ConfirmPopup>

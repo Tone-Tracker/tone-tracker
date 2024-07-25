@@ -229,7 +229,7 @@ const openModal = (pos,region) => {
                                                                     <i class='bx bx-user text-success'></i>
                                                                 </a>
                                                                 <a @click="deleteRecord($event,region)" href="javascript:;" class="ms-3">
-                                                                    <i class='bx bxs-trash'></i>
+                                                                    <i class='bx bxs-trash text-danger'></i>
                                                                 </a>
                                                                 <ConfirmPopup></ConfirmPopup>
                                                             </div>
