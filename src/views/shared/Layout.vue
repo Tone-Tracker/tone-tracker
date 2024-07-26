@@ -1,5 +1,6 @@
 <template>
-  <div class="wrapper ">
+  <div class="wrapper toggled">
+  
 
     <Header />
     <SideNav /> 

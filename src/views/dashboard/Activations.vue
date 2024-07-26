@@ -1,65 +1,43 @@
 <template>
-    <Layout>
-        <!--start page wrapper -->
-        <div class="page-wrapper">
-            <div class="page-content">
-                <div class="row">
-                    <div class="col-12 col-lg-12 d-flex">
-                        <div class="card p-0 radius-10 w-100">
-
-                            <div class="card-body">
-                                <div class="chart-container-1">
-                                    <!-- <div id="map" style="height: 100vh;"></div> -->
-
-                                      <GoogleMap
-                                        api-key="AIzaSyDhe12nX_E0ya4vk662T-_hAPHH9NuuGkw"
-                                        style="width: 100%; height: 800px"
-                                        :center="center"
-                                        :zoom="9"
-                                        :options="{ styles: mapStyles }"
-
-                                      >
-                                      <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
-                                          <InfoWindow>
-                                            <div class="info-window-container">
-                                              <div class="info-window-content">
-                                              <div class="header">
-                                                <h3>Team: 01</h3>
-                                                <p class="text-white">CPC: R 2.00</p>
-                                              </div>
-                                              <div class="dates mb-4">
-                                                <p class="text-white">Start / End date: 22 Jan - 28 Jun</p>
-                                                <p class="text-white">Current Cost: R 25,000.00</p>
-                                                <p class="text-white">Leads generated: 100,000</p>
-                                              </div>
-                                              <div class="activation">
-                                                <h3>{{ location.title }}</h3>
-                                                <p class="text-white">247 New Brunswick Rd Aph 282</p>
-                                              </div>
-                                            </div>
-                                            </div>
-                                            
-                                          </InfoWindow>
-                                      </Marker>
-                                      </GoogleMap>
-
-                                </div>
-                            </div>
-
+  <Layout>
+    <div class="page-wrapper">
+      <div class="page-content">
+        <div class="row">
+          <div class="col-12 col-lg-12 d-flex">
+            <div class="card p-0 radius-10 w-100">
+              <div class="card-body">
+                <div class="chart-container-1">
+                  <GoogleMap
+                    api-key="AIzaSyDhe12nX_E0ya4vk662T-_hAPHH9NuuGkw"
+                    style="width: 100%; height: 800px"
+                    :center="center"
+                    :zoom="9"
+                    :options="{ styles: mapStyles }"
+                  >
+                    <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
+                      <InfoWindow>
+                        <div class="popup">
+                          <div class="inner-container">
+                            <h2>Team: 01</h2>
+                            <p>CPC: R 2.00</p>
+                            <p>Start / End date: 22 Jan - 28 Jun</p>
+                            <p>Current Cost: R 25,000.00</p>
+                            <p>Leads generated: 100,000</p>
+                            <h3>{{ location.title }}</h3>
+                            <p>247 New Brunswick Rd Aph 282</p>
+                          </div>
                         </div>
-                    </div>
-
+                      </InfoWindow>
+                    </Marker>
+                  </GoogleMap>
                 </div>
-
-                
-
-
-
+              </div>
             </div>
+          </div>
         </div>
-        <!--start switcher-->
-
-    </Layout>
+      </div>
+    </div>
+  </Layout>
 </template>
 <script setup>
 import { onMounted,watch,ref } from 'vue';
@@ -182,29 +160,18 @@ onMounted(() => {
 <style>
 /* Global styles to target Google Maps InfoWindow */
 .gm-style .gm-style-iw-c {
-  background: linear-gradient(to right, #6e44ff, #2196f3) !important;
-  padding: 12px !important; /* Add padding to create space for the gradient border */
-  
-  border-radius: 35px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
-
-.gm-style .gm-style-iw-tc::after {
-  background: none !important;
-}
-
 
 .gm-style .gm-style-iw-d {
-  border-radius: 35px;
-  width: 300px;
-  padding: 15px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow: hidden !important;
-  background-color: black !important;
+  overflow: visible !important;
+  background-color: transparent !important;
 }
 
-.gm-style-iw-ch {
-  padding-top: 0;
+.gm-style-iw-tc::after {
+  display: none !important;
 }
 
 /* Remove the default close button */
@@ -213,31 +180,51 @@ onMounted(() => {
 }
 </style>
 
+
 <style scoped>
-.info-window-content {
-  font-family: Arial, sans-serif;
+.popup {
+  width: 300px;
+  background: linear-gradient(135deg, #00a2ff, #7000ff);
   color: white;
-  padding: 5px;
+  font-family: Arial, sans-serif;
+  clip-path: 
+    polygon(
+      20px 0%, 
+      calc(100% - 20px) 0%, 
+      100% 20px, 
+      100% calc(100% - 40px), 
+      calc(100% - 20px) calc(100% - 20px),
+      calc(50% + 10px) calc(100% - 20px),
+      50% 100%,
+      calc(50% - 10px) calc(100% - 20px),
+      20px calc(100% - 20px),
+      0% calc(100% - 40px),
+      0% 20px
+    );
+  padding: 20px;
+  padding-bottom: 40px;
+  border-radius: 20px;
+}
+
+.inner-container {
   background-color: black;
-  border-radius: 8px; /* Slightly smaller than the outer container to show gradient */
-  width: 250px;
+  padding: 20px 15px 15px 15px;
+  border-radius: 10px;
 }
 
-.info-window-content .header {
-  /* display: flex;
-  justify-content: space-between;
-  align-items: center; */
-  margin-bottom: 10px;
-}
-
-.info-window-content h3 {
+h2 {
+  margin: 0 0 10px 0;
   font-size: 18px;
-  margin: 0;
 }
 
-.info-window-content p {
-  font-size: 14px;
+p {
   margin: 5px 0;
+  font-size: 14px;
+}
+
+h3 {
+  margin: 15px 0 5px 0;
+  font-size: 16px;
 }
 </style>
 
