@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper toggled">
+  <div class="wrapper ">
   
 
     <Header />

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 $(function () {
 	"use strict";
 	// chart 1
@@ -602,39 +603,39 @@ $(function () {
 		
 	// chart 13
 	
-	var options = {
-          series: [44, 55, 67, 83],
-          chart: {
-			  foreColor: '#9ba7b2',
-          height: 350,
-          type: 'radialBar',
-        },
-        plotOptions: {
-          radialBar: {
-            dataLabels: {
-              name: {
-                fontSize: '22px',
-              },
-              value: {
-                fontSize: '16px',
-              },
-              total: {
-                show: true,
-                label: 'Total',
-                formatter: function (w) {
-                  // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
-                  return 249
-                }
-              }
-            }
-          }
-        },
-		colors: ["#0d6efd", "#17a00e", "#f41127", "#ffc107"],
-        labels: ['Apples', 'Oranges', 'Bananas', 'Berries'],
-        };
+	// var options = {
+    //       series: [44, 55, 67, 83],
+    //       chart: {
+	// 		  foreColor: '#9ba7b2',
+    //       height: 350,
+    //       type: 'radialBar',
+    //     },
+    //     plotOptions: {
+    //       radialBar: {
+    //         dataLabels: {
+    //           name: {
+    //             fontSize: '22px',
+    //           },
+    //           value: {
+    //             fontSize: '16px',
+    //           },
+    //           total: {
+    //             show: true,
+    //             label: 'Total',
+    //             formatter: function (w) {
+    //               // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
+    //               return 249
+    //             }
+    //           }
+    //         }
+    //       }
+    //     },
+	// 	colors: ["#0d6efd", "#17a00e", "#f41127", "#ffc107"],
+    //     labels: ['Apples', 'Oranges', 'Bananas', 'Berries'],
+    //     };
 
-        var chart = new ApexCharts(document.querySelector("#chart13"), options);
-        chart.render();
+    //     var chart = new ApexCharts(document.querySelector("#chart13"), options);
+    //     chart.render();
 		
 		
 	

@@ -6,7 +6,7 @@
           <div class="col-12 col-lg-12 d-flex">
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
-                <div class="chart-container-1">
+                <div class="chart-container-1" >
                   <GoogleMap
                     api-key="AIzaSyDhe12nX_E0ya4vk662T-_hAPHH9NuuGkw"
                     style="width: 100%; height: 800px"
@@ -14,9 +14,16 @@
                     :zoom="9"
                     :options="{ styles: mapStyles }"
                   >
-                    <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
-                      <InfoWindow>
-                        <div class="popup">
+                    <Marker 
+                      v-for="(location, i) in locations"
+                      :key="i"
+                      :options="{ position: location }"
+                      @click="openInfoWindow(i)"
+                    >
+                  
+                      <InfoWindow v-if="activeInfoWindow === i" >
+                        <div class="popup" ref="target">
+                          <i class='bx bx-x float-end cursor-pointer fs-2 text-danger' @click="activeInfoWindow = null"></i>
                           <div class="inner-container">
                             <h2>Team: 01</h2>
                             <p>CPC: R 2.00</p>
@@ -28,6 +35,7 @@
                           </div>
                         </div>
                       </InfoWindow>
+                    
                     </Marker>
                   </GoogleMap>
                 </div>
@@ -39,13 +47,24 @@
     </div>
   </Layout>
 </template>
+
 <script setup>
+import { onClickOutside } from '@vueuse/core'
 import { onMounted,watch,ref } from 'vue';
 import Layout from '../shared/Layout.vue';
 import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map'
 
 const center = { lat: -25.6793642, lng: 28.1941785 };
 const infowindow = ref(false); // Will be open when mounted
+
+const activeInfoWindow = ref(null);
+const target = ref(null)
+
+onClickOutside(target, event => console.log('Outside'))
+
+function openInfoWindow(index) {
+  activeInfoWindow.value = index;
+}
 
 const mapStyles = [
   {
