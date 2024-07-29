@@ -52,18 +52,41 @@
 import { onClickOutside } from '@vueuse/core'
 import { onMounted,watch,ref } from 'vue';
 import Layout from '../shared/Layout.vue';
-import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map'
+import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
+import { useActivation } from '@/stores/activation';
+import { useAuth } from '@/stores/auth';
 
 const center = { lat: -25.6793642, lng: 28.1941785 };
 const infowindow = ref(false); // Will be open when mounted
 
 const activeInfoWindow = ref(null);
-const target = ref(null)
-
+const target = ref(null);
+const activationStore = useActivation();
+const authStore = useAuth();
+const staffID = JSON.parse(authStore.user)?.activeUserId;
 onClickOutside(target, event => console.log('Outside'))
 
 function openInfoWindow(index) {
   activeInfoWindow.value = index;
+}
+
+const activations = ref([]);
+const locations = ref([]);
+
+const getActivations = () => {
+  activationStore.getActivationByStaffId(staffID).then(function (response) {
+    activations.value = response.data.content;
+    //map activations
+    for (let i = 0; i < activations.value.length; i++) {
+      // locations.value.push({ lat: activations.value[i].latitude, lng: activations.value[i].longitude, title: activations.value[i].name })
+      locations.value.push({ lat: -26.0184568, lng: 28.0055974, title: activations.value[i].name })
+    }
+    console.log(locations.value)
+  }).catch(function (error) {
+    console.log(error);
+  }).finally(function () {
+    ///
+  })
 }
 
 const mapStyles = [
@@ -156,14 +179,14 @@ const mapStyles = [
   }
 ];
 
-const locations = [
-  { lat: -26.0184568, lng: 28.0055974, title: 'Gauteng Activation' },
-  { lat: -41.330162, lng: 174.865694, title: 'Eastern Cape Activation' },
-  { lat: -25.93312, lng: 28.01213, title: 'North West Activation' },
-  { lat: -26.1851663, lng: 28.315154, title: 'Cape Town Activation' },
-  { lat: -25.6793642, lng: 28.1941785, title: 'Durban Activation' },
-  { lat: -26.038240, lng: 28.213280, title: 'Limpopo Activation' },
-]
+// const locations = [
+//   { lat: -26.0184568, lng: 28.0055974, title: 'Gauteng Activation' },
+//   { lat: -41.330162, lng: 174.865694, title: 'Eastern Cape Activation' },
+//   { lat: -25.93312, lng: 28.01213, title: 'North West Activation' },
+//   { lat: -26.1851663, lng: 28.315154, title: 'Cape Town Activation' },
+//   { lat: -25.6793642, lng: 28.1941785, title: 'Durban Activation' },
+//   { lat: -26.038240, lng: 28.213280, title: 'Limpopo Activation' },
+// ]
 
 watch(infowindow, (v) => {
   //alert('infowindow has been ' + (v ? 'opened' : 'closed'));
@@ -172,7 +195,7 @@ watch(infowindow, (v) => {
 
 
 onMounted(() => {
-  // initMap();
+  getActivations();
 });
 </script>
 

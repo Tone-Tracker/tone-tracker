@@ -24,50 +24,58 @@ const taskStore = useTask();
 const activation = useActivation();
 const newAppsGraphInstance = ref(null);
 onMounted(() => {
-    createNewAppsGraph()
+    createDoughnutChart();
+	createBarChart();
 });
 
 
 
-const createNewAppsGraph = () => {
-      const ctx = document.getElementById('doughnut').getContext('2d');
-      if (newAppsGraphInstance.value) newAppsGraphInstance.value.destroy();
-      newAppsGraphInstance.value = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          datasets: [{
-            label: 'New Apps',
-            data: [300, 50, 100],
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(255, 159, 64, 0.2)',
-              'rgba(255, 205, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-            ],
-            borderColor: [
-              'rgb(255, 99, 132)',
-              'rgb(255, 159, 64)',
-              'rgb(255, 205, 86)',
-              'rgb(75, 192, 192)',
-            ],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          plugins: {
-            legend: {
-              labels: {
-                filter: function(item) {
-                  return item.text !== 'New Apps';
-                }
-              }
-            }
-          },
-        }
-      });
-    };
+const createBarChart = () => {
+  new Chart(
+	document.getElementById('bar-chart'),
+    {
+      type: 'bar',
+      data: {
+        labels:  ['Jan-24', 'Feb-23', 'Mar-23', 'Apr-23', 'May-23', 'Jun-23', 'Jul-23', 'Aug-23', 'Sep-23', 'Oct-23', 'Nov-23', 'Dec-23'],
+		datasets: [
+				{
+				label: 'Dataset 1',
+				data: [300, 50, 1200, 100, 200, 500, 300, 50, 80, 100, 200, 500],
+				backgroundColor: [
+					'rgb(1, 155, 254)',
+					'rgb(169, 58, 186)',
+					'rgb(209, 52, 91)',
+				]
+				}
+			]
+      }
+    }
+  );
+ };
+
+ const createDoughnutChart = () => {
+
+new Chart(
+  document.getElementById('doughnut-chart'),
+  {
+	type: 'doughnut',
+	data: {
+	  labels:  ['Read', 'Unread', 'Undelivered'],
+	  datasets: [
+			  {
+			  label: 'Dataset 1',
+			  data: [300, 50, 120],
+			  backgroundColor: [
+				  'rgb(1, 155, 254)',
+				  'rgb(169, 58, 186)',
+				  'rgb(209, 52, 91)',
+			  ]
+			  }
+		  ]
+	}
+  }
+);
+};
 
 // const getAllClients = () => {
 //   clientStore.getClients().then(function (response) {
@@ -238,76 +246,13 @@ const createNewAppsGraph = () => {
 				<div class="row">
 					<div class="col-12 col-lg-8">
 						<div class="card radius-10">
-							<div class="card-body">
-								<div class="">
-									<div id="chart3" style="height:250px;"><svg height="250" version="1.1"
-											width="665.328" xmlns="http://www.w3.org/2000/svg"
-											xmlns:xlink="http://www.w3.org/1999/xlink"
-											style="overflow: hidden; position: relative;">
-											<desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with
-												Raphaël 2.2.0</desc>
-											<defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs>
-											<path fill="none" stroke="#008cff"
-												d="M332.664,201.66666666666669A76.66666666666667,76.66666666666667,0,0,0,408.94122662266636,132.71767299982181"
-												stroke-width="2" opacity="0"
-												style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;">
-											</path>
-											<path fill="#008cff" stroke="#ffffff"
-												d="M332.664,204.66666666666669A79.66666666666667,79.66666666666667,0,0,0,411.92598766442285,133.01966889981483L442.1052381977387,136.07318299974432A110,110,0,0,1,332.664,235Z"
-												stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-											</path>
-											<path fill="none" stroke="#15ca20"
-												d="M408.94122662266636,132.71767299982181A76.66666666666667,76.66666666666667,0,0,0,261.12270210661495,97.4387867918025"
-												stroke-width="2" opacity="1"
-												style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 1;">
-											</path>
-											<path fill="#15ca20" stroke="#ffffff"
-												d="M411.92598766442285,133.01966889981483A79.66666666666667,79.66666666666667,0,0,0,258.3232600151347,96.36030453582956L225.35205315992243,83.65818018770375A115,115,0,0,1,447.0798399339995,136.5765094997327Z"
-												stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-											</path>
-											<path fill="none" stroke="#fd3550"
-												d="M261.12270210661495,97.4387867918025A76.66666666666667,76.66666666666667,0,0,0,332.6399144567186,201.66666288331834"
-												stroke-width="2" opacity="0"
-												style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;">
-											</path>
-											<path fill="#fd3550" stroke="#ffffff"
-												d="M258.3232600151347,96.36030453582956A79.66666666666667,79.66666666666667,0,0,0,332.638971978938,204.6666627352743L332.6294424813789,234.99999457171762A110,110,0,0,1,230.01778997905626,85.45565061432532Z"
-												stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-											</path><text x="332.664" y="115" text-anchor="middle"
-												font-family="&quot;Arial&quot;" font-size="15px" stroke="none"
-												fill="#000000"
-												style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 15px; font-weight: 800;"
-												font-weight="800"
-												transform="matrix(1.7424,0,0,1.7424,-246.9778,-93.5455)"
-												stroke-width="0.5739130434782609">
-												<tspan dy="6" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-												</tspan>
-											</text><text x="332.664" y="135" text-anchor="middle"
-												font-family="&quot;Arial&quot;" font-size="14px" stroke="none"
-												fill="#000000"
-												style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 14px;"
-												transform="matrix(1.5972,0,0,1.5972,-198.6743,-75.8472)"
-												stroke-width="0.6260869565217391">
-												<tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-												</tspan>
-											</text>
-										</svg></div>
-								</div>
+							<div class="card-header bg-transparent">
+								<h6 class="mb-0 text-center">Monthly Email Distribution (2023 - 2024)</h6>
 							</div>
-							<ul class="list-group list-group-flush">
-								<li
-									class="list-group-item d-flex bg-transparent justify-content-between align-items-center border-top">
-									Apple <span class="badge bg-danger rounded-pill">20</span>
-								</li>
-								<li
-									class="list-group-item d-flex bg-transparent justify-content-between align-items-center">
-									Samsung <span class="badge bg-primary rounded-pill">15</span>
-								</li>
-								<li
-									class="list-group-item d-flex bg-transparent justify-content-between align-items-center">
-									Nokia <span class="badge bg-success rounded-pill">30</span>
-								</li>
-							</ul>
+							<div class="card-body">								
+								<canvas id="bar-chart"></canvas>							
+							</div>
+							
 						</div>
 					</div>
 
@@ -318,8 +263,27 @@ const createNewAppsGraph = () => {
 
 					<div class="col-4 col-lg-4 d-flex">
 						<div class="card radius-10 w-100">
+							<div class="card-header">
+								<h6 class="mb-0 text-center">Overall E-Communications Statistics</h6>
+							</div>
 							<div class="card-body">
-								<div id="chart4"></div>
+								<div class="chart-container" style=" height:40vh; width:80vw">
+									<canvas id="doughnut-chart"  ></canvas>
+								</div>
+								<div class="legend d-flex justify-content-center">
+									<div class="legend-item">
+									  <span class="legend-color" style="background-color: #007bff;"></span>
+									  <span class="legend-label">Read</span>
+									</div>
+									<div class="legend-item">
+									  <span class="legend-color" style="background-color: #9b59b6;"></span>
+									  <span class="legend-label">Unread</span>
+									</div>
+									<div class="legend-item">
+									  <span class="legend-color" style="background-color: #e74c3c;"></span>
+									  <span class="legend-label">Undelivered</span>
+									</div>
+								  </div>
 							</div>
 							
 						</div>
@@ -629,122 +593,7 @@ const createNewAppsGraph = () => {
 					</div>
 				</div><!--end row-->
 
-				<div class="row row-cols-1 row-cols-lg-3 d-none">
-					<div class="col d-flex">
-						<div class="card radius-10 w-100">
-							<div class="card-body">
-								<p class="font-weight-bold mb-1 text-secondary">Weekly Revenue</p>
-								<div class="d-flex align-items-center mb-4">
-									<div>
-										<h4 class="mb-0">$89,540</h4>
-									</div>
-									<div class="">
-										<p class="mb-0 align-self-center font-weight-bold text-success ms-2">4.4% <i
-												class="bx bxs-up-arrow-alt mr-2"></i>
-										</p>
-									</div>
-								</div>
-								<div class="chart-container-0 mt-5">
-									<canvas id="chart3"></canvas>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col d-flex">
-						<div class="card radius-10 w-100">
-							<div class="card-header bg-transparent">
-								<div class="d-flex align-items-center">
-									<div>
-										<h6 class="mb-0">Orders Summary</h6>
-									</div>
-									<div class="dropdown ms-auto">
-										<a class="dropdown-toggle dropdown-toggle-nocaret" href="#"
-											data-bs-toggle="dropdown"><i
-												class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-										</a>
-										<ul class="dropdown-menu">
-											<li><a class="dropdown-item" href="javascript:;">Action</a>
-											</li>
-											<li><a class="dropdown-item" href="javascript:;">Another action</a>
-											</li>
-											<li>
-												<hr class="dropdown-divider">
-											</li>
-											<li><a class="dropdown-item" href="javascript:;">Something else here</a>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-							<div class="card-body">
-								<div class="chart-container-1 mt-3">
-									<canvas id="doughnut"></canvas>
-								</div>
-							</div>
-							<ul class="list-group list-group-flush">
-								<li
-									class="list-group-item d-flex bg-transparent justify-content-between align-items-center border-top">
-									Completed <span class="badge bg-gradient-quepal rounded-pill">25</span>
-								</li>
-								<li
-									class="list-group-item d-flex bg-transparent justify-content-between align-items-center">
-									Pending <span class="badge bg-gradient-ibiza rounded-pill">10</span>
-								</li>
-								<li
-									class="list-group-item d-flex bg-transparent justify-content-between align-items-center">
-									Process <span class="badge bg-gradient-deepblue rounded-pill">65</span>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="col d-flex">
-						<div class="card radius-10 w-100">
-							<div class="card-header bg-transparent">
-								<div class="d-flex align-items-center">
-									<div>
-										<h6 class="mb-0">Top Selling Categories</h6>
-									</div>
-									<div class="dropdown ms-auto">
-										<a class="dropdown-toggle dropdown-toggle-nocaret" href="#"
-											data-bs-toggle="dropdown"><i
-												class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-										</a>
-										<ul class="dropdown-menu">
-											<li><a class="dropdown-item" href="javascript:;">Action</a>
-											</li>
-											<li><a class="dropdown-item" href="javascript:;">Another action</a>
-											</li>
-											<li>
-												<hr class="dropdown-divider">
-											</li>
-											<li><a class="dropdown-item" href="javascript:;">Something else here</a>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-							<div class="card-body">
-								<div class="chart-container-0">
-									<canvas id="chart5"></canvas>
-								</div>
-							</div>
-							<div class="row row-group border-top g-0">
-								<div class="col">
-									<div class="p-3 text-center">
-										<h4 class="mb-0 text-danger">$45,216</h4>
-										<p class="mb-0">Clothing</p>
-									</div>
-								</div>
-								<div class="col">
-									<div class="p-3 text-center">
-										<h4 class="mb-0 text-success">$68,154</h4>
-										<p class="mb-0">Electronic</p>
-									</div>
-								</div>
-							</div><!--end row-->
-						</div>
-					</div>
-				</div><!--end row-->
+				
 
 			</div>
 		</div>
@@ -834,4 +683,6 @@ html.dark-theme .widgets-icons {
 svg {
 	max-width: 2.8rem;
 }
+
+
 </style>
