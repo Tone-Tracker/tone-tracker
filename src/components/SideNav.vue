@@ -46,7 +46,7 @@ const getUserRole = (role) => {
                      <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
                     <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/>
                     <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/> 
-                    <CLIENT v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user" style="z-index: 9999"/>
+                    <!-- <CLIENT v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user" style="z-index: 9999"/> -->
                     <TTG_SUPER_ADMIN v-if="getUserRole('TTG_CLIENT')" :user="user"/> 
                     <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/> 
                     
