@@ -184,9 +184,11 @@ onMounted(() => {
 <style scoped>
 .popup {
   width: 300px;
-  background: linear-gradient(135deg, #00a2ff, #7000ff);
+  background:linear-gradient(135deg, #00a2ff, #481e7e);
   color: white;
   font-family: Arial, sans-serif;
+  padding: 20px;
+  padding-bottom: 40px;
   clip-path: 
     polygon(
       20px 0%, 
@@ -201,12 +203,23 @@ onMounted(() => {
       0% calc(100% - 40px),
       0% 20px
     );
-  padding: 20px;
-  padding-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.popup::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  background: inherit;
   border-radius: 20px;
 }
 
 .inner-container {
+  position: relative;
   background-color: black;
   padding: 20px 15px 15px 15px;
   border-radius: 10px;
