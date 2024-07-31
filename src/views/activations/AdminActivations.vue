@@ -209,9 +209,12 @@ const openModal = (pos,activation) => {
 let staffValue = ref(null);
 const activationId = ref(null);
 const onUserChange = (event) => {
-    let selectedUser = users.value.content.find(user => user.firstName + ' ' + user.lastName === staffValue.value)?.id;
+	
+	// staffValue.value = event.value
+    let selectedUser = users.value.content.find(user => user.firstName + ' ' + user.lastName === event.value)?.id;
 	let staff = staffMembers.value.find(staff => staff.user === selectedUser)?.id;
 	editForm.staff = staff;
+	console.log('editForm',editForm.staff)
 	if(!staff){
 		toaster.error("Make sure this user is added as staff member.");
 		return 
@@ -232,6 +235,7 @@ const addActivationManager = () => {
 	  painPoints: activationEdit.painPoints,
 	  staff: editForm.staff
 });
+
 	if(activationId.value){
 		return activation.update(activationId.value, form).then(function (response) {
 			toaster.success("Activation updated successfully");
@@ -246,11 +250,14 @@ const addActivationManager = () => {
 
 const getUserName = (activation) => {
 	if(!activation.staff) return '';
-	return users.value.content.find(user => user.id === activation.staff)?.firstName + ' ' + users.value.content.find(user => user.id === activation.staff)?.lastName
+	
+	let myUser = users.value.content.find(user => user.id === activation.staff)?.firstName + ' ' + users.value.content.find(user => user.id === activation.staff)?.lastName;
+      if(myUser == 'undefined undefined') return '';
+	return myUser
 }
 const search = (event) => {
     const query = event.query.toLowerCase();
-	console.log(users.value)
+	
 	let myObj = users.value.content.filter(user => user.firstName.toLowerCase().includes(query))
     mappedUsers.value = myObj.map(u => u.firstName + ' ' + u.lastName);
 };

@@ -26,6 +26,7 @@ import staff from './staff';
 import admincontact from './admincontact';
 import forgotpassword from './forgotpassword';
 import resertpassword from './resertpassword';
+import ActivationManagerDashboard from '@/views/dashboard/activation-manager/ActivationManagerDashboard.vue';
 
 
 
@@ -72,6 +73,11 @@ const router = createRouter({
       path: '/activations',
       name: 'activations',
       component: Activations
+    },
+    {
+      path: '/activations-dashboard',
+      name: 'activationsDashboard',
+      component: ActivationManagerDashboard
     },
     {
       path: '/status',

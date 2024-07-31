@@ -39,11 +39,13 @@ $(function () {
 
 
 		// $(".toggle-icon").click(function () {
-		$(".wrapper").hasClass("toggled") ? ($(".wrapper").removeClass("toggled"), $(".sidebar-wrapper").unbind("hover")) : ($(".wrapper").addClass("toggled"), $(".sidebar-wrapper").hover(function () {
-			$(".wrapper").addClass("sidebar-hovered")
-		}, function () {
-			$(".wrapper").removeClass("sidebar-hovered")
-		}))
+		// $(".wrapper").hasClass("toggled") ? ($(".wrapper").addClass("toggled"), $(".sidebar-wrapper").unbind("hover")) 
+		
+		// : ($(".wrapper").addClass("toggled"), $(".sidebar-wrapper").hover(function () {
+		// 	$(".wrapper").addClass("sidebar-hovered")
+		// }, function () {
+		// 	$(".wrapper").removeClass("sidebar-hovered")
+		// }))
 	// }),
 
 	$(document).ready(function () {

@@ -50,7 +50,7 @@ const loading = ref(false);
 						if(response.data.user.role == 'TTG_SUPER_ADMIN'){
 							router.push('/clients');
 						}else if(response.data.user.role == 'TTG_ACTIVATION_MANAGER'){
-							router.push('/activations');						
+							router.push('/activations-dashboard');						
 						}else{
 							router.push('dashboard');
 						}

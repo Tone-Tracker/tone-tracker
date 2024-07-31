@@ -16,6 +16,7 @@
     "@vueuse/core": "^10.11.0",
     "@vueuse/integrations": "^10.11.0",
     "axios": "^1.7.2",
+    "chart.js": "^4.4.3",
     "firebase": "^10.12.2",
     "jquery": "^3.7.1",
     "lightbox2": "^2.11.4",

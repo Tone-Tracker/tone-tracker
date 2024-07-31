@@ -89,29 +89,19 @@ const getUserRole = (role) => {
                         <i class="icon channel-icon">📣</i> Quarterly planning
                     </div>
                 </div>
+            </div> -->
+            <div class="content">
+                <nav class="sidebar d-flex">
+                     <!-- <AdminNav/> -->
+                    <!-- <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
+                    <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/>
+                    <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/> -->
+                    <CLIENT v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user" style="z-index: 9999"/>
+                    <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
+                    <!-- <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/> -->
+                    
+                </nav>
 
-                <div class="menu-section">
-                    <div class="section-title">Direct Messages</div>
-                    <div class="menu-item">
-                        <i class="icon dm-icon">👤</i> Guest (You)
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon dm-icon">👤</i> Brandley Thomas
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon dm-icon">👤</i> Michael John
-                    </div>
-                </div>
-
-                <div class="menu-section">
-                    <div class="section-title">Communities</div>
-                    <div class="menu-item">
-                        <i class="icon community-icon">🌐</i> Community 1
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon community-icon">🌐</i> Community 2
-                    </div>
-                </div>
             </div>
         </div>
     </div>
