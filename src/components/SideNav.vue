@@ -120,6 +120,7 @@ const getUserRole = (role) => {
 <style scoped>
 .sidebar-container {
     display: flex;
+    margin-top: 85px;
 }
 
 .vertical-sidebar {
@@ -158,7 +159,7 @@ const getUserRole = (role) => {
 }
 
 .vertical-sidebar:hover + .main-sidebar {
-    margin-left: 200px;
+    /* margin-left: 200px; */
 }
 
 .user-info {
