@@ -30,6 +30,13 @@ const collapseMenu = () => {
         </a>
         <div id="activationMenu" class="accordion-collapse collapse bg-black p-3" data-bs-parent="#accordionPanelsStayOpenExample">
           <!-- Activation submenu content -->
+                        <div>
+                            <div class="side-nav__link">
+                                <Activation />
+                            </div> 
+                            <div class="menu-title text-center mb-3">Activation</div>
+                        </div>
+
             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#regionCollapse" aria-expanded="false" aria-controls="regionCollapse">
