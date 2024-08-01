@@ -30,7 +30,55 @@ const collapseMenu = () => {
         </a>
         <div id="activationMenu" class="accordion-collapse collapse bg-black p-3" data-bs-parent="#accordionPanelsStayOpenExample">
           <!-- Activation submenu content -->
-           
+            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#regionCollapse" aria-expanded="false" aria-controls="regionCollapse">
+                                        Region
+                                    </button>
+                                </h2>
+                                <div id="regionCollapse" class="accordion-collapse collapse" data-bs-parent="#activationSubMenu">
+                                    <div class="accordion-body">
+                                        <!-- Add Region sub-items here -->
+                                        <ul class="nav-list background-navlist">
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Sub-Region 1</a></li>
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Sub-Region 2</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#brandCollapse" aria-expanded="false" aria-controls="brandCollapse">
+                                        Brand
+                                    </button>
+                                </h2>
+                                <div id="brandCollapse" class="accordion-collapse collapse" data-bs-parent="#activationSubMenu">
+                                    <div class="accordion-body">
+                                        <!-- Add Brand sub-items here -->
+                                        <ul class="nav-list background-navlist">
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Brand 1</a></li>
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Brand 2</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed mb-2 rounded-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#activationSubCollapse" aria-expanded="false" aria-controls="activationSubCollapse">
+                                        Activation
+                                    </button>
+                                </h2>
+                                <div id="activationSubCollapse" class="accordion-collapse collapse" data-bs-parent="#activationSubMenu">
+                                    <div class="accordion-body">
+                                        <!-- Add Activation sub-items here -->
+                                        <ul class="nav-list background-navlist">
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Activation 1</a></li>
+                                            <li class="in-list m-auto mb-3"><a class="nav-link-inside" href="#">Activation 2</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
         </div>
       </li>
 
