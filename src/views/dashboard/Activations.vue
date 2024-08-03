@@ -8,7 +8,7 @@
               <div class="card-body">
                 <div class="chart-container-1" >
                   <GoogleMap
-                    api-key="AIzaSyDhe12nX_E0ya4vk662T-_hAPHH9NuuGkw"
+                    api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
                     style="width: 100%; height: 800px"
                     :center="center"
                     :zoom="9"

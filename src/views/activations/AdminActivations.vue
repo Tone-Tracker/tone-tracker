@@ -160,6 +160,13 @@ const getRegionName = (region) => {
 
 const items = (activation) => [
     {
+        label: 'Tasks',
+        icon: 'bx bx-edit-alt fs-4',
+        command: () => {
+            URLrouter.push(`/tasks?activation=${activation.id}&name=${activation.name}`);
+        }
+    },
+	{
         label: 'Edit',
         icon: 'bx bx-edit-alt fs-4',
         command: () => {
