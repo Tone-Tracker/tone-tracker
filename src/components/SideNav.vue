@@ -13,204 +13,53 @@ const user = JSON.parse(auth.user);
 const getUserRole = (role) => {
     return user.role == role
 };
+
 </script>
-
 <template>
-    <div class="sidebar-container">
-        <!-- Vertical Sidebar -->
-        <div class="vertical-sidebar">
-            <div class="icon-wrapper" title="Dashboard">
-                <i class="icon dashboard-icon">📊</i>
-            </div>
-            <div class="icon-wrapper" title="Messages">
-                <i class="icon messages-icon">💬</i>
-            </div>
-            <div class="icon-wrapper" title="Projects">
-                <i class="icon projects-icon">📁</i>
-            </div>
-        </div>
+   
+    <div class="sidebar-wrapper" data-simplebar="true" >
+        <!-- <div class="sidebar-header">
 
-        <!-- Main Sidebar -->
-        <div class="main-sidebar">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <img src="/src/assets/images/avatars/avatar-1.png" alt="User Avatar">
-                </div>
-                <div class="user-name-role">
-                    <div class="user-name">{{ user.name }}</div>
-                    <div class="user-role">{{ user.role }}</div>
-                </div>
+            <div>
+                <img style="width: 180px;" src="/src/assets/images/logo/white-logo.png" alt="">
             </div>
-            
-            <div class="menu">
-                <div class="menu-section">
-                    <div class="menu-item">
-                        <i class="icon all-icon">📋</i> All
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon unread-icon">📨</i> Unread
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon sent-icon">📤</i> Sent
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon draft-icon">📝</i> Draft
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon show-more-icon">🔽</i> Show more
-                    </div>
-                </div>
-
-                <div class="menu-section">
-                    <div class="section-title">Projects</div>
-                    <div class="menu-item">
-                        <i class="icon project-icon">🏢</i> Joburg Activations
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon project-icon">🏢</i> Durban Activations
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon project-icon">🏢</i> Cape Town Activations
-                    </div>
-                </div>
-
-                <div class="menu-section">
-                    <div class="section-title">Channels</div>
-                    <div class="menu-item">
-                        <i class="icon channel-icon">📣</i> Marketing-team
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon channel-icon">📣</i> Competitive
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon channel-icon">📣</i> Announcements
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon channel-icon">📣</i> Quarterly planning
-                    </div>
-                </div>
-
-                <div class="menu-section">
-                    <div class="section-title">Direct Messages</div>
-                    <div class="menu-item">
-                        <i class="icon dm-icon">👤</i> Guest (You)
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon dm-icon">👤</i> Brandley Thomas
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon dm-icon">👤</i> Michael John
-                    </div>
-                </div>
-
-                <div class="menu-section">
-                    <div class="section-title">Communities</div>
-                    <div class="menu-item">
-                        <i class="icon community-icon">🌐</i> Community 1
-                    </div>
-                    <div class="menu-item">
-                        <i class="icon community-icon">🌐</i> Community 2
-                    </div>
-                </div>
+           <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i> 
             </div>
+          </div>v-if="user.role == 'TTG_SUPER_ADMIN'"
+           -->
+         
+        <div class="metismenu p-0" id="menu">
+            <!-- <div class="col-img">
+                <div class="gallery">
+                    <div class="image-container position-relative">
+                        <router-link to="/">
+                            <img src="/src/assets/images/company-logo.png" alt="Cinque Terre"
+                                class="img-fluid mx-auto d-block">
+                        </router-link>
+                        <div class="text-center text-sm">Dashboard</div>
+                    </div>
+                </div>
+            </div> -->
+            <div class="content">
+                <nav class="sidebar d-flex">
+                     <!-- <AdminNav/> -->
+                    <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
+                    <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/>
+                    <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/>
+                    <CLIENT v-if="getUserRole('TTG_CLIENT')" :user="user" style="z-index: 9999"/>
+                    <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/>
+                    
+                </nav>
+
+            </div>
+
         </div>
     </div>
+
+
+
+    <!--navigation-->
+
+
+    <!--end navigation-->
 </template>
-
-<style scoped>
-.sidebar-container {
-    display: flex;
-    margin-top: 85px;
-}
-
-.vertical-sidebar {
-    width: 50px;
-    background-color: #1a1a1a;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 0;
-    transition: width 0.3s;
-}
-
-.vertical-sidebar:hover {
-    width: 200px;
-}
-
-.icon-wrapper {
-    margin: 10px 0;
-    width: 100%;
-    text-align: center;
-    padding: 10px;
-    cursor: pointer;
-}
-
-.icon-wrapper i {
-    font-size: 24px;
-}
-
-.main-sidebar {
-    background-color: #1a1a1a;
-    color: #ffffff;
-    padding: 10px;
-    width: 250px;
-    transition: margin-left 0.3s;
-}
-
-.vertical-sidebar:hover + .main-sidebar {
-    /* margin-left: 200px; */
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.user-avatar img {
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-}
-
-.user-name-role {
-    margin-left: 10px;
-}
-
-.user-name {
-    font-weight: bold;
-}
-
-.user-role {
-    color: #ccc;
-}
-
-.menu {
-    font-size: 14px;
-}
-
-.menu-section {
-    margin-bottom: 20px;
-}
-
-.section-title {
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    padding: 5px 0;
-    cursor: pointer;
-}
-
-.menu-item i {
-    margin-right: 10px;
-}
-
-.menu-item:hover {
-    background-color: #333;
-}
-</style>

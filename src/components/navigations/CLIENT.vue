@@ -1,3 +1,5 @@
+cLIENT.vue
+
 <script setup>
 import { computed } from 'vue';
 import Activation from '../svgs/Activation.vue';
