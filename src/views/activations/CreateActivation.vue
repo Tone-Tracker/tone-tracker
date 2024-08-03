@@ -84,10 +84,26 @@ const form = reactive({
 		painPoints: { required }
     }
 	const v$ = useVuelidate(rules, form)
-
-    const onFileChange = (event) => {
+    const imageName = ref('');
+    const fileName = ref('');
+    const onImageChange = (event) => {         
+            if(!event.target.files[0].type.includes('image')){
+                toaster.error("Please select an image file");
+                return
+            }
+            imageName.value= event.target.files[0].name;
+    
     selectedFile.value = event.target.files[0];
 }
+            const onFileChange = (event) => {        
+                  if(!event.target.files[0].name.includes('.pdf')){
+                       toaster.error("Please select a pdf file");
+                       return
+                  }
+                 fileName.value= event.target.files[0].name;
+                    
+                selectedFile.value = event.target.files[0];
+            }
 
 	const onSubmit = async () => {
 		const isFormValid = await v$.value.$validate();
@@ -224,18 +240,30 @@ const form = reactive({
                                   </div>
  
                                    
-                                   <div class="upload-section">
-                                    <label for="file-upload" class="file-upload-label">
-                                        <input type="file" @change="onFileChange" class="form-control" id="file-upload">
-                                        
-                                            <div class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
-                                            <input type="file" id="file-upload" hidden>
-                                            <div class="fs-1">+</div>
-                                            <div class="mb-6">
-                                                <span class="fs-5">Upload file</span>
-                                            </div>
-                                            </div>
+                                   <div class="upload-section col-md-6 col-sm-12">
+                                    <label for="img-upload" class="img-upload-label">
+                                        <div class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
+                                        <input @change="onImageChange($event)" type="file" id="img-upload" hidden accept="image/*">
+                                        <div class="fs-1">+</div>
+                                        <div class="mb-6">
+                                            <span class="fs-5">Upload Image</span>
+                                        </div>
+                                        </div>
                                         </label>
+                                        <p v-if="imageName" class="text-center text-danger">{{imageName}}</p>
+                                        </div>
+
+                                        <div class="upload-section col-md-6 col-sm-12">
+                                        <label for="file-upload" class="file-upload-label">                                
+                                        <div class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
+                                        <input type="file" @change="onFileChange($event)" id="file-upload" hidden accept="application/pdf">
+                                        <div class="fs-1">+</div>
+                                        <div class="mb-6">
+                                            <span class="fs-5">Upload Brief file</span>
+                                        </div>
+                                        </div>
+                                        </label>
+                                        <p v-if="fileName" class="text-center text-danger">{{fileName}}</p>
                                         </div>
                                     </div>
                                     

@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
-import { reactive,ref } from 'vue';
+import { reactive,ref,onMounted } from 'vue';
 import router from '@/router';
 import { useMonitorSize } from '@/composables/useMonitorSize';
 import { useAuth } from '@/stores/auth';
@@ -13,7 +13,14 @@ import { useStorage } from '@vueuse/core'
 
 
 export default {
+	
 setup(){
+	onMounted(() => {		
+		if(localStorage.getItem('token')){
+			localStorage.removeItem('token');
+			localStorage.removeItem('user');
+		}
+	})
 
 const loading = ref(false);
 
@@ -49,7 +56,7 @@ const loading = ref(false);
 					setTimeout(() => {
 						if(response.data.user.role == 'TTG_SUPER_ADMIN'){
 							router.push('/clients');
-						}else if(response.data.user.role == 'TTG_ACTIVATION_MANAGER'){
+						}else if(response.data.user.role == 'TTG_ACTIVATION_MANAGER' || response.data.user.role == 'TTG_REGIONAL_MANAGER'){
 							router.push('/activations-dashboard');						
 						}else{
 							router.push('dashboard');

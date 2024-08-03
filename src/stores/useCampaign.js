@@ -2,8 +2,8 @@ import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
 
 export const useCampaignStore = defineStore('useCampaign', () => {
-    function submitCampaign(form) {
-      return axiosInstance.post(`/api/campaigns`,form);
+    function submitCampaign(form,config) {
+      return axiosInstance.post(`/api/campaigns`,form,config);
     }
 
     const getCampaigns = () => {

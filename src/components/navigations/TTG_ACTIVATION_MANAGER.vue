@@ -24,10 +24,13 @@ const getRoleName = () => {
                         aria-controls="panelsStayOpen-collapseOne">
                         <div class="profile-info">
                             <span class="name">{{user.firstName}} {{user.lastName}}</span>
-                            <span class="status"><span class="round-guest online" :class="{'online': isOnline, 'offline': !isOnline}"</span>{{ getRoleName() }}</span>
+                            <span class="status">
+                                <span class="round-guest online" :class="{'online': isOnline, 'offline': !isOnline}">
+                                </span>{{ getRoleName() }}
+                            </span>
                             <!-- <span class="edit-profile"> <button class="edit-profile-btn">
                                     
-                                </button>
+                                </button> 
                             </span> -->
 
                         </div>

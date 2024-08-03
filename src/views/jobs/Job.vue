@@ -1,6 +1,30 @@
 <script setup>
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
+import { useAuth } from '@/stores/auth';
+import { onMounted,ref } from 'vue';
+import { useRegion } from '@/stores/useRegion';
+
+// const regionStore = useRegion();
+
+// const authStore = useAuth();
+// const staffID = JSON.parse(authStore.user)?.activeUserId;
+// const activations = ref([]);
+
+// onMounted(() => {
+//     getActivationsByStaffId();
+// });
+
+const getActivationsByStaffId = () => {
+    regionStore.getActivationByStaffId(staffID).then(function (response) {
+    activations.value = response.data.content;
+    console.log('activations',activations.value)
+  }).catch(function (error) {
+    console.log(error);
+  }).finally(function () {
+    ///
+  })
+}
 
 </script>
 <template>

@@ -160,27 +160,43 @@ const getRegionName = (region) => {
 
 const items = (activation) => [
     {
+        label: 'Tasks',
+        icon: 'bx bx-task fs-4 text-success',
+        command: () => {
+            URLrouter.push(`/tasks?activation=${activation.id}&name=${activation.name}`);
+        }
+    },
+	{
         label: 'Edit',
-        icon: 'bx bx-edit-alt fs-4',
+        icon: 'bx bx-edit-alt fs-4 text-success',
         command: () => {
             URLrouter.push(`/create-activation?activation=${activation.id}&campaign=${campaignId.value}&manager=${getUserName(activation)}&name=${campaignName.value}`);
         }
     },
+    
     {
-        label: 'Delete',
-        icon: 'bx bxs-trash fs-4 text-danger text-success',
+        label: 'Add Activation Images',
+        icon: 'bx bx-images text-success fs-3',
         command: () => {
-            deleteActivation(activation);
+            // unitForm.warehouse = warehouse.id
+			URLrouter.push(`/view-activation?activation=${activation.id}`);
         }
     },
-    {
+	{
         label: 'Add Activation Manager',
         icon: 'bx bx-user-plus text-success fs-3',
         command: () => {
             // unitForm.warehouse = warehouse.id
             openModal('top',activation);
         }
-    }
+    },
+	{
+        label: 'Delete',
+        icon: 'bx bxs-trash fs-4 text-danger text-success',
+        command: () => {
+            deleteActivation(activation);
+        }
+    },
 ];
 
 const visible = ref(false);
