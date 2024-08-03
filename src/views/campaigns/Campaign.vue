@@ -31,6 +31,8 @@ const confirm = useConfirm();
 let clients = ref([]);
 const clientName = ref('');
 let campaigns = ref([]);
+const img = ref(null);
+const loading = ref(false);
 
 const form = reactive({
 	name: '',
@@ -54,10 +56,23 @@ const createCampaign = async () => {
 	if (!isFormValid) {
 		return;
 	}
-    campaignStore.submitCampaign(form).then(function (response) {
+
+    loading.value = true;
+    let formData = new FormData();
+     formData.append('form', JSON.stringify(form));
+    formData.append('image', new Blob([JSON.stringify(image)], { type: 'application/json' }));
+    const config = {
+        useMultipartFormData: true
+         };
+    campaignStore.submitCampaign(formData,config).then(function (response) {
+        form.name = '';
+        v$.value.$errors = [];
+        v$.value.$reset();
+        img.value = null;
         toaster.success("Campaign created successfully");
         getCampaignsByClientId();
     }).catch(function (error) {
+        loading.value = false;
         toaster.error("Error creating campaign");
         console.log(error);
     });
@@ -112,8 +127,13 @@ const updateCampaign = (client) => {
     });
 };
 
-const fileUpload = (event) => {
-    console.log(event);
+const fileName = ref('');
+const fileSize = ref('');
+const image = ref(null);
+const onFileChange = (event) => {
+    fileName.value = event.target.files[0].name;
+    fileSize.value = Math.round(event.target.files[0].size / 1024);
+    image.value = event.target.files[0];
 };
 
 const deleteRecord = (event, campaign) => {
@@ -204,7 +224,6 @@ const vFocus = {
                             <div class="col-4 col-lg-4 col-xl-4 d-flex">
                                 <div class="card w-100 radius-10">
                                     <div class="card-body">
-                                        <div class="table-responsive">
                                             <form class="">
                                                 <div class="col-md-12">
                                                     <label for="input1" class="form-label">Campaign Name</label>
@@ -213,16 +232,28 @@ const vFocus = {
                                                         <div class="text-danger">Campaign name is required</div>
                                                     </div>
                                                 </div>
-                                                <div class="card flex justify-center">
-                                                    <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" customUpload @uploader="fileUpload($event)" />
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="card flex justify-center">  
+                                                            <input accept="image/*" ref="img" type="file" hidden id="img" @change="onFileChange($event)"/>
+                                                            <label for="img" class="btn btn-primary px-5">
+                                                                <i class="bx bx-cloud-upload mr-1"></i>
+                                                                Select File
+                                                            </label> 
+                                                            <p v-if="fileName" class="text-center text-success">{{ fileName }}({{ fileSize }}Kb)</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </form>
-                                            <div class="ms-auto mt-4">
-                                                <a @click="createCampaign" href="javascript:;" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                                                    <i class="bx bxs-plus-square"></i>Create Client
+                                            <div class="ms-auto">
+                                                <a @click="createCampaign" href="javascript:;" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+                                                    <div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                                    </div>
+                                                    <i v-if="!loading" class="bx bxs-plus-square"></i>
+                                                    {{ loading ?  '' : 'Create Campaign' }}
                                                 </a>
                                             </div>
-                                        </div>
+                                       
                                     </div>
                                 </div>
                             </div>

@@ -714,8 +714,8 @@ html.dark-theme .form-control:disabled, html.dark-theme .form-control[readonly] 
 	background-color: rgb(255 255 255 / 22%)
 }
 html.dark-theme .form-control::placeholder {
-	/* color: #e4e5e6!important;
-	opacity: .5!important */
+	color: #e4e5e6!important;
+	opacity: .5!important
 }
 html.dark-theme .picker__input {
 	background-color: #12181a!important;
