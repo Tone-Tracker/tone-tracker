@@ -26,7 +26,7 @@ const getRoleName = () => {
                             <span class="name">{{user.firstName}} {{user.lastName}}</span>
                             <span class="status"><span class="round-guest online" :class="{'online': isOnline, 'offline': !isOnline}"</span>{{ getRoleName() }}</span>
                             <!-- <span class="edit-profile"> <button class="edit-profile-btn">
-                                    ✏️
+                                    
                                 </button>
                             </span> -->
 
@@ -40,7 +40,7 @@ const getRoleName = () => {
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <ul class="nav-list">
-                            <li><router-link to="/jobs"><i class='bx bx-chat'></i> All</router-link></li>
+                            <li><router-link to="/activations"><i class='bx bx-chat'></i> All</router-link></li>
                             <li><router-link to="/admin-activations"><i class='bx bx-calendar-event'></i> Activations</router-link></li>
                             <li><router-link to="/promoters"><i class='bx bx-group'></i> Promoters</router-link></li>
                             <li><router-link to="/briefs"><i class='bx bx-file'></i> Briefs</router-link></li>
