@@ -19,7 +19,7 @@ export const useTask = defineStore('task', () => {
     }
 
     const getTasksByActivationId = (id) => {
-      return axiosInstance.get(`/api/tasks/activation/${id}`);
+      return axiosInstance.get(`/api/tasks/activation/all/${id}`);
     }
 
   

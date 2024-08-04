@@ -33,6 +33,7 @@ watch(
 );
 
 const activation = useActivation();
+console.log(activation.allActivations)
 const toaster = useToaster();
 const region = useRegion();
 const campaignStore = useCampaignStore();
@@ -160,6 +161,13 @@ const getRegionName = (region) => {
 
 const items = (activation) => [
     {
+        label: 'View Activation',
+        icon: 'bx bx-bullseye fs-4 text-success',
+        command: () => {
+            URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${campaignName.value}&name=${activation.name}`);
+        }
+    },
+	{
         label: 'Tasks',
         icon: 'bx bx-task fs-4 text-success',
         command: () => {
@@ -179,7 +187,7 @@ const items = (activation) => [
         icon: 'bx bx-images text-success fs-3',
         command: () => {
             // unitForm.warehouse = warehouse.id
-			URLrouter.push(`/view-activation?activation=${activation.id}`);
+			URLrouter.push(`/activation-images?activation=${activation.id}`);
         }
     },
 	{

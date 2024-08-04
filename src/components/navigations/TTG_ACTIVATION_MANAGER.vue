@@ -41,7 +41,7 @@ const getRoleName = () => {
                     <div class="accordion-body">
                         <ul class="nav-list">
                             <li><router-link to="/jobs"><i class='bx bx-chat'></i> All</router-link></li>
-                            <li><a @click="$router.push('/admin-activations')" href="javascript:;"><i class='bx bx-calendar-event'></i> Activations</a></li>
+                            <li><a @click="$router.push(`/admin-activations?staffId=${user.activeUserId}`)" href="javascript:;"><i class='bx bx-calendar-event'></i> Activations</a></li>
                             <li><router-link to="/promoters"><i class='bx bx-group'></i> Promoters</router-link></li>
                             <li><router-link to="/briefs"><i class='bx bx-file'></i> Briefs</router-link></li>
                             <li><router-link to="/admin-warehouse"><i class='bx bx-store'></i> Warehouse & Units</router-link></li>
