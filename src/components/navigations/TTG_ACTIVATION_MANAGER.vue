@@ -24,10 +24,13 @@ const getRoleName = () => {
                         aria-controls="panelsStayOpen-collapseOne">
                         <div class="profile-info">
                             <span class="name">{{user.firstName}} {{user.lastName}}</span>
-                            <span class="status"><span class="round-guest online" :class="{'online': isOnline, 'offline': !isOnline}"</span>{{ getRoleName() }}</span>
+                            <span class="status">
+                                <span class="round-guest online" :class="{'online': isOnline, 'offline': !isOnline}">
+                                </span>{{ getRoleName() }}
+                            </span>
                             <!-- <span class="edit-profile"> <button class="edit-profile-btn">
-                                    ✏️
-                                </button>
+                                    
+                                </button> 
                             </span> -->
 
                         </div>
@@ -40,12 +43,14 @@ const getRoleName = () => {
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <ul class="nav-list">
-                            <li><router-link to="/jobs"><i class='bx bx-chat'></i> All</router-link></li>
-                            <li><a @click="$router.push(`/admin-activations?staffId=${user.activeUserId}`)" href="javascript:;"><i class='bx bx-calendar-event'></i> Activations</a></li>
+                            <li><router-link to="/activations"><i class='bx bx-chat'></i> All</router-link></li>
+                            <li><router-link to="/admin-activations"><i class='bx bx-calendar-event'></i> Activations</router-link></li>
                             <li><router-link to="/promoters"><i class='bx bx-group'></i> Promoters</router-link></li>
                             <li><router-link to="/briefs"><i class='bx bx-file'></i> Briefs</router-link></li>
                             <li><router-link to="/admin-warehouse"><i class='bx bx-store'></i> Warehouse & Units</router-link></li>
                             <li><router-link to="/teaching"><i class='bx bx-book-open'></i> Learning & Teaching</router-link></li>
+                            <li><router-link to="/jobs"><i class='bx bx-briefcase'></i> Jobs</router-link></li>
+                            <li><router-link to="/upload"><i class='bx bx-upload'></i> Upload contract</router-link></li>
                             <li><a href="#"><i class='bx bx-envelope'></i> Message center</a></li>
                             <li><a href="#"><i class='bx bx-send'></i> Sent</a></li>
                             <li><a href="#"><i class='bx bx-envelope-open'></i> Unread</a></li>
