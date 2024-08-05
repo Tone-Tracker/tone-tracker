@@ -240,7 +240,7 @@ const form = reactive({
                                   </div>
  
                                    
-                                   <div class="upload-section col-md-6 col-sm-12">
+                                   <!-- <div class="upload-section col-md-6 col-sm-12">
                                     <label for="img-upload" class="img-upload-label">
                                         <div class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
                                         <input @change="onImageChange($event)" type="file" id="img-upload" hidden accept="image/*">
@@ -251,9 +251,9 @@ const form = reactive({
                                         </div>
                                         </label>
                                         <p v-if="imageName" class="text-center text-danger">{{imageName}}</p>
-                                        </div>
+                                        </div> -->
 
-                                        <div class="upload-section col-md-6 col-sm-12">
+                                        <div class="upload-section col-md-12 col-sm-12">
                                         <label for="file-upload" class="file-upload-label">                                
                                         <div class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
                                         <input type="file" @change="onFileChange($event)" id="file-upload" hidden accept="application/pdf">
