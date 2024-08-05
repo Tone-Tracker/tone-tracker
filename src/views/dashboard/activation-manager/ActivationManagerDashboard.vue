@@ -270,7 +270,8 @@ new Chart(
 								<div class="chart-container" style=" height:40vh; width:80vw">
 									<canvas id="doughnut-chart"  ></canvas>
 								</div>
-								<div class="legend d-flex justify-content-center">
+							<div class="row">
+								<div class="col-4 offset-4 legend d-flex justify-content-">
 									<div class="legend-item">
 									  <span class="legend-color" style="background-color: #007bff;"></span>
 									  <span class="legend-label">Read</span>
@@ -284,6 +285,9 @@ new Chart(
 									  <span class="legend-label">Undelivered</span>
 									</div>
 								  </div>
+							</div>
+
+
 							</div>
 							
 						</div>
