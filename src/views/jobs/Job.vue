@@ -5,15 +5,33 @@ import { useAuth } from '@/stores/auth';
 import { onMounted,ref } from 'vue';
 import { useRegion } from '@/stores/useRegion';
 
-// const regionStore = useRegion();
+const regionStore = useRegion();
 
-// const authStore = useAuth();
-// const staffID = JSON.parse(authStore.user)?.activeUserId;
-// const activations = ref([]);
+const authStore = useAuth();
+const staffID = ref(JSON.parse(authStore.user)?.activeUserId);
+const user = JSON.parse(authStore.user);
 
-// onMounted(() => {
-//     getActivationsByStaffId();
-// });
+const regions = ref([]);
+
+onMounted(() => {
+    if(user.role == 'TTG_REGIONAL_MANAGER'){
+        getMyRegions();
+    }
+    //getregionsByStaffId();
+});
+
+/*
+*This fetches regions by staff id. Basically its for regional manager
+*/
+const getMyRegions = () => {
+    regionStore.getRegionsByStaffId(staffID.value).then(function (response) {
+    regions.value = response.data.content;
+  }).catch(function (error) {
+    console.log(error);
+  }).finally(function () {
+    ///
+  })
+}
 
 const getActivationsByStaffId = () => {
     regionStore.getActivationByStaffId(staffID).then(function (response) {
@@ -31,21 +49,22 @@ const getActivationsByStaffId = () => {
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <BreadCrumb title="Jobs" icon="" />
+                <BreadCrumb :title="user.role == 'TTG_REGIONAL_MANAGER' ? 'WELCOME' : 'JOBS'" icon="" />
+                <p class="fs-3 text-white">Active Campaigns</p>
                 <div class="card">
                     <div class="card-body">
                         <!-- Code here -->
                         <div class="">
                             <div class="row g-4">
-                                <div v-for="i in 4" class="col-md-4 col-lg-3">
+                                <router-link :to="`/admin-activations?campaign=${region.id}`" v-if="regions?.length > 0" v-for="region in regions" :key="region.id" class="col-md-4 col-lg-3">
                                     <div class="job-item">
                                         <div class="image-container">
-                                            <img src="../../assets/images/Component 102 – 1.png" alt="Luc Belair">
-                                            <span>Luc Belair</span>
+                                            <img src="../../assets/images/Component 102 – 1.png" :alt="region.name">
+                                            <span>{{ region.name }}</span>
                                         </div>
                                         <div class="details">
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <div>Activation progress:</div>
+                                                <div>Number Of Activations:</div>
                                                 <div>38%</div>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-between">
@@ -62,7 +81,7 @@ const getActivationsByStaffId = () => {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </router-link>
                             </div>
                         </div>
                     </div>
