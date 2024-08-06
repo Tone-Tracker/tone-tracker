@@ -15,7 +15,7 @@ const getRoleName = () => {
 <template>
     <div class="accordion" id="accordionPanelsStayOpenExample">
 
-        <div class="side-nav">
+        <div class="side-nav side-nav--remove">
             <div class="accordion-item">
                 <div class="accordion-header profile">
                     <button class="d-flex align-items-start justify-content-between accordion-button" type="button"
