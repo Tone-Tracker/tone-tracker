@@ -18,20 +18,21 @@ const getRoleName = () => {
         <div class="side-nav side-nav--remove">
             <div class="accordion-item">
                 <div class="accordion-header profile">
-                    <button class="d-flex align-items-start justify-content-between accordion-button" type="button"
+                    <button class="d-flex align-items-center justify-content-between accordion-button" type="button"
                         data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
                         aria-controls="panelsStayOpen-collapseOne">
                         <div class="profile-info">
                             <span class="name">{{user.firstName}} {{user.lastName}}</span>
-                            <span class="status"><span class="round-guest online" :class="{'online': isOnline, 'offline': !isOnline}"</span>{{ getRoleName() }}</span>
-                            <!-- <span class="edit-profile"> <button class="edit-profile-btn">
-                                    ✏️
-                                </button>
-                            </span> -->
-
+                            <span class="status">
+                                <span class="round-guest" :class="{'online': isOnline, 'offline': !isOnline}"></span>
+                                {{ getRoleName() }}
+                            </span>
                         </div>
-
-
+                        <span class="edit-profile">
+                            <button class="edit-profile-btn">
+                                <i class='bx bx-edit-alt'></i>
+                            </button>
+                        </span>
                     </button>
                 </div>
 
@@ -110,7 +111,7 @@ export default {
 
 <style scoped>
 .profile .accordion-button::after {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .accordion-button::after {
@@ -227,6 +228,71 @@ export default {
     font-size: 1.5rem; /* Adjust this value as needed */
 }
 
-/* //////////make side nav scrollable///////// */
+/* //////////////////// */
+
+/* header section */
+.accordion-header.profile {
+    background-color: #1e1e1e;
+}
+
+.accordion-button {
+    background-color: transparent;
+    box-shadow: none;
+    padding: 10px 15px;
+}
+
+.accordion-button::after {
+    display: none;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.status {
+    font-size: 12px;
+    color: #a0a0a0;
+    display: flex;
+    align-items: center;
+}
+
+.round-guest {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.online {
+    background-color: #ff3b30;
+}
+
+.offline {
+    background-color: #a0a0a0;
+}
+
+.edit-profile-btn {
+    background: none;
+    border: none;
+    color: #a0a0a0;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+}
+
+.edit-profile-btn:hover {
+    color: #ffffff;
+}
+.accordion-button:not(.collapsed) {
+    margin-bottom: 0px;
+}
 
 </style>
