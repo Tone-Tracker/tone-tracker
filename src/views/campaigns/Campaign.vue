@@ -58,13 +58,13 @@ const createCampaign = async () => {
 	}
 
     loading.value = true;
-    let formData = new FormData();
-     formData.append('form', JSON.stringify(form));
-    formData.append('image', new Blob([JSON.stringify(image)], { type: 'application/json' }));
-    const config = {
-        useMultipartFormData: true
-         };
-    campaignStore.submitCampaign(formData,config).then(function (response) {
+    // let formData = new FormData();
+    //  formData.append('form', JSON.stringify(form));
+    //  formData.append('image', new Blob([JSON.stringify(image)], { type: 'application/json' }));
+    // const config = {
+    //     useMultipartFormData: true
+    //      };
+    campaignStore.submitCampaign(form).then(function (response) {
         form.name = '';
         v$.value.$errors = [];
         v$.value.$reset();

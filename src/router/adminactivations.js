@@ -16,7 +16,7 @@ export default [
         },
         {
                 path: '/view-activation',
-                name: 'create-activation',
+                name: 'view-activation',
                 component: ViewActivation,
         },
         {
