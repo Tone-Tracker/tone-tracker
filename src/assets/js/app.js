@@ -23,29 +23,43 @@ $(function () {
 
 
 
+		// Add this new code for the toggle functionality
+		$(".side-nav--hover").hover(
+			function () {
+				// On hover in
+				$(".side-nav--remove").toggle();
+			},
 
-		// $(".dark-mode").on("click", function() {
-		// 	alert("dark mode")
-
-		// 	if($(".dark-mode-icon i").attr("class") == 'bx bx-sun') {
-		// 		$(".dark-mode-icon i").attr("class", "bx bx-moon");
-		// 		$("html").attr("class", "light-theme")
-		// 	} else {
-		// 		$(".dark-mode-icon i").attr("class", "bx bx-sun");
-		// 		$("html").attr("class", "dark-theme")
-		// 	}
-
-		// }), 
+		);
 
 
-		// $(".toggle-icon").click(function () {
-		// $(".wrapper").hasClass("toggled") ? ($(".wrapper").addClass("toggled"), $(".sidebar-wrapper").unbind("hover")) 
-		
-		// : ($(".wrapper").addClass("toggled"), $(".sidebar-wrapper").hover(function () {
-		// 	$(".wrapper").addClass("sidebar-hovered")
-		// }, function () {
-		// 	$(".wrapper").removeClass("sidebar-hovered")
-		// }))
+	// ... (rest of the existing code)
+
+
+
+
+	// $(".dark-mode").on("click", function() {
+	// 	alert("dark mode")
+
+	// 	if($(".dark-mode-icon i").attr("class") == 'bx bx-sun') {
+	// 		$(".dark-mode-icon i").attr("class", "bx bx-moon");
+	// 		$("html").attr("class", "light-theme")
+	// 	} else {
+	// 		$(".dark-mode-icon i").attr("class", "bx bx-sun");
+	// 		$("html").attr("class", "dark-theme")
+	// 	}
+
+	// }), 
+
+
+	// $(".toggle-icon").click(function () {
+	// $(".wrapper").hasClass("toggled") ? ($(".wrapper").addClass("toggled"), $(".sidebar-wrapper").unbind("hover")) 
+
+	// : ($(".wrapper").addClass("toggled"), $(".sidebar-wrapper").hover(function () {
+	// 	$(".wrapper").addClass("sidebar-hovered")
+	// }, function () {
+	// 	$(".wrapper").removeClass("sidebar-hovered")
+	// }))
 	// }),
 
 	$(document).ready(function () {
