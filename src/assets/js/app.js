@@ -23,14 +23,15 @@ $(function () {
 
 
 
-		// Add this new code for the hover functionality
+		// Add this new code for the toggle functionality
 		$(".side-nav--hover").hover(
 			function () {
 				// On hover in
-				$(".side-nav--remove").remove();
+				$(".side-nav--remove").toggle();
 			},
 
 		);
+
 
 	// ... (rest of the existing code)
 
