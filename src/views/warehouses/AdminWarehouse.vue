@@ -27,6 +27,7 @@ const region = ref(null);
 const position = ref('top');
 const popupType = ref('Warehouse');
 const regions = ref([]);
+const loading = ref(false);
 
 const warehouseStore = useWarehouse();
 const unitStore = useUnit();
@@ -69,60 +70,63 @@ const unitForm = reactive({
 };
 const v$ = useVuelidate(rules, form);
 
-
 const onSubmit = async () => {
+   
+
     const isFormValid = await v$.value.$validate();
-    if (!isFormValid) {return;}
-    if(isEdit.value){
-        warehouseStore.update(warehouseId.value,form).then(function (response) {
+    if (!isFormValid) {
+        loading.value = false; 
+        return;
+    }
+    loading.value = true; 
+    try {
+        if (isEdit.value) {
+            await warehouseStore.update(warehouseId.value, form);
             toaster.success("Warehouse updated successfully");
-            visible.value = false;
-            getWarehouses();
-        }).catch(function (error) {
-            toaster.error("Error updating warehouse");
-            console.log(error);
-        });
-    } 
-    else {
-        warehouseStore.submit(form).then(function (response) {
-        toaster.success("Warehouse created successfully");
+        } else {
+            await warehouseStore.submit(form);
+            toaster.success("Warehouse created successfully");
+        }
         visible.value = false;
         getWarehouses();
-    }).catch(function (error) {
-        toaster.error("Error creating warehouse");
+    } catch (error) {
+        toaster.error(`Error ${isEdit.value ? 'updating' : 'creating'} warehouse`);
         console.log(error);
-    });
+    } finally {
+        loading.value = false; 
     }
-    
 };
 
+
 const onUnitSubmit = async () => {
-    //check if unitForm is valid
-    if(unitForm.name && unitForm.capacity && unitForm.warehouse){
-        //if isEditUnit
-        if(isEditUnit.value){
-           return unitStore.updateUnit(warehouseId.value,unitForm).then(function (response) {
+    loading.value = true; 
+
+  
+    if (unitForm.name && unitForm.capacity && unitForm.warehouse) {
+        try {
+            if (isEditUnit.value) {
+                await unitStore.updateUnit(warehouseId.value, unitForm);
                 toaster.success("Unit updated successfully");
-                visible.value = false;
-                getUnits();
-            }).catch(function (error) {
-                toaster.error("Error updating unit");
-                console.log(error);
-            });
-        }
-        return unitStore.addUnit(unitForm).then(function (response) {
-            toaster.success("Unit created successfully");
-            unitForm.name = null;
-            unitForm.capacity = null;
-            unitForm.warehouse = null;
+            } else {
+                await unitStore.addUnit(unitForm);
+                toaster.success("Unit created successfully");
+                unitForm.name = null;
+                unitForm.capacity = null;
+                unitForm.warehouse = null;
+            }
             visible.value = false;
             getUnits();
-        }).catch(function (error) {
-            toaster.error("Error creating unit");
+        } catch (error) {
+            toaster.error(`Error ${isEditUnit.value ? 'updating' : 'creating'} unit`);
             console.log(error);
-        })
+        } finally {
+            loading.value = false; 
+        }
+    } else {
+        loading.value = false; 
     }
-}
+};
+
 
 const onRegionChange = (event) => {   
     form.region = event.value.id;
@@ -338,6 +342,7 @@ const items = (warehouse) => [
                                                     <td>{{warehouse.name}}</td>
                                                     <td>{{warehouse.capacity}}</td>
                                                     <td>{{ getRegionName(warehouse.region) }}</td>
+                                               
                                                     <td>{{ warehouse.numberOfItems}}</td>
                                                     <td>{{warehouse.numberOfUnits}}</td>
                                                     <td>
@@ -444,6 +449,7 @@ const items = (warehouse) => [
             <Dialog v-model:visible="visible" modal :header="isEdit ? `Edit ${popupType}` : `Add ${popupType}`" :style="dialogStyle">
                
                 <form @submit.prevent="onSubmit" class="row g-3" v-if="popupType === 'Warehouse'" >
+                    
                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">
                             <label for="input1" class="form-label">Name</label>
@@ -514,7 +520,12 @@ const items = (warehouse) => [
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
+                        <button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
+            <div v-if="loading" class="spinner-border text-white" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            {{ isEdit ? 'Update' : 'Submit' }}
+        </button>
                     </div>
                     
                 </form>
@@ -541,8 +552,12 @@ const items = (warehouse) => [
                     </div>                        
                     </div>
                     <div class="modal-footer">
-                        <button v-show="!isEditUnit" @click="onUnitSubmit" type="button" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
-                        <button v-show="isEditUnit" @click="onUnitSubmit" type="button" class="btn maz-gradient-btn w-100">{{ isEditUnit ? 'Update' : 'Submit' }}</button>
+                        <button v-show="!isEditUnit" @click="onUnitSubmit" type="button" class="btn maz-gradient-btn w-100">   <div v-if="loading" class="spinner-border text-white" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>{{ isEdit ? 'Update' : 'Submit' }}</button>
+                        <button v-show="isEditUnit" @click="onUnitSubmit" type="button" class="btn maz-gradient-btn w-100"> <div v-if="loading" class="spinner-border text-white" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div> {{ isEditUnit ? 'Update' : 'Submit' }}</button>
                     </div>
                     
                 </form>
