@@ -85,24 +85,14 @@ const rules = {
 const v$ = useVuelidate(rules, form);
 const imageName = ref("");
 const fileName = ref("");
-const onImageChange = (event) => {
-  if (!event.target.files[0].type.includes("image")) {
-    toaster.error("Please select an image file");
-    return;
-  }
-  imageName.value = event.target.files[0].name;
 
-  selectedFile.value = event.target.files[0];
-};
 const onFileChange = (event) => {
   if (!event.target.files[0].name.includes(".pdf")) {
     toaster.error("Please select a pdf file");
     return;
   }
-  fileName.value = event.target.files[0].name;
-
-  selectedFile.value = event.target.files[0];
-};
+    selectedFile.value = event.target.files[0];
+}
 
 const onSubmit = async () => {
 
