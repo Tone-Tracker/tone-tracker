@@ -10,12 +10,13 @@ const regionStore = useRegion();
 const authStore = useAuth();
 const staffID = ref(JSON.parse(authStore.user)?.activeUserId);
 const user = JSON.parse(authStore.user);
+console.log('User',user)
 
 const regions = ref([]);
 
 onMounted(() => {
     if(user.role == 'TTG_REGIONAL_MANAGER'){
-        getMyRegions();
+        getregionsByStaffId();
     }
     //getregionsByStaffId();
 });
@@ -23,8 +24,9 @@ onMounted(() => {
 /*
 *This fetches regions by staff id. Basically its for regional manager
 */
-const getMyRegions = () => {
-    regionStore.getRegionsByStaffId(staffID.value).then(function (response) {
+const getregionsByStaffId = () => {
+    regionStore.getRegionsByStaffId(user.activeUserId).then(function (response) {
+    console.log('regions',response)
     regions.value = response.data.content;
   }).catch(function (error) {
     console.log(error);
@@ -33,16 +35,6 @@ const getMyRegions = () => {
   })
 }
 
-const getActivationsByStaffId = () => {
-    regionStore.getActivationByStaffId(staffID).then(function (response) {
-    activations.value = response.data.content;
-    console.log('activations',activations.value)
-  }).catch(function (error) {
-    console.log(error);
-  }).finally(function () {
-    ///
-  })
-}
 
 </script>
 <template>
