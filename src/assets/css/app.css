@@ -11,7 +11,7 @@ File: app.css
 */
 
 .accordion-button {
-    padding: 8px !important;
+	padding: 8px !important;
 }
 
 /* Override all input primevue input background */
@@ -99,10 +99,10 @@ body {
 }
 
 .maz-gradient-btn {
-    background: linear-gradient(to right, #9A3AB1, #117AD1);
-    border: none !important;
-    color: white;
-    transition: background 0.3s ease-in-out;
+	background: linear-gradient(to right, #9A3AB1, #117AD1);
+	border: none !important;
+	color: white;
+	transition: background 0.3s ease-in-out;
 }
 
 /* 
@@ -130,7 +130,7 @@ a {
 
 .sidebar-wrapper {
 
-	width: 250px;
+	width: 241px;
 
 	height: 100%;
 
@@ -274,7 +274,7 @@ a {
 
 .page-content {
 
-	padding: 1.5rem 1.5rem 0.7rem 1.5rem;
+	padding: 1.5rem 1.5rem 0.7rem 5.5rem;
 	background-color: #0F0F0F;
 }
 

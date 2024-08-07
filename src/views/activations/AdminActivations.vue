@@ -15,12 +15,15 @@ import { useRoute } from 'vue-router';
 import URLrouter from '@/router';
 import { useStaff } from '@/stores/staff';
 import { useUserStore } from '@/stores/userStore';
+import { useAuth } from '@/stores/auth';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
 
+
 const route = useRoute();
 const userStore = useUserStore();
+const authStore = useAuth();
 const staff = useStaff();
 const campaignId = ref(route.query.campaign);
 
@@ -46,6 +49,8 @@ let showLoading = ref(false);
 const regions = ref([]);
 const campaignName = ref([]);
 
+const user = JSON.parse(authStore.user);
+
 
 
 onMounted(() => {
@@ -60,6 +65,12 @@ onMounted(() => {
 	getAllUsers();
 
 });
+
+const canCreateActivation = () => {
+	return user.role == 'TTG_SUPER_ADMIN' 
+	|| user.role == 'TTG_REGIONAL_MANAGER' 
+	|| user.role == 'TTG_HEAD_ADMIN';
+}
 
 const getAllUsers = async () => {
 	showLoading.value = true;
@@ -96,6 +107,17 @@ const getCampaignName = async () => {
 	})
 }
 
+const getregionsByStaffId = () => {console.log('UserInside',user.activeUserId)
+    region.getRegionsByStaffId(user.activeUserId).then(function (response) {
+    console.log('regions',response)
+    regions.value = response.data.content;
+  }).catch(function (error) {
+    console.log(error);
+  }).finally(function () {
+    ///
+  })
+}
+
 const getRegions = async () => {
 	region.getRegions().then(function (response) {
 		regions.value = response.data.content;
@@ -115,48 +137,28 @@ const onInput = () => {
 	 }
   };
 
-//   const getActivationsByCampaignId = async () => {
-// 	showLoading.value = true;
-// 	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
-// 		activations.value = response.data.content
-// 	}).catch(function (error) {
-// 		// toaster.error("Error fetching activations");
-// 		console.log(error);
-// 	}).finally(function () {
-// 	})
-//   }
-
-/*
-* get activations by staff id 
-*/
-
-const getActivationsByActivationManager = async () => {
-    try {
-        showLoading.value = true;
-        
-        // Get user data from localStorage
-        const userData = JSON.parse(localStorage.getItem('user'));
-        
-        if (!userData || !userData.activeUserId) {
-            throw new Error('User data or activeUserId not found');
-        }
-
-        const staffId = userData.activeUserId;
-        
-        // Fetch activations
-        const response = await activation.getActivationsByActivationManager(staffId);
-		console.log("test", response);
-        activations.value = response.data.content;
-    } catch (error) {
-        console.error('Error fetching activations:', error);
-        // Uncomment the next line if you have a toaster notification system
-        toaster.error("Error fetching activations");
-    } finally {
-        showLoading.value = false;
-    }
-};
-	
-	
+  const getActivationsByStaffId = async () => {
+	showLoading.value = true;
+	activation.getActivationByStaffId(user.activeUserId).then(function (response) {
+		activations.value = response.data.content;
+		console.log('activations',activations.value)
+	}).catch(function (error) {
+		// toaster.error("Error fetching activations");
+		console.log(error);
+	}).finally(function () {
+	})
+  }
+  const getActivationsByCampaignId = async () => {
+	showLoading.value = true;
+	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
+		activations.value = response.data.content;
+		
+	}).catch(function (error) {
+		// toaster.error("Error fetching activations");
+		console.log(error);
+	}).finally(function () {
+	})
+  }
 
  
   const deleteActivation = (activ) => {
@@ -207,6 +209,13 @@ const getRegionName = (region) => {
 
 const items = (activation) => [
     {
+        label: 'View Activation',
+        icon: 'bx bx-bullseye fs-4 text-success',
+        command: () => {
+            URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${campaignName.value}&name=${activation.name}`);
+        }
+    },
+	{
         label: 'Tasks',
         icon: 'bx bx-task fs-4 text-success',
         command: () => {
@@ -226,7 +235,7 @@ const items = (activation) => [
         icon: 'bx bx-images text-success fs-3',
         command: () => {
             // unitForm.warehouse = warehouse.id
-			URLrouter.push(`/view-activation?activation=${activation.id}`);
+			URLrouter.push(`/activation-images?activation=${activation.id}`);
         }
     },
 	{
@@ -343,7 +352,7 @@ const search = (event) => {
 								<input v-model="searchInput" @input="onInput"
 								type="text" class="form-control ps-5" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
-						  <div class="ms-auto" v-if="campaignId && campaignName && !getUserRole('TTG_ACTIVATION_MANAGER')">
+						  <div v-if="canCreateActivation()" class="ms-auto">
 							<router-link :to="`/create-activation?campaign=${campaignId}&name=${campaignName}`"  class="btn maz-gradient-btn mt-2 mt-lg-0">
 							<i class="bx bxs-plus-square"></i>Create Activation</router-link>
 						</div>

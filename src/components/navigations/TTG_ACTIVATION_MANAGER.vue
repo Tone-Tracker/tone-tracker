@@ -126,12 +126,11 @@ export default {
     width: 240px;
     background-color: #000;
     color: #fff;
-    /* padding: 20px; */
-    /* font-family: Arial, sans-serif; */
+   
 }
 
 .profile {
-    /* padding: 20px; */
+   
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -163,9 +162,7 @@ export default {
     padding: 0;
 }
 
-.nav-list li {
-    /* margin: 15px 0; */
-}
+
 
 .nav-list a {
     color: #fff;

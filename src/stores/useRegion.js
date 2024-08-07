@@ -11,6 +11,10 @@ export const useRegion = defineStore('region', () => {
       return axiosInstance.get(`/api/regions`);
     }
 
+    const getRegionsByStaffId = (id) => {
+      return axiosInstance.get(`/api/regions/staff/${id}`);
+    }
+
     const update = (client) => {
       let obj = {name: client.name}
       return axiosInstance.put(`/api/regions/${client.id}`,obj);
@@ -24,5 +28,5 @@ export const useRegion = defineStore('region', () => {
     }
     
   
-    return { submit,getRegions,update,deleteRegion,addRegionalManager }
+    return { submit,getRegions,update,deleteRegion,addRegionalManager,getRegionsByStaffId }
   })

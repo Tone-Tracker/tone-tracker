@@ -43,11 +43,12 @@ const getUserRole = (role) => {
             <div class="content">
                 <nav class="sidebar d-flex">
                      <!-- <AdminNav/> -->
+                     <CLIENT v-if="getUserRole('TTG_CLIENT')" :user="user" style="z-index: 9999"/>
                     <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
-                    <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/>
-                    <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/>
-                    <CLIENT v-if="getUserRole('TTG_CLIENT')" :user="user" style="z-index: 9999"/>
-                    <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/>
+                     <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/> 
+                     <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/> 
+                    
+                     <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/> 
                     
                 </nav>
 

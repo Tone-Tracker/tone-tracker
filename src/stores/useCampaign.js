@@ -3,6 +3,8 @@ import axiosInstance from '@/axiosInstance';
 
 export const useCampaignStore = defineStore('useCampaign', () => {
     function submitCampaign(form,config) {
+      console.log(form);
+      console.log(form);
       return axiosInstance.post(`/api/campaigns`,form,config);
     }
 

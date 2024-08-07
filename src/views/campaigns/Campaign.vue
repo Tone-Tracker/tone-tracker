@@ -27,6 +27,7 @@ const toaster = useToaster();
 const campaignStore = useCampaignStore();
 const clientStore = useClientStore();
 const confirm = useConfirm();
+const selectedFile = ref(null);
 
 let clients = ref([]);
 const clientName = ref('');
@@ -35,7 +36,7 @@ const img = ref(null);
 const loading = ref(false);
 
 const form = reactive({
-	name: '',
+	name: "",
 	client: clientId.value
 });
 
@@ -51,6 +52,10 @@ const rules = {
 };
 const v$ = useVuelidate(rules, form);
 
+const onFileChange = (event) => {
+    selectedFile.value = event.target.files[0];
+}
+
 const createCampaign = async () => {
 	const isFormValid = await v$.value.$validate();
 	if (!isFormValid) {
@@ -58,13 +63,17 @@ const createCampaign = async () => {
 	}
 
     loading.value = true;
-    let formData = new FormData();
-     formData.append('form', JSON.stringify(form));
-    formData.append('image', new Blob([JSON.stringify(image)], { type: 'application/json' }));
+   
+    const formData = new FormData();
+    formData.append('campaignImage', selectedFile.value);
+    formData.append('campaignDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
+
     const config = {
-        useMultipartFormData: true
-         };
-    campaignStore.submitCampaign(formData,config).then(function (response) {
+      useMultipartFormData: true // Add this flag to the request config
+    };
+
+
+    campaignStore.submitCampaign(formData, config).then(function (response) {
         form.name = '';
         v$.value.$errors = [];
         v$.value.$reset();
@@ -129,12 +138,6 @@ const updateCampaign = (client) => {
 
 const fileName = ref('');
 const fileSize = ref('');
-const image = ref(null);
-const onFileChange = (event) => {
-    fileName.value = event.target.files[0].name;
-    fileSize.value = Math.round(event.target.files[0].size / 1024);
-    image.value = event.target.files[0];
-};
 
 const deleteRecord = (event, campaign) => {
     confirm.require({
