@@ -54,7 +54,7 @@ const user = JSON.parse(authStore.user);
 
 
 onMounted(() => {
-	if(userStore.getUserRole('TTG_ACTIVATION_MANAGER') && !campaignId.value){
+	if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER') && !campaignId.value){
 		getActivationsByActivationManager();
 	} else{
 		 getActivationsByCampaignId();
@@ -128,7 +128,7 @@ const onInput = () => {
 		// return activations.value = activations.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
 		// || user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
 	 }else{
-		if(userStore.getUserRole('TTG_ACTIVATION_MANAGER')){
+		if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER')){
 			getActivationsByActivationManager();
 		} else{
 			getActivationsByCampaignId();
@@ -148,6 +148,32 @@ const onInput = () => {
 	}).finally(function () {
 	})
   }
+
+  const getActivationsByActivationManager = async () => {
+    try {
+        showLoading.value = true;
+        
+        // Get user data from localStorage
+        const userData = JSON.parse(localStorage.getItem('user'));
+        
+        if (!userData || !userData.activeUserId) {
+            throw new Error('User data or activeUserId not found');
+        }
+
+        const staffId = userData.activeUserId;
+        
+        // Fetch activations
+        const response = await activation.getActivationsByActivationManager(staffId);
+		console.log("test", response);
+        activations.value = response.data.content;
+    } catch (error) {
+        console.error('Error fetching activations:', error);
+        // Uncomment the next line if you have a toaster notification system
+        toaster.error("Error fetching activations");
+    } finally {
+        showLoading.value = false;
+    }
+};
   const getActivationsByCampaignId = async () => {
 	showLoading.value = true;
 	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
@@ -166,7 +192,7 @@ const onInput = () => {
 		activation.deleteActivation(activ.id).then(function (response) {
 		toaster.success("Activation deleted successfully");
 		//refetch data
-		if(userStore.getUserRole('TTG_ACTIVATION_MANAGER')){
+		if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER')){
 			getActivationsByActivationManager();
 		} else{
 			getActivationsByCampaignId();
@@ -312,7 +338,7 @@ const addActivationManager = () => {
 		return activation.update(activationId.value, form).then(function (response) {
 			toaster.success("Activation updated successfully");
 			visible.value = false;
-			if(userStore.getUserRole('TTG_ACTIVATION_MANAGER')){
+			if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER')){
 				getActivationsByActivationManager();
 			}else{
 				getActivationsByCampaignId();
