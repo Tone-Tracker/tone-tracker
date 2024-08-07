@@ -33,11 +33,6 @@ $(function () {
 		);
 
 
-	// ... (rest of the existing code)
-
-
-
-
 	// $(".dark-mode").on("click", function() {
 	// 	alert("dark mode")
 

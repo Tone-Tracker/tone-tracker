@@ -1,4 +1,5 @@
 <template>
+  
   <Layout>
     <div class="page-wrapper">
       <div class="page-content">
@@ -7,6 +8,18 @@
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
                 <div class="chart-container-1" >
+                  <!-- //////GOOGLE INPUT API/////// -->
+                  <div>
+                    <h1>Address Autocomplete</h1>
+                    <GoogleAutocomplete
+                      v-model="address"
+                      placeholder="Enter your address"
+                      @place-changed="handlePlaceChanged"
+                    />
+                    <p>Selected address: {{ address }}</p>
+                  </div>
+                  <!-- //////GOOGLE INPUT API/////// -->
+
                   <GoogleMap
                     api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
                     style="width: 100%; height: 800px"
@@ -197,6 +210,18 @@ watch(infowindow, (v) => {
 onMounted(() => {
   getActivations();
 });
+///////////////////GOOGLE AUTOCOMPLETE//////////////
+// import { ref } from 'vue';
+import GoogleAutocomplete from '../../components/GoogleAutocomplete.vue';
+
+const address = ref('');
+
+const handlePlaceChanged = (place) => {
+  console.log('Selected place:', place);
+  // You can access more details about the place here
+};
+///////////////////GOOGLE AUTOCOMPLETE//////////////
+
 </script>
 
 <style>
