@@ -49,7 +49,12 @@ const campaignName = ref([]);
 
 
 onMounted(() => {
-	getActivationsByCampaignId();
+	if(userStore.getUserRole('TTG_ACTIVATION_MANAGER') && !campaignId.value){
+		getActivationsByActivationManager();
+	} else{
+		 getActivationsByCampaignId();
+	}
+	
 	getRegions();
 	getCampaignName();
 	getAllUsers();
@@ -69,7 +74,7 @@ const getAllUsers = async () => {
 		})
 	}).catch(function (error) {
 		// toaster.error("Error fetching users");
-		console.log(error);
+		console.log(error); 
 	}).finally(function () {
 		showLoading.value = false;
 	})
@@ -101,20 +106,57 @@ const onInput = () => {
 		// return activations.value = activations.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
 		// || user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
 	 }else{
-		getActivationsByCampaignId();
+		if(userStore.getUserRole('TTG_ACTIVATION_MANAGER')){
+			getActivationsByActivationManager();
+		} else{
+			getActivationsByCampaignId();
+		}
+		getActivationsByActivationManager();
 	 }
   };
 
-  const getActivationsByCampaignId = async () => {
-	showLoading.value = true;
-	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
-		activations.value = response.data.content
-	}).catch(function (error) {
-		// toaster.error("Error fetching activations");
-		console.log(error);
-	}).finally(function () {
-	})
-  }
+//   const getActivationsByCampaignId = async () => {
+// 	showLoading.value = true;
+// 	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
+// 		activations.value = response.data.content
+// 	}).catch(function (error) {
+// 		// toaster.error("Error fetching activations");
+// 		console.log(error);
+// 	}).finally(function () {
+// 	})
+//   }
+
+/*
+* get activations by staff id 
+*/
+
+const getActivationsByActivationManager = async () => {
+    try {
+        showLoading.value = true;
+        
+        // Get user data from localStorage
+        const userData = JSON.parse(localStorage.getItem('user'));
+        
+        if (!userData || !userData.activeUserId) {
+            throw new Error('User data or activeUserId not found');
+        }
+
+        const staffId = userData.activeUserId;
+        
+        // Fetch activations
+        const response = await activation.getActivationsByActivationManager(staffId);
+		console.log("test", response);
+        activations.value = response.data.content;
+    } catch (error) {
+        console.error('Error fetching activations:', error);
+        // Uncomment the next line if you have a toaster notification system
+        toaster.error("Error fetching activations");
+    } finally {
+        showLoading.value = false;
+    }
+};
+	
+	
 
  
   const deleteActivation = (activ) => {
@@ -122,7 +164,12 @@ const onInput = () => {
 		activation.deleteActivation(activ.id).then(function (response) {
 		toaster.success("Activation deleted successfully");
 		//refetch data
-		getActivationsByCampaignId();
+		if(userStore.getUserRole('TTG_ACTIVATION_MANAGER')){
+			getActivationsByActivationManager();
+		} else{
+			getActivationsByCampaignId();
+		}
+		
 	   }).catch(function (error) {
 		toaster.error("Error deleting user");
 		console.log(error);
@@ -256,7 +303,12 @@ const addActivationManager = () => {
 		return activation.update(activationId.value, form).then(function (response) {
 			toaster.success("Activation updated successfully");
 			visible.value = false;
-			getActivationsByCampaignId();
+			if(userStore.getUserRole('TTG_ACTIVATION_MANAGER')){
+				getActivationsByActivationManager();
+			}else{
+				getActivationsByCampaignId();
+			}
+			
 		}).catch(function (error) {
 			toaster.error("Error updating activation");
 			console.log(error);
@@ -291,9 +343,10 @@ const search = (event) => {
 								<input v-model="searchInput" @input="onInput"
 								type="text" class="form-control ps-5" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
-						  <div class="ms-auto">
+						  <div class="ms-auto" v-if="campaignId && campaignName && !getUserRole('TTG_ACTIVATION_MANAGER')">
 							<router-link :to="`/create-activation?campaign=${campaignId}&name=${campaignName}`"  class="btn maz-gradient-btn mt-2 mt-lg-0">
-							<i class="bx bxs-plus-square"></i>Create Activation</router-link></div>
+							<i class="bx bxs-plus-square"></i>Create Activation</router-link>
+						</div>
 						</div>
 						<div class="table-responsive">
 							<table class="table mb-0">
@@ -309,15 +362,16 @@ const search = (event) => {
 										<th>Actions</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody >
 									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
-										<td>{{ campaignName }}</td>
-										<td>{{ getRegionName(activation.region) }}</td>
+										<td>{{ activation.campaign.name }}</td>
+										<td>{{ activation.region.name }}</td> 
 										<td>R {{activation.budget}}</td>
 										<td>{{activation.startDate}}</td>
 										<td>{{activation.endDate}}</td>
-										<td>{{ getUserName(activation) }}
+										<td>
+											{{ getUserName(activation) }}
 										</td>
 										<td>
 											<div class="d-flex order-actions">
