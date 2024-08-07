@@ -42,7 +42,7 @@ const getregionsByStaffId = () => {
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb :title="user.role == 'TTG_REGIONAL_MANAGER' ? 'WELCOME' : 'JOBS'" icon="" />
-                <p class="fs-3 text-white">Active Campaigns</p>
+                <p class="fs-3 text-white">{{ user.role == 'TTG_REGIONAL_MANAGER' ? 'All Regions' : 'Active Campaigns'  }}</p>
                 <div class="card">
                     <div class="card-body">
                         <!-- Code here -->

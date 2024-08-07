@@ -54,17 +54,27 @@ const user = JSON.parse(authStore.user);
 
 
 onMounted(() => {
-	getActivationsByCampaignId();
+	
 	if(user.role == 'TTG_REGIONAL_MANAGER'){
 		console.log('User',user)
         getregionsByStaffId();
+
+	}else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+        getActivationsByStaffId();
     }else{
+		getActivationsByCampaignId();
 	    getRegions();
 	}
 	getCampaignName();
 	getAllUsers();
 
 });
+
+const canCreateActivation = () => {
+	return user.role == 'TTG_SUPER_ADMIN' 
+	|| user.role == 'TTG_REGIONAL_MANAGER' 
+	|| user.role == 'TTG_HEAD_ADMIN';
+}
 
 const getAllUsers = async () => {
 	showLoading.value = true;
@@ -126,10 +136,22 @@ const onInput = () => {
 	 }
   };
 
+  const getActivationsByStaffId = async () => {
+	showLoading.value = true;
+	activation.getActivationByStaffId(user.activeUserId).then(function (response) {
+		activations.value = response.data.content;
+		console.log('activations',activations.value)
+	}).catch(function (error) {
+		// toaster.error("Error fetching activations");
+		console.log(error);
+	}).finally(function () {
+	})
+  }
   const getActivationsByCampaignId = async () => {
 	showLoading.value = true;
 	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
-		activations.value = response.data.content
+		activations.value = response.data.content;
+		
 	}).catch(function (error) {
 		// toaster.error("Error fetching activations");
 		console.log(error);
@@ -319,9 +341,10 @@ const search = (event) => {
 								<input v-model="searchInput" @input="onInput"
 								type="text" class="form-control ps-5" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
-						  <div class="ms-auto">
+						  <div v-if="canCreateActivation()" class="ms-auto">
 							<router-link :to="`/create-activation?campaign=${campaignId}&name=${campaignName}`"  class="btn maz-gradient-btn mt-2 mt-lg-0">
-							<i class="bx bxs-plus-square"></i>Create Activation</router-link></div>
+							<i class="bx bxs-plus-square"></i>Create Activation</router-link>
+						</div>
 						</div>
 						<div class="table-responsive">
 							<table class="table mb-0">
@@ -336,7 +359,7 @@ const search = (event) => {
 										<th>Activation Manager</th>
 										<th>Actions</th>
 									</tr>
-								</thead>
+								</thead>{{ activations }}
 								<tbody>
 									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
