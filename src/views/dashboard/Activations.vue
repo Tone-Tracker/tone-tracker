@@ -210,6 +210,18 @@ watch(infowindow, (v) => {
 onMounted(() => {
   getActivations();
 });
+///////////////////GOOGLE AUTOCOMPLETE//////////////
+// import { ref } from 'vue';
+import GoogleAutocomplete from '../../components/GoogleAutocomplete.vue';
+
+const address = ref('');
+
+const handlePlaceChanged = (place) => {
+  console.log('Selected place:', place);
+  // You can access more details about the place here
+};
+///////////////////GOOGLE AUTOCOMPLETE//////////////
+
 </script>
 
 <style>
