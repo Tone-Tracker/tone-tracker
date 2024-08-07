@@ -21,6 +21,10 @@ export const useActivation = defineStore('activation', () => {
     const getActivationById = (id) => {
       return axiosInstance.get(`/api/activations/${id}`);
     }
+
+    const getActivationsByActivationManager = (id) => {
+      return axiosInstance.get(`/api/activations/staff/${id}`);
+    }
     const getActivationsByCampaignId = (campaignId) => {
       return axiosInstance.get(`/api/activations/campaign/${campaignId}`);
     }
@@ -34,5 +38,5 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.post(`/api/activations/${id}/upload`,formData);
     }
   
-    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages }
+    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages , getActivationsByActivationManager}
   })

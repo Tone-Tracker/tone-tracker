@@ -44,18 +44,28 @@ onMounted(() => {
         { name: 'At Risk', code: 'ATRISK' }
     ]);
 
+    const types = ref([
+        { name: 'Third Party', code: 'THIRDPARTY' },
+        { name: 'Inhouse', code: 'INHOUSE' }
+    ]);
+
 const status = ref(null);
+const type = ref(null);
 const form = reactive({
     status: '',
+    type: '',
 	plannedEndDate: null,
 	timeRecord: null,
     completion: null,
     jobNumber: null,
+    name: null,
     activation: activation.value
 });
 
 const rules = { 
     status: { required },
+    type: {required},
+    name: { required },
 	plannedEndDate: { required },
 	timeRecord: { required },
 	jobNumber: { required },
@@ -94,12 +104,18 @@ const onStatusChange = (event) => {
     form.status = event.value.code;
 }
 
+
+const onTypeChange = (event) => {
+    form.type = event.value.code;
+}
+
 const onPlannedEndDateChange = (event) => {
     form.plannedEndDate = moment(event).format('YYYY-MM-DD');
 }
 
 const getTasksByActivationId = async () => {
   taskStore.getTasksByActivationId(activation.value).then(response => {
+  console.log("tasks", response.data);
     tasks.value = response.data;
   }).catch(error => {
     toaster.error("Error fetching tasks");
@@ -121,12 +137,16 @@ const openModal = (pos,task) => {
     // form.activation = task.activation;
     status.value = statuses.value.find(stat => stat.code === task.status);
     form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
+
+    type.value = types.value.find(stat => stat.code === task.type);
+    form.type = form.type = types.value.find(stat => stat.code === task.type).code;
     Object.assign(form, {
     // status: task.status,
      plannedEndDate: task.plannedEndDate,
      timeRecord: task.timeRecord,
      completion: task.completion,
      jobNumber: Number(task.jobNumber),
+     name: task.name,
     //  activation: task.activation
     })
   }else{
@@ -137,10 +157,12 @@ const openModal = (pos,task) => {
     // form.activation = null;
     Object.assign(form, {
      status: null,
+     type: null,
      plannedEndDate: null,
      timeRecord: null,
      completion: null,
      jobNumber: null,
+     name:null,
     //  activation: null
     })
   }  
@@ -150,6 +172,10 @@ const openModal = (pos,task) => {
 
 const getStatus = (status) => {
     return statuses.value.find(stat => stat.code === status).name;
+}
+
+const getType = (type) => {
+    return types.value.find(typ => typ.code === type).name;
 }
 
 const getClass = (status) => {
@@ -226,7 +252,7 @@ const deleteRecord = (event, task) => {
                                             <th>Completion</th>
                                             <th>Actions</th>
                                         </tr>
-                                    </thead>{{ tasks }}
+                                    </thead>
                                     <tbody>
                                         <tr v-if="tasks.length > 0" v-for="task in tasks" :key="task.id" class="table-dark-black">
                                             <td>{{ activationName }}</td>
@@ -274,6 +300,16 @@ const deleteRecord = (event, task) => {
                              <InputText v-model="activationName" disabled />
                         </div> 
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Name</label>
+                            <InputText v-model="form.name" inputId="withoutgrouping"  :useGrouping="false" fluid />
+                               <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
+                               <div class="text-danger">Name is required</div>
+                            </div>
+                    </div>                        
+                    </div>
                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">
                             <label for="input1" class="form-label">Job Number</label>
@@ -290,6 +326,17 @@ const deleteRecord = (event, task) => {
                             <Select v-model="status" @change="onStatusChange($event)" :options="statuses" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" />
                                <div class="input-errors" v-for="error of v$.status.$errors" :key="error.$uid">
                                <div class="text-danger">Risk is required</div>
+                            </div>
+                    </div>                        
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Type</label>
+                            <Select v-model="type" @change="onTypeChange($event)" :options="types" showClear  optionLabel="name" placeholder="Select Type" class="w-full md:w-56" />
+                               <div class="input-errors" v-for="error of v$.type.$errors" :key="error.$uid">
+                               <div class="text-danger">Type is required</div>
                             </div>
                     </div>                        
                     </div>
