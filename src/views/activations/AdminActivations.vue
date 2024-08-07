@@ -15,12 +15,15 @@ import { useRoute } from 'vue-router';
 import URLrouter from '@/router';
 import { useStaff } from '@/stores/staff';
 import { useUserStore } from '@/stores/userStore';
+import { useAuth } from '@/stores/auth';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
 
+
 const route = useRoute();
 const userStore = useUserStore();
+const authStore = useAuth();
 const staff = useStaff();
 const campaignId = ref(route.query.campaign);
 
@@ -33,7 +36,6 @@ watch(
 );
 
 const activation = useActivation();
-console.log(activation.allActivations)
 const toaster = useToaster();
 const region = useRegion();
 const campaignStore = useCampaignStore();
@@ -47,11 +49,18 @@ let showLoading = ref(false);
 const regions = ref([]);
 const campaignName = ref([]);
 
+const user = JSON.parse(authStore.user);
+
 
 
 onMounted(() => {
 	getActivationsByCampaignId();
-	getRegions();
+	if(user.role == 'TTG_REGIONAL_MANAGER'){
+		console.log('User',user)
+        getregionsByStaffId();
+    }else{
+	    getRegions();
+	}
 	getCampaignName();
 	getAllUsers();
 
@@ -90,6 +99,17 @@ const getCampaignName = async () => {
 	campaignStore.getCampaignName(campaignId.value).then(function (response) {
 		campaignName.value = response.data.name;
 	})
+}
+
+const getregionsByStaffId = () => {console.log('UserInside',user.activeUserId)
+    region.getRegionsByStaffId(user.activeUserId).then(function (response) {
+    console.log('regions',response)
+    regions.value = response.data.content;
+  }).catch(function (error) {
+    console.log(error);
+  }).finally(function () {
+    ///
+  })
 }
 
 const getRegions = async () => {
