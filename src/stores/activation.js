@@ -22,8 +22,18 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.get(`/api/activations/${id}`);
     }
 
-    const getActivationsByActivationManager = (id) => {
-      return axiosInstance.get(`/api/activations/staff/${id}`);
+    //make the id optional parameter
+
+    const getAllActivations = ( userRole, id=null) => { console.log(id);
+      switch (userRole) {
+        case 'TTG_REGIONAL_MANAGER':
+          return axiosInstance.get(`/api/activations/region/${id}`);
+        case 'TTG_ACTIVATION_MANAGER':
+          return axiosInstance.get(`/api/activations/staff/${id}`); 
+        default:
+          return axiosInstance.get(`/api/activations/campaign/${id}`);
+      }
+      
     }
     const getActivationsByCampaignId = (campaignId) => {
       return axiosInstance.get(`/api/activations/campaign/${campaignId}`);
@@ -38,5 +48,5 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.post(`/api/activations/${id}/upload`,formData);
     }
   
-    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages , getActivationsByActivationManager}
+    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages , getAllActivations}
   })

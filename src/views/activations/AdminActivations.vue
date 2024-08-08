@@ -26,12 +26,18 @@ const userStore = useUserStore();
 const authStore = useAuth();
 const staff = useStaff();
 const campaignId = ref(route.query.campaign);
+const regionId = ref(route.query.region);
+let userRole = null;
 
 
 watch(
   () => route.query.campaign,
   (newCampaignId) => {
     campaignId.value = newCampaignId;
+  },
+  () => route.query.region,
+  (newRegionId) => {
+	regionId.value = newRegionId;
   }
 );
 
@@ -54,21 +60,25 @@ const user = JSON.parse(authStore.user);
 
 
 onMounted(() => {
-	if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER') && !campaignId.value){
-		getActivationsByActivationManager();
-	} else{
-		 getActivationsByCampaignId();
+
+	if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
+		getAllActivations(user.role, campaignId.value);
+	} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+		getAllActivations(user.role, user.activeUserId);
+	} else if('TTG_REGIONAL_MANAGER'){
+		getAllActivations(user.role, regionId.value);
 	}
-	
 	getRegions();
 	getCampaignName();
 	getAllUsers();
 
+	//get user role from store
+	userRole = userStore.get
+
 });
 
 const canCreateActivation = () => {
-	return user.role == 'TTG_SUPER_ADMIN' 
-	|| user.role == 'TTG_REGIONAL_MANAGER' 
+	return user.role == 'TTG_SUPER_ADMIN'  
 	|| user.role == 'TTG_HEAD_ADMIN';
 }
 
@@ -128,12 +138,13 @@ const onInput = () => {
 		// return activations.value = activations.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
 		// || user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
 	 }else{
-		if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER')){
-			getActivationsByActivationManager();
-		} else{
-			getActivationsByCampaignId();
+		if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
+			getAllActivations(user.role, campaignId.value);
+		} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+			getAllActivations(user.role, user.activeUserId);
+		} else if('TTG_REGIONAL_MANAGER'){
+			getAllActivations(user.role, regionId.value);
 		}
-		getActivationsByActivationManager();
 	 }
   };
 
@@ -149,7 +160,7 @@ const onInput = () => {
 	})
   }
 
-  const getActivationsByActivationManager = async () => {
+  const getAllActivations = async (userRole, id) => {
     try {
         showLoading.value = true;
         
@@ -163,7 +174,7 @@ const onInput = () => {
         const staffId = userData.activeUserId;
         
         // Fetch activations
-        const response = await activation.getActivationsByActivationManager(staffId);
+        const response = await activation.getAllActivations(userRole, id);
 		console.log("test", response);
         activations.value = response.data.content;
     } catch (error) {
@@ -174,17 +185,7 @@ const onInput = () => {
         showLoading.value = false;
     }
 };
-  const getActivationsByCampaignId = async () => {
-	showLoading.value = true;
-	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
-		activations.value = response.data.content;
-		
-	}).catch(function (error) {
-		// toaster.error("Error fetching activations");
-		console.log(error);
-	}).finally(function () {
-	})
-  }
+
 
  
   const deleteActivation = (activ) => {
@@ -192,10 +193,12 @@ const onInput = () => {
 		activation.deleteActivation(activ.id).then(function (response) {
 		toaster.success("Activation deleted successfully");
 		//refetch data
-		if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER')){
-			getActivationsByActivationManager();
-		} else{
-			getActivationsByCampaignId();
+		if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
+			getAllActivations(user.role, campaignId.value);
+		} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+			getAllActivations(user.role, user.activeUserId);
+		} else if('TTG_REGIONAL_MANAGER'){ 
+			getAllActivations(user.role, regionId.value);
 		}
 		
 	   }).catch(function (error) {
@@ -338,10 +341,12 @@ const addActivationManager = () => {
 		return activation.update(activationId.value, form).then(function (response) {
 			toaster.success("Activation updated successfully");
 			visible.value = false;
-			if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER')){
-				getActivationsByActivationManager();
-			}else{
-				getActivationsByCampaignId();
+			if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
+			getAllActivations(user.role, campaignId.value);
+			} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+				getAllActivations(user.role, user.activeUserId);
+			} else if('TTG_REGIONAL_MANAGER'){
+				getAllActivations(user.role, regionId.value);
 			}
 			
 		}).catch(function (error) {
