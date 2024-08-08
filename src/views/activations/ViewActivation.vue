@@ -210,7 +210,9 @@ const getTasks = async () => {
 										  <i class='bx bx-search-alt-2' ></i>
 										</template>
 										<template #image>
-											<img :src="`${envPath}${activationImage.path}`" alt="image" width="250" />
+											<img :src="`${envPath}${activationImage.path}`" alt="image"
+											
+											class="min-height-image" />
 										</template>
 										<template #preview="slotProps">
 											<img :src="`${envPath}${activationImage.path}`" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
@@ -233,6 +235,8 @@ const getTasks = async () => {
 		</div>
     </Layout>
 </template>
+
+
 <style scoped>
 div.gallery {
 	margin: 5px;
@@ -240,7 +244,12 @@ div.gallery {
 	float: left;
 	width: 180px;
   }
-  
+  .min-height-image{
+	min-height: 130px;
+  }
+  .gap-4 {
+    gap: 0px !important; 
+}
   div.gallery:hover {
 	border: 1px solid #777;
   }
