@@ -3,31 +3,30 @@ import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import { useAuth } from '@/stores/auth';
 import { onMounted,ref } from 'vue';
-import { useRegion } from '@/stores/useRegion';
+import { useCampaignStore } from '@/stores/useCampaign';
 
-const regionStore = useRegion();
+const campaign = useCampaignStore();
 
 const authStore = useAuth();
-const staffID = ref(JSON.parse(authStore.user)?.activeUserId);
+const client = ref(JSON.parse(authStore.client));
 const user = JSON.parse(authStore.user);
-console.log('User',user)
+console.log('client',client.value)
 
-const regions = ref([]);
+const campaigns = ref([]);
 
 onMounted(() => {
-    if(user.role == 'TTG_REGIONAL_MANAGER'){
-        getregionsByStaffId();
+    if(user.role == 'CLIENT'){
+        getCampaignsByClientId();
     }
-    //getregionsByStaffId();
 });
 
 /*
 *This fetches regions by staff id. Basically its for regional manager
 */
-const getregionsByStaffId = () => {
-    regionStore.getRegionsByStaffId(user.activeUserId).then(function (response) {
-    console.log('regions',response)
-    regions.value = response.data.content;
+const getCampaignsByClientId = () => {
+    campaign.getCampaignsByClientId(client.value.id).then(function (response) {
+    console.log('Campaigns',response)
+     campaigns.value = response.data;
   }).catch(function (error) {
     console.log(error);
   }).finally(function () {
@@ -41,18 +40,18 @@ const getregionsByStaffId = () => {
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <BreadCrumb :title="user.role == 'TTG_REGIONAL_MANAGER' ? 'WELCOME' : 'JOBS'" icon="" />
-                <p class="fs-3 text-white">{{ user.role == 'TTG_REGIONAL_MANAGER' ? 'All Regions' : 'Active Campaigns'  }}</p>
+                <!-- <BreadCrumb :title="user.role == 'TTG_REGIONAL_MANAGER' ? 'WELCOME' : 'JOBS'" icon="" />
+                <p class="fs-3 text-white">{{ user.role == 'TTG_REGIONAL_MANAGER' ? 'All Regions' : 'Active Campaigns'  }}</p> -->
                 <div class="card">
                     <div class="card-body">
                         <!-- Code here -->
                         <div class="">
                             <div class="row g-4">
-                                <router-link :to="`/admin-activations?region=${region.id}`" v-if="regions?.length > 0" v-for="region in regions" :key="region.id" class="col-md-4 col-lg-3">
+                                <router-link v-if="campaigns?.length > 0" v-for="campaign in campaigns" :key="campaign.id" class="col-md-4 col-lg-3"  :to="`/admin-activations?campaign=${campaign.id}`">
                                     <div class="job-item">
                                         <div class="image-container">
-                                            <img src="../../assets/images/Component 102 – 1.png" :alt="region.name">
-                                            <span>{{ region.name }}</span>
+                                            <img src="../../assets/images/Component 102 – 1.png" :alt="campaign.name">
+                                            <span>{{ campaign.name }}</span>
                                         </div>
                                         <div class="details">
                                             <div class="d-flex align-items-center justify-content-between">

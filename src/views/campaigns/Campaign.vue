@@ -97,6 +97,8 @@ const getCampaignsByClientId = async () => {
     }).finally(function () {
     });
 };
+
+
 const getClientName = async () => {
     clientStore.getClientByClientId(clientId.value).then(function (response) {
         clientName.value = response.data.name;

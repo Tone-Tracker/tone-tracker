@@ -23,9 +23,13 @@ export const useAuth = defineStore('auth', () => {
     const user = computed(() => {
       return localStorage.getItem('user')
     })
+
+    const client = computed(() => {
+      return localStorage.getItem('client')
+    })
   
     const getRoles = () => {
         return axiosInstance.get(`/api/roles`);
     }
-    return { attempt, logout, token, user,getRoles }
+    return { attempt, logout, token, user, client, getRoles }
   })

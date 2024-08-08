@@ -30,5 +30,3 @@ coverage
 *.tsbuildinfo
 src/.env
 .env
-.env
-.env
