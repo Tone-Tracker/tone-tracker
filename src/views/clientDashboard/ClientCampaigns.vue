@@ -47,7 +47,8 @@ const getCampaignsByClientId = () => {
                         <!-- Code here -->
                         <div class="">
                             <div class="row g-4">
-                                <router-link v-if="campaigns?.length > 0" v-for="campaign in campaigns" :key="campaign.id" class="col-md-4 col-lg-3"  :to="`/admin-activations?campaign=${campaign.id}`">
+                                <router-link v-if="campaigns?.length > 0" v-for="campaign in campaigns" :key="campaign.id" class="col-md-4 col-lg-3"  
+                                    :to="`/admin-activations?campaign=${campaign.id}&name=${campaign.name}`">
                                     <div class="job-item">
                                         <div class="image-container">
                                             <img src="../../assets/images/Component 102 – 1.png" :alt="campaign.name">

@@ -61,7 +61,8 @@ const user = JSON.parse(authStore.user);
 
 onMounted(() => {
 
-	if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
+	if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'CLIENT'){
+	
 		getAllActivations(user.role, campaignId.value);
 	} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
 		getAllActivations(user.role, user.activeUserId);
@@ -165,13 +166,12 @@ const onInput = () => {
         showLoading.value = true;
         
         // Get user data from localStorage
-        const userData = JSON.parse(localStorage.getItem('user'));
         
-        if (!userData || !userData.activeUserId) {
+        if (!user || !user.activeUserId && user.role && user.role != "CLIENT") {
             throw new Error('User data or activeUserId not found');
         }
 
-        const staffId = userData.activeUserId;
+        const staffId = user.activeUserId;
         
         // Fetch activations
         const response = await activation.getAllActivations(userRole, id);
@@ -185,6 +185,8 @@ const onInput = () => {
         showLoading.value = false;
     }
 };
+
+
 
 
  
@@ -405,7 +407,7 @@ const search = (event) => {
 								<tbody >
 									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
-										<td>{{ activation.campaign.name }}</td>
+										<td>{{ campaignName }}</td>
 										<td>{{ activation.region.name }}</td> 
 										<td>R {{activation.budget}}</td>
 										<td>{{activation.startDate}}</td>
