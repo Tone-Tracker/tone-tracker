@@ -20,6 +20,10 @@
                   </div>
                   <!-- //////GOOGLE INPUT API/////// -->
 
+                   
+                  
+
+
                   <GoogleMap
                     api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
                     style="width: 100%; height: 800px"
@@ -68,6 +72,7 @@ import Layout from '../shared/Layout.vue';
 import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
 import { useActivation } from '@/stores/activation';
 import { useAuth } from '@/stores/auth';
+
 
 const center = { lat: -25.6793642, lng: 28.1941785 };
 const infowindow = ref(false); // Will be open when mounted
