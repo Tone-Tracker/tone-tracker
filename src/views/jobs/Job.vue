@@ -42,13 +42,13 @@ const getregionsByStaffId = () => {
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb :title="user.role == 'TTG_REGIONAL_MANAGER' ? 'WELCOME' : 'JOBS'" icon="" />
-                <p class="fs-3 text-white">Active Campaigns</p>
+                <p class="fs-3 text-white">{{ user.role == 'TTG_REGIONAL_MANAGER' ? 'All Regions' : 'Active Campaigns'  }}</p>
                 <div class="card">
                     <div class="card-body">
                         <!-- Code here -->
                         <div class="">
                             <div class="row g-4">
-                                <router-link :to="`/admin-activations?campaign=${region.id}`" v-if="regions?.length > 0" v-for="region in regions" :key="region.id" class="col-md-4 col-lg-3">
+                                <router-link :to="`/admin-activations?region=${region.id}`" v-if="regions?.length > 0" v-for="region in regions" :key="region.id" class="col-md-4 col-lg-3">
                                     <div class="job-item">
                                         <div class="image-container">
                                             <img src="../../assets/images/Component 102 – 1.png" :alt="region.name">
