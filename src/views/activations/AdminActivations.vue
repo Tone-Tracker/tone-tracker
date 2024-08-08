@@ -148,6 +148,32 @@ const onInput = () => {
 	}).finally(function () {
 	})
   }
+
+  const getActivationsByActivationManager = async () => {
+    try {
+        showLoading.value = true;
+        
+        // Get user data from localStorage
+        const userData = JSON.parse(localStorage.getItem('user'));
+        
+        if (!userData || !userData.activeUserId) {
+            throw new Error('User data or activeUserId not found');
+        }
+
+        const staffId = userData.activeUserId;
+        
+        // Fetch activations
+        const response = await activation.getActivationsByActivationManager(staffId);
+		console.log("test", response);
+        activations.value = response.data.content;
+    } catch (error) {
+        console.error('Error fetching activations:', error);
+        // Uncomment the next line if you have a toaster notification system
+        toaster.error("Error fetching activations");
+    } finally {
+        showLoading.value = false;
+    }
+};
   const getActivationsByCampaignId = async () => {
 	showLoading.value = true;
 	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
