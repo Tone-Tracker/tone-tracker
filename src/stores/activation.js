@@ -29,9 +29,11 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.get(`/api/activations/staff/${staffId}`);
     }
 
-    const uploadImages = (id,formData, config) => {
+    const uploadImages = (formData, config) => {
+
+      console.log(formData);
       // change this endpoint @Busani
-      return axiosInstance.post(`/api/activations/${id}/upload`,formData);
+      return axiosInstance.post(`/api/images`,formData, config);
     }
   
     return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages }
