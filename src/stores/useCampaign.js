@@ -26,6 +26,8 @@ export const useCampaignStore = defineStore('useCampaign', () => {
     const  getCampaignsByClientId = (id) => {
       return axiosInstance.get(`/api/campaigns/client/${id}`);
     }
+
+    
     
   
     return { getCampaignName,submitCampaign,getCampaigns,updateCampaign,deleteCampaign,getCampaignsByClientId }

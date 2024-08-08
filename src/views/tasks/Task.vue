@@ -3,7 +3,7 @@ import moment from 'moment';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
-import AutoComplete from 'primevue/autocomplete';
+import { usePlacesAutocomplete } from 'vue-use-places-autocomplete'
 import InputText from 'primevue/inputtext';
 import ConfirmPopup from 'primevue/confirmpopup';
 import InputNumber from 'primevue/inputnumber';
@@ -17,6 +17,11 @@ import { useTask } from '@/stores/task';
 import { onMounted, ref, reactive } from 'vue';
 import useToaster from '@/composables/useToaster';
 import { useConfirm } from "primevue/useconfirm";
+import GoogleAutocomplete from '@/components/GoogleAutocomplete.vue';
+import Drawer from 'primevue/drawer';
+import AutoComplete from 'primevue/autocomplete';
+import { watch } from 'vue';
+import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vue-use-places-autocomplete'
 
 
 const route = useRoute();
@@ -26,6 +31,7 @@ const activation = ref(route.query.activation);
 const visible = ref(false);
 const tasks = ref([]);
 const position = ref('top');
+const showLoading = ref(false);
 
 const toaster = useToaster();
 const taskStore = useTask();
@@ -35,6 +41,28 @@ onMounted(() => {
     getTasksByActivationId();
 })
 
+const query = ref('');
+const formattedSuggestions = ref([]);
+
+const { suggestions,loading,sessionToken,refreshSessionToken } = usePlacesAutocomplete(query, {
+  debounce: 500,
+  minLengthAutocomplete: 3,
+  refreshSessionToken: true
+});
+
+    const filteredCities = ref([]);
+
+    const filterCities = (event) => {
+      const searchQuery = event.query.toLowerCase();
+      filteredCities.value = formattedSuggestions.value.filter(city => city.name.toLowerCase().includes(searchQuery));
+    };
+
+watch(suggestions, (newSuggestions) => {
+      formattedSuggestions.value = newSuggestions.map(suggestion => ({
+        name: suggestion.description,
+        place_id: suggestion.place_id
+      }));
+    });
 
     const statuses = ref([
         { name: 'Finished', code: 'FINISHED' },
@@ -43,6 +71,23 @@ onMounted(() => {
         { name: 'Delayed', code: 'DELAYED' },
         { name: 'At Risk', code: 'ATRISK' }
     ]);
+
+    const onSelectLocation = (event) => {
+        console.log('event',event.value.name);
+        getGeoCode(event.value);
+       
+    };
+
+    const getGeoCode = async (event) => {
+        const results =  await geocodeByAddress(event.name);
+        const byPlacesId = await geocodeByPlaceId(event.place_id)
+        const { lat, lng } =  getLatLng(results);
+        console.log('results',results);
+        form.address = results[0].formatted_address;
+        form.longitude = results[0].geometry.viewport.Hh.lo;
+        form.latitude = results[0].geometry.viewport.Yh.hi
+
+    }
 
     const types = ref([
         { name: 'Third Party', code: 'THIRDPARTY' },
@@ -59,6 +104,9 @@ const form = reactive({
     completion: null,
     jobNumber: null,
     name: null,
+    address: null,
+    longitude: null,
+    latitude: null,
     activation: activation.value
 });
 
@@ -77,6 +125,7 @@ const v$ = useVuelidate(rules, form);
 const onSubmit = async () => {
     const isFormValid = await v$.value.$validate();
     if (!isFormValid) {return;}
+    showLoading.value = true;
     if(isEdit.value){
         taskStore.update(taskId.value,form).then(function (response) {
             toaster.success("Task updated successfully");
@@ -90,11 +139,19 @@ const onSubmit = async () => {
     else {
         taskStore.submit(form).then(function (response) {
         toaster.success("Task created successfully");
+        
+        form.status=null,
+        form.address = null,
+        form.type = null
+        v$.value.$reset();
+        v$.value.$errors = [];
         visible.value = false;
         getTasksByActivationId();
+        showLoading.value = false;
     }).catch(function (error) {
         toaster.error("Error creating task");
         console.log(error);
+        showLoading.value = false;
     });
     }
     
@@ -130,6 +187,10 @@ const getTasksByActivationId = async () => {
 
 const taskId = ref(null);
 const isEdit = ref(false);
+
+
+
+
 const openModal = (pos,task) => {
     if(task) {//edit
     isEdit.value = true;
@@ -137,7 +198,7 @@ const openModal = (pos,task) => {
     // form.activation = task.activation;
     status.value = statuses.value.find(stat => stat.code === task.status);
     form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
-
+    form.address = task.address;
     type.value = types.value.find(stat => stat.code === task.type);
     form.type = form.type = types.value.find(stat => stat.code === task.type).code;
     Object.assign(form, {
@@ -202,6 +263,11 @@ const deleteTask = (task) => {
   });
 }
 
+const handlePlaceChanged = (place) => {
+  console.log('Selected place:', place);
+  // You can access more details about the place here
+};
+
 
 const deleteRecord = (event, task) => {
   confirm.require({
@@ -226,13 +292,16 @@ const deleteRecord = (event, task) => {
   });
 };
 
+
+
+
 </script>
 <template>
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb title="Tasks" icon="bx bx-task" />
-                <h4 class="mx-2">{{activationName}}</h4>
+                <h4 class="mx-2">Activation: {{ activationName }}</h4>
                 <div class="card">
                     <div class="card-body">
                             <div class="table-container-colour pt-2 p-5">
@@ -292,7 +361,7 @@ const deleteRecord = (event, task) => {
                 </div>
             </div>
             <Dialog v-model:visible="visible" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
-
+                
                 <form @submit.prevent="onSubmit" class="row g-3">
                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">
@@ -369,10 +438,36 @@ const deleteRecord = (event, task) => {
                             </div>
                     </div>                        
                     </div>
+                    
+
+                    <div class="col-md-12 ml-4">
+                        <div class="row ">
+                            <!-- <label for="input1" class="form-label">Location</label> -->
+                            <AutoComplete v-model="query" :suggestions="formattedSuggestions" 
+                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" id="autocomplete-input" class="row mx-1"/>
+                               <!-- <div class="input-errors" v-for="error of v$.completion.$errors" :key="error.$uid">
+                               <div class="text-danger">Completion is required</div>
+                            </div> -->
+                    </div>                        
+                    </div>
 
                     <div class="modal-footer">
                         <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-                        <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
+                        <button type="submit" 
+                        :disabled="showLoading"
+                        class="btn maz-gradient-btn w-100"
+                        
+                        >
+                            <div
+                            v-if="showLoading"
+                            class="spinner-border text-white"
+                            role="status"
+                          >
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
+                            
+                            {{ isEdit ? 'Update' : 'Submit' }}
+                        </button>
                     </div>
                     
                 </form>

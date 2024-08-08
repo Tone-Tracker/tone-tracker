@@ -8,6 +8,8 @@ import { useMonitorSize } from '@/composables/useMonitorSize';
 import { useAuth } from '@/stores/auth';
 import useToaster from '@/composables/useToaster';
 import { useStorage } from '@vueuse/core'
+import client from '@/router/client';
+import { useClientStore } from '@/stores/useClient';
 
 
 
@@ -37,7 +39,15 @@ const loading = ref(false);
 		password: { required },
         email: { required, email } 
     }
-	const v$ = useVuelidate(rules, form)
+	const v$ = useVuelidate(rules, form);
+
+	const client = ref(null)
+const clientStore = useClientStore();
+const  getClientId = (userId)=>{
+	clientStore.getClientByUserId(userId).then((response) => {
+	useStorage('client', response.data);	
+	})
+}
 
 	const onSubmit = async () => {
 		// return router.push('/dashboard')
@@ -58,6 +68,9 @@ const loading = ref(false);
 							router.push('/clients');
 						}else if(response.data.user.role == 'TTG_ACTIVATION_MANAGER' || response.data.user.role == 'TTG_REGIONAL_MANAGER'){
 							router.push('/activations-dashboard');						
+						}else if(response.data.user.role == 'CLIENT' || response.data.user.role == 'CLIENT'){
+							getClientId('1');
+						 router.push('/client-campaigns');						
 						}else{
 							router.push('dashboard');
 						}
@@ -79,7 +92,6 @@ const loading = ref(false);
 }
 
 }
-
 
     
 

@@ -4,7 +4,7 @@ import BreadCrumb from '../../components/BreadCrumb.vue';
 import { onMounted, ref } from 'vue';
 import { usePrimeVue } from 'primevue/config';
 import { useClientStore } from '@/stores/useClient';
-import { useActivation } from '@/stores/activation';
+import { usePromoter } from '@/stores/promoter';
 import { useRoute } from 'vue-router';
 import Image from 'primevue/image';
 import FileUpload from 'primevue/fileupload';
@@ -16,9 +16,9 @@ import { useAuth } from '@/stores/auth';
 
 const $primevue = usePrimeVue();
 const route = useRoute();
-const activationStore = useActivation();
-const activationId = ref(route.query.activation);
-const activationData = ref({});
+const promoterStore = usePromoter();
+const promoterId = ref(route.query.promoter);
+const promoterData = ref({});
 const authStore = useAuth();
 const user = JSON.parse(authStore.user);
 
@@ -30,17 +30,12 @@ onMounted(() => {
     getActivationById();
 });
 
-const getActivationById = async () => {
-    activationStore.getActivationById(activationId.value).then(function (response) {
+const getPromoterById = async () => {
+    promoterStore.getPromoterById(promoterId.value).then(function (response) {
         console.log(response.data);
-        activationData.value = response.data;
-        
+        promoterData.value = response.data;
     })
 }
-
-
-//get images from db
-
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
     removeFileCallback(index);
     totalSize.value -= parseInt(formatSize(file.size));
@@ -61,29 +56,21 @@ const uploadEvent = (callback) => {
 };
 
 const onSubmit = () => {
-    console.log(files.value);
-
-    const imageDTO = {
-  entity: "activations",
-  entityId: activationId.value,
-
-};
-
-console.log(imageDTO);
+  
     const formData = new FormData();
-    
 
     for (let i = 0; i < files.value.length; i++) {
         formData.append('imageFiles', files.value[i]);
     }
 
-    formData.append('entity', "activations");
+    formData.append('entity', "promoters");
     formData.append('entityId', activationId.value);
     formData.append('uploaderId', user.activeUserId);
+
     const config = {
         useMultipartFormData: true // Add this flag to the request config
          };
-    activationStore.uploadImages(formData, config).then(function (response) {
+    promoterStore.uploadImages(formData, config).then(function (response) {
         console.log(response.data);
     })
 };
@@ -118,7 +105,7 @@ const formatSize = (bytes) => {
           <div class="col-img ">
             <div class="gallery">
               <router-link to="/profile">
-                <img src="../../assets/images/gallery/1.jpg" alt="Cinque Terre" class="img-fluid">
+                <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid">
               </router-link>
               <!-- <div class="checkbox">
                 <input type="checkbox" id="select">
@@ -130,7 +117,7 @@ const formatSize = (bytes) => {
             </div>
           </div>
         </div>
-<img src="https://ttg-dev-bucket.s3.amazonaws.com/images/activations/7/images+(3).jpeg" alt="">
+
 
         <div class="card">
             

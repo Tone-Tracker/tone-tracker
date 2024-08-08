@@ -4,6 +4,7 @@ import TTG_SUPER_ADMIN from './navigations/TTG_SUPER_ADMIN.vue';
 import TTG_REGIONAL_MANAGER from './navigations/TTG_REGIONAL_MANAGER.vue';
 import TTG_HEAD_ADMIN from './navigations/TTG_HEAD_ADMIN.vue';
 import TTG_ACTIVATION_MANAGER from './navigations/TTG_ACTIVATION_MANAGER.vue';
+import TTG_CLIENT from './navigations/TTG_CLIENT.vue';
 
 import { useAuth } from '@/stores/auth';
 
@@ -43,7 +44,8 @@ const getUserRole = (role) => {
             <div class="content">
                 <nav class="sidebar d-flex">
                      <!-- <AdminNav/> -->
-                     <CLIENT v-if="getUserRole('TTG_CLIENT')" :user="user" style="z-index: 9999"/>
+                     <!-- <CLIENT v-if="getUserRole('CLIENT')" :user="user" style="z-index: 9999"/> -->
+                     <TTG_CLIENT v-if="getUserRole('CLIENT')" :user="user"/> 
                     <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
                      <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/> 
                      <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/> 

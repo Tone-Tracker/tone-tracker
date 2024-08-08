@@ -8,17 +8,11 @@
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
                 <div class="chart-container-1" >
-                  <!-- //////GOOGLE INPUT API/////// -->
-                  <div>
-                    <h1>Address Autocomplete</h1>
-                    <GoogleAutocomplete
-                      v-model="address"
-                      placeholder="Enter your address"
-                      @place-changed="handlePlaceChanged"
-                    />
-                    <p>Selected address: {{ address }}</p>
-                  </div>
-                  <!-- //////GOOGLE INPUT API/////// -->
+
+                  <!-- //////////LOCATION BUTTON///////////// -->
+                  <LocationButton />
+                  <!-- //////////LOCATION BUTTON///////////// -->
+
 
                   <GoogleMap
                     api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
@@ -68,6 +62,9 @@ import Layout from '../shared/Layout.vue';
 import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
 import { useActivation } from '@/stores/activation';
 import { useAuth } from '@/stores/auth';
+import LocationButton from '../../components/LocationButton.vue';
+
+
 
 const center = { lat: -25.6793642, lng: 28.1941785 };
 const infowindow = ref(false); // Will be open when mounted

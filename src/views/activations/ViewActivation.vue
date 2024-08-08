@@ -5,9 +5,10 @@ import { useRoute } from 'vue-router';
 import Layout from '../shared/Layout.vue';
 import TaskTable from '@/components/TaskTable.vue';
 import { useTask } from '@/stores/task';
+import Image from 'primevue/image';
 
 
-
+const envPath = import.meta.env.VITE_S3_URL;
 const taskStore = useTask();
 const route = useRoute();
 const activationStore = useActivation();
@@ -41,11 +42,20 @@ onMounted(() => {
     getTasks();
     
 });
-
+const activationImages = ref([]);
 const getActivationById = async () => {
     activationStore.getActivationById(activationId.value).then(function (response) {
         activation.value = response.data;
+		getActivationImages(response.data.id);
     })
+}
+
+
+const getActivationImages = async (id) => {
+    activationStore.getActivationImages(id).then(function (response) {
+		console.log('activationImages',response)
+        activationImages.value = response.data.content;
+    })   
 }
 
 const getTasks = async () => {
@@ -64,8 +74,6 @@ const getTasks = async () => {
     <Layout>
         <div class="page-wrapper">
 			<div class="page-content">
-				<!--breadcrumb-->
-				
 				<!--end breadcrumb-->
 				<div class="container">
 					<div class="main-body">
@@ -106,6 +114,7 @@ const getTasks = async () => {
 									</div>
 								</div>
 							</div>
+							
 							<div class="col-lg-8">
 								<div class="card">
 									<div class="card-body">
@@ -188,9 +197,140 @@ const getTasks = async () => {
 								</div>
 							</div>
 						</div>
+
+						<div class="row mt-2 row-cols-xl-9 gap-4">
+							<div class="">
+							  <h4 class="mb-2 ml-2">Activation Images</h4>
+							</div>
+							<div v-for="activationImage in activationImages" :key="activationImage.id" class="col-img ">
+							  <div  class="gallery">	
+								  <div class="card flex justify-center">
+									<Image alt="Image" preview>
+										<template #previewicon>
+										  <i class='bx bx-search-alt-2' ></i>
+										</template>
+										<template #image>
+											<img :src="`${envPath}${activationImage.path}`" alt="image"
+											
+											class="min-height-image" />
+										</template>
+										<template #preview="slotProps">
+											<img :src="`${envPath}${activationImage.path}`" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+										</template>
+									</Image>
+									</div>
+							   
+								<!-- <div class="checkbox">
+								  <input type="checkbox" id="select">
+								  <span>&#x2713;</span>
+								</div> -->
+							  </div>
+							</div>
+					  
+						   
+						  </div>
 					</div>
 				</div>
 			</div>
 		</div>
     </Layout>
 </template>
+
+
+<style scoped>
+div.gallery {
+	margin: 5px;
+	border: 1px solid #12181A;
+	float: left;
+	width: 180px;
+  }
+  .min-height-image{
+	min-height: 130px;
+  }
+  .gap-4 {
+    gap: 0px !important; 
+}
+  div.gallery:hover {
+	border: 1px solid #777;
+  }
+  
+  div.gallery img {
+	width: 100%;
+	height: auto;
+  }
+  
+  .col-img {
+	position: relative;
+	display: inline-block;
+	width: 200px;
+	
+  }
+  
+  .gallery {
+	position: relative;
+  }
+  
+  .gallery img {
+	width: 100%;
+	height: auto;
+  }
+  
+  .desc {
+	text-align: center;
+	padding: 10px;
+	font-size: 18px;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+  }
+  
+  .checkbox {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 24px;
+	height: 24px;
+	background-color: white;
+	border: 2px solid #000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+  
+  .checkbox input[type="checkbox"] {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+  }
+  
+  .checkbox input[type="checkbox"]:checked+span {
+	background-color: white;
+	font-weight: 1000;
+	color: black;
+	background-color: transparent;
+  }
+  
+  div.desc {
+	padding: 13px;
+	text-align: center;
+  }
+  
+  .col-img {
+	flex: 0 0 0%;
+  }
+  
+  .mt-6 {
+	margin-top: 2rem !important;
+  }
+  
+  .asc {
+	text-align: center;
+	background: #12181A;
+	width: 180px;
+	line-height: 1;
+	/* font-size: 1.2rem; */
+	font-weight: 600;
+  }
+</style>
