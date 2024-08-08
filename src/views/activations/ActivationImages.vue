@@ -30,8 +30,13 @@ const getActivationById = async () => {
     activationStore.getActivationById(activationId.value).then(function (response) {
         console.log(response.data);
         activationData.value = response.data;
+        
     })
 }
+
+
+//get images from db
+
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
     removeFileCallback(index);
     totalSize.value -= parseInt(formatSize(file.size));
@@ -95,7 +100,7 @@ const formatSize = (bytes) => {
           <div class="col-img ">
             <div class="gallery">
               <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid">
+                <img src="../../assets/images/gallery/1.jpg" alt="Cinque Terre" class="img-fluid">
               </router-link>
               <!-- <div class="checkbox">
                 <input type="checkbox" id="select">

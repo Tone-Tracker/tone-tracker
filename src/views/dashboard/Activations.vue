@@ -8,17 +8,6 @@
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
                 <div class="chart-container-1" >
-                  <!-- //////GOOGLE INPUT API/////// -->
-                  <div>
-                    <h1>Address Autocomplete</h1>
-                    <GoogleAutocomplete
-                      v-model="address"
-                      placeholder="Enter your address"
-                      @place-changed="handlePlaceChanged"
-                    />
-                    <p>Selected address: {{ address }}</p>
-                  </div>
-                  <!-- //////GOOGLE INPUT API/////// -->
 
                   <GoogleMap
                     api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
