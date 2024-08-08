@@ -20,8 +20,9 @@
                   </div>
                   <!-- //////GOOGLE INPUT API/////// -->
 
-                   
-                  
+                   <!-- //////////LOCATION BUTTON///////////// -->
+                   <LocationButton />
+                   <!-- //////////LOCATION BUTTON///////////// -->
 
 
                   <GoogleMap
