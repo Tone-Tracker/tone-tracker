@@ -20,9 +20,9 @@
                   </div>
                   <!-- //////GOOGLE INPUT API/////// -->
 
-                   <!-- //////////LOCATION BUTTON///////////// -->
-                   <LocationButton />
-                   <!-- //////////LOCATION BUTTON///////////// -->
+                  <!-- //////////LOCATION BUTTON///////////// -->
+                  <LocationButton />
+                  <!-- //////////LOCATION BUTTON///////////// -->
 
 
                   <GoogleMap
@@ -73,6 +73,8 @@ import Layout from '../shared/Layout.vue';
 import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
 import { useActivation } from '@/stores/activation';
 import { useAuth } from '@/stores/auth';
+import LocationButton from '../../components/LocationButton.vue';
+
 
 
 const center = { lat: -25.6793642, lng: 28.1941785 };
