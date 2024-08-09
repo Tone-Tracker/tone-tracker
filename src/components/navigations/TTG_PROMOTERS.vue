@@ -1,6 +1,7 @@
 <script setup>
 import router from '@/router';
 import { useOnline } from '@vueuse/core'
+import LocationButton from '../LocationButton.vue';
 
 const online = useOnline()
 
@@ -54,7 +55,7 @@ function goToProfile(id) {
                             <li><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
                          
                         </ul>
-
+                        <LocationButton />
                     </div>
                 </div>
             </div>
