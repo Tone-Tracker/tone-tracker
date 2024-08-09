@@ -91,8 +91,6 @@ const getAllActivations = () => {
   if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){  
     activationStore.getAllActivationsAdmins().then(function (response) {
       activations.value = response.data;
-
-
       //map activations
       locations = activations.value.map(activation => ({
           lat: activation.centralPoint.latitude,
