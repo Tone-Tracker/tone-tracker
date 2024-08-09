@@ -46,6 +46,8 @@ const statuses = ref([
 const form = reactive({
     status: '',
     type: '',
+    address: '',
+    startDate: null,
 	plannedEndDate: null,
 	timeRecord: null,
     completion: null,
@@ -119,46 +121,50 @@ const redirectToProfile = (user) => {
                         <div class="row g-2">
                             <div class="col-md-4">
                                 <label for="input1" class="form-label">Task Name</label>
-                                <input v-model="taskName" type="text" readonly class="form-control" id="input1" placeholder="First Name">
+                                <input v-model="taskName" type="text" readonly class="form-control" id="input1" >
                             </div>
                             <div class="col-md-4">
                                 <label for="input1" class="form-label">Activation Name</label>
-                                <input v-model="taskName" type="text" readonly class="form-control" id="input1" placeholder="First Name">
+                                <input v-model="taskName" type="text" readonly class="form-control" id="input1" >
                             </div>
                             <div class="col-md-4">
                                 <label for="input2" class="form-label">Job Number</label>
-                                <input v-model="form.jobNumber" type="text" readonly class="form-control" id="input2" placeholder="Last Name">
+                                <input v-model="form.jobNumber" type="text" readonly class="form-control" id="input2" >
                             </div>
                             <div class="col-md-4">
                                 <label for="input3" class="form-label">Risk</label>
-                                <input v-model="form.risk" type="text" readonly class="form-control" id="input3" placeholder="Phone">
+                                <input v-model="form.risk" type="text" readonly class="form-control" id="input3">
                             </div>
 
                             <div class="col-md-4">
                                 <label for="input1" class="form-label">Type</label>
-                                <input v-model="form.type" type="text" readonly class="form-control" id="input1" placeholder="First Name">
+                                <input v-model="form.type" type="text" readonly class="form-control" id="input1" >
+                            </div>
+                            <div class="col-md-4">
+                                <label for="input2" class="form-label">Start Date</label>
+                                <input v-model="form.startDate" type="text" readonly class="form-control" id="input2" >
                             </div>
                             <div class="col-md-4">
                                 <label for="input2" class="form-label">Planned End Date</label>
-                                <input v-model="form.plannedEndDate" type="text" readonly class="form-control" id="input2" placeholder="Last Name">
+                                <input v-model="form.plannedEndDate" type="text" readonly class="form-control" id="input2" >
                             </div>
                             <div class="col-md-4">
                                 <label for="input3" class="form-label">Time Record</label>
-                                <input v-model="form.timeRecord" type="text" readonly class="form-control" id="input3" placeholder="Phone">
+                                <input v-model="form.timeRecord" type="text" readonly class="form-control" id="input3">
                             </div>
 
 
                             <div class="col-md-4">
                                 <label for="input1" class="form-label">Completion</label>
-                                <input v-model="form.completion" type="text" readonly class="form-control" id="input1" placeholder="First Name">
+                                <input v-model="form.completion" type="text" readonly class="form-control" id="input1" >
                             </div>
                             <div class="col-md-4">
                                 <label for="input2" class="form-label">Location</label>
-                                <input v-model="form.location" type="text" readonly class="form-control" id="input2" placeholder="Last Name">
+                                <input v-model="form.address" type="text" readonly class="form-control" id="input2" >
                             </div>
                             <!-- <div class="col-md-4">
                                 <label for="input3" class="form-label">Time Record</label>
-                                <input v-model="form.timeRecord" type="text" readonly class="form-control" id="input3" placeholder="Phone">
+                                <input v-model="form.timeRecord" type="text" readonly class="form-control" id="input3">
                             </div> -->
 
 

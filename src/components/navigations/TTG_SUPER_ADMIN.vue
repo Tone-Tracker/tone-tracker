@@ -1,10 +1,13 @@
 <script setup>
 import { useOnline } from '@vueuse/core'
 import { ref } from 'vue';
-// ... other imports ...
+import { useRoute } from 'vue-router';
 
 const isExpanded = ref(false);
 const activeItem = ref(''); // Add this line
+
+const currentRoute = useRoute();
+console.log(currentRoute.path);
 
 // ... existing methods ...
 
@@ -52,7 +55,7 @@ const getRoleName = () => {
                         <div class="accordion-body">
                             <ul class="nav-list">
                                 <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/clients"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
+                                <li :class="{ 'active': currentRoute.path == '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
                                 <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
                                 <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/regions"><span class="icon"><i class='bx bx-map'></i></span> Regions</router-link></li>
                                 <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
@@ -346,5 +349,11 @@ export default {
 .side-nav__item:hover {
   background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
+
+.active{
+    background-color: #333333 !important; /* Adjust this color to match your hover color */
+}
+  
+
 
 </style>
