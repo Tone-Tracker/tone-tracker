@@ -1,5 +1,6 @@
 import TalentTask from '@/views/talent/TalentTask.vue';
 import Promoter from '../views/promoters/Promoter.vue';
+import Profile from '@/views/dashboard/Profile.vue';
 export default [
     {
         path: '/promoters',
@@ -17,9 +18,9 @@ export default [
         component: TalentTask
       },
       {
-        path: '/talent/profile',
-        name: 'talent/profile',
-        component: TalentTask
+        path: '/profile/:id',
+        name: 'profile',
+        component: Profile
       },
       {
         path: '/talent/check',

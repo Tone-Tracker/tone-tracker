@@ -11,6 +11,8 @@ const props = defineProps({
 const getRoleName = () => {
     return props.user.role == 'TTG_TALENT' ? 'Super User' : 'Admin'
 }
+
+
 </script>
 <template>
     <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -42,7 +44,7 @@ const getRoleName = () => {
                         <ul class="nav-list">
                             <li><router-link to="/talent"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
                             <li><router-link to="/talent/images"><span class="icon"><i class='bx bx-file'></i></span> Upload Images</router-link></li>
-                            <li><router-link to="/talent/profile"><span class="icon"><i class='bx bx-file'></i></span> Profile</router-link></li>
+                            <li><router-link to="/profile"><span class="icon"><i class='bx bx-file'></i></span> Profile</router-link></li>
                             <li><router-link to="/talent/check-list"><span class="icon"><i class='bx bx-map'></i></span> Check List</router-link></li>
                             <li><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
                          
