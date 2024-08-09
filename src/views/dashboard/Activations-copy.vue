@@ -9,7 +9,23 @@
 
                             <div class="card-body">
                                 <div class="chart-container-1">
-                                    <div id="map" style="height: 100vh;"></div>
+                                    <div id="map" style="height: 100vh;">
+                                      <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
+                                        <InfoWindow>
+                                          <div class="popup">
+                                            <div class="inner-container">
+                                              <h2>Team: 01</h2>
+                                              <p>CPC: R 2.00</p>
+                                              <p>Start / End date: 22 Jan - 28 Jun</p>
+                                              <p>Current Cost: R 25,000.00</p>
+                                              <p>Leads generated: 100,000</p>
+                                              <h3>{{ location.title }}</h3>
+                                              <p>247 New Brunswick Rd Aph 282</p>
+                                            </div>
+                                          </div>
+                                        </InfoWindow>
+                                      </Marker>
+                                    </div>
                                 </div>
                             </div>
 
@@ -154,22 +170,75 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-.gm-style-iw-d{
-    color:red !important;
-}
-.maz-height {
-    font-size: 3rem;
+<style>
+/* Global styles to target Google Maps InfoWindow */
+.gm-style .gm-style-iw-c {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-/* set the default transition time */
-:root {
-    --delay-time: .5s;
-  }
-  
-  #map {
-    height: 100%;
-  }
+.gm-style .gm-style-iw-d {
+  overflow: visible !important;
+  background-color: transparent !important;
+}
 
-  
+.gm-style-iw-tc::after {
+  display: none !important;
+}
+
+/* Remove the default close button */
+.gm-ui-hover-effect {
+  display: none !important;
+}
 </style>
+
+
+<style scoped>
+.popup {
+  width: 300px;
+  background: linear-gradient(135deg, #00a2ff, #7000ff);
+  color: white;
+  font-family: Arial, sans-serif;
+  clip-path: 
+    polygon(
+      20px 0%, 
+      calc(100% - 20px) 0%, 
+      100% 20px, 
+      100% calc(100% - 40px), 
+      calc(100% - 20px) calc(100% - 20px),
+      calc(50% + 10px) calc(100% - 20px),
+      50% 100%,
+      calc(50% - 10px) calc(100% - 20px),
+      20px calc(100% - 20px),
+      0% calc(100% - 40px),
+      0% 20px
+    );
+  padding: 20px;
+  padding-bottom: 40px;
+  border-radius: 20px;
+}
+
+.inner-container {
+  background-color: black;
+  padding: 20px 15px 15px 15px;
+  border-radius: 10px;
+}
+
+h2 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+h3 {
+  margin: 15px 0 5px 0;
+  font-size: 16px;
+}
+</style>
+
+<style scoped>
