@@ -322,7 +322,7 @@ const deleteRecord = (event, task) => {
                                                     <i class='bx bxs-edit'></i>
                                                   </a>
 
-                                                  <router-link :to="`/tasks/${task.id}`" class="ms-1"click="openModal('top',task)">
+                                                  <router-link :to="`/tasks/${task.id}?name=${task.name}`" class="ms-1"click="openModal('top',task)">
                                                     <i class='text-success bx bx-bullseye'></i>
                                                   </router-link>
                                                   

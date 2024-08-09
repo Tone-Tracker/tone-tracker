@@ -18,6 +18,10 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.delete(`/api/tasks/${id}`);
     }
 
+    const getTask = (id) => {
+      return axiosInstance.get(`/api/tasks/${id}`);
+    }
+
     const getTasksByActivationId = (id) => {
       return axiosInstance.get(`/api/tasks/activation/all/${id}`);
     }
@@ -25,5 +29,5 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.get(`/api/tasks/promoter/all/${id}`);
     }
   
-    return { submit,getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId }
+    return { submit,getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask }
   })
