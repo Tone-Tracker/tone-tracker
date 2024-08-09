@@ -24,6 +24,13 @@ export const usePromoter = defineStore('promoter', () => {
     const uploadPromoterImages = (formData, config) => {
       return axiosInstance.post(`/api/images`, formData, config);
     }
-      
-    return { submitPromoter, getPromoters, updatePromoter, deletePromoter, uploadPromoterImages }
+    const  getTalentByTalentId = (id) => {
+      return axiosInstance.get(`/api/promoters/${id}`);
+    }    
+    
+    const  getTalentByUserId = (id) => {
+      return axiosInstance.get(`/api/promoters/${id}`);
+    }
+   
+    return { submitPromoter, getPromoters, updatePromoter, deletePromoter, uploadPromoterImages ,getTalentByTalentId,getTalentByUserId}
   })

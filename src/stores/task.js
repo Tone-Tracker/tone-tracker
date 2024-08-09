@@ -21,7 +21,9 @@ export const useTask = defineStore('task', () => {
     const getTasksByActivationId = (id) => {
       return axiosInstance.get(`/api/tasks/activation/all/${id}`);
     }
-
+    const getTasksByPromoterId = (id) => {
+      return axiosInstance.get(`/api/tasks/promoter/all/${id}`);
+    }
   
-    return { submit,getTasks,update,deleteTask,getTasksByActivationId }
+    return { submit,getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId }
   })
