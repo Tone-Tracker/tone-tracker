@@ -161,16 +161,6 @@ const deleteRecord = (event, region) => {
     });
 };
 
-const getRegionManagerName = (region) => {
-    console.log('region', region)
-    console.log(staffMembers.value)
-    staffMembers.value.forEach(staff => {
-        if (staff.user === region.staff) {
-            
-            return staff.user.firstName + ' ' + staff.user.lastName
-        }
-    })
-}
 
 const vFocus = {
     mounted: (el) => el.focus()
@@ -216,7 +206,9 @@ const openModal = (pos,region) => {
                                                         <td v-else>
                                                             <input v-focus type="text" v-model="region.name" @blur="update(region)" @keyup.enter="update(region)" class="no-border-input"/>
                                                         </td>
-                                                        <td>{{ getRegionManagerName(region) }}</td>
+                                                        <td>
+                                                            {{ region.firstName ? region.firstName + ' ' + region.lastName : '' }}
+                                                        </td>
                                                         <td>
                                                             <div class="d-flex order-actions">
                                                                 <a v-if="!region.isEditing" @click="editClient(region)" href="javascript:;">
