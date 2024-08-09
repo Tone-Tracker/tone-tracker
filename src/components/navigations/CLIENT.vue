@@ -294,4 +294,8 @@ svg {
 .background-navlist {
   background-color: black !important;
 }
+
+html.dark-theme .sidebar-wrapper {
+  background: #060D0E !important;
+}
 </style>
