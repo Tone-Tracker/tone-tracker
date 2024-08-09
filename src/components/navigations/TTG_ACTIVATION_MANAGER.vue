@@ -1,16 +1,20 @@
 <script setup>
 
 import { useOnline } from '@vueuse/core'
-////////////////////
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
+//////////active///////////
 const isExpanded = ref(false);
 const activeItem = ref('');
+
+const currentRoute = useRoute();
+console.log(currentRoute.path);
 
 const setActiveItem = (item) => {
   activeItem.value = item;
 };
-////////////////////
+///////////active//////////
 
 const online = useOnline()
 
@@ -51,17 +55,17 @@ const getRoleName = () => {
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul class="nav-list">
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/activations"><i class='bx bx-chat'></i> All</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/admin-activations"><i class='bx bx-calendar-event'></i> Activations</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/promoters"><i class='bx bx-group'></i> Promoters</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/briefs"><i class='bx bx-file'></i> Briefs</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/admin-warehouse"><i class='bx bx-store'></i> Warehouse & Units</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/teaching"><i class='bx bx-book-open'></i> Learning & Teaching</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/jobs"><i class='bx bx-briefcase'></i> Jobs</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/upload"><i class='bx bx-upload'></i> Upload contract</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><a href="#"><i class='bx bx-envelope'></i> Message center</a></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><a href="#"><i class='bx bx-send'></i> Sent</a></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><a href="#"><i class='bx bx-envelope-open'></i> Unread</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/activations' }"><router-link to="/activations"><i class='bx bx-chat'></i> All</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/admin-activations' }"><router-link to="/admin-activations"><i class='bx bx-calendar-event'></i> Activations</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/promoters' }"><router-link to="/promoters"><i class='bx bx-group'></i> Promoters</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><i class='bx bx-file'></i> Briefs</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/admin-warehouse' }"><router-link to="/admin-warehouse"><i class='bx bx-store'></i> Warehouse & Units</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open'></i> Learning & Teaching</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/jobs' }"><router-link to="/jobs"><i class='bx bx-briefcase'></i> Jobs</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/upload' }"><router-link to="/upload"><i class='bx bx-upload'></i> Upload contract</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/message-center' }"><a href="#"><i class='bx bx-envelope'></i> Message center</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><i class='bx bx-send'></i> Sent</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><i class='bx bx-envelope-open'></i> Unread</a></li>
                             </ul>
 
                         </div>
@@ -329,5 +333,9 @@ export default {
 .side-nav__item.active,
 .side-nav__item:hover {
   background-color: #333333 !important; /* Adjust this color to match your hover color */
+}
+
+.active{
+    background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
 </style>

@@ -2,16 +2,20 @@
 import router from '@/router';
 import { useOnline } from '@vueuse/core'
 import { onMounted } from 'vue';
-
-///////////////////
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+//////////active///////////
 const isExpanded = ref(false);
-const activeItem = ref(''); // Add this line
+const activeItem = ref('');
+
+const currentRoute = useRoute();
+console.log(currentRoute.path);
 
 const setActiveItem = (item) => {
   activeItem.value = item;
 };
-//////////////////
+///////////active//////////
 
 
 
@@ -60,12 +64,12 @@ const getRoleName = () => {
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul class="nav-list">
-                                <li :class="{ 'active': activeItem === 'status' }" @click="setActiveItem('status')"><router-link to="/jobs"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                                <li :class="{ 'active': activeItem === 'status' }" @click="setActiveItem('status')"><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
-                                <li :class="{ 'active': activeItem === 'status' }" @click="setActiveItem('status')"><router-link to="/admin-contacts"><span class="icon"><i class='bx bxs-user-rectangle'></i></span> Admin</router-link></li>
-                                <li :class="{ 'active': activeItem === 'status' }" @click="setActiveItem('status')"><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
-                                <li :class="{ 'active': activeItem === 'status' }" @click="setActiveItem('status')"><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
-                                <li :class="{ 'active': activeItem === 'status' }" @click="setActiveItem('status')"><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/jobs' }"><router-link to="/jobs"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/users' }"><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/admin-contacts' }"><router-link to="/admin-contacts"><span class="icon"><i class='bx bxs-user-rectangle'></i></span> Admin</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/message-center' }"><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
                             </ul>
 
                         </div>
@@ -350,9 +354,13 @@ export default {
   background-color: #1e1e1e;
 }
 
-/* /////////active///////// */
+/* ////////Active////////// */
 .side-nav__item.active,
 .side-nav__item:hover {
   background-color: #333333 !important; /* Adjust this color to match your hover color */
+}
+
+.active{
+    background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
 </style>
