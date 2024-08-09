@@ -121,11 +121,8 @@ const onInput = () => {
 										</td>
 									</tr>
 									<tr v-else>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td colspan="7" class="text-center">
-											<!-- <CustomSpinner v-if="showLoading"/> -->
+										<td colspan="7" class="text-center text-danger">
+											No activations found.
 										</td>
 									</tr>
 									

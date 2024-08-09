@@ -26,12 +26,18 @@ const userStore = useUserStore();
 const authStore = useAuth();
 const staff = useStaff();
 const campaignId = ref(route.query.campaign);
+const regionId = ref(route.query.region);
+let userRole = null;
 
 
 watch(
   () => route.query.campaign,
   (newCampaignId) => {
     campaignId.value = newCampaignId;
+  },
+  () => route.query.region,
+  (newRegionId) => {
+	regionId.value = newRegionId;
   }
 );
 
@@ -47,28 +53,31 @@ let mappedUsers = ref([]);
 let staffMembers = ref([]);
 let showLoading = ref(false);
 const regions = ref([]);
-const campaignName = ref([]);
 
 const user = JSON.parse(authStore.user);
 
 
 
 onMounted(() => {
-	if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER') && !campaignId.value){
-		getActivationsByActivationManager();
-	} else{
-		 getActivationsByCampaignId();
-	}
+
+	if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'CLIENT'){
 	
+		getAllActivations(user.role, campaignId.value);
+	} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+		getAllActivations(user.role, user.activeUserId);
+	} else if('TTG_REGIONAL_MANAGER'){
+		getAllActivations(user.role, regionId.value);
+	}
 	getRegions();
-	getCampaignName();
 	getAllUsers();
+
+	//get user role from store
+	userRole = userStore.get
 
 });
 
 const canCreateActivation = () => {
-	return user.role == 'TTG_SUPER_ADMIN' 
-	|| user.role == 'TTG_REGIONAL_MANAGER' 
+	return user.role == 'TTG_SUPER_ADMIN'  
 	|| user.role == 'TTG_HEAD_ADMIN';
 }
 
@@ -101,11 +110,7 @@ const getStaffMembers = async () => {
 	})
 }
 
-const getCampaignName = async () => {
-	campaignStore.getCampaignName(campaignId.value).then(function (response) {
-		campaignName.value = response.data.name;
-	})
-}
+
 
 const getregionsByStaffId = () => {console.log('UserInside',user.activeUserId)
     region.getRegionsByStaffId(user.activeUserId).then(function (response) {
@@ -128,12 +133,13 @@ const onInput = () => {
 		// return activations.value = activations.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
 		// || user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
 	 }else{
-		if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER')){
-			getActivationsByActivationManager();
-		} else{
-			getActivationsByCampaignId();
+		if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
+			getAllActivations(user.role, campaignId.value);
+		} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+			getAllActivations(user.role, user.activeUserId);
+		} else if('TTG_REGIONAL_MANAGER'){
+			getAllActivations(user.role, regionId.value);
 		}
-		getActivationsByActivationManager();
 	 }
   };
 
@@ -149,21 +155,20 @@ const onInput = () => {
 	})
   }
 
-  const getActivationsByActivationManager = async () => {
+  const getAllActivations = async (userRole, id) => {
     try {
         showLoading.value = true;
         
         // Get user data from localStorage
-        const userData = JSON.parse(localStorage.getItem('user'));
         
-        if (!userData || !userData.activeUserId) {
+        if (!user || !user.activeUserId && user.role && user.role != "CLIENT") {
             throw new Error('User data or activeUserId not found');
         }
 
-        const staffId = userData.activeUserId;
+        const staffId = user.activeUserId;
         
         // Fetch activations
-        const response = await activation.getActivationsByActivationManager(staffId);
+        const response = await activation.getAllActivations(userRole, id);
 		console.log("test", response);
         activations.value = response.data.content;
     } catch (error) {
@@ -174,17 +179,9 @@ const onInput = () => {
         showLoading.value = false;
     }
 };
-  const getActivationsByCampaignId = async () => {
-	showLoading.value = true;
-	activation.getActivationsByCampaignId(campaignId.value).then(function (response) {
-		activations.value = response.data.content;
-		
-	}).catch(function (error) {
-		// toaster.error("Error fetching activations");
-		console.log(error);
-	}).finally(function () {
-	})
-  }
+
+
+
 
  
   const deleteActivation = (activ) => {
@@ -192,10 +189,12 @@ const onInput = () => {
 		activation.deleteActivation(activ.id).then(function (response) {
 		toaster.success("Activation deleted successfully");
 		//refetch data
-		if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER')){
-			getActivationsByActivationManager();
-		} else{
-			getActivationsByCampaignId();
+		if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
+			getAllActivations(user.role, campaignId.value);
+		} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+			getAllActivations(user.role, user.activeUserId);
+		} else if('TTG_REGIONAL_MANAGER'){ 
+			getAllActivations(user.role, regionId.value);
 		}
 		
 	   }).catch(function (error) {
@@ -204,41 +203,14 @@ const onInput = () => {
 	   })	
  
 }
-const confirm = useConfirm();
-// const deleteRecord = (event, activation) => {
-//     confirm.require({
-//         target: event.currentTarget,
-//         message: 'Do you want to delete this record?',
-//         // icon: 'bx bx-trash text-danger',
-// 		icon: '',
-//         rejectProps: {
-//             label: 'Cancel',
-//             severity: '',
-//             outlined: true
-//         },
-//         acceptProps: {
-//             label: 'Delete',
-//             severity: 'danger'
-//         },
-//         accept: () => {
-// 			deleteActivation(activation);
-//         },
-//         reject: () => {
-//             //do nothing
-//         }
-//     });
-// };
 
-const getRegionName = (region) => {
-    return regions.value.find(r => r.id === region).name
-}
 
 const items = (activation) => [
     {
         label: 'View Activation',
         icon: 'bx bx-bullseye fs-4 text-success',
         command: () => {
-            URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${campaignName.value}&name=${activation.name}`);
+            URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${activation.campaign.name.value}&name=${activation.name}`);
         }
     },
 	{
@@ -252,7 +224,7 @@ const items = (activation) => [
         label: 'Edit',
         icon: 'bx bx-edit-alt fs-4 text-success',
         command: () => {
-            URLrouter.push(`/create-activation?activation=${activation.id}&campaign=${campaignId.value}&manager=${getUserName(activation)}&name=${campaignName.value}`);
+            URLrouter.push(`/create-activation?activation=${activation.id}&campaign=${campaignId.value}&manager=${getUserName(activation)}&name=${activation.campaign.name}`);
         }
     },
     
@@ -279,6 +251,31 @@ const items = (activation) => [
             deleteActivation(activation);
         }
     },
+];
+const activationItems = (activation) => [
+    {
+        label: 'View Activation',
+        icon: 'bx bx-bullseye fs-4 text-success',
+        command: () => {
+            URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${activation.campaign.name}&name=${activation.name}`);
+        }
+    },
+	{
+        label: 'Tasks',
+        icon: 'bx bx-task fs-4 text-success',
+        command: () => {
+            URLrouter.push(`/tasks?activation=${activation.id}&name=${activation.name}`);
+        }
+    },
+    
+    {
+        label: 'Add Activation Images',
+        icon: 'bx bx-images text-success fs-3',
+        command: () => {
+            // unitForm.warehouse = warehouse.id
+			URLrouter.push(`/activation-images?activation=${activation.id}`);
+        }
+    }
 ];
 
 const visible = ref(false);
@@ -321,6 +318,7 @@ const onUserChange = (event) => {
 	
 }
 const addActivationManager = () => {
+	showLoading.value = true;
 	const form = reactive({
 	  name:  activationEdit.name,
 	  budget: activationEdit.budget,
@@ -338,15 +336,19 @@ const addActivationManager = () => {
 		return activation.update(activationId.value, form).then(function (response) {
 			toaster.success("Activation updated successfully");
 			visible.value = false;
-			if(userStore.getUserByRole('TTG_ACTIVATION_MANAGER')){
-				getActivationsByActivationManager();
-			}else{
-				getActivationsByCampaignId();
+			if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
+			getAllActivations(user.role, campaignId.value);
+			} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+				getAllActivations(user.role, user.activeUserId);
+			} else if('TTG_REGIONAL_MANAGER'){
+				getAllActivations(user.role, regionId.value);
 			}
 			
 		}).catch(function (error) {
 			toaster.error("Error updating activation");
 			console.log(error);
+		}).finally(function () {
+			showLoading.value = false;
 		})
 	}
 }
@@ -364,6 +366,16 @@ const search = (event) => {
 	let myObj = users.value.content.filter(user => user.firstName.toLowerCase().includes(query))
     mappedUsers.value = myObj.map(u => u.firstName + ' ' + u.lastName);
 };
+
+const isAdmin = () => {
+	return user.role == 'TTG_SUPER_ADMIN' 
+	|| user.role == 'TTG_HEAD_ADMIN' 
+	|| user.role == 'TTG_REGIONAL_MANAGER';
+}
+
+const isActivationManager = () => {
+	return user.role == 'TTG_ACTIVATION_MANAGER';
+}
 
 </script>
 <template>
@@ -410,17 +422,19 @@ const search = (event) => {
 										</td>
 										<td>
 											<div class="d-flex order-actions">
-												<!-- <router-link :to="`/create-activation?activation=${activation.id}&campaign=${campaignId}&name=${campaignName}`" class="">
-													<i class='bx bxs-edit'></i></router-link> -->
-													<!-- <router-link :to="`/tasks?activation=${activation.id}&name=${activation.name}`" class="ms-3">
-														<i class='bx bxs-bullseye text-success'></i>
-													</router-link> -->
-													<SplitButton 
-                                                            class="text-white" label="Actions" icon="bx bx-cog fs-4" dropdownIcon="text-white fs-4 bx bx-chevron-down" 
-                                                            :model="items(activation)"
-                                                             />
-												<!-- <a @click="deleteRecord($event,activation)" label="Delete" severity="danger" href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a> -->
-												<!-- <ConfirmPopup></ConfirmPopup> -->
+												<template v-if="isAdmin()">
+													<SplitButton class="text-white" label="Actions" 
+											icon="bx bx-cog fs-4" 
+											dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+                                            :model="items(activation)"/>
+												</template>
+												<template v-if="isActivationManager()">
+													<SplitButton class="text-white" label="Actions" 
+											icon="bx bx-cog fs-4" 
+											dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+                                            :model="activationItems(activation)"/>
+												</template>
+											
 											</div>
 											
 										</td>
@@ -460,8 +474,9 @@ const search = (event) => {
 				</div>     
 				</div>
 				<div class="modal-footer">
-					<button type="submit" class="btn maz-gradient-btn w-100">Submit</button>
+					<button :disabled="showLoading" type="submit" class="btn maz-gradient-btn w-100">Submit</button>
 				</div>
+			
 				
 			</form>
 		   

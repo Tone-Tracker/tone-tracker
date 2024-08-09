@@ -21,8 +21,12 @@ export const useClientStore = defineStore('useClientStore', () => {
 
     const  getClientByClientId = (id) => {
       return axiosInstance.get(`/api/clients/${id}`);
-    }
+    }    
     
+    const  getClientByUserId = (id) => {
+      return axiosInstance.get(`/api/clients/${id}`);
+    }
+   
   
-    return {getClientByClientId, submitClient,getClients,updateClient,deleteClient }
-  })
+    return {getClientByClientId, submitClient,getClients,updateClient,deleteClient ,getClientByUserId}
+})

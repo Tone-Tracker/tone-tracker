@@ -11,6 +11,10 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.get(`/api/activations`);
     }
 
+    const getActivationImages = (activationId) => {
+      return axiosInstance.get(`/api/images/all/${'activations'}/${activationId}`);
+    }
+
     const update = (id,form) => {
       return axiosInstance.put(`/api/activations/${id}`,form);
     }
@@ -22,8 +26,18 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.get(`/api/activations/${id}`);
     }
 
-    const getActivationsByActivationManager = (id) => {
-      return axiosInstance.get(`/api/activations/staff/${id}`);
+    //make the id optional parameter
+
+    const getAllActivations = ( userRole, id=null) => { console.log(id);
+      switch (userRole) {
+        case 'TTG_REGIONAL_MANAGER':
+          return axiosInstance.get(`/api/activations/region/${id}`);
+        case 'TTG_ACTIVATION_MANAGER':
+          return axiosInstance.get(`/api/activations/staff/${id}`); 
+        default:
+          return axiosInstance.get(`/api/activations/campaign/${id}`);
+      }
+      
     }
     const getActivationsByCampaignId = (campaignId) => {
       return axiosInstance.get(`/api/activations/campaign/${campaignId}`);
@@ -33,10 +47,12 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.get(`/api/activations/staff/${staffId}`);
     }
 
-    const uploadImages = (id,formData, config) => {
+    const uploadImages = (formData, config) => {
+
+      console.log(formData);
       // change this endpoint @Busani
-      return axiosInstance.post(`/api/activations/${id}/upload`,formData);
+      return axiosInstance.post(`/api/images`,formData, config);
     }
   
-    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages , getActivationsByActivationManager}
+    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages , getAllActivations, getActivationImages}
   })

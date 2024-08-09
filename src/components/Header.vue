@@ -44,16 +44,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 const query = ref('');
-const suggestions = ['Project Alpha', 'Project Beta', 'Project Gamma', 'Project Delta'];
+const allActivations = ref([]);
 const filteredSuggestions = ref([]);
+
+const fetchAllActivations = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/activations`);
+    allActivations.value = response.data;
+  } catch (error) {
+    console.error('Error fetching all activations:', error);
+  }
+};
 
 const onInput = () => {
   if (query.value.length > 0) {
-    filteredSuggestions.value = suggestions.filter(suggestion =>
-      suggestion.toLowerCase().includes(query.value.toLowerCase())
+    filteredSuggestions.value = allActivations.value.filter(activation =>
+      activation.toLowerCase().includes(query.value.toLowerCase())
     );
   } else {
     filteredSuggestions.value = [];
@@ -64,7 +74,13 @@ const selectSuggestion = (suggestion) => {
   query.value = suggestion;
   filteredSuggestions.value = [];
 };
+
+onMounted(() => {
+  //fetchAllActivations();
+});
 </script>
+
+
 
 <style scoped>
 

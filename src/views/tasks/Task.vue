@@ -3,7 +3,7 @@ import moment from 'moment';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
-import AutoComplete from 'primevue/autocomplete';
+import { usePlacesAutocomplete } from 'vue-use-places-autocomplete'
 import InputText from 'primevue/inputtext';
 import ConfirmPopup from 'primevue/confirmpopup';
 import InputNumber from 'primevue/inputnumber';
@@ -17,6 +17,11 @@ import { useTask } from '@/stores/task';
 import { onMounted, ref, reactive } from 'vue';
 import useToaster from '@/composables/useToaster';
 import { useConfirm } from "primevue/useconfirm";
+import GoogleAutocomplete from '@/components/GoogleAutocomplete.vue';
+import Drawer from 'primevue/drawer';
+import AutoComplete from 'primevue/autocomplete';
+import { watch } from 'vue';
+import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vue-use-places-autocomplete'
 
 
 const route = useRoute();
@@ -35,6 +40,28 @@ onMounted(() => {
     getTasksByActivationId();
 })
 
+const query = ref('');
+const formattedSuggestions = ref([]);
+
+const { suggestions,loading,sessionToken,refreshSessionToken } = usePlacesAutocomplete(query, {
+  debounce: 500,
+  minLengthAutocomplete: 3,
+  refreshSessionToken: true
+});
+
+    const filteredCities = ref([]);
+
+    const filterCities = (event) => {
+      const searchQuery = event.query.toLowerCase();
+      filteredCities.value = formattedSuggestions.value.filter(city => city.name.toLowerCase().includes(searchQuery));
+    };
+
+watch(suggestions, (newSuggestions) => {
+      formattedSuggestions.value = newSuggestions.map(suggestion => ({
+        name: suggestion.description,
+        place_id: suggestion.place_id
+      }));
+    });
 
     const statuses = ref([
         { name: 'Finished', code: 'FINISHED' },
@@ -43,6 +70,21 @@ onMounted(() => {
         { name: 'Delayed', code: 'DELAYED' },
         { name: 'At Risk', code: 'ATRISK' }
     ]);
+
+    const onSelectLocation = (event) => {
+        console.log('event',event);
+        getGeoCode();
+       
+    };
+
+    const getGeoCode = async () => {
+        const results =  await geocodeByAddress('Manila, Philippines');
+        const byPlacesId = await geocodeByPlaceId('ChIJk6_7UFmdqTMRgFAxl4KEnUQ')
+        const { lat, lng } =  getLatLng(results[0]);
+        console.log('results',results);
+        console.log('byPlacesId',byPlacesId);
+
+    }
 
     const types = ref([
         { name: 'Third Party', code: 'THIRDPARTY' },
@@ -130,6 +172,10 @@ const getTasksByActivationId = async () => {
 
 const taskId = ref(null);
 const isEdit = ref(false);
+
+
+
+
 const openModal = (pos,task) => {
     if(task) {//edit
     isEdit.value = true;
@@ -202,6 +248,11 @@ const deleteTask = (task) => {
   });
 }
 
+const handlePlaceChanged = (place) => {
+  console.log('Selected place:', place);
+  // You can access more details about the place here
+};
+
 
 const deleteRecord = (event, task) => {
   confirm.require({
@@ -226,6 +277,9 @@ const deleteRecord = (event, task) => {
   });
 };
 
+
+
+
 </script>
 <template>
     <Layout>
@@ -248,7 +302,6 @@ const deleteRecord = (event, task) => {
                                             <th>Risk</th>
                                             <th>Planned End date</th>
                                             <th>Time Record</th>
-                                            <th>Project Responsible</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
                                         </tr>
@@ -262,15 +315,18 @@ const deleteRecord = (event, task) => {
                                             </td>
                                             <td>{{task.plannedEndDate}}</td>
                                             <td>{{task.timeRecord}}</td>
-                                            <td>--To be Decided--</td>
                                             <td>{{task.completion}}</td>
                                             <td>
                                                 <div class="d-flex order-actions">
                                                   <a @click="openModal('top',task)" href="javascript:;" >
                                                     <i class='bx bxs-edit'></i>
                                                   </a>
+
+                                                  <router-link :to="`/tasks/${task.id}`" class="ms-1"click="openModal('top',task)">
+                                                    <i class='text-success bx bx-bullseye'></i>
+                                                  </router-link>
                                                   
-                                                  <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-3">
+                                                  <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-1">
                                                     <i class='bx bxs-trash text-danger'></i>
                                                   </a>
                                                   <ConfirmPopup></ConfirmPopup>
@@ -292,7 +348,7 @@ const deleteRecord = (event, task) => {
                 </div>
             </div>
             <Dialog v-model:visible="visible" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
-
+                
                 <form @submit.prevent="onSubmit" class="row g-3">
                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">
@@ -369,6 +425,18 @@ const deleteRecord = (event, task) => {
                             </div>
                     </div>                        
                     </div>
+                    
+
+                    <div class="col-md-12">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Location</label>
+                            <AutoComplete v-model="query" :suggestions="formattedSuggestions" 
+                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" />
+                               <div class="input-errors" v-for="error of v$.completion.$errors" :key="error.$uid">
+                               <div class="text-danger">Completion is required</div>
+                            </div>
+                    </div>                        
+                    </div>
 
                     <div class="modal-footer">
                         <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
@@ -438,5 +506,7 @@ const deleteRecord = (event, task) => {
     box-shadow: 0 0rem 0rem rgb(0 0 0 / 20%) !important;
     margin-bottom: -15px;
 }
-
+.p-autocomplete-input {
+    width: 100% !important;
+}
 </style>

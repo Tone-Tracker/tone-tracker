@@ -1,7 +1,5 @@
 <script setup>
-import router from '@/router';
 import { useOnline } from '@vueuse/core'
-import { onMounted } from 'vue';
 
 const online = useOnline()
 
@@ -10,36 +8,31 @@ const props = defineProps({
     user: Object
 });
 
-onMounted(() => {
-    if(!props.user.role == 'TTG_REGIONAL_MANAGER') {
-        router.push('/')
-    }
-})
-
 const getRoleName = () => {
-    return props.user.role == 'TTG_REGIONAL_MANAGER' ? 'Regional Manager' : ''
+    return props.user.role == 'CLIENT' ? 'Client' : ''
 }
 </script>
 <template>
     <div class="accordion" id="accordionPanelsStayOpenExample">
 
-        <div class="side-nav">
+        <div class="side-nav side-nav--remove">
             <div class="accordion-item">
                 <div class="accordion-header profile">
-                    <button class="d-flex align-items-start justify-content-between accordion-button" type="button"
+                    <button class="d-flex align-items-center justify-content-between accordion-button" type="button"
                         data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
                         aria-controls="panelsStayOpen-collapseOne">
                         <div class="profile-info">
                             <span class="name">{{user.firstName}} {{user.lastName}}</span>
-                            <span class="status"><span class="round-guest online" :class="{'online': isOnline, 'offline': !isOnline}"</span>{{ getRoleName() }}</span>
-                            <!-- <span class="edit-profile"> <button class="edit-profile-btn">
-                                    ✏️
-                                </button>
-                            </span> -->
-
+                            <span class="status">
+                                <span class="round-guest" :class="{'online': isOnline, 'offline': !isOnline}"></span>
+                                {{ getRoleName() }}
+                            </span>
                         </div>
-
-
+                        <span class="edit-profile">
+                            <button class="edit-profile-btn">
+                                <i class='bx bx-edit-alt'></i>
+                            </button>
+                        </span>
                     </button>
                 </div>
 
@@ -47,14 +40,13 @@ const getRoleName = () => {
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <ul class="nav-list">
-                            <li><router-link to="/jobs"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                            <li><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li>
+                            <li><router-link to="/client-campaigns"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
                             <li><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
                             <li><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
-                            <!-- <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li> -->
+                            <li><router-link to="/regions"><span class="icon"><i class='bx bx-map'></i></span> Regions</router-link></li>
                             <li><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
-                            <!-- <li><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li> -->
-                            <!-- <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li> -->
+                            <!-- <li><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li> -->
+                            <li><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li>
                             <li><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
                             <li><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
                             <li><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
@@ -119,7 +111,7 @@ export default {
 
 <style scoped>
 .profile .accordion-button::after {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .accordion-button::after {
@@ -139,7 +131,6 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
 }
 
 .profile-info {
@@ -232,8 +223,76 @@ export default {
 .menu-section ul li:hover {
     color: #fff;
 }
-/* //icon// */
+
 .nav-list i {
     font-size: 1.5rem; /* Adjust this value as needed */
 }
+
+/* //////////////////// */
+
+/* header section */
+.accordion-header.profile {
+    background-color: #1e1e1e;
+}
+
+.accordion-button {
+    background-color: transparent;
+    box-shadow: none;
+    padding: 10px 15px;
+}
+
+.accordion-button::after {
+    display: none;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.status {
+    font-size: 12px;
+    color: #a0a0a0;
+    display: flex;
+    align-items: center;
+}
+
+.round-guest {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.online {
+    background-color: #ff3b30;
+}
+
+.offline {
+    background-color: #a0a0a0;
+}
+
+.edit-profile-btn {
+    background: none;
+    border: none;
+    color: #a0a0a0;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+}
+
+.edit-profile-btn:hover {
+    color: #ffffff;
+}
+.accordion-button:not(.collapsed) {
+    margin-bottom: 0px;
+}
+
 </style>

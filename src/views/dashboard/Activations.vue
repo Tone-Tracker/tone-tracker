@@ -8,17 +8,6 @@
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
                 <div class="chart-container-1" >
-                  <!-- //////GOOGLE INPUT API/////// -->
-                  <div>
-                    <h1>Address Autocomplete</h1>
-                    <GoogleAutocomplete
-                      v-model="address"
-                      placeholder="Enter your address"
-                      @place-changed="handlePlaceChanged"
-                    />
-                    <p>Selected address: {{ address }}</p>
-                  </div>
-                  <!-- //////GOOGLE INPUT API/////// -->
 
                   <!-- //////////LOCATION BUTTON///////////// -->
                   <LocationButton />
@@ -218,21 +207,13 @@ watch(infowindow, (v) => {
 onMounted(() => {
   getActivations();
 });
-///////////////////GOOGLE AUTOCOMPLETE//////////////
-// import { ref } from 'vue';
-import GoogleAutocomplete from '../../components/GoogleAutocomplete.vue';
 
-const address = ref('');
-
-const handlePlaceChanged = (place) => {
-  console.log('Selected place:', place);
-  // You can access more details about the place here
-};
-///////////////////GOOGLE AUTOCOMPLETE//////////////
 
 </script>
 
-<style>
+
+
+<style scoped>
 /* Global styles to target Google Maps InfoWindow */
 .gm-style .gm-style-iw-c {
   padding: 0 !important;
@@ -253,10 +234,8 @@ const handlePlaceChanged = (place) => {
 .gm-ui-hover-effect {
   display: none !important;
 }
-</style>
 
 
-<style scoped>
 .popup {
   width: 300px;
   background:linear-gradient(135deg, #00a2ff, #481e7e);

@@ -4,6 +4,7 @@ import TTG_SUPER_ADMIN from './navigations/TTG_SUPER_ADMIN.vue';
 import TTG_REGIONAL_MANAGER from './navigations/TTG_REGIONAL_MANAGER.vue';
 import TTG_HEAD_ADMIN from './navigations/TTG_HEAD_ADMIN.vue';
 import TTG_ACTIVATION_MANAGER from './navigations/TTG_ACTIVATION_MANAGER.vue';
+import TTG_CLIENT from './navigations/TTG_CLIENT.vue';
 
 import { useAuth } from '@/stores/auth';
 

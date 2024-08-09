@@ -9,6 +9,10 @@ Email: mazisimsebele18@gmail.com
 File: app.css
 
 */
+/* Reduce all scroll bars width */
+::-webkit-scrollbar {
+	scrollbar-width: thin;
+}
 
 .accordion-button {
 	padding: 8px !important;

@@ -20,6 +20,10 @@ export const usePromoter = defineStore('promoter', () => {
     const deletePromoter = (id) => {
       return axiosInstance.delete(`/api/promoters/${id}`);
     }
+
+    const uploadPromoterImages = (formData, config) => {
+      return axiosInstance.post(`/api/images`, formData, config);
+    }
       
-    return { submitPromoter,getPromoters,updatePromoter,deletePromoter }
+    return { submitPromoter, getPromoters, updatePromoter, deletePromoter, uploadPromoterImages }
   })
