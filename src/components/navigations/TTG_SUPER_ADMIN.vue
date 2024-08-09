@@ -1,5 +1,16 @@
 <script setup>
 import { useOnline } from '@vueuse/core'
+import { ref } from 'vue';
+// ... other imports ...
+
+const isExpanded = ref(false);
+const activeItem = ref(''); // Add this line
+
+// ... existing methods ...
+
+const setActiveItem = (item) => {
+  activeItem.value = item;
+};
 
 const online = useOnline()
 
@@ -40,16 +51,16 @@ const getRoleName = () => {
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul class="nav-list">
-                                <li><router-link to="/clients"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                                <li><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
-                                <li><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
-                                <li><router-link to="/regions"><span class="icon"><i class='bx bx-map'></i></span> Regions</router-link></li>
-                                <li><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
+                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/clients"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
+                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
+                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
+                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/regions"><span class="icon"><i class='bx bx-map'></i></span> Regions</router-link></li>
+                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
                                 <!-- <li><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li> -->
-                                <li><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li>
-                                <li><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
-                                <li><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
-                                <li><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
+                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li>
+                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
+                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
+                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
                             </ul>
 
                         </div>
@@ -328,6 +339,12 @@ export default {
 
 .side-nav-wrapper::-webkit-scrollbar-track {
   background-color: #1e1e1e;
+}
+
+/* ////////Active////////// */
+.side-nav__item.active,
+.side-nav__item:hover {
+  background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
 
 </style>
