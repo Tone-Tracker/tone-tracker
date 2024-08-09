@@ -2,9 +2,9 @@
     <button @click="getLocation" :disabled="isLoading">
       {{ isLoading ? 'Loading...' : 'Get Location' }}
     </button>
-    <div v-if="showLocation">
-      Latitude: {{ coords.latitude }}
-      Longitude: {{ coords.longitude }}
+    <div v-if="showLocationDetails && coords">
+      Latitude: {{ coords.latitude.toFixed(2) }}<br>
+      Longitude: {{ coords.longitude.toFixed(2) }}
     </div>
     <div v-if="error">
       Error: {{ error }}
@@ -16,13 +16,13 @@
   import { ref } from 'vue';
   
   const { coords, error, resume, pause } = useGeolocation();
-  const showLocation = ref(false);
+  const showLocationDetails = ref(false);
   const isLoading = ref(false);
   
   const getLocation = () => {
     isLoading.value = true;
     resume();
-    showLocation.value = true;
+    showLocationDetails.value = true;
     isLoading.value = false;
   };
   </script>

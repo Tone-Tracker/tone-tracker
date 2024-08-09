@@ -8,6 +8,8 @@ import Status from '../svgs/Status.vue';
 import Warehouse from '../svgs/Warehouse.vue';
 
 const isExpanded = ref(false);
+const activeItem = ref('');
+
 
 const expandMenu = () => {
   isExpanded.value = true;
@@ -16,12 +18,16 @@ const expandMenu = () => {
 const collapseMenu = () => {
   isExpanded.value = false;
 };
+
+const setActiveItem = (item) => {
+  activeItem.value = item;
+};
 </script>
 
 <template>
   <div class="accordion" id="accordionPanelsStayOpenExample">
     <ul class="side-nav side-nav--hover" @mouseenter="expandMenu" @mouseleave="collapseMenu" :class="{ 'expanded': isExpanded }">
-      <li class="side-nav__item activation">
+      <li class="side-nav__item activation" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
         <a href="javascript:;" data-bs-toggle="collapse" data-bs-target="#activationMenu" aria-expanded="false" aria-controls="activationMenu">
           <div class="side-nav__link">
             <Activation />
@@ -82,7 +88,7 @@ const collapseMenu = () => {
         </div>
       </li>
 
-      <li class="side-nav__item">
+      <li class="side-nav__item" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
         <router-link to="/status">
           <div class="side-nav__link">
             <Status />
@@ -91,7 +97,7 @@ const collapseMenu = () => {
         </router-link>
       </li>
 
-      <li class="side-nav__item">
+      <li class="side-nav__item" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
         <router-link to="/report">
           <div class="side-nav__link">
             <Report />
@@ -100,7 +106,7 @@ const collapseMenu = () => {
         </router-link>
       </li>
 
-      <li class="side-nav__item">
+      <li class="side-nav__item" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
         <router-link to="/budget">
           <div class="side-nav__link">
             <Budget />
@@ -109,7 +115,7 @@ const collapseMenu = () => {
         </router-link>
       </li>
 
-      <li class="side-nav__item">
+      <li class="side-nav__item" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
         <a href="javascript:;">
           <div class="side-nav__link">
             <CRM />
@@ -118,7 +124,7 @@ const collapseMenu = () => {
         </a>
       </li>
 
-      <li class="side-nav__item">
+      <li class="side-nav__item" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
         <router-link to="/warehouse">
           <div class="side-nav__link">
             <Warehouse />
@@ -127,7 +133,7 @@ const collapseMenu = () => {
         </router-link>
       </li>
 
-      <li class="side-nav__item">
+      <li class="side-nav__item" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
         <router-link to="/chat">
           <div class="side-nav__link">
             <i class='bx bxs-chat fs-3 mx-2'></i>
@@ -294,4 +300,10 @@ svg {
 .background-navlist {
   background-color: black !important;
 }
+/* ///////////active//////////// */
+.side-nav__item.active,
+.side-nav__item:hover {
+  background-color: #333333 !important; /* Adjust this color to match your hover color */
+}
+
 </style>

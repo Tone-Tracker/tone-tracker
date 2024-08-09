@@ -53,6 +53,13 @@ export const useActivation = defineStore('activation', () => {
       // change this endpoint @Busani
       return axiosInstance.post(`/api/images`,formData, config);
     }
+
+
+    //GET ALL ACTIVATIONS LOCATIONS
+    const getAllActivationsAdmins = () => {
+
+      return axiosInstance.get(`/api/activations/admins`);
+    }
   
-    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages , getAllActivations, getActivationImages}
+    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages , getAllActivations, getActivationImages, getAllActivationsAdmins}
   })
