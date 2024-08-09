@@ -12,11 +12,13 @@ import { useRoute } from 'vue-router';
 import DatePicker from 'primevue/datepicker';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
-import { useUserStore } from '@/stores/userStore';
+import { useActivation } from '@/stores/activation';
 import { useTask } from '@/stores/task';
 import { onMounted, ref, reactive } from 'vue';
 import useToaster from '@/composables/useToaster';
 import { useConfirm } from "primevue/useconfirm";
+import GoogleAutocomplete from '@/components/GoogleAutocomplete.vue';
+import Drawer from 'primevue/drawer';
 import AutoComplete from 'primevue/autocomplete';
 import { watch } from 'vue';
 import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vue-use-places-autocomplete'
@@ -28,18 +30,14 @@ const activation = ref(route.query.activation);
 
 const visible = ref(false);
 const tasks = ref([]);
-const promoters = ref([]);
 const position = ref('top');
-const showLoading = ref(false);
 
 const toaster = useToaster();
 const taskStore = useTask();
 const confirm = useConfirm();
-const userStore = useUserStore();
 
 onMounted(() => {
     getTasksByActivationId();
-    getPromoters();
 })
 
 const query = ref('');
@@ -51,11 +49,11 @@ const { suggestions,loading,sessionToken,refreshSessionToken } = usePlacesAutoco
   refreshSessionToken: true
 });
 
-    const filteredLocations = ref([]);
+    const filteredCities = ref([]);
 
     const filterCities = (event) => {
       const searchQuery = event.query.toLowerCase();
-      filteredLocations.value = formattedSuggestions.value.filter(location => location.name.toLowerCase().includes(searchQuery));
+      filteredCities.value = formattedSuggestions.value.filter(city => city.name.toLowerCase().includes(searchQuery));
     };
 
 watch(suggestions, (newSuggestions) => {
@@ -74,18 +72,17 @@ watch(suggestions, (newSuggestions) => {
     ]);
 
     const onSelectLocation = (event) => {
-        console.log('event',event.value.name);
-        getGeoCode(event.value);
+        console.log('event',event);
+        getGeoCode();
        
     };
 
-    const getGeoCode = async (event) => {
-        const results =  await geocodeByAddress(event.name);
-        const byPlacesId = await geocodeByPlaceId(event.place_id)
-        const { lat, lng } =  getLatLng(results);
-        form.address = results[0].formatted_address;
-        form.longitude = results[0].geometry.viewport.Hh.lo;
-        form.latitude = results[0].geometry.viewport.Yh.hi
+    const getGeoCode = async () => {
+        const results =  await geocodeByAddress('Manila, Philippines');
+        const byPlacesId = await geocodeByPlaceId('ChIJk6_7UFmdqTMRgFAxl4KEnUQ')
+        const { lat, lng } =  getLatLng(results[0]);
+        console.log('results',results);
+        console.log('byPlacesId',byPlacesId);
 
     }
 
@@ -104,9 +101,6 @@ const form = reactive({
     completion: null,
     jobNumber: null,
     name: null,
-    address: null,
-    longitude: null,
-    latitude: null,
     activation: activation.value
 });
 
@@ -125,7 +119,6 @@ const v$ = useVuelidate(rules, form);
 const onSubmit = async () => {
     const isFormValid = await v$.value.$validate();
     if (!isFormValid) {return;}
-    showLoading.value = true;
     if(isEdit.value){
         taskStore.update(taskId.value,form).then(function (response) {
             toaster.success("Task updated successfully");
@@ -139,19 +132,11 @@ const onSubmit = async () => {
     else {
         taskStore.submit(form).then(function (response) {
         toaster.success("Task created successfully");
-        
-        form.status=null,
-        form.address = null,
-        form.type = null
-        v$.value.$reset();
-        v$.value.$errors = [];
         visible.value = false;
         getTasksByActivationId();
-        showLoading.value = false;
     }).catch(function (error) {
         toaster.error("Error creating task");
         console.log(error);
-        showLoading.value = false;
     });
     }
     
@@ -181,17 +166,6 @@ const getTasksByActivationId = async () => {
     //
   });
 };
-const getPromoters = async () => {
-    userStore.getUserByRole("TTG_TALENT").then(response => {
-  console.log("Promoters", response.data);
-    promoters.value = response.data.content;
-  }).catch(error => {
-    toaster.error("Error fetching promoters");
-    console.log(error);
-  }).finally(() => {
-    //
-  });
-};
 
 
 
@@ -209,7 +183,7 @@ const openModal = (pos,task) => {
     // form.activation = task.activation;
     status.value = statuses.value.find(stat => stat.code === task.status);
     form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
-    form.address = task.address;
+
     type.value = types.value.find(stat => stat.code === task.type);
     form.type = form.type = types.value.find(stat => stat.code === task.type).code;
     Object.assign(form, {
@@ -312,7 +286,7 @@ const deleteRecord = (event, task) => {
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb title="Tasks" icon="bx bx-task" />
-                <h4 class="mx-2">Activation: {{ activationName }}</h4>
+                <h4 class="mx-2">{{activationName}}</h4>
                 <div class="card">
                     <div class="card-body">
                             <div class="table-container-colour pt-2 p-5">
@@ -326,9 +300,8 @@ const deleteRecord = (event, task) => {
                                             <th>Activation</th>
                                             <th>Task</th>
                                             <th>Risk</th>
-                                            <th>End date</th>
-                                            <th>Time Rec</th>
-                                            <th>Project Responsible</th>
+                                            <th>Planned End date</th>
+                                            <th>Time Record</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
                                         </tr>
@@ -342,15 +315,18 @@ const deleteRecord = (event, task) => {
                                             </td>
                                             <td>{{task.plannedEndDate}}</td>
                                             <td>{{task.timeRecord}}</td>
-                                            <td>--To be Decided--</td>
                                             <td>{{task.completion}}</td>
                                             <td>
                                                 <div class="d-flex order-actions">
                                                   <a @click="openModal('top',task)" href="javascript:;" >
                                                     <i class='bx bxs-edit'></i>
                                                   </a>
+
+                                                  <router-link :to="`/tasks/${task.id}`" class="ms-1"click="openModal('top',task)">
+                                                    <i class='text-success bx bx-bullseye'></i>
+                                                  </router-link>
                                                   
-                                                  <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-3">
+                                                  <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-1">
                                                     <i class='bx bxs-trash text-danger'></i>
                                                   </a>
                                                   <ConfirmPopup></ConfirmPopup>
@@ -374,15 +350,12 @@ const deleteRecord = (event, task) => {
             <Dialog v-model:visible="visible" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
                 
                 <form @submit.prevent="onSubmit" class="row g-3">
-                     <div class="col-md-6">
+                    <div class="col-md-6">
                         <div class="card my-card flex justify-center">
                             <label for="input1" class="form-label">Activation</label>
                              <InputText v-model="activationName" disabled />
                         </div> 
                     </div>
-
-                    
-                   
 
                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">
@@ -453,41 +426,21 @@ const deleteRecord = (event, task) => {
                     </div>                        
                     </div>
                     
-                    <div class="col-md-6">
+
+                    <div class="col-md-12">
                         <div class="card my-card flex justify-center">
                             <label for="input1" class="form-label">Location</label>
                             <AutoComplete v-model="query" :suggestions="formattedSuggestions" 
-                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" id="autocomplete-input" class="row mx-1"/>
-                        </div> 
+                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" />
+                               <div class="input-errors" v-for="error of v$.completion.$errors" :key="error.$uid">
+                               <div class="text-danger">Completion is required</div>
+                            </div>
+                    </div>                        
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="card my-card flex justify-center">
-                            <label for="input1" class="form-label">Assign Promoter</label>
-                            <AutoComplete v-model="query" :suggestions="formattedSuggestions" 
-                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" id="autocomplete-input" class="row mx-1"/>
-                        </div> 
-                    </div>
-
-                   
 
                     <div class="modal-footer">
                         <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-                        <button type="submit" 
-                        :disabled="showLoading"
-                        class="btn maz-gradient-btn w-100"
-                        
-                        >
-                            <div
-                            v-if="showLoading"
-                            class="spinner-border text-white"
-                            role="status"
-                          >
-                            <span class="visually-hidden">Loading...</span>
-                          </div>
-                            
-                            {{ isEdit ? 'Update' : 'Submit' }}
-                        </button>
+                        <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
                     </div>
                     
                 </form>
@@ -553,5 +506,7 @@ const deleteRecord = (event, task) => {
     box-shadow: 0 0rem 0rem rgb(0 0 0 / 20%) !important;
     margin-bottom: -15px;
 }
-
+.p-autocomplete-input {
+    width: 100% !important;
+}
 </style>
