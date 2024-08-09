@@ -62,22 +62,15 @@ function goToProfile(id) {
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <ul class="nav-list">
-<<<<<<< HEAD
                             <li><router-link to="/talent"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
                             <li><router-link to="/talent/images"><span class="icon"><i class='bx bx-file'></i></span> Upload Images</router-link></li>
                             <li  @click="goToProfile"><a><span class="icon"><i class='bx bx-file'></i></span> Profile </a></li>
                             <li><router-link to="/talent/check-list"><span class="icon"><i class='bx bx-map'></i></span> Check List</router-link></li>
                             <li><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
-=======
-                            <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                            <li :class="{ 'active': currentRoute.path === '/talent/images' }"><router-link to="/talent/images"><span class="icon"><i class='bx bx-file'></i></span> Upload Images</router-link></li>
-                            <li :class="{ 'active': currentRoute.path === '/profile' }"><router-link to="/profile"><span class="icon"><i class='bx bx-file'></i></span> Profile</router-link></li>
-                            <li :class="{ 'active': currentRoute.path === '/talent/check-list' }"><router-link to="/talent/check-list"><span class="icon"><i class='bx bx-map'></i></span> Check List</router-link></li>
-                            <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
->>>>>>> adb0b865d123dbc07ecc5e8427296294cf1826e9
                          
+                            <li class="mx-3"><span class="icon"><i class='bx bx-map' ></i></span> <LocationButton /></li>
                         </ul>
-                        <LocationButton />
+                       
                     </div>
                 </div>
             </div>
