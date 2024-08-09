@@ -12,13 +12,11 @@ import { useRoute } from 'vue-router';
 import DatePicker from 'primevue/datepicker';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
-import { useActivation } from '@/stores/activation';
+import { useUserStore } from '@/stores/userStore';
 import { useTask } from '@/stores/task';
 import { onMounted, ref, reactive } from 'vue';
 import useToaster from '@/composables/useToaster';
 import { useConfirm } from "primevue/useconfirm";
-import GoogleAutocomplete from '@/components/GoogleAutocomplete.vue';
-import Drawer from 'primevue/drawer';
 import AutoComplete from 'primevue/autocomplete';
 import { watch } from 'vue';
 import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vue-use-places-autocomplete'
@@ -30,15 +28,18 @@ const activation = ref(route.query.activation);
 
 const visible = ref(false);
 const tasks = ref([]);
+const promoters = ref([]);
 const position = ref('top');
 const showLoading = ref(false);
 
 const toaster = useToaster();
 const taskStore = useTask();
 const confirm = useConfirm();
+const userStore = useUserStore();
 
 onMounted(() => {
     getTasksByActivationId();
+    getPromoters();
 })
 
 const query = ref('');
@@ -50,11 +51,11 @@ const { suggestions,loading,sessionToken,refreshSessionToken } = usePlacesAutoco
   refreshSessionToken: true
 });
 
-    const filteredCities = ref([]);
+    const filteredLocations = ref([]);
 
     const filterCities = (event) => {
       const searchQuery = event.query.toLowerCase();
-      filteredCities.value = formattedSuggestions.value.filter(city => city.name.toLowerCase().includes(searchQuery));
+      filteredLocations.value = formattedSuggestions.value.filter(location => location.name.toLowerCase().includes(searchQuery));
     };
 
 watch(suggestions, (newSuggestions) => {
@@ -82,7 +83,6 @@ watch(suggestions, (newSuggestions) => {
         const results =  await geocodeByAddress(event.name);
         const byPlacesId = await geocodeByPlaceId(event.place_id)
         const { lat, lng } =  getLatLng(results);
-        console.log('results',results);
         form.address = results[0].formatted_address;
         form.longitude = results[0].geometry.viewport.Hh.lo;
         form.latitude = results[0].geometry.viewport.Yh.hi
@@ -176,6 +176,17 @@ const getTasksByActivationId = async () => {
     tasks.value = response.data;
   }).catch(error => {
     toaster.error("Error fetching tasks");
+    console.log(error);
+  }).finally(() => {
+    //
+  });
+};
+const getPromoters = async () => {
+    userStore.getUserByRole("TTG_TALENT").then(response => {
+  console.log("Promoters", response.data);
+    promoters.value = response.data.content;
+  }).catch(error => {
+    toaster.error("Error fetching promoters");
     console.log(error);
   }).finally(() => {
     //
@@ -315,8 +326,8 @@ const deleteRecord = (event, task) => {
                                             <th>Activation</th>
                                             <th>Task</th>
                                             <th>Risk</th>
-                                            <th>Planned End date</th>
-                                            <th>Time Record</th>
+                                            <th>End date</th>
+                                            <th>Time Rec</th>
                                             <th>Project Responsible</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
@@ -363,12 +374,15 @@ const deleteRecord = (event, task) => {
             <Dialog v-model:visible="visible" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
                 
                 <form @submit.prevent="onSubmit" class="row g-3">
-                    <div class="col-md-6">
+                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">
                             <label for="input1" class="form-label">Activation</label>
                              <InputText v-model="activationName" disabled />
                         </div> 
                     </div>
+
+                    
+                   
 
                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">
@@ -439,17 +453,23 @@ const deleteRecord = (event, task) => {
                     </div>                        
                     </div>
                     
-
-                    <div class="col-md-12 ml-4">
-                        <div class="row ">
-                            <!-- <label for="input1" class="form-label">Location</label> -->
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Location</label>
                             <AutoComplete v-model="query" :suggestions="formattedSuggestions" 
                             optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" id="autocomplete-input" class="row mx-1"/>
-                               <!-- <div class="input-errors" v-for="error of v$.completion.$errors" :key="error.$uid">
-                               <div class="text-danger">Completion is required</div>
-                            </div> -->
-                    </div>                        
+                        </div> 
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Assign Promoter</label>
+                            <AutoComplete v-model="query" :suggestions="formattedSuggestions" 
+                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" id="autocomplete-input" class="row mx-1"/>
+                        </div> 
+                    </div>
+
+                   
 
                     <div class="modal-footer">
                         <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
