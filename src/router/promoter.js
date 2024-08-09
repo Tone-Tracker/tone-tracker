@@ -18,7 +18,7 @@ export default [
         component: TalentTask
       },
       {
-        path: '/profile/:id',
+        path: '/profile/',
         name: 'profile',
         component: Profile
       },
