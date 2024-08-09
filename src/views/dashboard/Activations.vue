@@ -24,7 +24,7 @@
                     <Marker 
                       v-for="(location, i) in locations"
                       :key="i"
-                      :options="{ position: location }"
+                      :options="{ position: location}"
                       @click="openInfoWindow(i)"
                     >
                   
@@ -81,22 +81,34 @@ function openInfoWindow(index) {
 }
 
 const activations = ref([]);
-const locations = ref([]);
+let locations = ref([]);
 
-const getActivations = () => {
-  activationStore.getActivationByStaffId(staffID).then(function (response) {
-    activations.value = response.data.content;
-    //map activations
-    for (let i = 0; i < activations.value.length; i++) {
-      // locations.value.push({ lat: activations.value[i].latitude, lng: activations.value[i].longitude, title: activations.value[i].name })
-      locations.value.push({ lat: -26.0184568, lng: 28.0055974, title: activations.value[i].name })
-    }
-    console.log(locations.value)
-  }).catch(function (error) {
-    console.log(error);
-  }).finally(function () {
-    ///
-  })
+const getAllActivations = () => {
+
+  //get activations for Admins
+  const user = JSON.parse(authStore.user);
+ 
+  if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){  
+    activationStore.getAllActivationsAdmins().then(function (response) {
+      activations.value = response.data;
+
+
+      //map activations
+      locations = activations.value.map(activation => ({
+          lat: activation.centralPoint.latitude,
+          lng: activation.centralPoint.longitude,
+          title: activation.name
+        }));
+
+        console.log('test location', locations);
+    })
+  }
+
+
+
+
+  
+
 }
 
 const mapStyles = [
@@ -205,7 +217,7 @@ watch(infowindow, (v) => {
 
 
 onMounted(() => {
-  getActivations();
+  getAllActivations();
 });
 
 
