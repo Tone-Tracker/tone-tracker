@@ -9,7 +9,7 @@ import { useRoute, useRouter } from 'vue-router';
 import TaskTable from '@/components/TaskTable.vue';
 import { useUserStore } from '@/stores/userStore';
 import Image from 'primevue/image';
-
+import avatarGenerator from '@/helpers/avatarGenerator';
 
 const route = useRoute();
 const router = useRouter();
@@ -20,7 +20,7 @@ const taskName = ref(route.query.name);
 const tasks = ref([]);
 const users = ref([]);
 const clients = ref([]);
-const promoters = ref([]);
+const availablePromoters = ref([]);
 
 const clientStore = useClientStore();
 const taskStore = useTask();
@@ -82,7 +82,7 @@ const getUsers = async () => {
   const getAvailablePromoters = async () => {  
   taskStore.getTasksByPromoterId(taskId.value).then(response => {
     console.log("tasks", response.data);
-    promoters.value = response.data.content;
+    availablePromoters.value = response.data;
   }).catch(error => {
     //toaster.error("Error fetching users");
     console.log(error);
@@ -107,6 +107,8 @@ const redirectToProfile = (user) => {
 	let client = user.id;
 	router.push({ path: '/profile', query: { client } });
 }
+
+
 </script>
 <template>
   <Layout>
@@ -175,24 +177,26 @@ const redirectToProfile = (user) => {
          
         </div>
 
+
         <div class="row mt-6 row-cols-xl-9 gap-4">
           <div class="">
             <h4 class="mb-2 ml-2">Available Promoters</h4>
           </div>
-          <div v-for="user in promoters" :key="user.id" class="col-img ">
+          <div v-for="availablePromoter in availablePromoters" :key="availablePromoter.id" class="col-img ">
             <div  class="gallery">
-            
-                <!-- <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid"> -->
                 <div class="card flex justify-center">
                   <Image alt="Image" preview>
                       <template #previewicon>
                         <i class='bx bx-search-alt-2' ></i>
                       </template>
                       <template #image>
-                          <img src="https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg" alt="image" width="250" />
+                          <img v-id="availablePromoter.userDetails.image != null"
+                          :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" 
+                          alt="image" width="250" />
                       </template>
                       <template #preview="slotProps">
-                          <img src="https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                          <img 
+                          :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                       </template>
                   </Image>
                   </div>
@@ -203,7 +207,7 @@ const redirectToProfile = (user) => {
               </div>
               <div>
                 <div class="desc cursor-pointer" @click="redirectToProfile(user)">
-                  {{ user.firstName }} {{ user.lastName }}</div>
+                  {{ availablePromoter.userDetails.firstName }} {{ availablePromoter.userDetails.lastName }}</div>
               </div>
             </div>
           </div>   

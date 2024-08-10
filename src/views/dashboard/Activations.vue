@@ -7,8 +7,8 @@
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
                 <div class="chart-container-1">
-                  <GoogleMap
-                    api-key="AIzaSyDhe12nX_E0ya4vk662T-_hAPHH9NuuGkw"
+                  <GoogleMap @click=""
+                    api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
                     style="width: 100%; height: 800px"
                     :center="center"
                     :zoom="9"
@@ -17,6 +17,8 @@
                     <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
                       <InfoWindow>
                         <div class="popup">
+                          <div  class="text-danger fs-3 text-end" >
+                            <i @click="close = true" class='cursor-pointer bx bx-x'></i></div>
                           <div class="inner-container">
                             <h2>{{ location.title }}</h2>
                             <p>CPC: R 2.00</p>
@@ -41,7 +43,9 @@
 <script setup>
 import { onMounted,watch,ref } from 'vue';
 import Layout from '../shared/Layout.vue';
-import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map'
+import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
+import { useActivation } from '@/stores/activation';
+import { useAuth } from '@/stores/auth';
 
 const center = { lat: -25.6793642, lng: 28.1941785 };
 const infowindow = ref(false); // Will be open when mounted
@@ -51,11 +55,17 @@ const target = ref(null);
 const activationStore = useActivation();
 const authStore = useAuth();
 const staffID = JSON.parse(authStore.user)?.activeUserId;
-onClickOutside(target, event => console.log('Outside'))
+defineEmits(['closeModal']);
 
-function openInfoWindow(index) {
-  activeInfoWindow.value = index;
+const closeInfoWindow = () => {
+  //emit 'closeModal'
+  emit('closeModal');
 }
+
+watch(infowindow, (v) => {
+  alert('infowindow has been ' + (v ? 'opened' : 'closed'));
+});
+
 
 const activations = ref([]);
 let locations = ref([]);
@@ -181,14 +191,12 @@ const mapStyles = [
 
 
 
-watch(infowindow, (v) => {
-  //alert('infowindow has been ' + (v ? 'opened' : 'closed'));
-});
+
 
 
 
 onMounted(() => {
-  // initMap();
+  getAllActivations();
 });
 </script>
 
