@@ -79,12 +79,12 @@ const getUsers = async () => {
   }
   
 
-  const getAvailablePromoters = async () => {
-  
-  userStore.getUserByRole('TTG_TALENT').then(response => {
+  const getAvailablePromoters = async () => {  
+  taskStore.getTasksByPromoterId(taskId.value).then(response => {
+    console.log("tasks", response.data);
     promoters.value = response.data.content;
   }).catch(error => {
-    toaster.error("Error fetching users");
+    //toaster.error("Error fetching users");
     console.log(error);
   }).finally(() => {
     
@@ -204,7 +204,6 @@ const redirectToProfile = (user) => {
               <div>
                 <div class="desc cursor-pointer" @click="redirectToProfile(user)">
                   {{ user.firstName }} {{ user.lastName }}</div>
-                <div><button class="btn btn-primary rounded-0 w-100">Add</button></div>
               </div>
             </div>
           </div>   

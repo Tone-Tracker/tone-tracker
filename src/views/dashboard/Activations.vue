@@ -32,13 +32,12 @@
                         <div class="popup" ref="target">
                           <i class='bx bx-x float-end cursor-pointer fs-2 text-danger' @click="activeInfoWindow = null"></i>
                           <div class="inner-container">
-                            <h2>Team: 01</h2>
+                            <h2>{{ location.title }}</h2>
                             <p>CPC: R 2.00</p>
-                            <p>Start / End date: 22 Jan - 28 Jun</p>
+                            <p>Start / End date: {{ location.startDate }} - {{ location.endDate }}</p>
                             <p>Current Cost: R 25,000.00</p>
                             <p>Leads generated: 100,000</p>
-                            <h3>{{ location.title }}</h3>
-                            <p>247 New Brunswick Rd Aph 282</p>
+                            <h3>{{ location.regionName }} Activation</h3>
                           </div>
                         </div>
                       </InfoWindow>
@@ -92,9 +91,12 @@ const getAllActivations = () => {
     activationStore.getAllActivationsAdmins().then(function (response) {
       activations.value = response.data;
       //map activations
-      locations = activations.value.map(activation => ({
+      locations.value = activations.value.map(activation => ({
           lat: activation.centralPoint.latitude,
           lng: activation.centralPoint.longitude,
+          startDate: activation.startDate,
+          endDate: activation.endDate,
+          regionName: activation.regionName,
           title: activation.name
         }));
 
