@@ -1,5 +1,4 @@
 <template>
-  
   <Layout>
     <div class="page-wrapper">
       <div class="page-content">
@@ -7,30 +6,17 @@
           <div class="col-12 col-lg-12 d-flex">
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
-                <div class="chart-container-1" >
-
-                  <!-- //////////LOCATION BUTTON///////////// -->
-                  <LocationButton />
-                  <!-- //////////LOCATION BUTTON///////////// -->
-
-
+                <div class="chart-container-1">
                   <GoogleMap
-                    api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
+                    api-key="AIzaSyDhe12nX_E0ya4vk662T-_hAPHH9NuuGkw"
                     style="width: 100%; height: 800px"
                     :center="center"
                     :zoom="9"
                     :options="{ styles: mapStyles }"
                   >
-                    <Marker 
-                      v-for="(location, i) in locations"
-                      :key="i"
-                      :options="{ position: location}"
-                      @click="openInfoWindow(i)"
-                    >
-                  
-                      <InfoWindow v-if="activeInfoWindow === i" >
-                        <div class="popup" ref="target">
-                          <i class='bx bx-x float-end cursor-pointer fs-2 text-danger' @click="activeInfoWindow = null"></i>
+                    <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
+                      <InfoWindow>
+                        <div class="popup">
                           <div class="inner-container">
                             <h2>{{ location.title }}</h2>
                             <p>CPC: R 2.00</p>
@@ -41,7 +27,6 @@
                           </div>
                         </div>
                       </InfoWindow>
-                    
                     </Marker>
                   </GoogleMap>
                 </div>
@@ -53,17 +38,10 @@
     </div>
   </Layout>
 </template>
-
 <script setup>
-import { onClickOutside } from '@vueuse/core'
 import { onMounted,watch,ref } from 'vue';
 import Layout from '../shared/Layout.vue';
-import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
-import { useActivation } from '@/stores/activation';
-import { useAuth } from '@/stores/auth';
-import LocationButton from '../../components/LocationButton.vue';
-
-
+import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map'
 
 const center = { lat: -25.6793642, lng: 28.1941785 };
 const infowindow = ref(false); // Will be open when mounted
@@ -201,14 +179,7 @@ const mapStyles = [
   }
 ];
 
-// const locations = [
-//   { lat: -26.0184568, lng: 28.0055974, title: 'Gauteng Activation' },
-//   { lat: -41.330162, lng: 174.865694, title: 'Eastern Cape Activation' },
-//   { lat: -25.93312, lng: 28.01213, title: 'North West Activation' },
-//   { lat: -26.1851663, lng: 28.315154, title: 'Cape Town Activation' },
-//   { lat: -25.6793642, lng: 28.1941785, title: 'Durban Activation' },
-//   { lat: -26.038240, lng: 28.213280, title: 'Limpopo Activation' },
-// ]
+
 
 watch(infowindow, (v) => {
   //alert('infowindow has been ' + (v ? 'opened' : 'closed'));
@@ -217,15 +188,11 @@ watch(infowindow, (v) => {
 
 
 onMounted(() => {
-  getAllActivations();
+  // initMap();
 });
-
-
 </script>
 
-
-
-<style scoped>
+<style>
 /* Global styles to target Google Maps InfoWindow */
 .gm-style .gm-style-iw-c {
   padding: 0 !important;
@@ -246,15 +213,15 @@ onMounted(() => {
 .gm-ui-hover-effect {
   display: none !important;
 }
+</style>
 
 
+<style scoped>
 .popup {
   width: 300px;
-  background:linear-gradient(135deg, #00a2ff, #481e7e);
+  background: linear-gradient(135deg, #00a2ff, #7000ff);
   color: white;
   font-family: Arial, sans-serif;
-  padding: 20px;
-  padding-bottom: 40px;
   clip-path: 
     polygon(
       20px 0%, 
@@ -269,23 +236,12 @@ onMounted(() => {
       0% calc(100% - 40px),
       0% 20px
     );
-  position: relative;
-  overflow: hidden;
-}
-
-.popup::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 20px;
-  background: inherit;
+  padding: 20px;
+  padding-bottom: 40px;
   border-radius: 20px;
 }
 
 .inner-container {
-  position: relative;
   background-color: black;
   padding: 20px 15px 15px 15px;
   border-radius: 10px;

@@ -1,7 +1,8 @@
 <template>
-    <button @click="getLocation" :disabled="isLoading">
+    <button @click="getLocation" :disabled="isLoading" class="rounded btn  btn-sm rounded-5"> 
       {{ isLoading ? 'Loading...' : 'Get Location' }}
     </button>
+    
     <div v-if="showLocationDetails && coords">
       Latitude: {{ coords.latitude.toFixed(2) }}<br>
       Longitude: {{ coords.longitude.toFixed(2) }}

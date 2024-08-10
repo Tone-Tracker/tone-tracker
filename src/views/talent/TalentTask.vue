@@ -22,6 +22,7 @@ import { watch } from 'vue';
 import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vue-use-places-autocomplete'
 import { useAuth } from "@/stores/auth";
 
+
 const route = useRoute();
 const activationName = ref(route.query.name);
 const activation = ref(route.query.activation);
@@ -36,10 +37,12 @@ const toaster = useToaster();
 const taskStore = useTask();
 const confirm = useConfirm();
 const userStore = useUserStore();
+const authStore =  useAuth();
+console.log(JSON.parse(authStore.user).activeUserId)
 
 onMounted(() => {
-    getTasksByPromoterId();
-    getPromoters();
+    getTasksByPromoterId(JSON.parse(authStore.user).activeUserId);
+   
 })
 
 const query = ref('');
@@ -170,8 +173,8 @@ const onPlannedEndDateChange = (event) => {
     form.plannedEndDate = moment(event).format('YYYY-MM-DD');
 }
 
-const getTasksByPromoterId = async () => {
-  taskStore.getTasksByPromoterId(activation.value).then(response => {
+const getTasksByPromoterId = async (promoterId) => {
+  taskStore.getTasksByPromoterId(promoterId).then(response => {
   console.log("tasks", response.data);
     tasks.value = response.data;
   }).catch(error => {
@@ -318,7 +321,7 @@ const deleteRecord = (event, task) => {
                             <div class="table-container-colour pt-2 p-5">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h5>Main tasks to set up</h5>
-                                    <button type="button" class="btn maz-gradient-btn" @click="openModal('top')" >Add New Task</button>
+                                
                                 </div>
                                 <table class="table table-dark table-bordered">
                                     <thead>
@@ -346,13 +349,11 @@ const deleteRecord = (event, task) => {
                                             <td>{{task.completion}}</td>
                                             <td>
                                                 <div class="d-flex order-actions">
-                                                  <a @click="openModal('top',task)" href="javascript:;" >
-                                                    <i class='bx bxs-edit'></i>
+                                                  <a href="javascript:;" >
+                                                    <i class='bx bxs-bullseye'></i>
                                                   </a>
                                                   
-                                                  <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-3">
-                                                    <i class='bx bxs-trash text-danger'></i>
-                                                  </a>
+                                                
                                                   <ConfirmPopup></ConfirmPopup>
                                                 </div>
                                                 

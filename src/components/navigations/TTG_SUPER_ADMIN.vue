@@ -3,17 +3,17 @@ import { useOnline } from '@vueuse/core'
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+//////////active///////////
 const isExpanded = ref(false);
-const activeItem = ref(''); // Add this line
+const activeItem = ref('');
 
 const currentRoute = useRoute();
 console.log(currentRoute.path);
 
-// ... existing methods ...
-
 const setActiveItem = (item) => {
   activeItem.value = item;
 };
+///////////active//////////
 
 const online = useOnline()
 
@@ -54,16 +54,16 @@ const getRoleName = () => {
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul class="nav-list">
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/clients"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                                <li :class="{ 'active': currentRoute.path == '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/regions"><span class="icon"><i class='bx bx-map'></i></span> Regions</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/regions'}"><router-link to="/regions"><span class="icon"><i class='bx bx-map'></i></span> Regions</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
                                 <!-- <li><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li> -->
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
-                                <li :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')"><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/upload' }" ><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/message-center' }" ><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
                             </ul>
 
                         </div>
