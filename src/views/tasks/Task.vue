@@ -95,6 +95,7 @@ watch(suggestions, (newSuggestions) => {
 
 const status = ref(null);
 const type = ref(null);
+const showLoading = ref(false);
 const form = reactive({
     status: '',
     type: '',
@@ -124,6 +125,7 @@ const v$ = useVuelidate(rules, form);
 const onSubmit = async () => {
     const isFormValid = await v$.value.$validate();
     if (!isFormValid) {return;}
+    showLoading.value = true;
     if(isEdit.value){
         taskStore.update(taskId.value,form).then(function (response) {
             toaster.success("Task updated successfully");
@@ -136,12 +138,15 @@ const onSubmit = async () => {
     } 
     else {
         taskStore.submit(form).then(function (response) {
+            showLoading.value = false;
         toaster.success("Task created successfully");
         visible.value = false;
         getTasksByActivationId();
     }).catch(function (error) {
         toaster.error("Error creating task");
         console.log(error);
+    }).finally(() => {
+        showLoading.value = false;
     });
     }
     
@@ -444,7 +449,13 @@ const deleteRecord = (event, task) => {
                     </div>
 
                     <div class="modal-footer">
-                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                        <div
+                            v-if="showLoading"
+                            class="spinner-border text-white"
+                            role="status"
+                          >
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
                         <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
                     </div>
                     
