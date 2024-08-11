@@ -51,7 +51,7 @@ const getregionsByStaffId = () => {
                                 <router-link :to="`/admin-activations?region=${region.id}`" v-if="regions?.length > 0" v-for="region in regions" :key="region.id" class="col-md-4 col-lg-3">
                                     <div class="job-item">
                                         <div class="image-container">
-                                            <img src="../../assets/images/Component 102 – 1.png" :alt="region.name">
+                                            <img src="../../assets/images/Component102.png" :alt="region.name">
                                             <span>{{ region.name }}</span>
                                         </div>
                                         <div class="details">

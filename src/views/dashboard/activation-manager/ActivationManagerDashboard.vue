@@ -341,8 +341,7 @@ new Chart(
 								<tbody>
 									<tr>
 										<td>Iphone 5</td>
-										<td><img src="../../assets/images/products/01.png" class="product-img-2"
-												alt="product img"></td>
+										<td>2</td>
 										<td>#9405822</td>
 										<td><span
 												class="badge bg-gradient-quepal text-white shadow-sm w-100">Paid</span>
@@ -359,8 +358,7 @@ new Chart(
 
 									<tr>
 										<td>Earphone GL</td>
-										<td><img src="../../assets/images/products/02.png" class="product-img-2"
-												alt="product img"></td>
+										<td>2</td>
 										<td>#8304620</td>
 										<td><span
 												class="badge bg-gradient-blooker text-white shadow-sm w-100">Pending</span>
@@ -377,8 +375,7 @@ new Chart(
 
 									<tr>
 										<td>HD Hand Camera</td>
-										<td><img src="../../assets/images/products/03.png" class="product-img-2"
-												alt="product img"></td>
+										<td>2</td>
 										<td>#4736890</td>
 										<td><span
 												class="badge bg-gradient-bloody text-white shadow-sm w-100">Failed</span>
@@ -395,8 +392,7 @@ new Chart(
 
 									<tr>
 										<td>Clasic Shoes</td>
-										<td><img src="../../assets/images/products/04.png" class="product-img-2"
-												alt="product img"></td>
+										<td>2</td>
 										<td>#8543765</td>
 										<td><span
 												class="badge bg-gradient-quepal text-white shadow-sm w-100">Paid</span>
@@ -412,8 +408,7 @@ new Chart(
 									</tr>
 									<tr>
 										<td>Sitting Chair</td>
-										<td><img src="../../assets/images/products/06.png" class="product-img-2"
-												alt="product img"></td>
+										<td>2</td>
 										<td>#9629240</td>
 										<td><span
 												class="badge bg-gradient-blooker text-white shadow-sm w-100">Pending</span>
@@ -429,8 +424,7 @@ new Chart(
 									</tr>
 									<tr>
 										<td>Hand Watch</td>
-										<td><img src="../../assets/images/products/05.png" class="product-img-2"
-												alt="product img"></td>
+										<td>2</td>
 										<td>#8506790</td>
 										<td><span
 												class="badge bg-gradient-bloody text-white shadow-sm w-100">Failed</span>
