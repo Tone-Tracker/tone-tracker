@@ -73,16 +73,18 @@ watch(suggestions, (newSuggestions) => {
 
     const onSelectLocation = (event) => {
         console.log('event',event);
-        getGeoCode();
+        getGeoCode(event);
        
     };
 
-    const getGeoCode = async () => {
-        const results =  await geocodeByAddress('Manila, Philippines');
-        const byPlacesId = await geocodeByPlaceId('ChIJk6_7UFmdqTMRgFAxl4KEnUQ')
-        const { lat, lng } =  getLatLng(results[0]);
-        console.log('results',results);
-        console.log('byPlacesId',byPlacesId);
+    const getGeoCode = async (event) => {
+        const results =  await geocodeByAddress(event.value.name);
+        const byPlacesId = await geocodeByPlaceId(event.value.place_id)
+        // const { lat, lng } =  getLatLng(results);
+        form.address = results[0].formatted_address;
+        form.longitude = results[0].geometry.viewport.Hh.lo;
+        form.latitude = results[0].geometry.viewport.Yh.hi
+
 
     }
 
@@ -101,6 +103,9 @@ const form = reactive({
     completion: null,
     jobNumber: null,
     name: null,
+    address: null,
+    longitude: null,
+    latitude: null,
     activation: activation.value
 });
 

@@ -39,6 +39,11 @@ const statuses = ref([
     { name: 'At Risk', code: 'ATRISK' }
 ]);
 
+const getStatus = (status) => {
+    let myStatus = statuses.value.find((s) => s.code === status);
+    return myStatus ? myStatus.name : '';
+};
+
 const form = reactive({
     status: '',
     type: '',
@@ -142,7 +147,7 @@ const saveSelectedPromoters = () => {
                             </div>
                             <div class="col-md-4">
                                 <label for="input3" class="form-label">Risk</label>
-                                <input v-model="form.risk" type="text" readonly class="form-control" id="input3">
+                                <input :value="getStatus(form.status)" type="text" readonly class="form-control" id="input3">
                             </div>
 
                             <div class="col-md-4">
@@ -192,8 +197,8 @@ const saveSelectedPromoters = () => {
           <div class="">
             <h4 class="mb-2 ml-2">Promoters on job</h4>
           </div>
+          <template v-if="singleTask.promoterDetails?.length > 0">
           <div v-for="promoter in singleTask.promoterDetails" :key="promoter.id" class="col-img ">
-            <template v-if="singleTask.promoterDetails?.length > 0">
             <div  class="gallery">
                 <div class="card flex justify-center">
                   <Image alt="Image" preview>
@@ -217,11 +222,12 @@ const saveSelectedPromoters = () => {
                   {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
               </div>
             </div>
-          </template>
+                  
+          </div>  
+        </template>  
           <template v-else>
-            <div class="text-center mt-2 text-danger">No available Promoters.</div>
-          </template>
-          </div>   
+            <div class="text-center mt-2 text-danger">No available Promoters on the job.</div>
+          </template> 
          
         </div>
         
@@ -230,6 +236,7 @@ const saveSelectedPromoters = () => {
           <div class="">
             <h4 class="mb-2 ml-2">Available Promoters</h4>
           </div>
+          <template v-if="availablePromoters?.length > 0">
           <div v-for="availablePromoter in availablePromoters" :key="availablePromoter.id" class="col-img ">
             <div  class="gallery">
                 <div class="card flex justify-center">
@@ -260,7 +267,11 @@ const saveSelectedPromoters = () => {
                   {{ availablePromoter.userDetails.firstName }} {{ availablePromoter.userDetails.lastName }}</div>
               </div>
             </div>
-          </div>   
+          </div>  
+        </template>
+          <template v-else>
+            <div class="text-center mt-2 text-danger">No available Promoters.</div>
+          </template> 
             <div class="ms-auto" v-if="selectedPromoterIds.length > 0">
               <a @click="saveSelectedPromoters" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
                    <div v-if="isLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
