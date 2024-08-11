@@ -437,26 +437,28 @@ const deleteRecord = (event, task) => {
                     </div>
                     
 
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="card my-card flex justify-center">
                             <label for="input1" class="form-label">Location</label>
                             <AutoComplete v-model="query" :suggestions="formattedSuggestions" 
-                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" />
+                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" class="row mx-1" />
                                <div class="input-errors" v-for="error of v$.completion.$errors" :key="error.$uid">
-                               <div class="text-danger">Completion is required</div>
+                               <div class="text-danger">Location is required</div>
                             </div>
                     </div>                        
                     </div>
 
                     <div class="modal-footer">
-                        <div
+                       
+                        <button type="submit" class="btn maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center">
+                            <div
                             v-if="showLoading"
                             class="spinner-border text-white"
                             role="status"
                           >
                             <span class="visually-hidden">Loading...</span>
                           </div>
-                        <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
+                          {{ isEdit ? 'Update' : 'Submit' }}</button>
                     </div>
                     
                 </form>
