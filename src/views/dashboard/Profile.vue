@@ -20,7 +20,7 @@ Date: 04/06/2024
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
                                 <div class="image-container">
-                                    <img src="/src/assets/images/gallery/10.png" alt="Admin" class=" zoom-image" style="width: 400px; height: 80%;">
+                                    <img src="/src/assets/images/gallery/10.png" alt="Admin" class=" zoom-image" style="width: 300px; height: 350px;">
                                 </div>
 
                                 <div class="mt-3">
@@ -59,7 +59,7 @@ Date: 04/06/2024
                                     </div>
                                 </div>
                                 <div class="mb-4">
-                                    <button
+                                    <button v-if="isMyProfile()"
                                         class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center"
                                         data-bs-toggle="modal" data-bs-target="#addModal">
                                         <span>
@@ -69,6 +69,7 @@ Date: 04/06/2024
                                             </svg>
                                         </span><span>Add</span>
                                     </button>
+
                                 </div>
                                 <!-- Add Modal -->
                                 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel"
@@ -371,27 +372,28 @@ import { usePrimeVue } from 'primevue/config';
 import FileUpload from 'primevue/fileupload';
 import Button from 'primevue/button';
 import Badge from 'primevue/badge';
+import { useAuth } from '@/stores/auth';
 
 onMounted(() => {
     getPromoterDetails();
 })
 const value = ref(null);
 const promoterStore = usePromoter();
+const authStore = useAuth();
 const route = useRoute();
 const toaster = useToaster();
-const isDragOver = ref(false);
 const files = ref([]);
-const userId = ref(route.params.id);
+const promoterId = ref(route.params.id);
 const totalSizePercent = ref(0);
 
 const $primevue = usePrimeVue();
 const totalSize = ref(0);
 
-
+const user = JSON.parse(authStore.user)
 const promoterData = ref({});
 
 const getPromoterDetails = () => {
-    promoterStore.getTalentByTalentId(userId.value).then(function (response) {
+    promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
         promoterData.value = response.data;
   }).catch(function (error) {
     toaster.error("Error fetching profile");
@@ -399,6 +401,10 @@ const getPromoterDetails = () => {
   });
 }
 
+const isMyProfile = () => {
+    // console.log(promoterId.value, user.activeUserId)
+    return promoterId.value == user.activeUserId;
+}
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
     removeFileCallback(index);
     totalSize.value -= parseInt(formatSize(file.size));

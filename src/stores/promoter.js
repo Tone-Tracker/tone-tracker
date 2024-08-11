@@ -31,6 +31,10 @@ export const usePromoter = defineStore('promoter', () => {
     const  getTalentByUserId = (id) => {
       return axiosInstance.get(`/api/promoters/${id}`);
     }
+
+    const checkIn = (coOrdObj ) => {
+      return axiosInstance.post(`/api/checkins`,coOrdObj);
+    }
    
-    return { submitPromoter, getPromoters, updatePromoter, deletePromoter, uploadPromoterImages ,getTalentByTalentId,getTalentByUserId}
+    return { checkIn, submitPromoter, getPromoters, updatePromoter, deletePromoter, uploadPromoterImages ,getTalentByTalentId,getTalentByUserId}
   })
