@@ -2,35 +2,31 @@
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
 import { onMounted, reactive, ref } from 'vue';
-import { useClientStore } from '@/stores/useClient';
 import { usePromoter } from '@/stores/promoter';
 import { useTask } from '@/stores/task';
 import { useRoute, useRouter } from 'vue-router';
-import TaskTable from '@/components/TaskTable.vue';
-import { useUserStore } from '@/stores/userStore';
 import Image from 'primevue/image';
-
+import avatarGenerator from '@/helpers/avatarGenerator';
+import useToaster from '@/composables/useToaster';
 
 const route = useRoute();
 const router = useRouter();
+const toaster = useToaster();
 
+
+const isLoading = ref(false);
 
 const taskName = ref(route.query.name);
 
-const tasks = ref([]);
+const singleTask = ref({});
 const users = ref([]);
-const clients = ref([]);
-const promoters = ref([]);
+const availablePromoters = ref([]);
 
-const clientStore = useClientStore();
 const taskStore = useTask();
-const userStore = useUserStore();
-const promoterStore = usePromoter();
 const taskId = ref(route.params.id);
 
 onMounted(() => {
     getAvailablePromoters();
-    getUsers();
     getTask();
     
 });
@@ -57,6 +53,7 @@ const form = reactive({
 
 const getTask = async () => {
   taskStore.getTask(taskId.value).then(response => {
+    singleTask.value = response.data
     Object.assign(form, response.data);
   }).catch(error => {
     toaster.error("Error fetching task");
@@ -66,47 +63,59 @@ const getTask = async () => {
   });
 };
 
-const getUsers = async () => {
-	userStore.getUsers().then(function (response) {
-    
-		users.value = response.data.content
-	}).catch(function (error) {
-		toaster.error("Error fetching promoter");
-		console.log(error);
-	}).finally(function () {
-		//
-	})
-  }
-  
 
-  const getAvailablePromoters = async () => {
-  
-  userStore.getUserByRole('TTG_TALENT').then(response => {
-    promoters.value = response.data.content;
+
+  const getAvailablePromoters = async () => {  
+  taskStore.getTasksByPromoterId(taskId.value).then(response => {
+    console.log("tasks", response.data);
+    availablePromoters.value = response.data;
   }).catch(error => {
-    toaster.error("Error fetching users");
+    //toaster.error("Error fetching users");
     console.log(error);
   }).finally(() => {
     
   });
 };
 
-const getAllClients = () => {
-  clientStore.getClients().then(function (response) {
-    clients.value = response.data.content;
-  }).catch(function (error) {
-    toaster.error("Error fetching users");
-    console.log(error);
-  }).finally(function () {
-    ///
-  })
-}
+
 
 
 const redirectToProfile = (user) => {
 	let client = user.id;
 	router.push({ path: '/profile', query: { client } });
 }
+
+const selectedPromoterIds = ref([]);
+const togglePromoterSelection = (promoterId) => {
+    const index = selectedPromoterIds.value.indexOf(promoterId);
+    if (index > -1) {
+        selectedPromoterIds.value.splice(index, 1); // Unselect (remove from array)
+    } else {
+        selectedPromoterIds.value.push(promoterId); // Select (add to array)
+    }
+    console.log('selectedPromoterIds',selectedPromoterIds.value);
+    
+};
+
+const saveSelectedPromoters = () => {
+  isLoading.value = true;
+  let promoterIds = {
+    "promoterIds": selectedPromoterIds.value
+  };
+   taskStore.addPromotersToTask(taskId.value, promoterIds).then(response => {
+    console.log("response", response);
+    toaster.success("Promoters added successfully");
+    isLoading.value = false;
+    getAvailablePromoters();
+   }).catch(error => {
+    isLoading.value = false;
+    toaster.error("Error adding promoters");
+    console.log(error);
+   }).finally(() => {
+      isLoading.value = false;
+   })
+}
+
 </script>
 <template>
   <Layout>
@@ -175,60 +184,95 @@ const redirectToProfile = (user) => {
          
         </div>
 
+    
+
+
+
         <div class="row mt-6 row-cols-xl-9 gap-4">
           <div class="">
-            <h4 class="mb-2 ml-2">Available Promoters</h4>
+            <h4 class="mb-2 ml-2">Promoters on job</h4>
           </div>
-          <div v-for="user in promoters" :key="user.id" class="col-img ">
+          <div v-for="promoter in singleTask.promoterDetails" :key="promoter.id" class="col-img ">
+            <template v-if="singleTask.promoterDetails?.length > 0">
             <div  class="gallery">
-            
-                <!-- <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid"> -->
                 <div class="card flex justify-center">
                   <Image alt="Image" preview>
                       <template #previewicon>
                         <i class='bx bx-search-alt-2' ></i>
                       </template>
                       <template #image>
-                          <img src="https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg" alt="image" width="250" />
+                          <img v-id="promoter.userDetails.image != null"
+                          :src="promoter.userDetails.image ? promoter.userDetails.image : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
+                          alt="image" width="250" />
                       </template>
                       <template #preview="slotProps">
-                          <img src="https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                          <img 
+                          :src="promoter.userDetails.image ? promoter.userDetails.image : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                       </template>
                   </Image>
                   </div>
+           
+              <div>
+                <div class="desc cursor-pointer" @click="redirectToProfile(user)">
+                  {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="text-center mt-2 text-danger">No available Promoters.</div>
+          </template>
+          </div>   
+         
+        </div>
+        
+        
+        <div class="row mt-6 row-cols-xl-9 gap-4">
+          <div class="">
+            <h4 class="mb-2 ml-2">Available Promoters</h4>
+          </div>
+          <div v-for="availablePromoter in availablePromoters" :key="availablePromoter.id" class="col-img ">
+            <div  class="gallery">
+                <div class="card flex justify-center">
+                 <KeepAlive>
+                  <Image alt="Image" preview>
+                    <template #previewicon>
+                      <i class='bx bx-search-alt-2' ></i>
+                    </template>
+                    <template #image>
+                        <img v-id="availablePromoter.userDetails.image != null"
+                        :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" 
+                        alt="image" width="250" />
+                    </template>
+                    <template #preview="slotProps">
+                        <img 
+                        :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                    </template>
+                </Image>
+                 </KeepAlive>
+                  </div>
              
               <div class="checkbox">
-                <input type="checkbox" id="select">
+                <input type="checkbox" id="select" @change="togglePromoterSelection(availablePromoter.id)">
                 <span>&#x2713;</span>
               </div>
               <div>
                 <div class="desc cursor-pointer" @click="redirectToProfile(user)">
-                  {{ user.firstName }} {{ user.lastName }}</div>
-                <div><button class="btn btn-primary rounded-0 w-100">Add</button></div>
+                  {{ availablePromoter.userDetails.firstName }} {{ availablePromoter.userDetails.lastName }}</div>
               </div>
             </div>
           </div>   
+            <div class="ms-auto" v-if="selectedPromoterIds.length > 0">
+              <a @click="saveSelectedPromoters" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+                   <div v-if="isLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <i v-if="!isLoading"  class="bx bxs-plus-square"></i>
+                  {{ isLoading ?  '' : 'Save' }}
+              </a>
+          </div>
+          </div>
          
-        </div>
 
-        <div class="row mt-6 row-cols-xl-9 gap-4">
-          <div class="">
-            <h4 class="mb-2 ml-2">Promoters on job</h4>
-          </div>
-          <div class="col-img ">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid">
-              </router-link>
-              <div>
-                <div class="desc">Mazisi Msebele</div>
-                <div><button class="btn btn-danger rounded-0 w-100">Remove</button></div>
-              </div>
-            </div>
-          </div>
-    
         
-        </div>
      
       </div>
     </div>
@@ -239,7 +283,6 @@ const redirectToProfile = (user) => {
 
 
 <style scoped>
-@import 'lightbox2/dist/css/lightbox.css';
 
 .main-dashboard-head {
   display: flex;
