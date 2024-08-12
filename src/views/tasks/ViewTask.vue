@@ -86,8 +86,9 @@ const getTask = async () => {
 
 
 const redirectToProfile = (user) => {
+  console.log("user", user);
 	let client = user.id;
-	router.push({ path: '/profile', query: { client } });
+	router.push({ path: `/profile/${user.id}` });
 }
 
 const selectedPromoterIds = ref([]);
@@ -218,7 +219,7 @@ const saveSelectedPromoters = () => {
                   </div>
            
               <div>
-                <div class="desc cursor-pointer" @click="redirectToProfile(user)">
+                <div class="desc cursor-pointer" @click="redirectToProfile(promoter)">
                   {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
               </div>
             </div>
@@ -263,7 +264,7 @@ const saveSelectedPromoters = () => {
                 <span>&#x2713;</span>
               </div>
               <div>
-                <div class="desc cursor-pointer" @click="redirectToProfile(user)">
+                <div class="desc cursor-pointer" @click="redirectToProfile(availablePromoter)">
                   {{ availablePromoter.userDetails.firstName }} {{ availablePromoter.userDetails.lastName }}</div>
               </div>
             </div>

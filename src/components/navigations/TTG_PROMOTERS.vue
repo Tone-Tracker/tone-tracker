@@ -12,26 +12,17 @@ const activeItem = ref('');
 const currentRoute = useRoute();
 console.log(currentRoute.path);
 
-const setActiveItem = (item) => {
-  activeItem.value = item;
-};
-///////////active//////////
-
 const online = useOnline()
 
 const isOnline = online;
 const props = defineProps({
     user: Object
 });
-
 const getRoleName = () => {
-    return props.user.role == 'TTG_TALENT' ? 'Super User' : 'Admin'
+    return props.user.role == 'TTG_TALENT' ? 'Talent' : ''
 }
 
-function goToProfile(id) {
-  
-  router.push({ path: `/profile` })
-}
+
 
 </script>
 <template>
@@ -63,9 +54,9 @@ function goToProfile(id) {
                     <div class="accordion-body">
                         <ul class="nav-list">
                             <li><router-link to="/talent"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                            <li><router-link to="/talent/images"><span class="icon"><i class='bx bx-file'></i></span> Upload Images</router-link></li>
-                            <li  @click="goToProfile"><a><span class="icon"><i class='bx bx-file'></i></span> Profile </a></li>
-                            <li><router-link to="/talent/check-list"><span class="icon"><i class='bx bx-map'></i></span> Check List</router-link></li>
+                            <li :class="{ 'active': currentRoute.path === '/profile' || currentRoute.path === `/profile/${user.activeUserId}`}">
+                                <router-link  :to="{ path: `/profile/${user.activeUserId}` }"><span class="icon"><i class='bx bx-user-pin'></i></span> Profile </router-link></li>
+                            <!-- <li><router-link to="/talent/check-list"><span class="icon"><i class='bx bx-map'></i></span> Check List</router-link></li> -->
                             <li><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
                          
                             <li class="mx-3"><span class="icon"><i class='bx bx-map' ></i></span> <LocationButton /></li>
