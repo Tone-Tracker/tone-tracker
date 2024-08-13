@@ -315,7 +315,7 @@ const deleteRecord = (event, task) => {
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb title="Tasks" icon="bx bx-task" />
-                <h4 class="mx-2">Activation: {{ activationName }}</h4>
+                <!-- <h4 class="mx-2">Activation: {{ activationName }}</h4> -->
                 <div class="card">
                     <div class="card-body">
                             <div class="table-container-colour pt-2 p-5">

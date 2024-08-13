@@ -7,8 +7,8 @@
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
                 <div class="chart-container-1">
-                  <GoogleMap
-                    api-key="AIzaSyDhe12nX_E0ya4vk662T-_hAPHH9NuuGkw"
+                  <GoogleMap @click=""
+                    api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
                     style="width: 100%; height: 800px"
                     :center="center"
                     :zoom="9"
@@ -17,14 +17,15 @@
                     <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
                       <InfoWindow>
                         <div class="popup">
+                          <div  class="text-danger fs-3 text-end" >
+                            <i @click="close = true" class='cursor-pointer bx bx-x'></i></div>
                           <div class="inner-container">
-                            <h2>Team: 01</h2>
+                            <h2>{{ location.title }}</h2>
                             <p>CPC: R 2.00</p>
-                            <p>Start / End date: 22 Jan - 28 Jun</p>
+                            <p>Start / End date: {{ location.startDate }} - {{ location.endDate }}</p>
                             <p>Current Cost: R 25,000.00</p>
                             <p>Leads generated: 100,000</p>
-                            <h3>{{ location.title }}</h3>
-                            <p>247 New Brunswick Rd Aph 282</p>
+                            <h3>{{ location.regionName }} Activation</h3>
                           </div>
                         </div>
                       </InfoWindow>
@@ -42,10 +43,61 @@
 <script setup>
 import { onMounted,watch,ref } from 'vue';
 import Layout from '../shared/Layout.vue';
-import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map'
+import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
+import { useActivation } from '@/stores/activation';
+import { useAuth } from '@/stores/auth';
 
 const center = { lat: -25.6793642, lng: 28.1941785 };
 const infowindow = ref(false); // Will be open when mounted
+
+const activeInfoWindow = ref(null);
+const target = ref(null);
+const activationStore = useActivation();
+const authStore = useAuth();
+const staffID = JSON.parse(authStore.user)?.activeUserId;
+defineEmits(['closeModal']);
+
+const closeInfoWindow = () => {
+  //emit 'closeModal'
+  emit('closeModal');
+}
+
+watch(infowindow, (v) => {
+  alert('infowindow has been ' + (v ? 'opened' : 'closed'));
+});
+
+
+const activations = ref([]);
+let locations = ref([]);
+
+const getAllActivations = () => {
+
+  //get activations for Admins
+  const user = JSON.parse(authStore.user);
+ 
+  if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){  
+    activationStore.getAllActivationsAdmins().then(function (response) {
+      activations.value = response.data;
+      //map activations
+      locations.value = activations.value.map(activation => ({
+          lat: activation.centralPoint.latitude,
+          lng: activation.centralPoint.longitude,
+          startDate: activation.startDate,
+          endDate: activation.endDate,
+          regionName: activation.regionName,
+          title: activation.name
+        }));
+
+        console.log('test location', locations);
+    })
+  }
+
+
+
+
+  
+
+}
 
 const mapStyles = [
   {
@@ -137,23 +189,14 @@ const mapStyles = [
   }
 ];
 
-const locations = [
-  { lat: -26.0184568, lng: 28.0055974, title: 'Gauteng Activation' },
-  { lat: -41.330162, lng: 174.865694, title: 'Eastern Cape Activation' },
-  { lat: -25.93312, lng: 28.01213, title: 'North West Activation' },
-  { lat: -26.1851663, lng: 28.315154, title: 'Cape Town Activation' },
-  { lat: -25.6793642, lng: 28.1941785, title: 'Durban Activation' },
-  { lat: -26.038240, lng: 28.213280, title: 'Limpopo Activation' },
-]
 
-watch(infowindow, (v) => {
-  //alert('infowindow has been ' + (v ? 'opened' : 'closed'));
-});
+
+
 
 
 
 onMounted(() => {
-  // initMap();
+  getAllActivations();
 });
 </script>
 
