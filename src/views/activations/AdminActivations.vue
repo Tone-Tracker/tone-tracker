@@ -26,7 +26,7 @@ const userStore = useUserStore();
 const authStore = useAuth();
 const staff = useStaff();
 const campaignId = ref(route.query.campaign);
-const campaignName = ref(route.query.campaign.name);
+const campaignDetails = ref(null);
 const regionId = ref(route.query.region);
 let userRole = null;
 
@@ -71,11 +71,26 @@ onMounted(() => {
 	}
 	getRegions();
 	getAllUsers();
+	//get campaign details
+	getCampaignDetails();
 
 	//get user role from store
 	userRole = userStore.get
 
 });
+
+
+//get campaign details
+const getCampaignDetails = () => {
+
+	campaignStore.getCampaignName(campaignId.value).then(function (response) {
+		campaignDetails.value = response.data;
+	}).catch(function (error) {
+		toaster.error("Error fetching campaign details");
+		console.log(error);
+	})
+}
+
 
 const canCreateActivation = () => {
 	return user.role == 'TTG_SUPER_ADMIN'  
@@ -170,8 +185,10 @@ const onInput = () => {
         
         // Fetch activations
         const response = await activation.getAllActivations(userRole, id);
-		console.log("test", response);
         activations.value = response.data.content;
+		if(activations.value.length > 0){
+				campaignDetails = activations.value[0].campaignDTO
+		}
     } catch (error) {
         console.error('Error fetching activations:', error);
         // Uncomment the next line if you have a toaster notification system
@@ -211,7 +228,7 @@ const items = (activation) => [
         label: 'View Activation',
         icon: 'bx bx-bullseye fs-4 text-success',
         command: () => {
-            URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${activation.campaign.name.value}&name=${activation.name}`);
+            URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${activation.campaignDTO.name}&name=${activation.name}`);
         }
     },
 	{
@@ -354,13 +371,7 @@ const addActivationManager = () => {
 	}
 }
 
-const getUserName = (activation) => {
-	if(!activation.staff) return '';
-	
-	let myUser = users.value.content.find(user => user.id === activation.staff)?.firstName + ' ' + users.value.content.find(user => user.id === activation.staff)?.lastName;
-      if(myUser == 'undefined undefined') return '';
-	return myUser
-}
+
 const search = (event) => {
     const query = event.query.toLowerCase();
 	
@@ -392,7 +403,7 @@ const isActivationManager = () => {
 								type="text" class="form-control ps-5" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
 						  <div v-if="canCreateActivation()" class="ms-auto">
-							<router-link :to="`/create-activation?campaign=${campaignId}&name=${campaignName}`"  class="btn maz-gradient-btn mt-2 mt-lg-0">
+							<router-link :to="`/create-activation?campaign=${campaignId}&name=${campaignDetails?.name}`"  class="btn maz-gradient-btn mt-2 mt-lg-0">
 							<i class="bx bxs-plus-square"></i>Create Activation</router-link>
 						</div>
 						</div>
@@ -413,27 +424,27 @@ const isActivationManager = () => {
 								<tbody >
 									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
-										<td>{{ activation.campaign.name }}</td>
+										<td>{{ activation.campaignDTO.name }}</td>
 										<td>{{ activation.region.name }}</td> 
 										<td>R {{activation.budget}}</td>
 										<td>{{activation.startDate}}</td>
 										<td>{{activation.endDate}}</td>
 										<td>
-											{{ getUserName(activation) }}
+											{{ activation.firstName + ' ' + activation.lastName }}
 										</td>
 										<td>
 											<div class="d-flex order-actions">
 												<template v-if="isAdmin()">
 													<SplitButton class="text-white" label="Actions" 
-											icon="bx bx-cog fs-4" 
-											dropdownIcon="text-white fs-4 bx bx-chevron-down" 
-                                            :model="items(activation)"/>
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="items(activation)"/>
 												</template>
 												<template v-if="isActivationManager()">
 													<SplitButton class="text-white" label="Actions" 
-											icon="bx bx-cog fs-4" 
-											dropdownIcon="text-white fs-4 bx bx-chevron-down" 
-                                            :model="activationItems(activation)"/>
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="activationItems(activation)"/>
 												</template>
 											
 											</div>

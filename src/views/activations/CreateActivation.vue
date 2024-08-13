@@ -17,7 +17,6 @@ import { useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 const campaignId = ref(route.query.campaign);
-// 
 const campaignName = ref(route.query.name);
 const activationManager = ref(route.query.manager);
 const activationId = ref(route.query.activation);
@@ -32,6 +31,7 @@ const regionStore = useRegion();
 const regions = ref([]);
 
 onMounted(() => {
+  
   getRegions();
   if (activationId.value) {
     //Its edit
@@ -142,7 +142,7 @@ try {
         />
         <div class="d-flex">
           <h5 class="mx-2">Campaign: {{ campaignName }}</h5>
-          <h5 class="mx-2">
+          <h5 v-if="activationManager" class="mx-2">
             Activation Manager:
             <span class="maz-gradient-txt">{{ activationManager }}</span>
           </h5>
