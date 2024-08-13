@@ -76,7 +76,7 @@ const downloadDocument = async (path) => {
                             </div>
                         </div>
                         <div class="row">
-                            <div v-if="briefs.length > 0" v-for="(briefItem, index) in briefs" :key="briefItem.id" class="col-md-2 col-lg-2">
+                            <div v-if="briefs.length > 0" v-for="(briefItem, index) in briefs" :key="briefItem.id" class="col-md-4 col-lg-3 mb-4">
                                 <div class="brief-card">
                                     <h5 class="py-1 px-4 mb-0 text-center bg-black">{{ briefItem.activationName }}</h5>
                                     <div class="text-center">
