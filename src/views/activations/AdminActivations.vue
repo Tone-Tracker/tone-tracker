@@ -26,6 +26,7 @@ const userStore = useUserStore();
 const authStore = useAuth();
 const staff = useStaff();
 const campaignId = ref(route.query.campaign);
+const campaignName = ref(route.query.campaign.name);
 const regionId = ref(route.query.region);
 let userRole = null;
 

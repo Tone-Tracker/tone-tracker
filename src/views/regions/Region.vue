@@ -271,7 +271,7 @@ const openModal = (pos,region) => {
                 <div class="col-md-12">
                     <div class="card my-card flex justify-center">
                         <label for="input1" class="form-label">Regional Manager</label>
-                        <Select v-model="regionalManager" @change="onRegManagerChange($event)" :options="regionalManagers" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" />
+                        <Select v-model="regionalManager" @change="onRegManagerChange($event)" :options="regionalManagers" showClear  optionLabel="name" placeholder="Select Regional Manager" class="w-full md:w-56" />
                           
                 </div>                        
                 </div>
