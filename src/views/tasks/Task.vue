@@ -99,6 +99,7 @@ const showLoading = ref(false);
 const form = reactive({
     status: '',
     type: '',
+    startDate: null,
 	plannedEndDate: null,
 	timeRecord: null,
     completion: null,
@@ -114,7 +115,8 @@ const rules = {
     status: { required },
     type: {required},
     name: { required },
-	plannedEndDate: { required },
+    startDate: { required },
+    plannedEndDate: { required },
 	timeRecord: { required },
 	jobNumber: { required },
 	completion: { required },
@@ -165,6 +167,10 @@ const onPlannedEndDateChange = (event) => {
     form.plannedEndDate = moment(event).format('YYYY-MM-DD');
 }
 
+const onPlannedStartDateChange = (event) => {
+    form.startDate = moment(event).format('YYYY-MM-DD');
+}
+
 const getTasksByActivationId = async () => {
   taskStore.getTasksByActivationId(activation.value).then(response => {
   console.log("tasks", response.data);
@@ -198,6 +204,7 @@ const openModal = (pos,task) => {
     form.type = form.type = types.value.find(stat => stat.code === task.type).code;
     Object.assign(form, {
     // status: task.status,
+     startDate: task.startDate,
      plannedEndDate: task.plannedEndDate,
      timeRecord: task.timeRecord,
      completion: task.completion,
@@ -206,14 +213,11 @@ const openModal = (pos,task) => {
     //  activation: task.activation
     })
   }else{
-    // isEdit.value = false;
-    // taskId.value = null;
-    // activation.value = null;
-    // status.value = null;
-    // form.activation = null;
+    
     Object.assign(form, {
      status: null,
      type: null,
+     startDate: null,
      plannedEndDate: null,
      timeRecord: null,
      completion: null,
@@ -310,7 +314,8 @@ const deleteRecord = (event, task) => {
                                             <th>Activation</th>
                                             <th>Task</th>
                                             <th>Risk</th>
-                                            <th>Planned End date</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
                                             <th>Time Record</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
@@ -323,6 +328,7 @@ const deleteRecord = (event, task) => {
                                             <td  :class="getClass(task.status)">
                                                 {{ getStatus(task.status) }}
                                             </td>
+                                            <td>{{task.startDate}}</td>
                                             <td>{{task.plannedEndDate}}</td>
                                             <td>{{task.timeRecord}}</td>
                                             <td>{{task.completion}}</td>
@@ -332,7 +338,7 @@ const deleteRecord = (event, task) => {
                                                     <i class='bx bxs-edit'></i>
                                                   </a>
 
-                                                  <router-link :to="`/tasks/${task.id}?name=${task.name}`" class="ms-1"click="openModal('top',task)">
+                                                  <router-link :to="`/tasks/${task.id}?name=${task.name}`" class="ms-1" click="openModal('top',task)">
                                                     <i class='text-success bx bx-bullseye'></i>
                                                   </router-link>
                                                   
@@ -404,8 +410,18 @@ const deleteRecord = (event, task) => {
                                <div class="input-errors" v-for="error of v$.type.$errors" :key="error.$uid">
                                <div class="text-danger">Type is required</div>
                             </div>
-                    </div>                        
+                     </div>                        
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Planned Start Date</label>
+                            <DatePicker v-model="form.startDate" @date-select="onPlannedStartDateChange($event)" showButtonBar showIcon fluid :showOnFocus="true" />
+                               <div class="input-errors" v-for="error of v$.startDate.$errors" :key="error.$uid">
+                               <div class="text-danger">Start date is required</div>
+                            </div>
+                    </div>
+                </div>
 
 
                     <div class="col-md-6">

@@ -15,9 +15,15 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.put(`/api/tasks/${id}`,formData);
     }
 
-    const addPromotersToTask = (taskId,arrayOfPromoterIDs) => {
-      return axiosInstance.post(`/api/tasks/promoters/${taskId}`,arrayOfPromoterIDs);
-    }
+    const addPromotersToTask = (taskId, arrayOfPromoterIDs) => {
+      return axiosInstance.post(
+          `/api/tasks/promoters/${taskId}`,
+          arrayOfPromoterIDs 
+          
+      );
+  }
+  
+  
     const deleteTask = (id) => {
       return axiosInstance.delete(`/api/tasks/${id}`);
     }

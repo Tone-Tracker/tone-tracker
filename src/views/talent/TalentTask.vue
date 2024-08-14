@@ -103,6 +103,7 @@ const form = reactive({
     status: '',
     type: '',
 	plannedEndDate: null,
+    startDate: null,
 	timeRecord: null,
     completion: null,
     jobNumber: null,
@@ -117,7 +118,16 @@ const rules = {
     status: { required },
     type: {required},
     name: { required },
-	plannedEndDate: { required },
+    startDate: {required},
+    plannedEndDate: { 
+        required,
+        validator: (value, { parent }) => {
+            if (new Date(value) < new Date(parent.startDate)) {
+                return 'Planned end date must be on or after the start date';
+            }
+            return true;
+        }
+    },
 	timeRecord: { required },
 	jobNumber: { required },
 	completion: { required },
@@ -173,6 +183,10 @@ const onPlannedEndDateChange = (event) => {
     form.plannedEndDate = moment(event).format('YYYY-MM-DD');
 }
 
+const onPlannedStartDateChange = (event) => {
+    form.startDate = moment(event).format('YYYY-MM-DD');
+}
+
 const getTasksByPromoterId = async (promoterId) => {
   taskStore.getTasksByPromoterId(promoterId).then(response => {
   console.log("tasks", response.data);
@@ -217,22 +231,20 @@ const openModal = (pos,task) => {
     form.type = form.type = types.value.find(stat => stat.code === task.type).code;
     Object.assign(form, {
     // status: task.status,
+     startDate : task.startDate,
      plannedEndDate: task.plannedEndDate,
      timeRecord: task.timeRecord,
      completion: task.completion,
      jobNumber: Number(task.jobNumber),
      name: task.name,
-    //  activation: task.activation
+    
     })
   }else{
-    // isEdit.value = false;
-    // taskId.value = null;
-    // activation.value = null;
-    // status.value = null;
-    // form.activation = null;
+    
     Object.assign(form, {
      status: null,
      type: null,
+     startDate: null,
      plannedEndDate: null,
      timeRecord: null,
      completion: null,
@@ -382,9 +394,6 @@ const deleteRecord = (event, task) => {
                         </div> 
                     </div>
 
-                    
-                   
-
                     <div class="col-md-6">
                         <div class="card my-card flex justify-center">
                             <label for="input1" class="form-label">Name</label>
@@ -421,6 +430,16 @@ const deleteRecord = (event, task) => {
                             <Select v-model="type" @change="onTypeChange($event)" :options="types" showClear  optionLabel="name" placeholder="Select Type" class="w-full md:w-56" />
                                <div class="input-errors" v-for="error of v$.type.$errors" :key="error.$uid">
                                <div class="text-danger">Type is required</div>
+                            </div>
+                    </div>                        
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Planned Start Date</label>
+                            <DatePicker v-model="form.plannedEndDate" @date-select="onPlannedEndDateChange($event)" showButtonBar showIcon fluid :showOnFocus="true" />
+                               <div class="input-errors" v-for="error of v$.plannedEndDate.$errors" :key="error.$uid">
+                               <div class="text-danger">End date is required</div>
                             </div>
                     </div>                        
                     </div>

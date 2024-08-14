@@ -105,22 +105,25 @@ const togglePromoterSelection = (promoterId) => {
 
 const saveSelectedPromoters = () => {
   isLoading.value = true;
-  let promoterIds = {
-    "promoterIds": selectedPromoterIds.value
-  };
-   taskStore.addPromotersToTask(taskId.value, promoterIds).then(response => {
-    console.log("response", response);
-    toaster.success("Promoters added successfully");
-    isLoading.value = false;
-    getAvailablePromoters();
-   }).catch(error => {
-    isLoading.value = false;
-    toaster.error("Error adding promoters");
-    console.log(error);
-   }).finally(() => {
+  
+  // Ensure selectedPromoterIds.value is an array before sending it
+  const promoterIdsArray = Array.isArray(selectedPromoterIds.value) ? selectedPromoterIds.value : [selectedPromoterIds.value];
+
+  taskStore.addPromotersToTask(taskId.value, promoterIdsArray)
+    .then(response => {
+      console.log("response", response);
+      toaster.success("Promoters added successfully");
+      getAvailablePromoters();
+    })
+    .catch(error => {
+      toaster.error("Error adding promoters");
+      console.log(error);
+    })
+    .finally(() => {
       isLoading.value = false;
-   })
+    });
 }
+
 
 </script>
 <template>
@@ -177,11 +180,7 @@ const saveSelectedPromoters = () => {
                                 <label for="input2" class="form-label">Location</label>
                                 <input v-model="form.address" type="text" readonly class="form-control" id="input2" >
                             </div>
-                            <!-- <div class="col-md-4">
-                                <label for="input3" class="form-label">Time Record</label>
-                                <input v-model="form.timeRecord" type="text" readonly class="form-control" id="input3">
-                            </div> -->
-
+                            
 
                         </div>
                     </div>
