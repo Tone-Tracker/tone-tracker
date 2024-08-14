@@ -20,7 +20,7 @@ const getUserRole = (role) => {
 <template>
 
     <div class="sidebar-wrapper  toggled d-flex" data-simplebar="init">
-        <div class="simplebar-wrapper" style="margin: 0px;">
+        <div class="simplebar-wrapper" style="margin: 0px; width: 75%;background: #141414;">
           <div class="simplebar-height-auto-observer-wrapper">
             <div class="simplebar-height-auto-observer"></div>
           </div>
