@@ -140,7 +140,7 @@ a {
 
 	position: fixed;
 
-	top: 90px;
+	top: 78px;
 
 	bottom: 0;
 
@@ -315,7 +315,7 @@ html.dark-theme .page-footer {
 
 .wrapper.toggled .topbar {
 
-	left: 70px
+	/* left: 70px */
 }
 
 

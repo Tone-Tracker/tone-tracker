@@ -28,16 +28,6 @@ const getUserRole = (role) => {
             <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
               <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll;">
                 <div class="simplebar-content mm-active" style="padding: 0px;">
-                  <div class="sidebar-header">
-                    <div>
-                      <!-- <img src="assets/images/logo-icon.png" class="logo-icon" alt="logo icon"> -->
-                    </div>
-                    <div>
-                      <h4 class="logo-text">Rocker</h4>
-                    </div>
-                    <div class="toggle-icon ms-auto"><i class="bx bx-arrow-back"></i>
-                    </div>
-                  </div>
                   <!--navigation-->
                   <ul class="metismenu mm-show" id="menu">
                     <li v-tooltip="'Activation'">
