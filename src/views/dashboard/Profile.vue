@@ -20,7 +20,11 @@ Date: 04/06/2024
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
                                 <div class="image-container">
-                                    <img src="/src/assets/images/gallery/10.png" alt="Admin" class=" zoom-image" style="width: 300px; height: 350px;">
+                                    <img src="/src/assets/images/gallery/10.png" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;">
+                                    <div v-if="isMyProfile()" 
+                                        class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
+                                        <i class='bx bx-edit-alt fs-2'></i>
+                                    </div>
                                 </div>
 
                                 <div class="mt-3">
@@ -143,6 +147,42 @@ Date: 04/06/2024
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Add Profile picture modal -->
+                                <div class="modal fade" id="addProfilePicModal" tabindex="-1" aria-labelledby="addModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addModalLabel">Add Profile Picture</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                                
+                                        </div>
+                                        <div class="modal-body">
+                                            <input @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
+                                           <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label>
+                                           <p v-if="profilePicName" class="text-center text-white mt-2">{{ profilePicName }}</p>
+
+                                           <div v-if="profilePicPreview" class="text-center mt-3">
+                                            <img :src="profilePicPreview" alt="Profile Preview" class="img-thumbnail" style="max-width: 100%; height: auto;">
+                                          </div>
+
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <div class="col-12 mt-4">
+                                                <div class="d-grid">
+                                                    <button @click="onSubmit" class="btn maz-gradient-btn"
+                                                        type="button">
+                                                        Save
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             </div>
                             <div class="mb-1">
@@ -391,7 +431,18 @@ const totalSize = ref(0);
 
 const user = JSON.parse(authStore.user)
 const promoterData = ref({});
+const profilePicName = ref('');
+const profilePicPreview = ref(null);
 
+
+const onProfilePicSelect = (event) => {
+    const file = event.target.files[0];
+    
+    if (file) {
+        profilePicName.value = file.name;
+        profilePicPreview.value = URL.createObjectURL(file);
+    }
+};
 const getPromoterDetails = () => {
     promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
         promoterData.value = response.data;
@@ -400,6 +451,7 @@ const getPromoterDetails = () => {
     console.log(error);
   });
 }
+
 
 const isMyProfile = () => {
     // console.log(promoterId.value, user.activeUserId)
@@ -606,5 +658,32 @@ div.desc {
 .file-item .remove-file {
     cursor: pointer;
     color: #ff6b6b;
+}
+
+
+
+
+
+
+
+
+
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.edit-icon {
+    position: absolute;
+    top: 3px;
+    border-radius: 50%;      
+    padding: 5px;  
+    cursor: pointer;
+}
+
+.edit-icon i {
+    font-size: 20px; 
+    color: #fff;
 }
 </style>
