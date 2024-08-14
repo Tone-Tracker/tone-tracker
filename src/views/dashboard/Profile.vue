@@ -173,7 +173,7 @@ Date: 04/06/2024
                                         <div class="modal-footer">
                                             <div class="col-12 mt-4">
                                                 <div class="d-grid">
-                                                    <button @click="onSubmit" class="btn maz-gradient-btn"
+                                                    <button @click="saveProfilePicture" class="btn maz-gradient-btn"
                                                         type="button">
                                                         Save
                                                     </button>
@@ -433,6 +433,7 @@ const user = JSON.parse(authStore.user)
 const promoterData = ref({});
 const profilePicName = ref('');
 const profilePicPreview = ref(null);
+const profilePic = ref(null);
 
 
 const onProfilePicSelect = (event) => {
@@ -442,7 +443,24 @@ const onProfilePicSelect = (event) => {
         profilePicName.value = file.name;
         profilePicPreview.value = URL.createObjectURL(file);
     }
+    profilePic.value = file;
 };
+
+const saveProfilePicture = () => {
+const formData = new FormData();
+    formData.append('pic', profilePic.value);
+const config = {
+useMultipartFormData: true // Add this flag to the request config
+};
+console.log(formData)
+return
+
+promoterStore.uploadPromoterImages(formData, config).then(function (response) {
+    console.log(response);
+})
+
+}
+
 const getPromoterDetails = () => {
     promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
         promoterData.value = response.data;
@@ -520,6 +538,10 @@ const onSubmit = () => {
     })
 
 }
+
+
+
+
 
 </script>
 <style>
