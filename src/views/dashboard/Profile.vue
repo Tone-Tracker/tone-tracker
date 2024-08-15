@@ -19,7 +19,7 @@ Date: 04/06/2024
                     <div class="col-lg-5">
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
-                                <div class="image-containerr">
+                                <div class="image-container">
                                     <div class="card flex justify-center">
                                         <Image alt="Image" preview>
                                             <template #previewicon>
@@ -402,7 +402,7 @@ Date: 04/06/2024
     </Layout>
 </template>
 <script setup>
-import VuePictureCropper, { cropper } from 'vue-picture-cropper'
+// import VuePictureCropper, { cropper } from 'vue-picture-cropper'
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
 import Rating from 'primevue/rating';
@@ -766,15 +766,15 @@ div.desc {
 
 
 .image-container {
-    width: 300px;
+    width: 370px;
     position: relative;
     display: inline-block;
 }
 
 .edit-icon {
     position: absolute;
-    top: 3px;
-    right: 3px;
+    top: 5px;
+    right: 10px;
     border-radius: 50%;      
     padding: 5px;  
     cursor: pointer;
