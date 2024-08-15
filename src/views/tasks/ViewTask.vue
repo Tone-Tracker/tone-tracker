@@ -113,6 +113,7 @@ const saveSelectedPromoters = () => {
     .then(response => {
       console.log("response", response);
       toaster.success("Promoters added successfully");
+      getTask();
       getAvailablePromoters();
     })
     .catch(error => {
