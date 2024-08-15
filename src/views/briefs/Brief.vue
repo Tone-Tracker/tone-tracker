@@ -5,7 +5,7 @@ import { onMounted, ref, watch } from 'vue';
 import { useBrief } from '@/stores/brief';
 import { useRoute } from 'vue-router';
 import Drawer from 'primevue/drawer';
-import PDF from "pdf-vue3";
+// import PDF from "pdf-vue3";
 import { isClient } from '@vueuse/shared'
 import { useShare } from '@vueuse/core'
 
