@@ -63,17 +63,17 @@ const getRoleName = () => {
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul class="nav-list">
-                                <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/jobs' }" ><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat ps-3'></i></span> All</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/jobs' }" ><router-link to="/jobs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Jobs</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>
                                 <!-- <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li> -->
-                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase ps-3'></i></span> CRM</router-link></li>
                                 <!-- <li><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li> -->
                                 <!-- <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li> -->
-                                <li :class="{ 'active': currentRoute.path === '/message-center' }" ><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/message-center' }" ><a href="#"><span class="icon"><i class='bx bx-envelope ps-3'></i></span> Message center</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><span class="icon"><i class='bx bx-send ps-3'></i></span> Sent</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><span class="icon"><i class='bx bx-envelope-open ps-3'></i></span> Unread</a></li>
                             </ul>
 
                         </div>
