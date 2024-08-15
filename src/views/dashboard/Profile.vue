@@ -160,12 +160,13 @@ Date: 04/06/2024
                                                 
                                         </div>
                                         <div class="modal-body">
-                                            <input @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
+                                            <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
                                            <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label>
                                            <p v-if="profilePicName" class="text-center text-white mt-2">{{ profilePicName }}</p>
 
                                            <div v-if="profilePicPreview" class="text-center mt-3">
                                             <img :src="profilePicPreview" alt="Profile Preview" class="img-thumbnail" style="max-width: 100%; height: auto;">
+                                            
                                           </div>
 
                                         </div>
