@@ -699,6 +699,7 @@ div.desc {
 .edit-icon {
     position: absolute;
     top: 3px;
+    right: 58px;
     border-radius: 50%;      
     padding: 5px;  
     cursor: pointer;
