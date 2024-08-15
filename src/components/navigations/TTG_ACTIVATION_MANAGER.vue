@@ -128,7 +128,7 @@ export default {
 
 <style scoped>
 .profile .accordion-button::after {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .accordion-button::after {
@@ -139,15 +139,15 @@ export default {
     width: 240px;
     background-color: #000;
     color: #fff;
-   
+    /* padding: 20px; */
+    /* font-family: Arial, sans-serif; */
 }
 
 .profile {
-   
+    /* padding: 20px; */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
 }
 
 .profile-info {
@@ -160,7 +160,23 @@ export default {
     font-weight: bold;
 }
 
+.round-guest {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 7px;
+}
+.online{
+    background-color: #15ca20 !important
+}
+.offline{
+    background-color: #fd3550!important
+}
 
+.status {
+    font-size: 14px;
+}
 
 .edit-profile-btn {
     background: none;
@@ -175,7 +191,9 @@ export default {
     padding: 0;
 }
 
-
+.nav-list li {
+    /* margin: 15px 0; */
+}
 
 .nav-list a {
     color: #fff;
@@ -189,7 +207,8 @@ export default {
 }
 
 .nav-list a:hover {
-    text-decoration: underline;
+    /* text-decoration: underline; */
+    background-color: #1f1e1e
 }
 
 /* //////////////////// */
@@ -223,12 +242,12 @@ export default {
     color: #fff;
 }
 
-/* //icon// */
 .nav-list i {
     font-size: 1.5rem; /* Adjust this value as needed */
 }
 
-/* ////////headrer///////// */
+/* //////////////////// */
+
 /* header section */
 .accordion-header.profile {
     background-color: #1e1e1e;
@@ -238,7 +257,7 @@ export default {
     background-color: transparent;
     box-shadow: none;
     padding: 10px 15px;
-    width: 91% !important;
+    width: 100% !important;
     
 }
 
@@ -296,9 +315,7 @@ export default {
     margin-bottom: 0px;
 }
 
-
-
-/* ///////scrollable///////////////// */
+/* /////////////////// */
 .side-nav-wrapper {
   height: 100vh; /* Full viewport height */
   overflow-y: auto; /* Enable vertical scrolling */
@@ -329,6 +346,7 @@ export default {
 .side-nav-wrapper::-webkit-scrollbar-track {
   background-color: #1e1e1e;
 }
+
 /* ////////Active////////// */
 .side-nav__item.active,
 .side-nav__item:hover {
@@ -338,4 +356,7 @@ export default {
 .active{
     background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
+  
+
+
 </style>

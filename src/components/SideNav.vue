@@ -26,10 +26,10 @@ const getUserRole = (role) => {
           </div>
           <div class="simplebar-mask">
             <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-              <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll;">
+              <div class="simplebar-content-wrapper" style="height: 100%; ;">
                 <div class="simplebar-content mm-active" style="padding: 0px;">
                   <!--navigation-->
-                  <ul class="metismenu mm-show" id="menu">
+                  <!-- <ul class="metismenu mm-show" id="menu">
                     <li v-tooltip="'Activation'">
                       <a href="javascript:;" class="has-arrow">
                         <div class="parent-icon"><i class="bx bx-home-alt"></i>
@@ -54,7 +54,8 @@ const getUserRole = (role) => {
                         <div class="menu-title">Support</div>
                       </a>
                     </li>
-                  </ul>
+                  </ul> -->
+                  <CLIENT/>
                   <!--end navigation-->
                 </div>
               </div>
@@ -64,7 +65,7 @@ const getUserRole = (role) => {
         </div>
 
 
-        <div class="mazisi  simplebar-wrapper " style="background-color: red; width: 300px;">
+        <div class="mazisi  simplebar-wrapper " style="background-color: black; width: 300px;">
             <!-- <div class="simplebar-height-auto-observer-wrapper">
               <div class="simplebar-height-auto-observer"></div>
             </div> -->

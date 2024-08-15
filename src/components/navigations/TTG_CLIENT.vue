@@ -205,7 +205,8 @@ export default {
 }
 
 .nav-list a:hover {
-    text-decoration: underline;
+    /* text-decoration: underline; */
+    background-color: #1f1e1e
 }
 
 /* //////////////////// */
@@ -254,6 +255,8 @@ export default {
     background-color: transparent;
     box-shadow: none;
     padding: 10px 15px;
+    width: 100% !important;
+    
 }
 
 .accordion-button::after {
@@ -310,8 +313,7 @@ export default {
     margin-bottom: 0px;
 }
 
-
-/* ///////scrollable///////////////// */
+/* /////////////////// */
 .side-nav-wrapper {
   height: 100vh; /* Full viewport height */
   overflow-y: auto; /* Enable vertical scrolling */
@@ -352,4 +354,7 @@ export default {
 .active{
     background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
+  
+
+
 </style>
