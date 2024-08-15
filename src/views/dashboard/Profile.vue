@@ -697,6 +697,7 @@ div.desc {
 
 .dark-theme .card {
     background-color: transparent !important;
+    padding: 0px !important;
 }
 
 /* Add some basic styling for the modal */
@@ -774,7 +775,7 @@ div.desc {
 .edit-icon {
     position: absolute;
     top: 5px;
-    right: 10px;
+    right: 20px;
     border-radius: 50%;      
     padding: 5px;  
     cursor: pointer;
