@@ -692,6 +692,7 @@ div.desc {
 
 
 .image-container {
+    width: 300px;
     position: relative;
     display: inline-block;
 }
@@ -699,7 +700,7 @@ div.desc {
 .edit-icon {
     position: absolute;
     top: 3px;
-    right: 58px;
+    right: 3px;
     border-radius: 50%;      
     padding: 5px;  
     cursor: pointer;
