@@ -19,8 +19,24 @@ Date: 04/06/2024
                     <div class="col-lg-5">
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
-                                <div class="image-container">
-                                    <img src="/src/assets/images/gallery/10.png" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;">
+                                <div class="image-containerr">
+                                    <div class="card flex justify-center">
+                                        <Image alt="Image" preview>
+                                            <template #previewicon>
+                                              <i class='bx bx-search-alt-2' ></i>
+                                            </template>
+                                            <template #image>
+                                                <img 
+                                                src="/src/assets/images/gallery/10.png" 
+                                                alt="image" width="350" />
+                                            </template>
+                                            <template #preview="slotProps">
+                                                <img 
+                                                src="/src/assets/images/gallery/10.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                            </template>
+                                        </Image>
+                                        </div>
+                                    <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
                                     <div v-if="isMyProfile()" 
                                         class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
                                         <i class='bx bx-edit-alt fs-2'></i>
@@ -36,30 +52,26 @@ Date: 04/06/2024
                                     <div class="">
                                         <div class="col-img">
                                             <div class="gallery ms-0">
-                                                <router-link to="/profile">
-                                                    <img src="../../assets/images/avatars/avatar-1.png"
-                                                        alt="Cinque Terre" width="600" height="400">
-                                                </router-link>
+                                                <div class="card flex justify-center">
+                                                    <Image alt="Image" preview>
+                                                        <template #previewicon>
+                                                          <i class='bx bx-search-alt-2' ></i>
+                                                        </template>
+                                                        <template #image>
+                                                            <img 
+                                                            src="../../assets/images/avatars/avatar-1.png" 
+                                                            alt="image" width="250" />
+                                                        </template>
+                                                        <template #preview="slotProps">
+                                                            <img 
+                                                            src="../../assets/images/avatars/avatar-1.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                        </template>
+                                                    </Image>
+                                                    </div>
 
                                             </div>
                                         </div>
-                                        <div class="col-img">
-                                            <div class="gallery">
-                                                <router-link to="/profile">
-                                                    <img src="../../assets/images/avatars/avatar-2.png" alt="Forest"
-                                                        width="600" height="400">
-                                                </router-link>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-img">
-                                            <div class="gallery">
-                                                <router-link to="/profile">
-                                                    <img src="../../assets/images/avatars/avatar-3.png"
-                                                        alt="Northern Lights" width="600" height="400">
-                                                </router-link>
-                                            </div>
-                                        </div>
+                                     
                                     </div>
                                 </div>
                                 <div class="mb-4">
@@ -162,19 +174,46 @@ Date: 04/06/2024
                                         <div class="modal-body">
                                             <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
                                            <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label>
-                                           <p v-if="profilePicName" class="text-center text-white mt-2">{{ profilePicName }}</p>
+                                           <!-- <p v-if="profilePicName" class="text-center text-white mt-2">{{ profilePicName }}</p> -->
 
-                                           <div v-if="profilePicPreview" class="text-center mt-3">
+                                           <!-- <div v-if="profilePicPreview" class="text-center mt-3">
                                             <img :src="profilePicPreview" alt="Profile Preview" class="img-thumbnail" style="max-width: 100%; height: auto;">
-                                            
-                                          </div>
 
+                                          </div> -->
+                                          <VuePictureCropper
+                                          :boxStyle="{
+                                            width: '100%',
+                                            height: '100%',
+                                            backgroundColor: '#f8f8f8',
+                                            margin: 'auto',
+                                          }"
+                                          :img="pic"
+                                          :options="{
+                                            viewMode: 1,
+                                            dragMode: 'crop',
+                                            aspectRatio: 1,
+                                          }"
+                                          @ready="ready"
+                                          class="mt-3"
+                                        />
+                                          
+                                        <div class="tools" v-if="showTools">
+                                            <button class="btn">
+                                              Cancel
+                                            </button>
+                                            <button class="btn" @click="clear">
+                                              Clear
+                                            </button>
+                                            <button class="btn" @click="reset">
+                                              Reset
+                                            </button>
+                                          </div>
                                         </div>
 
                                         <div class="modal-footer">
                                             <div class="col-12 mt-4">
                                                 <div class="d-grid">
-                                                    <button @click="saveProfilePicture" class="btn maz-gradient-btn"
+                                                    <button @click="getResult" class="btn maz-gradient-btn"
                                                         type="button">
                                                         Save
                                                     </button>
@@ -244,66 +283,27 @@ Date: 04/06/2024
                                 <div class="d-flex">
                                     <div class="col-img">
                                         <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-1.png">
-                                                <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre"
-                                                    width="600" height="400">
-                                            </a>
+                                      
+                                            <div class="card flex justify-center">
+                                                <Image alt="Image" preview>
+                                                    <template #previewicon>
+                                                      <i class='bx bx-search-alt-2' ></i>
+                                                    </template>
+                                                    <template #image>
+                                                        <img 
+                                                        src="../../assets/images/avatars/avatar-1.png" 
+                                                        alt="image" width="250" />
+                                                    </template>
+                                                    <template #preview="slotProps">
+                                                        <img 
+                                                        src="../../assets/images/avatars/avatar-1.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                    </template>
+                                                </Image>
+                                                </div>
                                             <div class="desc">Mazisi Msebele</div>
                                         </div>
                                     </div>
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-2.png">
-                                                <img src="../../assets/images/avatars/avatar-2.png" alt="Forest"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Dave Doe</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-3.png">
-                                                <img src="../../assets/images/avatars/avatar-3.png"
-                                                    alt="Northern Lights" width="600" height="400">
-                                            </a>
-                                            <div class="desc">Nkanyiso Ncube</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-4.png">
-                                                <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Rico Nyathi</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a href="../../assets/images/avatars/avatar-5.png" data-lightbox="image-1"
-                                                data-title="My caption">
-                                                <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Rico Nyathi</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-6.png">
-                                                <img src="../../assets/images/avatars/avatar-6.png" alt="Mountains"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Rico Nyathi</div>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
 
                                 <div
@@ -402,10 +402,11 @@ Date: 04/06/2024
     </Layout>
 </template>
 <script setup>
+import VuePictureCropper, { cropper } from 'vue-picture-cropper'
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
 import Rating from 'primevue/rating';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { usePromoter} from '@/stores/promoter';
 import useToaster from '@/composables/useToaster';
 import { useRoute } from 'vue-router';
@@ -414,6 +415,7 @@ import FileUpload from 'primevue/fileupload';
 import Button from 'primevue/button';
 import Badge from 'primevue/badge';
 import { useAuth } from '@/stores/auth';
+import Image from 'primevue/image';
 
 onMounted(() => {
     getPromoterDetails();
@@ -435,10 +437,44 @@ const promoterData = ref({});
 const profilePicName = ref('');
 const profilePicPreview = ref(null);
 const profilePic = ref(null);
+const showTools = ref(false);
+
+const pic = ref('');
+const uploadInput = ref(null)
+    const result = reactive({
+      dataURL: '',
+      blobURL: '',
+    })
 
 
 const onProfilePicSelect = (event) => {
-    const file = event.target.files[0];
+
+      // Reset last selection and results
+      pic.value = ''
+      result.dataURL = ''
+      result.blobURL = ''
+
+      // Get selected files
+      const { files } = event.target
+      if (!files || !files.length) return
+
+      // Convert to dataURL and pass to the cropper component
+      const file = files[0]
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        // Update the picture source of the `img` prop
+        pic.value = String(reader.result)
+
+        // Show the modal
+        showTools.value = true
+
+        // Clear selected files of input element
+        if (!uploadInput.value) return
+        uploadInput.value.value = ''
+      }
+
+    //const file = event.target.files[0];
     
     if (file) {
         profilePicName.value = file.name;
@@ -447,20 +483,57 @@ const onProfilePicSelect = (event) => {
     profilePic.value = file;
 };
 
-const saveProfilePicture = () => {
-const formData = new FormData();
-    formData.append('pic', profilePic.value);
-const config = {
-useMultipartFormData: true // Add this flag to the request config
-};
-console.log(formData)
-return
+async function getResult() {
+      if (!cropper) return
+      const base64 = cropper.getDataURL()
+      const blob = await cropper.getBlob()
+      if (!blob) return
 
-promoterStore.uploadPromoterImages(formData, config).then(function (response) {
-    console.log(response);
-})
+      const file = await cropper.getFile({
+        fileName: 'mazisi',
+      })
 
-}
+      console.log({ base64, blob, file })
+      result.dataURL = base64
+      result.blobURL = URL.createObjectURL(blob)
+      //isShowModal.value = false
+      const formData = new FormData();
+        formData.append('pic',  file);
+        const config = {
+        useMultipartFormData: true // Add this flag to the request config
+        };
+        console.log(formData)
+        // return
+
+        promoterStore.uploadPromoterImages(formData, config).then(function (response) {
+            console.log(response);
+        })
+
+    }
+
+    /**
+     * Clear the crop box
+     */
+    function clear() {
+      if (!cropper) return
+      cropper.clear()
+    }
+
+    /**
+     * Reset the default cropping area
+     */
+    function reset() {
+      if (!cropper) return
+      cropper.reset()
+    }
+
+    /**
+     * The ready event passed to Cropper.js
+     */
+    function ready() {
+      console.log('Cropper is ready.')
+    }
+
 
 const getPromoterDetails = () => {
     promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {

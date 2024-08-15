@@ -207,7 +207,7 @@ const saveSelectedPromoters = () => {
                         <i class='bx bx-search-alt-2' ></i>
                       </template>
                       <template #image>
-                          <img v-id="promoter.userDetails.image != null"
+                          <img v-if="promoter.userDetails.image != null"
                           :src="promoter.userDetails.image ? promoter.userDetails.image : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
                           alt="image" width="250" />
                       </template>
