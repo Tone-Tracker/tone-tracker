@@ -98,3 +98,9 @@ const getUserRole = (role) => {
 
     <!--end navigation-->
 </template>
+
+<style scoped>
+.simplebar-placeholder {
+  background-color: #1C1C1C !important;
+}
+</style>

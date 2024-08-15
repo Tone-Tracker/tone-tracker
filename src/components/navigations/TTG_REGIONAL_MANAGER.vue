@@ -339,7 +339,7 @@ export default {
 
 /* Add some padding to the bottom to ensure last items are visible when scrolled */
 .accordion-item:last-child {
-  padding-bottom: 20px;
+  /* padding-bottom: 20px; */
 }
 
 /* Optional: Customize the scrollbar */
