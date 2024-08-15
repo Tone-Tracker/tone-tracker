@@ -17,7 +17,7 @@ const setActiveItem = (item) => {
 <template>
   <div class="accordion" id="accordionPanelsStayOpenExample">
     <ul class="side-nav">
-      <li class="side-nav__item activation" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
+      <li v-tooltip="'Activation'" class="side-nav__item activation" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
         <a href="javascript:;" data-bs-toggle="collapse" data-bs-target="#activationMenu" aria-expanded="false" aria-controls="activationMenu">
           <div class="side-nav__link">
             <Activation />
@@ -29,7 +29,7 @@ const setActiveItem = (item) => {
         </div>
       </li>
 
-      <li class="side-nav__item" :class="{ 'active': activeItem === 'status' }" @click="setActiveItem('status')">
+      <li v-tooltip="'Status'" class="side-nav__item" :class="{ 'active': activeItem === 'status' }" @click="setActiveItem('status')">
         <router-link to="/status">
           <div class="side-nav__link">
             <Status />
@@ -37,7 +37,7 @@ const setActiveItem = (item) => {
         </router-link>
       </li>
 
-      <li class="side-nav__item" :class="{ 'active': activeItem === 'report' }" @click="setActiveItem('report')">
+      <li v-tooltip="'Report'" class="side-nav__item" :class="{ 'active': activeItem === 'report' }" @click="setActiveItem('report')">
         <router-link to="/report">
           <div class="side-nav__link">
             <Report />
@@ -45,7 +45,7 @@ const setActiveItem = (item) => {
         </router-link>
       </li>
 
-      <li class="side-nav__item" :class="{ 'active': activeItem === 'budget' }" @click="setActiveItem('budget')">
+      <li v-tooltip="'Budget'" class="side-nav__item" :class="{ 'active': activeItem === 'budget' }" @click="setActiveItem('budget')">
         <router-link to="/budget">
           <div class="side-nav__link">
             <Budget />
@@ -53,7 +53,7 @@ const setActiveItem = (item) => {
         </router-link>
       </li>
 
-      <li class="side-nav__item" :class="{ 'active': activeItem === 'crm' }" @click="setActiveItem('crm')">
+      <li v-tooltip="'CRM'" class="side-nav__item" :class="{ 'active': activeItem === 'crm' }" @click="setActiveItem('crm')">
         <a href="javascript:;">
           <div class="side-nav__link">
             <CRM />
@@ -61,7 +61,7 @@ const setActiveItem = (item) => {
         </a>
       </li>
 
-      <li class="side-nav__item" :class="{ 'active': activeItem === 'warehouse' }" @click="setActiveItem('warehouse')">
+      <li v-tooltip="'Warehouse'" class="side-nav__item" :class="{ 'active': activeItem === 'warehouse' }" @click="setActiveItem('warehouse')">
         <router-link to="/warehouse">
           <div class="side-nav__link">
             <Warehouse />
@@ -69,7 +69,7 @@ const setActiveItem = (item) => {
         </router-link>
       </li>
 
-      <li class="side-nav__item" :class="{ 'active': activeItem === 'chat' }" @click="setActiveItem('chat')">
+      <li v-tooltip="'Chat'" class="side-nav__item" :class="{ 'active': activeItem === 'chat' }" @click="setActiveItem('chat')">
         <router-link to="/chat">
           <div class="side-nav__link">
             <i class='bx bxs-chat fs-3'></i>
