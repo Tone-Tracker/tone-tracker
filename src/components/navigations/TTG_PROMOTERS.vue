@@ -200,7 +200,8 @@ export default {
 }
 
 .nav-list a:hover {
-    text-decoration: underline;
+    /* text-decoration: underline; */
+    background-color: #1f1e1e
 }
 
 /* //////////////////// */
@@ -249,6 +250,8 @@ export default {
     background-color: transparent;
     box-shadow: none;
     padding: 10px 15px;
+    width: 100% !important;
+    
 }
 
 .accordion-button::after {
@@ -305,6 +308,38 @@ export default {
     margin-bottom: 0px;
 }
 
+/* /////////////////// */
+.side-nav-wrapper {
+  height: 100vh; /* Full viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.side-nav {
+  width: 240px;
+  background-color: #000;
+  color: #fff;
+  /* Remove any fixed height if present */
+}
+
+/* Add some padding to the bottom to ensure last items are visible when scrolled */
+.accordion-item:last-child {
+  padding-bottom: 20px;
+}
+
+/* Optional: Customize the scrollbar */
+.side-nav-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.side-nav-wrapper::-webkit-scrollbar-thumb {
+  background-color: #4a4a4a;
+  border-radius: 3px;
+}
+
+.side-nav-wrapper::-webkit-scrollbar-track {
+  background-color: #1e1e1e;
+}
+
 /* ////////Active////////// */
 .side-nav__item.active,
 .side-nav__item:hover {
@@ -314,5 +349,7 @@ export default {
 .active{
     background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
+  
+
 
 </style>

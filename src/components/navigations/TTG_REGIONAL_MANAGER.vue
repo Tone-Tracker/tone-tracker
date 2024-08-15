@@ -137,7 +137,7 @@ export default {
 
 <style scoped>
 .profile .accordion-button::after {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .accordion-button::after {
@@ -157,7 +157,6 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
 }
 
 .profile-info {
@@ -217,7 +216,8 @@ export default {
 }
 
 .nav-list a:hover {
-    text-decoration: underline;
+    /* text-decoration: underline; */
+    background-color: #1f1e1e
 }
 
 /* //////////////////// */
@@ -250,12 +250,13 @@ export default {
 .menu-section ul li:hover {
     color: #fff;
 }
-/* //icon// */
+
 .nav-list i {
     font-size: 1.5rem; /* Adjust this value as needed */
 }
 
-/* //////header////// */
+/* //////////////////// */
+
 /* header section */
 .accordion-header.profile {
     background-color: #1e1e1e;
@@ -265,7 +266,7 @@ export default {
     background-color: transparent;
     box-shadow: none;
     padding: 10px 15px;
-    width: 91% !important;
+    width: 100% !important;
     
 }
 
@@ -323,8 +324,7 @@ export default {
     margin-bottom: 0px;
 }
 
-
-/* ///////scrollable///////////////// */
+/* /////////////////// */
 .side-nav-wrapper {
   height: 100vh; /* Full viewport height */
   overflow-y: auto; /* Enable vertical scrolling */
@@ -365,4 +365,7 @@ export default {
 .active{
     background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
+  
+
+
 </style>
