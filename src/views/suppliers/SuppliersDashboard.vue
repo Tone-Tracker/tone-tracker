@@ -1,169 +1,486 @@
-<script setup>
-import Layout from '@/views/shared/Layout.vue';
-import BreadCrumb from '@/components/BreadCrumb.vue';
-import { useAuth } from '@/stores/auth';
-import { onMounted,ref } from 'vue';
-import { useCampaignStore } from '@/stores/useCampaign';
 
-const campaign = useCampaignStore();
-
-const authStore = useAuth();
-const client = ref(JSON.parse(authStore.client));
-const user = JSON.parse(authStore.user);
-console.log('client',client.value)
-
-const campaigns = ref([]);
-
-onMounted(() => {
-    if(user.role == 'CLIENT'){
-        getCampaignsByClientId();
-    }
-});
-
-/*
-*This fetches regions by staff id. Basically its for regional manager
-*/
-const getCampaignsByClientId = () => {
-    campaign.getCampaignsByClientId(client.value.id).then(function (response) {
-    console.log('Campaigns',response)
-     campaigns.value = response.data;
-  }).catch(function (error) {
-    console.log(error);
-  }).finally(function () {
-    ///
-  })
-}
-
-
-</script>
 <template>
     <Layout>
-        <div class="page-wrapper">
-            <div class="page-content">
-                <!-- <BreadCrumb :title="user.role == 'TTG_REGIONAL_MANAGER' ? 'WELCOME' : 'JOBS'" icon="" />
-                <p class="fs-3 text-white">{{ user.role == 'TTG_REGIONAL_MANAGER' ? 'All Regions' : 'Active Campaigns'  }}</p> -->
-                <div class="card">
-                    <div class="card-body">
-                        <!-- Code here -->
-                        <div class="">
-                            <div class="row g-4">
-                                <router-link v-if="campaigns?.length > 0" v-for="campaign in campaigns" :key="campaign.id" class="col-md-4 col-lg-3"  
-                                    :to="`/admin-activations?campaign=${campaign.id}&name=${campaign.name}`">
-                                    <div class="job-item">
-                                        <div class="image-container">
-                                            <img src="../../assets/images/Component102.png" :alt="campaign.name">
-                                            <span>{{ campaign.name }}</span>
-                                        </div>
-                                        <div class="details">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div>Number Of Activations:</div>
-                                                <div>38%</div>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div>Leads:</div>
-                                                <div>102,000</div>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div>Activations completed:</div>
-                                                <div>10</div>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div>Ongoing activations:</div>
-                                                <div>15</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </router-link>
-                            </div>
-                        </div>
-                    </div>
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+
+				<BreadCrumb title="Budget" icon="bx bx-calculator"/>
+                <div>
+                    <h5>Date: July - August 2024</h5>
+                    <h6>(16 Week Period)</h6>
                 </div>
-            </div>
 
+             
 
-        </div>
-    </Layout>
+               
+
+			</div>
+		</div>
+	<!--start switcher-->
+	
+</Layout>
 </template>
-<style scoped>
+<script setup>
+import Layout from '../shared/Layout.vue';
+import BreadCrumb from '../../components/BreadCrumb.vue';
+import { onMounted } from 'vue';
 
+    onMounted(() => {
+        barChart();
+        pieChart();
+        lineChart();
+        horizontalChart();
+        costPerElement();
+        itemsSold();
+        numberOfActivations();
+    })
 
+    const numberOfActivations = () => {
+        var ctx = document.getElementById('numberOfActivations').getContext('2d');
+        new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['JHB/VALL', 'DBN', 'CPT'],
+            datasets: [{
+                label: 'Number Of Activations',
+                data: [23, 50, 87],
+                backgroundColor: [
+                'rgb(95, 193, 255)',
+                ],
+                borderColor: [
+                'rgb(95, 193, 255)',
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'Buy In',
+                data: [65, 59, 80, 81, 40],
+                backgroundColor: [
+                'rgb(1, 89, 144)',
+                ],
+                borderColor: [
+                'rgb(1, 89, 144)',
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'Sales Out',
+                data: [35, 49, 70, 71, 20],
+                backgroundColor: [
+                'rgb(165, 196, 216)',
+                ],
+                borderColor: [
+                'rgb(165, 196, 216)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+    responsive: true,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    stacked: false,
+    plugins: {
+      title: {
+        display: false,
+        text: 'Chart.js Line Chart - Multi Axis'
+      }
+    },
+    scales: {
+      y: {
+        type: 'linear',
+        display: true,
+        position: 'left',
+        text: 'Number Of Activations',
+      },
+      y1: {
+        type: 'linear',
+        display: true,
+        position: 'right',
+        text: 'Number Of Activations',
 
-
-.job-item {
-    margin-bottom: 20px;
-    cursor: pointer;
+        // grid line settings
+        grid: {
+          drawOnChartArea: false, // only want the grid lines for one axis to show up
+        },
+      },
+    }
+  },
+    });
+    }
+        const itemsSold = () => {
+        var ctx = document.getElementById('itemsSold').getContext('2d');
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Shirts', 'Bucket hats', 'Key rings', 'Water Bottles'],
+            datasets: [{
+                label: 'Items Sold',
+                data: [65, 59, 80, 81, 56],
+                backgroundColor: [
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)'
+                ],
+                borderColor: [
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)',
+                'rgb(218,74,86)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            barPercentage: 0.6,
+            categoryPercentage: 0.5,
+            plugins: {
+				legend: {
+					position:'bottom',
+					display: true,
+                    labels: {
+                    filter: function(item) {
+                        return item.text !== 'Items Sold';
+                    }
+                }
+				}
+			},
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    }
+   
+    const costPerElement = () => {
+        var ctx = document.getElementById('costPerElement').getContext('2d');
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Production', 'Influencers', 'Internal Launch', 'Storage', 'Concept and Ideation'],
+            datasets: [{
+                label: 'Cost Per Element',
+                data: [65, 59, 80, 81, 56, 55],
+                backgroundColor: [
+                'rgb(52,152,219)',
+                'rgb(154,58,177)',
+                'rgb(52,152,219)',
+                'rgb(154,58,177)',
+                'rgb(52,152,219)',
+                'rgb(154,58,177)',
+                'rgb(52,152,219)'
+                ],
+                borderColor: [
+                'rgb(52,152,219)',
+                'rgb(154,58,177)',
+                'rgb(52,152,219)',
+                'rgb(154,58,177)',
+                'rgb(52,152,219)',
+                'rgb(154,58,177)',
+                'rgb(52,152,219)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            barPercentage: 0.6,
+            categoryPercentage: 0.5,
+            plugins: {
+				legend: {
+					position:'bottom',
+					display: true,
+                    labels: {
+                    filter: function(item) {
+                        return item.text !== 'Cost Per Element';
+                    }
+                }
+				}
+			},
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    }
+    const horizontalChart = () => {
+        var ctx = document.getElementById('horizontalChart').getContext('2d');
+    new Chart(ctx, {
+	type: 'bar',
+	data: {
+		labels: ['Activation 1', 'Activation 2', 'Activation 3', 'Activation 4', 'Activation 5', 'Activation 6', 'Activation 7'],
+		datasets: [{
+			label: 'Google',
+			data: [18, 25, 14, 12, 17, 8, 10],
+			backgroundColor: [
+				'#fd3550'
+			],
+			lineTension: 0,
+			borderColor: [
+				'#fd3550'
+			],
+			borderWidth: 0
+		}
+		]
+	},
+	options: {
+		maintainAspectRatio: false,
+		barPercentage: 0.5,
+		categoryPercentage: 0.7,
+		indexAxis: 'y',
+		plugins: {
+			legend: {
+				position:'bottom',
+				display: true,
+                labels: {
+                    filter: function(item) {
+                        return item.text !== 'Google';
+                    }
+                }
+			}
+		},
+		scales: {
+			y: {
+				beginAtZero: true
+			}
+		}
+	}
+});
+    }
+const barChart = () => {
+    var ctx = document.getElementById('maz-bar').getContext('2d');
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['1', '6', '2', '5', '7', '12', '23','24','25','26','27','28','29','30','31'],
+            datasets: [{
+                label: 'Google',
+                data: [18, 25, 14, 12, 17, 8, 10, 11, 9, 60, 5, 40, 30, 24, 15],
+                backgroundColor: [
+                    '#0d6efd'
+                ],
+                lineTension: 0,
+                borderColor: [
+                    '#0d6efd'
+                ],
+                borderWidth: 3,
+                backgroundColor: 'rgb(154,58,177)',
+            },
+            {
+                label: 'Facebook',
+                
+                data: [12, 30, 16, 23, 8, 14, 11, 10, 19, 63, 50, 41, 33, 22, 12],
+                backgroundColor: [
+                    '#15ca20'
+                ],
+                tension: 0,
+                borderColor: [
+                    '#15ca20'
+                ],
+                borderWidth: 3
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            barPercentage: 0.6,
+            categoryPercentage: 0.5,
+            plugins: {
+				legend: {
+					position:'bottom',
+					display: true,
+                    labels: {
+                    filter: function(item) {
+                        return item.text !== 'Facebook' && item.text !== 'Google';
+                    }
+                }
+				}
+			},
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
 
-
-
-.image-container {
-    position: relative;
-    border: 2px solid #fff;
-    height: 14rem;
+const lineChart = () => {
+    var ctx = document.getElementById('lineChart').getContext('2d');
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul','Aug','Sep','Oct','Nov','Dec'],
+            datasets: [{
+                label: 'Planned',
+                data: [18, 25, 14, 12, 17, 8, 10, 11, 9, 60, 5, 40],
+                backgroundColor: [
+                    '#FE9947'
+                ],
+                lineTension: 0,
+                borderColor: [
+                    '#FE9947'
+                ],
+                borderWidth: 3
+            },
+            {
+                label: 'Actual',
+                data: [12, 30, 16, 23, 8, 14, 11, 10, 19, 63, 50, 41],
+                backgroundColor: [
+                    '#A93ABA'
+                ],
+                tension: 0,
+                borderColor: [
+                    '#A93ABA'
+                ],
+                borderWidth: 3
+            },
+            {
+				type: 'line',
+                label: 'Billable Hours %',
+                data: [5, 30, 16, 23, 8, 14, 11, 10, 19, 63, 50, 41],
+                backgroundColor: [
+                    '#FE0040'
+                ],
+                tension: 0.4,
+                borderColor: [
+                    '#FE0040'
+                ],
+                borderWidth: 4
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            barPercentage: 0.6,
+            categoryPercentage: 0.5,
+            plugins: {
+				legend: {
+					position:'bottom',
+					display: true,
+				}
+			},
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
 
-.job-item img {
-    width: 100%;
-    height: 14rem;
-    display: block;
+const pieChart = () => {
+    var ctx = document.getElementById("pieChart").getContext('2d');
+
+  var gradientStroke1 = ctx.createLinearGradient(0, 0, 0, 300);
+      gradientStroke1.addColorStop(0, '#ee0979');
+      gradientStroke1.addColorStop(1, '#ff6a00');
+    
+  var gradientStroke2 = ctx.createLinearGradient(0, 0, 0, 300);
+      gradientStroke2.addColorStop(0, '#283c86');
+      gradientStroke2.addColorStop(1, '#39bd3c');
+
+  var gradientStroke3 = ctx.createLinearGradient(0, 0, 0, 300);
+      gradientStroke3.addColorStop(0, '#1E90D9');
+      gradientStroke3.addColorStop(1, '#e100ff');
+
+        new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ["Completed", "Pending", "Process"],
+          datasets: [{
+            backgroundColor: [
+              gradientStroke1,
+              gradientStroke2,
+              gradientStroke3
+            ],
+
+             hoverBackgroundColor: [
+              gradientStroke1,
+              gradientStroke2,
+              gradientStroke3
+            ],
+
+            data: [50, 50, 50],
+            borderWidth: [1, 1, 1]
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          cutout: 95,
+          plugins: {
+            legend: {
+                display: false,
+             }
+          }
+          
+       }
+      });
+}
+</script>
+<style>
+.maz-height{
+	font-size: 3rem;
+}
+.activation-list-item {
+    font-size: 13px;
 }
 
-.job-item span {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-    text-align: center;
-    font-size: 1.5em;
-    border-radius: 8px;
-    transition: opacity 0.3s ease-in-out;
-    font-weight: 700;
-}
-
-.job-item .details {
-    background-color: #333;
-    padding: 10px;
-    text-align: left;
-    font-size: 1em;
-    /* border-radius: 8px; */
-    display: none;
-    white-space: pre-line;
-    color: white;
-}
-
-.job-item:hover .details {
-    display: block;
-}
-
-.job-item.new .image-container::after {
-    content: 'New';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: orange;
-    color: white;
-    padding: 5px 10px;
-    font-size: 0.9em;
-    border-radius: 3px;
-    z-index: 1;
-}
-
-.image-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border: 2px solid #fff;
-    z-index: 0;
-}
-
-.details p {
-    margin: 0;
+.legend {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+  }
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  .non-billable {
+    background-color: #8e44ad; /* Purple color */
+  }
+  .billable {
+    background-color: #3498db; /* Blue color */
+  }
+
+
+.widgets-icons {
+    width: 60px;
+    height: 60px;
+    background-color: #12181A; 
+    font-size: 56px;
+	color: green;
+}
+
+html.dark-theme .widgets-icons {
+	color: #fff;
+}
+.maz-table-row-height{
+	height: 55px;
+}
+.bg-maz-light{
+	background: #6F7070 !important;
+	color: #fff !important;
+	width: 150px;
+	border: 0;
+	border-radius: 0;
+	font-weight: 600;
 }
 </style>
