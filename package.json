@@ -19,7 +19,6 @@
     "chart.js": "^4.4.3",
     "firebase": "^10.12.2",
     "jquery": "^3.7.1",
-    "lightbox2": "^2.11.4",
     "moment": "^2.30.1",
     "pdf-vue3": "^1.0.12",
     "perfect-scrollbar": "^1.5.5",

@@ -25,6 +25,7 @@ import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vu
 import FileUpload from 'primevue/fileupload';
 import Button from 'primevue/button';
 import Badge from 'primevue/badge';
+import PDF from 'pdf-vue3';
 
 
 const route = useRoute();
@@ -111,8 +112,7 @@ const form = reactive({
     address: null,
     longitude: null,
     latitude: null,
-    NDAFile: null,
-    SLAFile: null,
+    briefFile: null,
     activation: activation.value
 });
 
@@ -147,8 +147,7 @@ const onSubmit = async () => {
     else {
 
         const formData = new FormData();
-        formData.append('NDAFile', form.NDAFile);
-        formData.append('SLAFile', form.SLAFile);
+        formData.append('briefFile', form.briefFile);
         formData.append('ActivationDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
 
         const config = {
@@ -306,36 +305,31 @@ const deleteRecord = (event, task) => {
   });
 };
 
-const NDAFile = ref(null);
-const SLAFile = ref(null);
-const onNDAFileChange = (event) => {
-    //if file is not pdf
+const briefFile = ref(null);
+const onFileChange = (event) => {
     if (!event.target.files[0].name.includes(".pdf")) {
         toaster.error("Please upload a pdf file");
-        NDAFile.value = null;
+        briefFile.value = null;
         return
     }
-    NDAFile.value = event.target.files[0];
-    form.NDAFile = event.target.files[0];
-}
-const onSLAFileChange = (event) => {
-    if (!event.target.files[0].name.includes(".pdf")) {
-        toaster.error("Please upload a pdf file");
-        NDAFile.value = null;
-        return
-    }
-    SLAFile.value = event.target.files[0];
-    form.SLAFile = event.target.files[0];
+    briefFile.value = event.target.files[0];
+    form.briefFile = event.target.files[0];
 }
 
-const removeFile = (type) => {
-    if(type === 'nda') {
-        NDAFile.value = null;
-    }else{
-        SLAFile.value = null;
-    }
+const removeFile = () => {
+    briefFile.value = null;  
 }
-
+const view_uploaded_file_visible = ref(false);
+const base64PDF = ref(null);
+const previewBase64PDF = () => {
+    //convert brief file to base64
+    const reader = new FileReader();
+    reader.readAsDataURL(briefFile.value);
+    reader.onloadend = () => {
+        base64PDF.value = reader.result;
+        view_uploaded_file_visible.value = true;
+    };
+}
 </script>
 <template>
     <Layout>
@@ -380,7 +374,7 @@ const removeFile = (type) => {
                                                     <i class='bx bxs-edit'></i>
                                                   </a>
 
-                                                  <router-link :to="`/tasks/${task.id}?name=${task.name}`" class="ms-1" click="openModal('top',task)">
+                                                  <router-link v-tooltip.bottom="'View Task'"  :to="`/tasks/${task.id}?name=${task.name}`" class="ms-1" click="openModal('top',task)">
                                                     <i class='text-success bx bx-bullseye'></i>
                                                   </router-link>
                                                   
@@ -507,29 +501,16 @@ const removeFile = (type) => {
                     </div>
 
                     <template v-if="form.type == 'THIRDPARTY'">
-                        <div class="col-md-6 mt-4">
+                        <div class="col-md-12 mt-4">
                             <div class="NDA-container">
                                 <div class="file-upload-wrapper">
-                                    <input id="nda-file-upload-input" type="file" accept="application/pdf" hidden @change="onNDAFileChange($event)">
-                                    <label for="nda-file-upload-input" class="custom-file-upload">Click to upload NDA file</label>
+                                    <input id="bief-file-upload-input" type="file" accept="application/pdf" hidden @change="onFileChange($event)">
+                                    <label for="bief-file-upload-input" class="custom-file-upload">Click to upload brief file</label>
                                 </div>
                             
-                                <div v-if="NDAFile" id="file-preview" class="file-upload-preview mt-2">
-                                    <img id="file-preview-image" src="/src/assets/images/pdf.png" alt="File Preview">
-                                    <button type="button" class="file-remove-button" @click="removeFile('nda')">×</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mt-4">
-                            <div class="SLA-container">
-                                <div class="file-upload-wrapper">
-                                    <input id="sla-file-upload-input" type="file" accept="application/pdf" hidden @change="onSLAFileChange($event)">
-                                    <label for="sla-file-upload-input" class="custom-file-upload">Click to upload SLA file</label>
-                                </div>
-                            
-                                <div v-if="SLAFile" id="file-preview" class="file-upload-preview mt-2">
-                                    <img id="file-preview-image" src="/src/assets/images/pdf.png" alt="File Preview">
-                                    <button type="button" class="file-remove-button" @click="removeFile('sla')">×</button>
+                                <div v-if="briefFile" id="file-preview" class="file-upload-preview mt-2">                                    
+                                    <img @click="previewBase64PDF" id="file-preview-image" src="/src/assets/images/pdf.png" alt="File Preview" class="cursor-pointer" />
+                                    <button type="button" class="file-remove-button" @click="removeFile()">×</button>
                                 </div>
                             </div>
                         </div>
@@ -550,6 +531,11 @@ const removeFile = (type) => {
                     
                 </form>
             </Dialog>
+            <div class="card flex justify-center">
+                <Drawer v-model:visible="view_uploaded_file_visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+                    <PDF :src="base64PDF" />
+                </Drawer>
+            </div>
     </Layout>
 </template>
 <style scoped>
