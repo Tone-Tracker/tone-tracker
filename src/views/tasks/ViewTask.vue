@@ -86,9 +86,9 @@ const getTask = async () => {
 
 
 const redirectToProfile = (user) => {
-  console.log("user", user);
+  alert("user", user);
 	let client = user.id;
-	router.push({ path: `/profile/${user.id}` });
+	router.push({ path: `/profile/${user.id}/?taskId=${taskId.value}` });
 }
 
 const selectedPromoterIds = ref([]);
@@ -217,9 +217,11 @@ const saveSelectedPromoters = () => {
                     </Image>
                   </div>
                   <div>
-                    <div class="desc cursor-pointer" @click="redirectToProfile(promoter)">
+                    <RouterLink :to="`/profile/${promoter.id}?taskId=${taskId}`">
+                    <div class="desc cursor-pointer" >
                       {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}
                     </div>
+                  </RouterLink>
                   </div>
                 </div>
               </div>  
