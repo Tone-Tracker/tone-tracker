@@ -186,9 +186,10 @@ const onInput = () => {
         // Fetch activations
         const response = await activation.getAllActivations(userRole, id);
         activations.value = response.data.content;
-		if(activations.value.length > 0){
-				campaignDetails = activations.value[0].campaignDTO
-		}
+		console.log('activations',activations.value)
+		// if(activations.value.length > 0){
+		// 		campaignDetails = activations.value[0].campaignDTO
+		// }
     } catch (error) {
         console.error('Error fetching activations:', error);
         // Uncomment the next line if you have a toaster notification system
@@ -410,7 +411,7 @@ const isActivationManager = () => {
 						<div class="table-responsive">
 							<table class="table mb-0">
 								<thead class="table-dark">
-									<tr>
+									<tr>{{ activations }}
 										<th>Name</th>
 										<th>Campaign</th>
 										<th>Region</th>

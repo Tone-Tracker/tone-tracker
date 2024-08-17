@@ -232,13 +232,6 @@ Date: 04/06/2024
                             </div>
 
                             </div>
-                            <div class="mb-1">
-                                <p class="text-white">Give Rating</p>
-                            </div>
-                            <div class="card flex justify-center">
-                                <Rating v-model="rate" />
-                            </div>
-
                            
 
                             <!-- comment -->
@@ -251,12 +244,17 @@ Date: 04/06/2024
                                     <AccordionContent>
                                         <div class="comment-section mt-3">
                                             
-                                            <div class="mb-3">
+                                            <div class="mb-3 ">
                                                 <FloatLabel>
                                                     <Textarea class="form-control" 
-                                                    v-model="commentForm.comment" autoResize rows="5" cols="30" :invalid="commentForm.comment ===''" />
+                                                    v-model="commentForm.comment" autoResize rows="5" cols="30" />
                                                     <label>Write Comment</label>
                                                 </FloatLabel>
+                                                <p v-if="!commentForm.comment" class="text-danger" style="font-size: .7rem">Please write comment</p>
+                                            </div>
+                                            <div class="mt-3 mb-3 flex justify-center">
+                                                <Rating v-model="commentForm.rating" />
+                                                <p v-if="!commentForm.rating" class="text-danger" style="font-size: .7rem">Please give rate</p>
                                             </div>
                                             <button type="button" @click="submitComment"
                                         class="btn rounded-0 btn-primary "
@@ -437,7 +435,7 @@ import Textarea from 'primevue/textarea';
 onMounted(() => {
     getPromoterDetails();
 })
-const rate = ref(null);
+
 const promoterStore = usePromoter();
 const authStore = useAuth();
 const commentStore = useComments();
@@ -473,6 +471,7 @@ const comments = ref([
 ]);
 
 const commentForm = reactive({
+    rating: null,
     comment: null,
     commentBy: 1    
 });
@@ -484,12 +483,8 @@ const uploadInput = ref(null)
       blobURL: '',
     })
 
-    watch(rate, (newRate) => {
-    submitRate(newRate);
-    });
-
     const submitComment = () => {
-        if(!commentForm.comment) return
+        if(!commentForm.comment || !commentForm.rating) return
         console.log(commentForm)
         return
         commentStore.submitComment(promoterId.value, commentForm).then(function (response) {
@@ -500,16 +495,7 @@ const uploadInput = ref(null)
         })
     }
 
-    const submitRate = (newRate) => {
-      if (!newRate) return
-    promoterStore.submitRating(promoterId.value, newRate).then(function (response) {
-        toaster.success("Rate submitted successfully");
-    }).catch(function (error) {
-        toaster.error("Error submitting rate");
-    console.log(error);
-    })
-    
-    }
+  
 
     const deleteComment = (id) => {
         if(!confirm('Are you sure you want to delete this comment?')) return
