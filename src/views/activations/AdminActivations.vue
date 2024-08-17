@@ -429,8 +429,11 @@ const isActivationManager = () => {
 										<td>R {{activation.budget}}</td>
 										<td>{{activation.startDate}}</td>
 										<td>{{activation.endDate}}</td>
-										<td>
+										<td v-if="activation.firstName != null">
 											{{ activation.firstName + ' ' + activation.lastName }}
+										</td>
+										<td v-else>
+											No Manager
 										</td>
 										<td>
 											<div class="d-flex order-actions">

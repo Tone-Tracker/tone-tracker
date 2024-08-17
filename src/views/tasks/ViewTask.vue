@@ -189,102 +189,122 @@ const saveSelectedPromoters = () => {
          
         </div>
 
-    
-
-
-
-        <div class="row mt-6 row-cols-xl-9 gap-4">
-          <div class="">
-            <h4 class="mb-2 ml-2">Promoters on job</h4>
-          </div>
-          <template v-if="singleTask.promoterDetails?.length > 0">
-          <div v-for="promoter in singleTask.promoterDetails" :key="promoter.id" class="col-img ">
-            <div  class="gallery">
-                <div class="card flex justify-center">
-                  <Image alt="Image" preview>
+        <!-- show promoters -->
+        <div v-if="singleTask && singleTask.type === 'INHOUSE'">
+          <div class="row mt-6 row-cols-xl-9 gap-4">
+            <div>
+              <h4 class="mb-2 ml-2">Promoters on job</h4>
+            </div>
+            <template v-if="singleTask.promoterDetails?.length > 0">
+              <div v-for="promoter in singleTask.promoterDetails" :key="promoter.id" class="col-img">
+                <div class="gallery">
+                  <div class="card flex justify-center">
+                    <Image alt="Image" preview>
                       <template #previewicon>
-                        <i class='bx bx-search-alt-2' ></i>
+                        <i class='bx bx-search-alt-2'></i>
                       </template>
                       <template #image>
-                          <img v-id="promoter.userDetails.image != null"
+                        <img
                           :src="promoter.userDetails.image ? promoter.userDetails.image : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
                           alt="image" width="250" />
                       </template>
                       <template #preview="slotProps">
-                          <img 
-                          :src="promoter.userDetails.image ? promoter.userDetails.image : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                      </template>
-                  </Image>
-                  </div>
-           
-              <div>
-                <div class="desc cursor-pointer" @click="redirectToProfile(promoter)">
-                  {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
-              </div>
-            </div>
-                  
-          </div>  
-        </template>  
-          <template v-else>
-            <div class="text-center mt-2 text-danger">No available Promoters on the job.</div>
-          </template> 
-         
-        </div>
-        
-        
-        <div class="row mt-6 row-cols-xl-9 gap-4">
-          <div class="">
-            <h4 class="mb-2 ml-2">Available Promoters</h4>
-          </div>
-          <template v-if="availablePromoters?.length > 0">
-          <div v-for="availablePromoter in availablePromoters" :key="availablePromoter.id" class="col-img ">
-            <div  class="gallery">
-                <div class="card flex justify-center">
-                 <KeepAlive>
-                  <Image alt="Image" preview>
-                    <template #previewicon>
-                      <i class='bx bx-search-alt-2' ></i>
-                    </template>
-                    <template #image>
-                        <img v-id="availablePromoter.userDetails.image != null"
-                        :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" 
-                        alt="image" width="250" />
-                    </template>
-                    <template #preview="slotProps">
                         <img 
-                        :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                    </template>
-                </Image>
-                 </KeepAlive>
+                          :src="promoter.userDetails.image ? promoter.userDetails.image : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
+                          alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                      </template>
+                    </Image>
                   </div>
-             
-              <div class="checkbox">
-                <input type="checkbox" id="select" @change="togglePromoterSelection(availablePromoter.id)">
-                <span>&#x2713;</span>
-              </div>
-              <div>
-                <div class="desc cursor-pointer" @click="redirectToProfile(availablePromoter)">
-                  {{ availablePromoter.userDetails.firstName }} {{ availablePromoter.userDetails.lastName }}</div>
-              </div>
+                  <div>
+                    <div class="desc cursor-pointer" @click="redirectToProfile(promoter)">
+                      {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}
+                    </div>
+                  </div>
+                </div>
+              </div>  
+            </template>  
+            <template v-else>
+              <div class="text-center mt-2 text-danger">No available Promoters on the job.</div>
+            </template> 
+          </div>        
+          <div class="row mt-6 row-cols-xl-9 gap-4">
+            <div>
+              <h4 class="mb-2 ml-2">Available Promoters</h4>
             </div>
-          </div>  
-        </template>
-          <template v-else>
-            <div class="text-center mt-2 text-danger">No available Promoters.</div>
-          </template> 
+            <template v-if="availablePromoters?.length > 0">
+              <div v-for="availablePromoter in availablePromoters" :key="availablePromoter.id" class="col-img">
+                <div class="gallery">
+                  <div class="card flex justify-center">
+                    <KeepAlive>
+                      <Image alt="Image" preview>
+                        <template #previewicon>
+                          <i class='bx bx-search-alt-2'></i>
+                        </template>
+                        <template #image>
+                          <img
+                            :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" 
+                            alt="image" width="250" />
+                        </template>
+                        <template #preview="slotProps">
+                          <img 
+                            :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" 
+                            alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                        </template>
+                      </Image>
+                    </KeepAlive>
+                  </div>
+                  <div class="checkbox">
+                    <input type="checkbox" id="select" @change="togglePromoterSelection(availablePromoter.id)">
+                    <span>&#x2713;</span>
+                  </div>
+                  <div>
+                    <div class="desc cursor-pointer" @click="redirectToProfile(availablePromoter)">
+                      {{ availablePromoter.userDetails.firstName }} {{ availablePromoter.userDetails.lastName }}
+                    </div>
+                  </div>
+                </div>
+              </div>  
+            </template>
+            <template v-else>
+              <div class="text-center mt-2 text-danger">No available Promoters.</div>
+            </template> 
             <div class="ms-auto" v-if="selectedPromoterIds.length > 0">
               <a @click="saveSelectedPromoters" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
-                   <div v-if="isLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
-                  </div>
-                  <i v-if="!isLoading"  class="bx bxs-plus-square"></i>
-                  {{ isLoading ?  '' : 'Save' }}
+                <div v-if="isLoading" class="spinner-border text-white" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <i v-if="!isLoading" class="bx bxs-plus-square"></i>
+                {{ isLoading ? '' : 'Save' }}
               </a>
+            </div>
           </div>
-          </div>
-         
+        </div>
 
-        
-     
+      <!-- end show promoters -->
+       <!-- show a table of bids -->
+        <div v-if="singleTask && singleTask.type === 'THIRDPARTY'">
+          <table class="table table-dark table-bordered">
+            <thead>
+              <tr class="table-dark-color">
+                <th>Activation</th>
+                <th>Task</th>
+                <th>Risk</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Time Record</th>
+                <th>Completion</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="8">Test</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+       <!-- end show here -->
+
       </div>
     </div>
     <!--start switcher-->
