@@ -2,6 +2,7 @@
 Author: Mazisi Msebele
 Date: 04/06/2024
 **/
+
 <template>
     <Layout>
         <!--start page wrapper -->
@@ -190,20 +191,26 @@ Date: 04/06/2024
                                           :img="pic"
                                           :options="{
                                             viewMode: 1,
-                                            dragMode: 'crop',
+                                            dragMode: 'move',
                                             aspectRatio: 1,
+                                            cropBoxResizable: false,
+                                          }"
+                                          :presetMode="{
+                                            mode: 'fixedSize',
+                                            width: 300,
+                                            height: 400,
                                           }"
                                           @ready="ready"
                                           class="mt-3"
                                         />
                                           
                                         <div class="tools" v-if="showTools">
-                                            <button class="btn">
+                                            <button class="btn" data-bs-dismiss="modal">
                                               Cancel
                                             </button>
-                                            <button class="btn" @click="clear">
+                                            <!-- <button class="btn" @click="clear">
                                               Clear
-                                            </button>
+                                            </button> -->
                                             <button class="btn" @click="reset">
                                               Reset
                                             </button>
@@ -229,48 +236,48 @@ Date: 04/06/2024
                                 <p class="text-white">Give Rating</p>
                             </div>
                             <div class="card flex justify-center">
-                                <Rating v-model="value" />
+                                <Rating v-model="rate" />
                             </div>
 
-                            <div class="mt-3">
-                                <h5 class="">Comment</h5>
-                            </div>
+                           
 
                             <!-- comment -->
-                            <div class="accordion" id="accordionExample">
-                                <div class="accordion-item">
-
-                                    <div id="collapseOne" class="accordion-collapse collapse show"
-                                        data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <div>
-                                                <p class="text-white">Give Rating</p>
-                                                <p class="text-white">Top-Notch Professionalism! Our experience with
-                                                    this promoter was
-                                                    marked
-                                                    by exceptional professionalism.
-                                                </p>
-                                                <p>11 August 2023</p>
+                            <Accordion value="0">
+                                <AccordionPanel value="1">
+                                    <AccordionHeader>
+                                        <h5>Comments</h5>
+                                       
+                                    </AccordionHeader>
+                                    <AccordionContent>
+                                        <div class="comment-section mt-3">
+                                            
+                                            <div class="mb-3">
+                                                <textarea class="form-control" rows="3" placeholder="Write a comment..."></textarea>
                                             </div>
-
-                                            <div>
-                                                <p class="text-white">Give Rating</p>
-                                                <p class="text-white">Impressed by the promoter’s agility and
-                                                    adaptability. They responded
-                                                    swiftly to changes, making the entire process stress-free.
-                                                </p>
-                                                <p>8 September 2023</p>
+                                            <button v-if="isMyProfile()"
+                                        class="btn rounded-0 btn-primary "
+                                        ><span>Post Comment</span>
+                                    </button>
+                                            
+                                            <div class="comment">
+                                                <div class="user">
+                                                    <img src="https://via.placeholder.com/40" alt="User avatar">
+                                                    <div>
+                                                        <div class="user-name">Mazisi Msebele</div>
+                                                        <div class="comment-date">Feb. 8, 2022</div>
+                                                    </div>
+                                                </div>
+                                                <div class="comment-text">
+                                                    Very straight-to-point article. Really worth time reading. Thank you! But tools are just the instruments for the UX designers. The knowledge of the design tools are as important as the creation of the design strategy.
+                                                </div>
+                                                <button type="button" class="btn mt-2 btn-danger">
+                                                    <i class='bx bx-trash'></i>
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button m" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseOne" aria-expanded="true"
-                                            aria-controls="collapseOne">
-                                        </button>
-                                    </h2>
-                                </div>
-                            </div>
+                                    </AccordionContent>
+                                </AccordionPanel>
+                            </Accordion>
                         </div>
 
                         <div class="prmoters-jobs">
@@ -402,11 +409,11 @@ Date: 04/06/2024
     </Layout>
 </template>
 <script setup>
-// import VuePictureCropper, { cropper } from 'vue-picture-cropper'
+import VuePictureCropper, { cropper } from 'vue-picture-cropper'
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
 import Rating from 'primevue/rating';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { usePromoter} from '@/stores/promoter';
 import useToaster from '@/composables/useToaster';
 import { useRoute } from 'vue-router';
@@ -416,11 +423,15 @@ import Button from 'primevue/button';
 import Badge from 'primevue/badge';
 import { useAuth } from '@/stores/auth';
 import Image from 'primevue/image';
+import Accordion from 'primevue/accordion';
+import AccordionPanel from 'primevue/accordionpanel';
+import AccordionHeader from 'primevue/accordionheader';
+import AccordionContent from 'primevue/accordioncontent';
 
 onMounted(() => {
     getPromoterDetails();
 })
-const value = ref(null);
+const rate = ref(null);
 const promoterStore = usePromoter();
 const authStore = useAuth();
 const route = useRoute();
@@ -446,7 +457,20 @@ const uploadInput = ref(null)
       blobURL: '',
     })
 
+    watch(rate, (newRate) => {
+    submitRate(newRate);
+    });
 
+    const submitRate = (newRate) => {
+      if (!newRate) return
+    promoterStore.submitRating(promoterId.value, newRate).then(function (response) {
+        toaster.success("Rate submitted successfully");
+    }).catch(function (error) {
+        toaster.error("Error submitting rate");
+    console.log(error);
+    })
+    
+    }
 const onProfilePicSelect = (event) => {
 
       // Reset last selection and results
@@ -626,35 +650,6 @@ html.dark-theme .accordion-item {
     border: none;
 }
 
-.accordion-body {
-    padding: 0 0 0 0 !important;
-    background-color: #000;
-}
-
-.accordion-button {
-
-    background-color: #0F0F0F !important;
-    border: none;
-}
-
-.accordion-button:not(.collapsed) {
-    margin-bottom: 10px;
-    /* Adjust the value as needed */
-}
-
-.accordion-button:focus {
-    outline: none;
-    box-shadow: none;
-    border: none;
-}
-
-.accordion-button.m::after {
-    color: #5A5959 !important;
-}
-
-.accordion-button::after {
-    margin: auto !important;
-}
 
 div.gallery {
     margin: 5px;
@@ -759,7 +754,53 @@ div.desc {
 
 
 
-
+.comment-section {
+    max-width: 700px;
+    margin: 2rem auto;
+    background-color: #2c2e33;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+.form-control {
+    background-color: #1d1f24;
+    color: #ced4da;
+    border: 1px solid #404348;
+}
+.form-control:focus {
+    background-color: #1d1f24;
+    color: #ced4da;
+    border-color: #4a9bfc;
+    box-shadow: none;
+}
+.btn-primary {
+    background-color: #4a9bfc;
+    border-color: #4a9bfc;
+}
+.comment {
+    margin-top: 1.5rem;
+}
+.comment .user {
+    display: flex;
+    align-items: center;
+}
+.comment .user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 0.75rem;
+}
+.comment .user-name {
+    font-weight: 500;
+    color: #fff;
+}
+.comment .comment-date {
+    color: #a9acb0;
+    font-size: 0.9rem;
+}
+.comment .comment-text {
+    margin-top: 0.5rem;
+    color: #ced4da;
+}
 
 
 
