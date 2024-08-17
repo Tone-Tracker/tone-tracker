@@ -22,6 +22,9 @@ import Drawer from 'primevue/drawer';
 import AutoComplete from 'primevue/autocomplete';
 import { watch } from 'vue';
 import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vue-use-places-autocomplete'
+import FileUpload from 'primevue/fileupload';
+import Button from 'primevue/button';
+import Badge from 'primevue/badge';
 
 
 const route = useRoute();
@@ -108,6 +111,8 @@ const form = reactive({
     address: null,
     longitude: null,
     latitude: null,
+    NDAFile: null,
+    SLAFile: null,
     activation: activation.value
 });
 
@@ -128,6 +133,7 @@ const onSubmit = async () => {
     const isFormValid = await v$.value.$validate();
     if (!isFormValid) {return;}
     showLoading.value = true;
+    
     if(isEdit.value){
         taskStore.update(taskId.value,form).then(function (response) {
             toaster.success("Task updated successfully");
@@ -139,7 +145,17 @@ const onSubmit = async () => {
         });
     } 
     else {
-        taskStore.submit(form).then(function (response) {
+
+        const formData = new FormData();
+        formData.append('NDAFile', form.NDAFile);
+        formData.append('SLAFile', form.SLAFile);
+        formData.append('ActivationDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
+
+        const config = {
+            useMultipartFormData: true // Add this flag to the request config
+        };
+
+        taskStore.submit(form,config).then(function (response) {
             showLoading.value = false;
         toaster.success("Task created successfully");
         visible.value = false;
@@ -235,9 +251,7 @@ const getStatus = (status) => {
     return statuses.value.find(stat => stat.code === status).name;
 }
 
-const getType = (type) => {
-    return types.value.find(typ => typ.code === type).name;
-}
+
 
 const getClass = (status) => {
     if(status === 'FINISHED') {
@@ -292,8 +306,35 @@ const deleteRecord = (event, task) => {
   });
 };
 
+const NDAFile = ref(null);
+const SLAFile = ref(null);
+const onNDAFileChange = (event) => {
+    //if file is not pdf
+    if (!event.target.files[0].name.includes(".pdf")) {
+        toaster.error("Please upload a pdf file");
+        NDAFile.value = null;
+        return
+    }
+    NDAFile.value = event.target.files[0];
+    form.NDAFile = event.target.files[0];
+}
+const onSLAFileChange = (event) => {
+    if (!event.target.files[0].name.includes(".pdf")) {
+        toaster.error("Please upload a pdf file");
+        NDAFile.value = null;
+        return
+    }
+    SLAFile.value = event.target.files[0];
+    form.SLAFile = event.target.files[0];
+}
 
-
+const removeFile = (type) => {
+    if(type === 'nda') {
+        NDAFile.value = null;
+    }else{
+        SLAFile.value = null;
+    }
+}
 
 </script>
 <template>
@@ -465,7 +506,36 @@ const deleteRecord = (event, task) => {
                     </div>                        
                     </div>
 
-                    <div class="modal-footer mt-6">
+                    <template v-if="form.type == 'THIRDPARTY'">
+                        <div class="col-md-6 mt-4">
+                            <div class="NDA-container">
+                                <div class="file-upload-wrapper">
+                                    <input id="nda-file-upload-input" type="file" accept="application/pdf" hidden @change="onNDAFileChange($event)">
+                                    <label for="nda-file-upload-input" class="custom-file-upload">Click to upload NDA file</label>
+                                </div>
+                            
+                                <div v-if="NDAFile" id="file-preview" class="file-upload-preview mt-2">
+                                    <img id="file-preview-image" src="/src/assets/images/pdf.png" alt="File Preview">
+                                    <button type="button" class="file-remove-button" @click="removeFile('nda')">×</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-4">
+                            <div class="SLA-container">
+                                <div class="file-upload-wrapper">
+                                    <input id="sla-file-upload-input" type="file" accept="application/pdf" hidden @change="onSLAFileChange($event)">
+                                    <label for="sla-file-upload-input" class="custom-file-upload">Click to upload SLA file</label>
+                                </div>
+                            
+                                <div v-if="SLAFile" id="file-preview" class="file-upload-preview mt-2">
+                                    <img id="file-preview-image" src="/src/assets/images/pdf.png" alt="File Preview">
+                                    <button type="button" class="file-remove-button" @click="removeFile('sla')">×</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="modal-footer" style="margin-top: 2rem">
                        
                         <button type="submit" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center">
                             <div
@@ -544,4 +614,60 @@ const deleteRecord = (event, task) => {
 .p-autocomplete-input {
     width: 100% !important;
 }
+
+
+ .custom-file-upload {
+    border: 2px solid;
+    border-image: linear-gradient(to right, #9A3AB1, #117AD1) 1;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 50px;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+}
+
+.custom-file-upload:hover {
+    background-color: linear-gradient(to right, #9A3AB1, #117AD1);
+    border-image: linear-gradient(to right, #9A3AB1, #117AD1) 1;
+}
+
+.file-upload-wrapper {
+    position: relative;
+    margin-top: 1.5rem;
+}
+
+.file-upload-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #d6d6d6;
+    position: relative;
+    display: inline-block;
+}
+
+.file-upload-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.file-remove-button {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    background-color: #ff4d6d;
+    border-radius: 10%;
+    width: 20px;
+    height: 20px;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
 </style>

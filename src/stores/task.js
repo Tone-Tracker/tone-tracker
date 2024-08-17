@@ -3,8 +3,8 @@ import axiosInstance from '@/axiosInstance';
 
 export const useTask = defineStore('task', () => {
 
-    function submit(form) {
-      return axiosInstance.post(`/api/tasks`,form);
+    function submit(form,config) {
+      return axiosInstance.post(`/api/tasks`,form, config);
     }
 
     const getTasks = () => {
