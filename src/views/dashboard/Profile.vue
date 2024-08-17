@@ -252,14 +252,18 @@ Date: 04/06/2024
                                         <div class="comment-section mt-3">
                                             
                                             <div class="mb-3">
-                                                <textarea class="form-control" rows="3" placeholder="Write a comment..."></textarea>
+                                                <FloatLabel>
+                                                    <Textarea class="form-control" 
+                                                    v-model="commentForm.comment" autoResize rows="5" cols="30" :invalid="commentForm.comment ===''" />
+                                                    <label>Write Comment</label>
+                                                </FloatLabel>
                                             </div>
-                                            <button v-if="isMyProfile()"
+                                            <button type="button" @click="submitComment"
                                         class="btn rounded-0 btn-primary "
                                         ><span>Post Comment</span>
                                     </button>
                                             
-                                            <div class="comment">
+                                            <div v-for="comment in comments" :key="comment.id" class="comment">
                                                 <div class="user">
                                                     <img src="https://via.placeholder.com/40" alt="User avatar">
                                                     <div>
@@ -268,11 +272,11 @@ Date: 04/06/2024
                                                     </div>
                                                 </div>
                                                 <div class="comment-text">
-                                                    Very straight-to-point article. Really worth time reading. Thank you! But tools are just the instruments for the UX designers. The knowledge of the design tools are as important as the creation of the design strategy.
+                                                    {{ comment.comment }}
                                                 </div>
-                                                <button type="button" class="btn mt-2 btn-danger">
-                                                    <i class='bx bx-trash'></i>
-                                                </button>
+                                               
+                                                    <i @click="deleteComment(comment.id)" class='mt-2 cursor-pointer text-danger fs-3 bx bx-trash'></i>
+                                                
                                             </div>
                                         </div>
                                     </AccordionContent>
@@ -409,9 +413,10 @@ Date: 04/06/2024
     </Layout>
 </template>
 <script setup>
+import FloatLabel from 'primevue/floatlabel';
 import VuePictureCropper, { cropper } from 'vue-picture-cropper'
 import Layout from '../shared/Layout.vue';
-import BreadCrumb from '../../components/BreadCrumb.vue';
+import { useComments } from '@/stores/comments';
 import Rating from 'primevue/rating';
 import { onMounted, reactive, ref, watch } from 'vue';
 import { usePromoter} from '@/stores/promoter';
@@ -427,6 +432,7 @@ import Accordion from 'primevue/accordion';
 import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
+import Textarea from 'primevue/textarea';
 
 onMounted(() => {
     getPromoterDetails();
@@ -434,6 +440,7 @@ onMounted(() => {
 const rate = ref(null);
 const promoterStore = usePromoter();
 const authStore = useAuth();
+const commentStore = useComments();
 const route = useRoute();
 const toaster = useToaster();
 const files = ref([]);
@@ -450,6 +457,26 @@ const profilePicPreview = ref(null);
 const profilePic = ref(null);
 const showTools = ref(false);
 
+const comments = ref([
+    {
+        id: 1,
+        name: 'John Doe',
+        date: '2024-12-12',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+    {
+        id: 2,
+        name: 'Jane Doe',
+        date: '2024-03-12',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+]);
+
+const commentForm = reactive({
+    comment: null,
+    commentBy: 1    
+});
+
 const pic = ref('');
 const uploadInput = ref(null)
     const result = reactive({
@@ -461,6 +488,18 @@ const uploadInput = ref(null)
     submitRate(newRate);
     });
 
+    const submitComment = () => {
+        if(!commentForm.comment) return
+        console.log(commentForm)
+        return
+        commentStore.submitComment(promoterId.value, commentForm).then(function (response) {
+            toaster.success("Comment submitted successfully");
+        }).catch(function (error) {
+            toaster.error("Error submitting comment");
+        console.log(error);
+        })
+    }
+
     const submitRate = (newRate) => {
       if (!newRate) return
     promoterStore.submitRating(promoterId.value, newRate).then(function (response) {
@@ -470,6 +509,16 @@ const uploadInput = ref(null)
     console.log(error);
     })
     
+    }
+
+    const deleteComment = (id) => {
+        if(!confirm('Are you sure you want to delete this comment?')) return
+        commentStore.delete(id).then(function (response) {
+            toaster.success("Comment deleted successfully");
+        }).catch(function (error) {
+            toaster.error("Error deleting comment");
+        console.log(error);
+        })
     }
 const onProfilePicSelect = (event) => {
 
