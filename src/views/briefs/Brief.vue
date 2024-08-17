@@ -8,6 +8,7 @@ import Drawer from 'primevue/drawer';
 // import PDF from "pdf-vue3";
 import { isClient } from '@vueuse/shared'
 import { useShare } from '@vueuse/core'
+import PDF from 'pdf-vue3';
 // import PDF from 'pdf-vue3';
 
 const route = useRoute();
