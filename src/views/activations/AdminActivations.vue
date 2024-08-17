@@ -48,7 +48,7 @@ const region = useRegion();
 const campaignStore = useCampaignStore();
 
 const searchInput = ref('');
-let activations = ref([]);
+const activations = ref([]);
 let users = ref([]);
 let mappedUsers = ref([]);
 let staffMembers = ref([]);
@@ -86,7 +86,7 @@ const getCampaignDetails = () => {
 	campaignStore.getCampaignName(campaignId.value).then(function (response) {
 		campaignDetails.value = response.data;
 	}).catch(function (error) {
-		toaster.error("Error fetching campaign details");
+		// toaster.error("Error fetching campaign details");
 		console.log(error);
 	})
 }
@@ -175,14 +175,12 @@ const onInput = () => {
     try {
         showLoading.value = true;
         
-        // Get user data from localStorage
-        
         if (!user || !user.activeUserId && user.role && user.role != "CLIENT") {
             throw new Error('User data or activeUserId not found');
         }
 
         const staffId = user.activeUserId;
-        
+		
         // Fetch activations
         const response = await activation.getAllActivations(userRole, id);
         activations.value = response.data.content;
@@ -425,7 +423,7 @@ const onUserChange = (event) => {
 								<tbody > 
 									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
-										<td>{{ activation.campaignDTO.name }}</td>
+										<td>{{ activation.campaign.name }}</td>
 										<td>{{ activation.region.name }}</td> 
 										<td>R {{activation.budget}}</td>
 										<td>{{activation.startDate}}</td>

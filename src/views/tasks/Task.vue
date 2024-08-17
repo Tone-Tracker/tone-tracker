@@ -193,6 +193,7 @@ const isEdit = ref(false);
 
 
 const openModal = (pos,task) => {
+    showLoading.value = false;
     if(task) {//edit
     isEdit.value = true;
     taskId.value=task.id;
@@ -464,9 +465,9 @@ const deleteRecord = (event, task) => {
                     </div>                        
                     </div>
 
-                    <div class="modal-footer">
+                    <div class="modal-footer mt-6">
                        
-                        <button type="submit" class="btn maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center">
+                        <button type="submit" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center">
                             <div
                             v-if="showLoading"
                             class="spinner-border text-white"

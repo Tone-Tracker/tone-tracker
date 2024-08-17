@@ -8,6 +8,7 @@ import Drawer from 'primevue/drawer';
 // import PDF from "pdf-vue3";
 import { isClient } from '@vueuse/shared'
 import { useShare } from '@vueuse/core'
+import PDF from 'pdf-vue3';
 // import PDF from 'pdf-vue3';
 
 const route = useRoute();
@@ -146,8 +147,8 @@ function startShare() {
         </div>
         <div class="card flex justify-center">
             <Drawer v-model:visible="visible" position="right" :header="docName" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
-                <PDF src="https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf" />
-                <a @click="download('https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf')" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+                <PDF src="ttps://ttg-dev-bucket.s3.amazonaws.com/brief/03569_promofaccestoinfoact2.pdf" />
+                <a @click="download('https://ttg-dev-bucket.s3.amazonaws.com/brief/03569_promofaccestoinfoact2.pdf')" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
                     <!-- <div v-if="isDownloading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
                    </div> -->
                    <i class='bx bxs-download'></i>
