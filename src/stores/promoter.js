@@ -26,7 +26,11 @@ export const usePromoter = defineStore('promoter', () => {
     }
     const  getTalentByTalentId = (id) => {
       return axiosInstance.get(`/api/promoters/${id}`);
-    }    
+    } 
+    
+    const getOtherPromotersByTaskId = (taskId) => {
+      return axiosInstance.get(`/api/promoters/task/${taskId}`)
+    }
     
     const  getTalentByUserId = (id) => {
       return axiosInstance.get(`/api/promoters/${id}`);
@@ -40,5 +44,5 @@ export const usePromoter = defineStore('promoter', () => {
       return axiosInstance.post(`/api/users/${raterId}`,rate);
     }
 
-    return { checkIn, submitPromoter, getPromoters, updatePromoter, deletePromoter, submitRating, uploadPromoterImages ,getTalentByTalentId,getTalentByUserId}
+    return { checkIn, submitPromoter, getPromoters, updatePromoter, deletePromoter, submitRating, uploadPromoterImages ,getTalentByTalentId,getTalentByUserId, getOtherPromotersByTaskId}
   })

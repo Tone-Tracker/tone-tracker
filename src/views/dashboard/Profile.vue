@@ -175,12 +175,7 @@ Date: 04/06/2024
                                         <div class="modal-body">
                                             <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
                                            <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label>
-                                           <!-- <p v-if="profilePicName" class="text-center text-white mt-2">{{ profilePicName }}</p> -->
-
-                                           <!-- <div v-if="profilePicPreview" class="text-center mt-3">
-                                            <img :src="profilePicPreview" alt="Profile Preview" class="img-thumbnail" style="max-width: 100%; height: auto;">
-
-                                          </div> -->
+                                          
                                           <VuePictureCropper
                                           :boxStyle="{
                                             width: '100%',
@@ -242,9 +237,31 @@ Date: 04/06/2024
                                        
                                     </AccordionHeader>
                                     <AccordionContent>
+
+                                        <!-- start comments -->
+                                        <div v-for="rating in promoterData.ratings" :key="rating.id" class="comment">
+                                                <div class="user">
+                                                    <img src="https://via.placeholder.com/40" alt="User avatar">
+                                                    <div>
+                                                        <div class="user-name">{{ rating.firstName + " "+ rating.lastName }}</div>
+                                                        <Rating v-model="rating.rating" />
+                                                    </div>
+                                                </div>
+                                                <div class="comment-text">
+                                                    {{ rating.comment }}
+                                                </div>
+                                               
+                                                    <i @click="deleteComment(rating.id)" class='mt-2 cursor-pointer text-danger fs-3 bx bx-trash'></i>
+                                                
+                                            </div>
+                                         <!-- end comments -->
                                         <div class="comment-section mt-3">
                                             
                                             <div class="mb-3 ">
+                                                <div class="mt-3 mb-3 flex justify-center">
+                                                <Rating v-model="commentForm.rating" />
+                                                <p v-if="!commentForm.rating" class="text-danger" style="font-size: .7rem">Please give rate</p>
+                                            </div>
                                                 <FloatLabel>
                                                     <Textarea class="form-control" 
                                                     v-model="commentForm.comment" autoResize rows="5" cols="30" />
@@ -252,30 +269,13 @@ Date: 04/06/2024
                                                 </FloatLabel>
                                                 <p v-if="!commentForm.comment" class="text-danger" style="font-size: .7rem">Please write comment</p>
                                             </div>
-                                            <div class="mt-3 mb-3 flex justify-center">
-                                                <Rating v-model="commentForm.rating" />
-                                                <p v-if="!commentForm.rating" class="text-danger" style="font-size: .7rem">Please give rate</p>
-                                            </div>
+                                            
                                             <button type="button" @click="submitComment"
                                         class="btn rounded-0 btn-primary "
                                         ><span>Post Comment</span>
                                     </button>
                                             
-                                            <div v-for="comment in comments" :key="comment.id" class="comment">
-                                                <div class="user">
-                                                    <img src="https://via.placeholder.com/40" alt="User avatar">
-                                                    <div>
-                                                        <div class="user-name">Mazisi Msebele</div>
-                                                        <div class="comment-date">Feb. 8, 2022</div>
-                                                    </div>
-                                                </div>
-                                                <div class="comment-text">
-                                                    {{ comment.comment }}
-                                                </div>
-                                               
-                                                    <i @click="deleteComment(comment.id)" class='mt-2 cursor-pointer text-danger fs-3 bx bx-trash'></i>
-                                                
-                                            </div>
+                                          
                                         </div>
                                     </AccordionContent>
                                 </AccordionPanel>
@@ -289,37 +289,44 @@ Date: 04/06/2024
                                     <h4 class="mb-2 mt-5 ml-2">Others promoters jobs</h4>
                                 </div>
 
-                                <div class="d-flex">
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                      
-                                            <div class="card flex justify-center">
-                                                <Image alt="Image" preview>
-                                                    <template #previewicon>
-                                                      <i class='bx bx-search-alt-2' ></i>
-                                                    </template>
-                                                    <template #image>
-                                                        <img 
-                                                        src="../../assets/images/avatars/avatar-1.png" 
-                                                        alt="image" width="250" />
-                                                    </template>
-                                                    <template #preview="slotProps">
-                                                        <img 
-                                                        src="../../assets/images/avatars/avatar-1.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                                                    </template>
-                                                </Image>
+                                <div  class="d-flex"> 
+                                    <div v-for="promoter in otherPromotersList" :key="promoter.id">
+                                        <div v-if="promoter.id !== promoterId" class="col-img">
+                                            <div class="gallery">
+                                                <div class="card flex justify-center">
+                                                    <Image alt="Image" preview>
+                                                        <template #previewicon>
+                                                            <i class='bx bx-search-alt-2'></i>
+                                                        </template>
+                                                        <template #image>
+                                                            <img 
+                                                                :src="promoter.profilePicture || '../../assets/images/avatars/avatar-1.png'"
+                                                                :alt="promoter.userDetails.firstName" 
+                                                                width="250" 
+                                                            />
+                                                        </template>
+                                                        <template #preview="slotProps">
+                                                            <img 
+                                                                :src="promoter.profilePicture || '../../assets/images/avatars/avatar-1.png'"
+                                                                :alt="promoter.userDetails.firstName" 
+                                                                :style="slotProps.style" 
+                                                                @click="slotProps.onClick" 
+                                                            />
+                                                        </template>
+                                                    </Image>
                                                 </div>
-                                            <div class="desc">Mazisi Msebele</div>
+                                                <div class="desc">{{ promoter.userDetails.firstName + " " + promoter.userDetails.lastName }}</div>
+                                            </div>
                                         </div>
                                     </div>
                                     
                                 </div>
 
-                                <div
+                                <!-- <div
                                     class="mt-2 text-center cursor-pointer d-flex justify-content-center align-items-center">
                                     <span>Load More</span>
                                     <i class='bx bx-chevron-down fs-2'></i>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
 
@@ -365,26 +372,14 @@ Date: 04/06/2024
                                         <h6 class="mb-0">Experience</h6>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div v-for="experience in promoterData?.experiences "  :key="experience?.id" class="row mb-3">
                                     <div>
-                                        <h6 class="mb-0">Savanna</h6>
+                                        <h6 class="mb-0">{{ experience?.name}}</h6>
+                                        <p>{{ experience?.duration}}</p>
+                                        <p>{{ experience?.description }}</p>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Hennessy</h6>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Sky Vodka</h6>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Castle Lite</h6>
-                                    </div>
-                                </div>
+                                
 
                             </div>
                         </div>
@@ -393,7 +388,6 @@ Date: 04/06/2024
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="d-flex align-items-center mb-3">Bio</h5>
-                                        <p>Web Design</p>
                                         <p>
                                             {{ promoterData ? promoterData.bio : '' }}
                                         </p>
@@ -434,6 +428,9 @@ import Textarea from 'primevue/textarea';
 
 onMounted(() => {
     getPromoterDetails();
+    if (taskId.value != null) {
+        getListOtherPromoters();   
+    }
 })
 
 const promoterStore = usePromoter();
@@ -443,6 +440,7 @@ const route = useRoute();
 const toaster = useToaster();
 const files = ref([]);
 const promoterId = ref(route.params.id);
+const taskId = ref(route.query.taskId);
 const totalSizePercent = ref(0);
 
 const $primevue = usePrimeVue();
@@ -450,30 +448,19 @@ const totalSize = ref(0);
 
 const user = JSON.parse(authStore.user)
 const promoterData = ref({});
+const otherPromotersList = ref([])
 const profilePicName = ref('');
 const profilePicPreview = ref(null);
 const profilePic = ref(null);
 const showTools = ref(false);
 
-const comments = ref([
-    {
-        id: 1,
-        name: 'John Doe',
-        date: '2024-12-12',
-        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    },
-    {
-        id: 2,
-        name: 'Jane Doe',
-        date: '2024-03-12',
-        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    },
-]);
+
 
 const commentForm = reactive({
     rating: null,
     comment: null,
-    commentBy: 1    
+    user: user.id,
+    promoter: promoterId.value ? parseInt(promoterId.value, 10) : null
 });
 
 const pic = ref('');
@@ -484,10 +471,19 @@ const uploadInput = ref(null)
     })
 
     const submitComment = () => {
-        if(!commentForm.comment || !commentForm.rating) return
-        console.log(commentForm)
-        return
-        commentStore.submitComment(promoterId.value, commentForm).then(function (response) {
+        
+        if( !commentForm.rating || !commentForm.user || !commentForm.promoter) return
+        
+        commentStore.submitComment(commentForm).then(function (response) {
+            
+        const newComment = {
+                ...commentForm,
+                firstName: user.firstName,
+                lastName: user.lastName
+        };
+        
+        // Push the new comment object to the ratings array
+        promoterData.value.ratings.push(newComment);
             toaster.success("Comment submitted successfully");
         }).catch(function (error) {
             toaster.error("Error submitting comment");
@@ -600,6 +596,18 @@ const getPromoterDetails = () => {
   }).catch(function (error) {
     toaster.error("Error fetching profile");
     console.log(error);
+  });
+}
+
+
+//get other promoters on the job
+const getListOtherPromoters = () => {
+    promoterStore.getOtherPromotersByTaskId(taskId.value).then(function (response) {
+        otherPromotersList.value = response.data.content;
+        console.log("test", response);
+  }).catch(function (error) {
+    toaster.error("Error in fetching other promoters");
+    
   });
 }
 
