@@ -202,7 +202,6 @@ const formatSize = (bytes) => {
 
 
 <style scoped>
-@import 'lightbox2/dist/css/lightbox.css';
 
 .main-dashboard-head {
   display: flex;
