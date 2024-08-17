@@ -36,5 +36,9 @@ export const usePromoter = defineStore('promoter', () => {
       return axiosInstance.post(`/api/checkins`,coOrdObj);
     }
    
-    return { checkIn, submitPromoter, getPromoters, updatePromoter, deletePromoter, uploadPromoterImages ,getTalentByTalentId,getTalentByUserId}
+    const submitRating = (raterId, rate) => {
+      return axiosInstance.post(`/api/users/${raterId}`,rate);
+    }
+
+    return { checkIn, submitPromoter, getPromoters, updatePromoter, deletePromoter, submitRating, uploadPromoterImages ,getTalentByTalentId,getTalentByUserId}
   })

@@ -140,7 +140,7 @@ a {
 
 	position: fixed;
 
-	top: 90px;
+	top: 78px;
 
 	bottom: 0;
 
@@ -277,8 +277,9 @@ a {
 
 
 .page-content {
-
-	padding: 1.5rem 1.5rem 0.7rem 5.5rem;
+	margin-left: 10%;
+	/* Added by Mazisi; */
+	padding: 1.5rem 1.5rem 0.7rem 7.5rem;
 }
 
 
@@ -315,7 +316,7 @@ html.dark-theme .page-footer {
 
 .wrapper.toggled .topbar {
 
-	left: 70px
+	/* left: 70px */
 }
 
 

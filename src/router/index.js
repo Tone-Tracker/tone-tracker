@@ -27,6 +27,7 @@ import admincontact from './admincontact';
 import forgotpassword from './forgotpassword';
 import resertpassword from './resertpassword';
 import ActivationManagerDashboard from '@/views/dashboard/activation-manager/ActivationManagerDashboard.vue';
+import suppliersdashboard from './suppliersdashboard';
 
 
 
@@ -57,6 +58,7 @@ const router = createRouter({
     ...admincontact,
     ...forgotpassword,
     ...resertpassword,
+    ...suppliersdashboard,
 
     {
       path: '/',

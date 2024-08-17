@@ -2,6 +2,7 @@
 Author: Mazisi Msebele
 Date: 04/06/2024
 **/
+
 <template>
     <Layout>
         <!--start page wrapper -->
@@ -20,7 +21,27 @@ Date: 04/06/2024
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
                                 <div class="image-container">
-                                    <img src="/src/assets/images/gallery/10.png" alt="Admin" class=" zoom-image" style="width: 300px; height: 350px;">
+                                    <div class="card flex justify-center">
+                                        <Image alt="Image" preview>
+                                            <template #previewicon>
+                                              <i class='bx bx-search-alt-2' ></i>
+                                            </template>
+                                            <template #image>
+                                                <img 
+                                                src="/src/assets/images/gallery/10.png" 
+                                                alt="image" width="350" />
+                                            </template>
+                                            <template #preview="slotProps">
+                                                <img 
+                                                src="/src/assets/images/gallery/10.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                            </template>
+                                        </Image>
+                                        </div>
+                                    <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
+                                    <div v-if="isMyProfile()" 
+                                        class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
+                                        <i class='bx bx-edit-alt fs-2'></i>
+                                    </div>
                                 </div>
 
                                 <div class="mt-3">
@@ -32,30 +53,26 @@ Date: 04/06/2024
                                     <div class="">
                                         <div class="col-img">
                                             <div class="gallery ms-0">
-                                                <router-link to="/profile">
-                                                    <img src="../../assets/images/avatars/avatar-1.png"
-                                                        alt="Cinque Terre" width="600" height="400">
-                                                </router-link>
+                                                <div class="card flex justify-center">
+                                                    <Image alt="Image" preview>
+                                                        <template #previewicon>
+                                                          <i class='bx bx-search-alt-2' ></i>
+                                                        </template>
+                                                        <template #image>
+                                                            <img 
+                                                            src="../../assets/images/avatars/avatar-1.png" 
+                                                            alt="image" width="250" />
+                                                        </template>
+                                                        <template #preview="slotProps">
+                                                            <img 
+                                                            src="../../assets/images/avatars/avatar-1.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                        </template>
+                                                    </Image>
+                                                    </div>
 
                                             </div>
                                         </div>
-                                        <div class="col-img">
-                                            <div class="gallery">
-                                                <router-link to="/profile">
-                                                    <img src="../../assets/images/avatars/avatar-2.png" alt="Forest"
-                                                        width="600" height="400">
-                                                </router-link>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-img">
-                                            <div class="gallery">
-                                                <router-link to="/profile">
-                                                    <img src="../../assets/images/avatars/avatar-3.png"
-                                                        alt="Northern Lights" width="600" height="400">
-                                                </router-link>
-                                            </div>
-                                        </div>
+                                     
                                     </div>
                                 </div>
                                 <div class="mb-4">
@@ -144,53 +161,127 @@ Date: 04/06/2024
                                     </div>
                                 </div>
 
+                                <!-- Add Profile picture modal -->
+                                <div class="modal fade" id="addProfilePicModal" tabindex="-1" aria-labelledby="addModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addModalLabel">Add Profile Picture</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                                
+                                        </div>
+                                        <div class="modal-body">
+                                            <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
+                                           <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label>
+                                           <!-- <p v-if="profilePicName" class="text-center text-white mt-2">{{ profilePicName }}</p> -->
+
+                                           <!-- <div v-if="profilePicPreview" class="text-center mt-3">
+                                            <img :src="profilePicPreview" alt="Profile Preview" class="img-thumbnail" style="max-width: 100%; height: auto;">
+
+                                          </div> -->
+                                          <VuePictureCropper
+                                          :boxStyle="{
+                                            width: '100%',
+                                            height: '100%',
+                                            backgroundColor: '#f8f8f8',
+                                            margin: 'auto',
+                                          }"
+                                          :img="pic"
+                                          :options="{
+                                            viewMode: 1,
+                                            dragMode: 'move',
+                                            aspectRatio: 1,
+                                            cropBoxResizable: false,
+                                          }"
+                                          :presetMode="{
+                                            mode: 'fixedSize',
+                                            width: 300,
+                                            height: 400,
+                                          }"
+                                          @ready="ready"
+                                          class="mt-3"
+                                        />
+                                          
+                                        <div class="tools" v-if="showTools">
+                                            <button class="btn" data-bs-dismiss="modal">
+                                              Cancel
+                                            </button>
+                                            <!-- <button class="btn" @click="clear">
+                                              Clear
+                                            </button> -->
+                                            <button class="btn" @click="reset">
+                                              Reset
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <div class="col-12 mt-4">
+                                                <div class="d-grid">
+                                                    <button @click="getResult" class="btn maz-gradient-btn"
+                                                        type="button">
+                                                        Save
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             </div>
                             <div class="mb-1">
                                 <p class="text-white">Give Rating</p>
                             </div>
                             <div class="card flex justify-center">
-                                <Rating v-model="value" />
+                                <Rating v-model="rate" />
                             </div>
 
-                            <div class="mt-3">
-                                <h5 class="">Comment</h5>
-                            </div>
+                           
 
                             <!-- comment -->
-                            <div class="accordion" id="accordionExample">
-                                <div class="accordion-item">
-
-                                    <div id="collapseOne" class="accordion-collapse collapse show"
-                                        data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <div>
-                                                <p class="text-white">Give Rating</p>
-                                                <p class="text-white">Top-Notch Professionalism! Our experience with
-                                                    this promoter was
-                                                    marked
-                                                    by exceptional professionalism.
-                                                </p>
-                                                <p>11 August 2023</p>
+                            <Accordion value="0">
+                                <AccordionPanel value="1">
+                                    <AccordionHeader>
+                                        <h5>Comments</h5>
+                                       
+                                    </AccordionHeader>
+                                    <AccordionContent>
+                                        <div class="comment-section mt-3">
+                                            
+                                            <div class="mb-3">
+                                                <FloatLabel>
+                                                    <Textarea class="form-control" 
+                                                    v-model="commentForm.comment" autoResize rows="5" cols="30" :invalid="commentForm.comment ===''" />
+                                                    <label>Write Comment</label>
+                                                </FloatLabel>
                                             </div>
-
-                                            <div>
-                                                <p class="text-white">Give Rating</p>
-                                                <p class="text-white">Impressed by the promoter’s agility and
-                                                    adaptability. They responded
-                                                    swiftly to changes, making the entire process stress-free.
-                                                </p>
-                                                <p>8 September 2023</p>
+                                            <button type="button" @click="submitComment"
+                                        class="btn rounded-0 btn-primary "
+                                        ><span>Post Comment</span>
+                                    </button>
+                                            
+                                            <div v-for="comment in comments" :key="comment.id" class="comment">
+                                                <div class="user">
+                                                    <img src="https://via.placeholder.com/40" alt="User avatar">
+                                                    <div>
+                                                        <div class="user-name">Mazisi Msebele</div>
+                                                        <div class="comment-date">Feb. 8, 2022</div>
+                                                    </div>
+                                                </div>
+                                                <div class="comment-text">
+                                                    {{ comment.comment }}
+                                                </div>
+                                               
+                                                    <i @click="deleteComment(comment.id)" class='mt-2 cursor-pointer text-danger fs-3 bx bx-trash'></i>
+                                                
                                             </div>
                                         </div>
-                                    </div>
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button m" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseOne" aria-expanded="true"
-                                            aria-controls="collapseOne">
-                                        </button>
-                                    </h2>
-                                </div>
-                            </div>
+                                    </AccordionContent>
+                                </AccordionPanel>
+                            </Accordion>
                         </div>
 
                         <div class="prmoters-jobs">
@@ -203,66 +294,27 @@ Date: 04/06/2024
                                 <div class="d-flex">
                                     <div class="col-img">
                                         <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-1.png">
-                                                <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre"
-                                                    width="600" height="400">
-                                            </a>
+                                      
+                                            <div class="card flex justify-center">
+                                                <Image alt="Image" preview>
+                                                    <template #previewicon>
+                                                      <i class='bx bx-search-alt-2' ></i>
+                                                    </template>
+                                                    <template #image>
+                                                        <img 
+                                                        src="../../assets/images/avatars/avatar-1.png" 
+                                                        alt="image" width="250" />
+                                                    </template>
+                                                    <template #preview="slotProps">
+                                                        <img 
+                                                        src="../../assets/images/avatars/avatar-1.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                    </template>
+                                                </Image>
+                                                </div>
                                             <div class="desc">Mazisi Msebele</div>
                                         </div>
                                     </div>
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-2.png">
-                                                <img src="../../assets/images/avatars/avatar-2.png" alt="Forest"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Dave Doe</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-3.png">
-                                                <img src="../../assets/images/avatars/avatar-3.png"
-                                                    alt="Northern Lights" width="600" height="400">
-                                            </a>
-                                            <div class="desc">Nkanyiso Ncube</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-4.png">
-                                                <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Rico Nyathi</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a href="../../assets/images/avatars/avatar-5.png" data-lightbox="image-1"
-                                                data-title="My caption">
-                                                <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Rico Nyathi</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-6.png">
-                                                <img src="../../assets/images/avatars/avatar-6.png" alt="Mountains"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Rico Nyathi</div>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
 
                                 <div
@@ -361,10 +413,12 @@ Date: 04/06/2024
     </Layout>
 </template>
 <script setup>
+import FloatLabel from 'primevue/floatlabel';
+import VuePictureCropper, { cropper } from 'vue-picture-cropper'
 import Layout from '../shared/Layout.vue';
-import BreadCrumb from '../../components/BreadCrumb.vue';
+import { useComments } from '@/stores/comments';
 import Rating from 'primevue/rating';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { usePromoter} from '@/stores/promoter';
 import useToaster from '@/composables/useToaster';
 import { useRoute } from 'vue-router';
@@ -373,13 +427,20 @@ import FileUpload from 'primevue/fileupload';
 import Button from 'primevue/button';
 import Badge from 'primevue/badge';
 import { useAuth } from '@/stores/auth';
+import Image from 'primevue/image';
+import Accordion from 'primevue/accordion';
+import AccordionPanel from 'primevue/accordionpanel';
+import AccordionHeader from 'primevue/accordionheader';
+import AccordionContent from 'primevue/accordioncontent';
+import Textarea from 'primevue/textarea';
 
 onMounted(() => {
     getPromoterDetails();
 })
-const value = ref(null);
+const rate = ref(null);
 const promoterStore = usePromoter();
 const authStore = useAuth();
+const commentStore = useComments();
 const route = useRoute();
 const toaster = useToaster();
 const files = ref([]);
@@ -391,6 +452,161 @@ const totalSize = ref(0);
 
 const user = JSON.parse(authStore.user)
 const promoterData = ref({});
+const profilePicName = ref('');
+const profilePicPreview = ref(null);
+const profilePic = ref(null);
+const showTools = ref(false);
+
+const comments = ref([
+    {
+        id: 1,
+        name: 'John Doe',
+        date: '2024-12-12',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+    {
+        id: 2,
+        name: 'Jane Doe',
+        date: '2024-03-12',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+]);
+
+const commentForm = reactive({
+    comment: null,
+    commentBy: 1    
+});
+
+const pic = ref('');
+const uploadInput = ref(null)
+    const result = reactive({
+      dataURL: '',
+      blobURL: '',
+    })
+
+    watch(rate, (newRate) => {
+    submitRate(newRate);
+    });
+
+    const submitComment = () => {
+        if(!commentForm.comment) return
+        console.log(commentForm)
+        return
+        commentStore.submitComment(promoterId.value, commentForm).then(function (response) {
+            toaster.success("Comment submitted successfully");
+        }).catch(function (error) {
+            toaster.error("Error submitting comment");
+        console.log(error);
+        })
+    }
+
+    const submitRate = (newRate) => {
+      if (!newRate) return
+    promoterStore.submitRating(promoterId.value, newRate).then(function (response) {
+        toaster.success("Rate submitted successfully");
+    }).catch(function (error) {
+        toaster.error("Error submitting rate");
+    console.log(error);
+    })
+    
+    }
+
+    const deleteComment = (id) => {
+        if(!confirm('Are you sure you want to delete this comment?')) return
+        commentStore.delete(id).then(function (response) {
+            toaster.success("Comment deleted successfully");
+        }).catch(function (error) {
+            toaster.error("Error deleting comment");
+        console.log(error);
+        })
+    }
+const onProfilePicSelect = (event) => {
+
+      // Reset last selection and results
+      pic.value = ''
+      result.dataURL = ''
+      result.blobURL = ''
+
+      // Get selected files
+      const { files } = event.target
+      if (!files || !files.length) return
+
+      // Convert to dataURL and pass to the cropper component
+      const file = files[0]
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        // Update the picture source of the `img` prop
+        pic.value = String(reader.result)
+
+        // Show the modal
+        showTools.value = true
+
+        // Clear selected files of input element
+        if (!uploadInput.value) return
+        uploadInput.value.value = ''
+      }
+
+    //const file = event.target.files[0];
+    
+    if (file) {
+        profilePicName.value = file.name;
+        profilePicPreview.value = URL.createObjectURL(file);
+    }
+    profilePic.value = file;
+};
+
+async function getResult() {
+      if (!cropper) return
+      const base64 = cropper.getDataURL()
+      const blob = await cropper.getBlob()
+      if (!blob) return
+
+      const file = await cropper.getFile({
+        fileName: 'mazisi',
+      })
+
+      console.log({ base64, blob, file })
+      result.dataURL = base64
+      result.blobURL = URL.createObjectURL(blob)
+      //isShowModal.value = false
+      const formData = new FormData();
+        formData.append('pic',  file);
+        const config = {
+        useMultipartFormData: true // Add this flag to the request config
+        };
+        console.log(formData)
+        // return
+
+        promoterStore.uploadPromoterImages(formData, config).then(function (response) {
+            console.log(response);
+        })
+
+    }
+
+    /**
+     * Clear the crop box
+     */
+    function clear() {
+      if (!cropper) return
+      cropper.clear()
+    }
+
+    /**
+     * Reset the default cropping area
+     */
+    function reset() {
+      if (!cropper) return
+      cropper.reset()
+    }
+
+    /**
+     * The ready event passed to Cropper.js
+     */
+    function ready() {
+      console.log('Cropper is ready.')
+    }
+
 
 const getPromoterDetails = () => {
     promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
@@ -400,6 +616,7 @@ const getPromoterDetails = () => {
     console.log(error);
   });
 }
+
 
 const isMyProfile = () => {
     // console.log(promoterId.value, user.activeUserId)
@@ -469,6 +686,10 @@ const onSubmit = () => {
 
 }
 
+
+
+
+
 </script>
 <style>
 /* //Acordion// */
@@ -478,35 +699,6 @@ html.dark-theme .accordion-item {
     border: none;
 }
 
-.accordion-body {
-    padding: 0 0 0 0 !important;
-    background-color: #000;
-}
-
-.accordion-button {
-
-    background-color: #0F0F0F !important;
-    border: none;
-}
-
-.accordion-button:not(.collapsed) {
-    margin-bottom: 10px;
-    /* Adjust the value as needed */
-}
-
-.accordion-button:focus {
-    outline: none;
-    box-shadow: none;
-    border: none;
-}
-
-.accordion-button.m::after {
-    color: #5A5959 !important;
-}
-
-.accordion-button::after {
-    margin: auto !important;
-}
 
 div.gallery {
     margin: 5px;
@@ -549,6 +741,7 @@ div.desc {
 
 .dark-theme .card {
     background-color: transparent !important;
+    padding: 0px !important;
 }
 
 /* Add some basic styling for the modal */
@@ -606,5 +799,80 @@ div.desc {
 .file-item .remove-file {
     cursor: pointer;
     color: #ff6b6b;
+}
+
+
+
+.comment-section {
+    max-width: 700px;
+    margin: 2rem auto;
+    background-color: #2c2e33;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+.form-control {
+    background-color: #1d1f24;
+    color: #ced4da;
+    border: 1px solid #404348;
+}
+.form-control:focus {
+    background-color: #1d1f24;
+    color: #ced4da;
+    border-color: #4a9bfc;
+    box-shadow: none;
+}
+.btn-primary {
+    background-color: #4a9bfc;
+    border-color: #4a9bfc;
+}
+.comment {
+    margin-top: 1.5rem;
+}
+.comment .user {
+    display: flex;
+    align-items: center;
+}
+.comment .user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 0.75rem;
+}
+.comment .user-name {
+    font-weight: 500;
+    color: #fff;
+}
+.comment .comment-date {
+    color: #a9acb0;
+    font-size: 0.9rem;
+}
+.comment .comment-text {
+    margin-top: 0.5rem;
+    color: #ced4da;
+}
+
+
+
+
+
+
+.image-container {
+    width: 370px;
+    position: relative;
+    display: inline-block;
+}
+
+.edit-icon {
+    position: absolute;
+    top: -5px;
+    right: 20px;
+    border-radius: 50%;      
+    padding: 5px;  
+    cursor: pointer;
+}
+
+.edit-icon i {
+    font-size: 20px; 
+    color: #fff;
 }
 </style>

@@ -63,17 +63,17 @@ const getRoleName = () => {
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul class="nav-list">
-                                <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/jobs' }" ><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat ps-3'></i></span> All</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/jobs' }" ><router-link to="/jobs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Jobs</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>
                                 <!-- <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li> -->
-                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase ps-3'></i></span> CRM</router-link></li>
                                 <!-- <li><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li> -->
                                 <!-- <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li> -->
-                                <li :class="{ 'active': currentRoute.path === '/message-center' }" ><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/message-center' }" ><a href="#"><span class="icon"><i class='bx bx-envelope ps-3'></i></span> Message center</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><span class="icon"><i class='bx bx-send ps-3'></i></span> Sent</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><span class="icon"><i class='bx bx-envelope-open ps-3'></i></span> Unread</a></li>
                             </ul>
 
                         </div>
@@ -137,7 +137,7 @@ export default {
 
 <style scoped>
 .profile .accordion-button::after {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .accordion-button::after {
@@ -157,7 +157,6 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
 }
 
 .profile-info {
@@ -217,7 +216,8 @@ export default {
 }
 
 .nav-list a:hover {
-    text-decoration: underline;
+    /* text-decoration: underline; */
+    background-color: #1f1e1e
 }
 
 /* //////////////////// */
@@ -250,12 +250,13 @@ export default {
 .menu-section ul li:hover {
     color: #fff;
 }
-/* //icon// */
+
 .nav-list i {
     font-size: 1.5rem; /* Adjust this value as needed */
 }
 
-/* //////header////// */
+/* //////////////////// */
+
 /* header section */
 .accordion-header.profile {
     background-color: #1e1e1e;
@@ -265,7 +266,7 @@ export default {
     background-color: transparent;
     box-shadow: none;
     padding: 10px 15px;
-    width: 91% !important;
+    width: 100% !important;
     
 }
 
@@ -323,8 +324,7 @@ export default {
     margin-bottom: 0px;
 }
 
-
-/* ///////scrollable///////////////// */
+/* /////////////////// */
 .side-nav-wrapper {
   height: 100vh; /* Full viewport height */
   overflow-y: auto; /* Enable vertical scrolling */
@@ -339,7 +339,7 @@ export default {
 
 /* Add some padding to the bottom to ensure last items are visible when scrolled */
 .accordion-item:last-child {
-  padding-bottom: 20px;
+  /* padding-bottom: 20px; */
 }
 
 /* Optional: Customize the scrollbar */
@@ -365,4 +365,7 @@ export default {
 .active{
     background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
+  
+
+
 </style>

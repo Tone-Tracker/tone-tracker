@@ -15,18 +15,47 @@ import { useClientStore } from "@/stores/useClient";
 
 export default {
   setup() {
-    onMounted(() => {
-      if (localStorage.getItem("token")) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-      }
-    });
+    
 
     const loading = ref(false);
 
     const screenSizes = useMonitorSize();
     const auth = useAuth();
     const toaster = useToaster();
+
+    onMounted(() => {
+      if (localStorage.getItem("token") && localStorage.getItem("user")) {
+        //redirect to dashboard
+        redirect(JSON.parse(localStorage.getItem("user")));
+      }
+    });
+
+    const redirect = (user) => {
+      if (user.role == "TTG_SUPER_ADMIN") {
+              router.push("/clients");
+            } else if (
+              user.role == "TTG_ACTIVATION_MANAGER" ||
+              user.role == "TTG_REGIONAL_MANAGER"
+            ) {
+              router.push("/activations-dashboard");
+            } else if (
+              user.role == "CLIENT" ||
+              user.role == "CLIENT"
+            ) {
+              getClientId("1");
+              router.push("/client-campaigns");
+            } else if (
+              user.role == "TTG_TALENT" ||
+              user.role == "TTG_TALENT"
+            ) {
+				
+
+            router.push("/talent");
+            }
+			 else {
+              router.push("dashboard");
+            }
+    };
 
     const form = reactive({
       email: "",
