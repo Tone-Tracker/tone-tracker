@@ -186,12 +186,13 @@ const onInput = () => {
         // Fetch activations
         const response = await activation.getAllActivations(userRole, id);
         activations.value = response.data.content;
+		console.log("test", activations);
 		if(activations.value.length > 0){
 				campaignDetails = activations.value[0].campaignDTO
 		}
     } catch (error) {
         console.error('Error fetching activations:', error);
-        // Uncomment the next line if you have a toaster notification system
+        
         toaster.error("Error fetching activations");
     } finally {
         showLoading.value = false;
@@ -335,59 +336,59 @@ const onUserChange = (event) => {
 	editForm.staff = staff;
 	
 }
-const addActivationManager = () => {
-	showLoading.value = true;
-	const form = reactive({
-	  name:  activationEdit.name,
-	  budget: activationEdit.budget,
-      campaign: activationEdit.campaign,
-	  region: activationEdit.region,
-      startDate: activationEdit.startDate,
-	  endDate: activationEdit.endDate,
-      brief: activationEdit.brief,
-	  targetGroup: activationEdit.targetGroup,
-	  painPoints: activationEdit.painPoints,
-	  staff: editForm.staff
-});
+	const addActivationManager = () => {
+		showLoading.value = true;
+		const form = reactive({
+		name:  activationEdit.name,
+		budget: activationEdit.budget,
+		campaign: activationEdit.campaign,
+		region: activationEdit.region,
+		startDate: activationEdit.startDate,
+		endDate: activationEdit.endDate,
+		brief: activationEdit.brief,
+		targetGroup: activationEdit.targetGroup,
+		painPoints: activationEdit.painPoints,
+		staff: editForm.staff
+	});
 
-	if(activationId.value){
-		return activation.update(activationId.value, form).then(function (response) {
-			toaster.success("Activation updated successfully");
-			visible.value = false;
-			if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
-			getAllActivations(user.role, campaignId.value);
-			} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
-				getAllActivations(user.role, user.activeUserId);
-			} else if('TTG_REGIONAL_MANAGER'){
-				getAllActivations(user.role, regionId.value);
-			}
-			
-		}).catch(function (error) {
-			toaster.error("Error updating activation");
-			console.log(error);
-		}).finally(function () {
-			showLoading.value = false;
-		})
+		if(activationId.value){
+			return activation.update(activationId.value, form).then(function (response) {
+				toaster.success("Activation updated successfully");
+				visible.value = false;
+				if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
+				getAllActivations(user.role, campaignId.value);
+				} else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+					getAllActivations(user.role, user.activeUserId);
+				} else if('TTG_REGIONAL_MANAGER'){
+					getAllActivations(user.role, regionId.value);
+				}
+				
+			}).catch(function (error) {
+				toaster.error("Error updating activation");
+				console.log(error);
+			}).finally(function () {
+				showLoading.value = false;
+			})
+		}
 	}
-}
 
 
-const search = (event) => {
-    const query = event.query.toLowerCase();
-	
-	let myObj = users.value.content.filter(user => user.firstName.toLowerCase().includes(query))
-    mappedUsers.value = myObj.map(u => u.firstName + ' ' + u.lastName);
-};
+		const search = (event) => {
+			const query = event.query.toLowerCase();
+			
+			let myObj = users.value.content.filter(user => user.firstName.toLowerCase().includes(query))
+			mappedUsers.value = myObj.map(u => u.firstName + ' ' + u.lastName);
+		};
 
-const isAdmin = () => {
-	return user.role == 'TTG_SUPER_ADMIN' 
-	|| user.role == 'TTG_HEAD_ADMIN' 
-	|| user.role == 'TTG_REGIONAL_MANAGER';
-}
+		const isAdmin = () => {
+			return user.role == 'TTG_SUPER_ADMIN' 
+			|| user.role == 'TTG_HEAD_ADMIN' 
+			|| user.role == 'TTG_REGIONAL_MANAGER';
+		}
 
-const isActivationManager = () => {
-	return user.role == 'TTG_ACTIVATION_MANAGER';
-}
+		const isActivationManager = () => {
+			return user.role == 'TTG_ACTIVATION_MANAGER';
+		}
 
 </script>
 <template>
@@ -421,7 +422,7 @@ const isActivationManager = () => {
 										<th>Actions</th>
 									</tr>
 								</thead>
-								<tbody >
+								<tbody > 
 									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
 										<td>{{ activation.campaignDTO.name }}</td>
