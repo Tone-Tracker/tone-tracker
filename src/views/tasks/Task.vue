@@ -1,5 +1,6 @@
 <script setup>
 import moment from 'moment';
+import { useUserStore } from '@/stores/userStore';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
@@ -13,24 +14,22 @@ import URLrouter from '@/router';
 import DatePicker from 'primevue/datepicker';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
-import { useActivation } from '@/stores/activation';
 import { useTask } from '@/stores/task';
 import { onMounted, ref, reactive } from 'vue';
 import useToaster from '@/composables/useToaster';
 import { useConfirm } from "primevue/useconfirm";
-import GoogleAutocomplete from '@/components/GoogleAutocomplete.vue';
 import Drawer from 'primevue/drawer';
 import AutoComplete from 'primevue/autocomplete';
 import { watch } from 'vue';
 import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vue-use-places-autocomplete'
-import FileUpload from 'primevue/fileupload';
-import Button from 'primevue/button';
-import Badge from 'primevue/badge';
 import PDF from 'pdf-vue3';
 import SplitButton from 'primevue/splitbutton';
+import MultiSelect from 'primevue/multiselect';
+import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 
 const route = useRoute();
+const userStore = useUserStore();
 const activationName = ref(route.query.name);
 const activation = ref(route.query.activation);
 
@@ -38,6 +37,7 @@ const visible = ref(false);
 const showThirdPartyModal = ref(false);
 
 const tasks = ref([]);
+const thirdPartySuppliers = ref([]);
 const position = ref('top');
 
 const toaster = useToaster();
@@ -46,6 +46,7 @@ const confirm = useConfirm();
 
 onMounted(() => {
     getTasksByActivationId();
+    getThirdPartySuppliers();
 })
 
 const query = ref('');
@@ -84,6 +85,19 @@ watch(suggestions, (newSuggestions) => {
         getGeoCode(event);
        
     };
+    const getThirdPartySuppliers = async () => {
+        userStore.getUserByRole('SUPPLIER').then(response => {
+            let result = response.data.content;
+            if(result.length > 0) {
+                //map third party suppliers
+                thirdPartySuppliers.value = result.map(supplier => {
+                    return { name: supplier.firstName + ' ' + supplier.lastName, code: supplier.id }
+                })
+            }
+        }).catch(error => {
+            console.log(error);
+        })
+    }
 
     const getGeoCode = async (event) => {
         const results =  await geocodeByAddress(event.value.name);
@@ -192,7 +206,6 @@ const onPlannedStartDateChange = (event) => {
 
 const getTasksByActivationId = async () => {
   taskStore.getTasksByActivationId(activation.value).then(response => {
-  console.log("tasks", response.data);
     tasks.value = response.data;
   }).catch(error => {
     toaster.error("Error fetching tasks");
@@ -357,6 +370,9 @@ const taskItems = (task) => [
         }
     }
 ];
+
+const selectedThirdPaties = ref();
+
 
 </script>
 <template>
@@ -557,8 +573,13 @@ const taskItems = (task) => [
                     <PDF :src="base64PDF" />
                 </Drawer>
             </div>
-            <Dialog v-model:visible="showThirdPartyModal" position="top" modal header="Add Third Party" :style="{ width: '50rem' }">
-                Common man
+
+            <Dialog v-model:visible="showThirdPartyModal" position="top" modal header="Add Third Party" :style="{ width: '30rem' }">
+                <div class="card flex justify-center">
+                    <MultiSelect v-model="selectedThirdPaties" display="chip" :options="thirdPartySuppliers" optionLabel="name" filter placeholder="Select Third Party"
+                        :maxSelectedLabels="3" class="w-full md:w-80" />
+                        <FileUploadGeneric docType="thirdPartyFile" title="Attach File" />
+                </div>
             </Dialog>
     </Layout>
 </template>
