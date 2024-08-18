@@ -1,4 +1,4 @@
-11<template>
+<template>
     <Layout>
     <div class="page-wrapper">
       <div class="page-content">
@@ -9,16 +9,79 @@
               <p class="lead">View live data</p>
             </div>
           </div>
-
-          <div class="row mb-4">
-            <div class="col-md-3 mb-3" v-for="(item, index) in menuItems" :key="index">
-              <div class="card bg-dark text-white">
-                <div class="card-body text-center">
-                  <i :class="item.icon" class="bx fs-1 text-info mb-3"></i>
-                  <h5 class="card-title">{{ item.title }}</h5>
+          <div class="row row-cols-1 row-cols-md-3 row-cols-xl-4">
+            <div class="col">
+              <div class="card">
+                <div class="card-body">
+                  <div class="text-center">
+                    <div class="widgets-icons mx-auto  mb-3">
+                      <i class='bx bxs-file-blank text-blue'></i>  
+                    </div>
+                    <p class="mb-0 fs-2 text-secondary">Briefs</p>
+                    <h4 class="my-1 maz-height"></h4>
+  
+                  </div>
                 </div>
               </div>
             </div>
+            <div class="col">
+              <div class="card radius-10">
+                <div class="card-body">
+                  <div class="text-center">
+                    <div class="widgets-icons mx-auto mb-3"><svg width="44" height="59"
+                        viewBox="0 0 44 59" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M38.4251 7.6052H29.2763C29.2763 3.56828 25.9941 0.286133 21.9572 0.286133C17.9203 0.286133 14.6381 3.56828 14.6381 7.6052H5.4893C2.45875 7.6052 0 10.0639 0 13.0945V53.3494C0 56.3799 2.45875 58.8387 5.4893 58.8387H38.4251C41.4556 58.8387 43.9144 56.3799 43.9144 53.3494V13.0945C43.9144 10.0639 41.4556 7.6052 38.4251 7.6052ZM10.9786 48.7749C9.4576 48.7749 8.23395 47.5513 8.23395 46.0303C8.23395 44.5093 9.4576 43.2856 10.9786 43.2856C12.4996 43.2856 13.7232 44.5093 13.7232 46.0303C13.7232 47.5513 12.4996 48.7749 10.9786 48.7749ZM10.9786 37.7963C9.4576 37.7963 8.23395 36.5727 8.23395 35.0517C8.23395 33.5307 9.4576 32.307 10.9786 32.307C12.4996 32.307 13.7232 33.5307 13.7232 35.0517C13.7232 36.5727 12.4996 37.7963 10.9786 37.7963ZM10.9786 26.8177C9.4576 26.8177 8.23395 25.5941 8.23395 24.0731C8.23395 22.5521 9.4576 21.3284 10.9786 21.3284C12.4996 21.3284 13.7232 22.5521 13.7232 24.0731C13.7232 25.5941 12.4996 26.8177 10.9786 26.8177ZM21.9572 4.86055C23.4782 4.86055 24.7018 6.0842 24.7018 7.6052C24.7018 9.12619 23.4782 10.3498 21.9572 10.3498C20.4362 10.3498 19.2125 9.12619 19.2125 7.6052C19.2125 6.0842 20.4362 4.86055 21.9572 4.86055ZM36.5953 46.9452C36.5953 47.4484 36.1836 47.8601 35.6804 47.8601H19.2125C18.7094 47.8601 18.2977 47.4484 18.2977 46.9452V45.1154C18.2977 44.6122 18.7094 44.2005 19.2125 44.2005H35.6804C36.1836 44.2005 36.5953 44.6122 36.5953 45.1154V46.9452ZM36.5953 35.9666C36.5953 36.4698 36.1836 36.8815 35.6804 36.8815H19.2125C18.7094 36.8815 18.2977 36.4698 18.2977 35.9666V34.1368C18.2977 33.6336 18.7094 33.2219 19.2125 33.2219H35.6804C36.1836 33.2219 36.5953 33.6336 36.5953 34.1368V35.9666ZM36.5953 24.988C36.5953 25.4912 36.1836 25.9029 35.6804 25.9029H19.2125C18.7094 25.9029 18.2977 25.4912 18.2977 24.988V23.1582C18.2977 22.655 18.7094 22.2433 19.2125 22.2433H35.6804C36.1836 22.2433 36.5953 22.655 36.5953 23.1582V24.988Z"
+                          fill="#019BFE" />
+                      </svg>
+  
+                    </div>
+                    <p class="mb-0 fs-2 text-secondary">Upload Documents</p>
+                    <h4 class="my-1 maz-height"></h4>
+  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card radius-10">
+                <div class="card-body">
+                  <div class="text-center">
+                    <div class="widgets-icons  mx-auto  mb-3">
+                      <svg width="62" height="62" viewBox="0 0 62 62" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M58.7134 28.4333V30.9961C58.7064 43.3329 50.5857 54.1957 38.7551 57.6936C26.9246 61.1915 14.2024 56.4913 7.48773 46.1419C0.773067 35.7925 1.66544 22.2592 9.68094 12.8811C17.6964 3.50299 30.9256 0.514021 42.1944 5.53511"
+                          stroke="#019BFE" stroke-width="5" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                        <path d="M58.7136 8.71094L30.857 36.5954L22.5 28.2384" stroke="#019BFE"
+                          stroke-width="5" stroke-linecap="round" />
+                      </svg>
+  
+                    </div>
+                    <p class="mb-0 fs-3 text-secondary">Learning Management System</p>
+                    <h4 class="my-1 maz-height"></h4>
+  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card radius-10">
+                <div class="card-body">
+                  <div class="text-center">
+                    <div class="widgets-icons mx-auto  mb-3">
+                      <i class='bx bxs-calculator text-blue'></i>
+  
+                    </div>
+                    <p class="mb-0 fs-3 text-secondary">CRM</p>
+                    <h4 class="my-1 maz-height"></h4>
+  
+                  </div>
+                </div>
+              </div>
+            </div>
+  
           </div>
 
           <div class="row">
@@ -63,12 +126,6 @@
 import { ref, onMounted } from 'vue';
 import Layout from '../shared/Layout.vue';
 
-const menuItems = ref([
-  { title: 'Briefs', icon: 'bx-file' },
-  { title: 'Upload documents', icon: 'bx-upload' },
-  { title: 'Learning Management System', icon: 'bx-home' },
-  { title: 'CRM', icon: 'bx-calculator' }
-]);
 
 onMounted(() => {
   console.log('Component mounted');
@@ -78,58 +135,8 @@ onMounted(() => {
 
   
 <style scoped>
-.page-wrapper {
-  min-height: 100vh;
-  background-color: #121212;
-  color: white;
-}
-
-.page-content {
-  padding-top: 2rem;
-}
-
-.card {
-  background-color: #1e1e1e !important;
-}
-
-.btn-info {
-  background-color: #3498db;
-  border-color: #3498db;
-}
-
-.btn-secondary {
-  background-color: #2c2c2c;
-  border-color: #2c2c2c;
-}
-
-.table-responsive {
-  margin-top: 2rem;
-}
-
-.custom-table-bg {
-  background-color: #1e1e1e;
-}
-
-.no-border-table th,
-.no-border-table td {
-  border: none !important;
-}
-
-.table thead th {
-  background-color: #1e1e1e;
-  color: #6c757d;
-}
-
-.table tbody tr {
-  background-color: #1e1e1e;
-}
-
-.table tbody tr td {
-  border-top: none;
-}
-
-.table button {
-  color: white;
+.text-blue{
+  color: #019BFE;
 }
 </style>
 

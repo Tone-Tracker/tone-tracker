@@ -28,6 +28,7 @@ import forgotpassword from './forgotpassword';
 import resertpassword from './resertpassword';
 import ActivationManagerDashboard from '@/views/dashboard/activation-manager/ActivationManagerDashboard.vue';
 import suppliersdashboard from './suppliersdashboard';
+import costs from './costs';
 
 
 
@@ -40,6 +41,7 @@ function toggle() {
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    ...costs,
     ...chat,
     ...users,
     ...promoter,

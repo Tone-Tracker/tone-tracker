@@ -1,0 +1,289 @@
+<template>
+  <Layout>
+    <div class="page-wrapper">
+      <div class="page-content">
+        <div class="container-fluid">
+          <BreadCrumb title="Setup Cost" icon="bx bx-list-ul" />
+          <div class="card">
+            <div class="card-body">
+              <div class="d-lg-flex align-items-center mb-4 gap-3">
+                <div class="ms-auto">
+                  <button @click="addRow" class="btn radius-30 mt-2 mt-lg-0 maz-gradient-btn">
+                    <i class="bx bxs-plus-square"></i> Add New Row
+                  </button>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Item</th>
+                      <th>Rate</th>
+                      <th>Quantity</th>
+                      <th>Amount</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(row, index) in rows"
+                      :key="index"
+                      @click="selectedRow = index"
+                      @click.outside="removeBorders"
+                    >
+                      <td>
+                        <input
+                          type="text"
+                          v-model="row.item"
+                          :class="{'borderless-input': selectedRow !== index}"
+                          placeholder="Enter Item"
+                          class="form-control"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          v-model="row.rate"
+                          @input="updateAmount(index)"
+                          :class="{'borderless-input': selectedRow !== index}"
+                          placeholder="Enter Rate"
+                          class="form-control"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          v-model="row.quantity"
+                          @input="updateAmount(index)"
+                          :class="{'borderless-input': selectedRow !== index}"
+                          placeholder="Enter Quantity"
+                          class="form-control"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          v-model="row.amount"
+                          :disabled="true"
+                          class="form-control"
+                        />
+                      </td>
+                      <td>
+                        <div class="d-flex order-actions">
+                          <a href="javascript:;" @click="removeRow(index)" class="ms-3 text-danger">
+                            <i class="bx bxs-trash"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="invoice overflow-auto">
+                <div style="min-width: 600px">
+                  <main>
+                    <table>
+                      <tfoot>
+                        <tr>
+                          <td colspan="2"></td>
+                          <td colspan="2">SUBTOTAL</td>
+                          <td>R {{ totalAmount }}</td>
+                        </tr>
+                        <tr>
+                          <td colspan="2"></td>
+                          <td colspan="2">GRAND TOTAL</td>
+                          <td>R {{ totalAmount }}</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </main>
+                </div>
+                
+                <!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
+                <div></div>
+              </div>
+              <div class="d-lg-flex mt-3 align-items-center mb-4 gap-3">
+                <div class="ms-auto">
+                  <button @click="previewInvoice" class="btn radius-30 mt-2 mt-lg-0 maz-gradient-btn">
+                    Preview
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card flex justify-center">
+      <Drawer v-model:visible="visible" position="right" header="Preview Costs" style="width: 40%">
+        <div class="card">
+					<div class="card-body">
+						<div id="invoice">
+							<div class="toolbar hidden-print">
+								<div class="text-end">
+									<button @click="exportToPDF" type="button" class="btn maz-gradient-btn"><i class="fa fa-file-pdf-o"></i> Export as PDF</button>
+								</div>
+								<hr>
+							</div>
+							<div class="invoice overflow-auto" id="my-invoice" style="background-color: #f0f0f0; color: black" >
+								<div style="min-width: 600px">
+									<header>
+										<div class="row">
+											<div class="col">
+												<a href="javascript:;">
+													<!-- <img src="assets/images/logo-icon.png" width="80" alt=""> -->
+												</a>
+											</div>
+											<div class="col company-details">
+												<h2 class="name">
+									<a target="_blank" href="javascript:;">
+									Mazisi Msebele
+									</a>
+								</h2>
+												<div>110 Caldon Drive, Kempton Park</div>
+												<div>(+27) 11 000 0000()</div>
+												<div>mazisi@mrnlabs.com</div>
+											</div>
+										</div>
+									</header>
+									<main>
+										<div class="row contacts">
+											<div class="col invoice-to">
+												<div class="text-gray-light">INVOICE TO:</div>
+												<h2 class="to">John Doe</h2>
+												<div class="address">796 Silver Harbour, TX 79273, US</div>
+												<div class="email"><a href="mailto:john@example.com">john@example.com</a>
+												</div>
+											</div>
+											<div class="col invoice-details">
+												<h1 class="invoice-id">INVOICE 3-2-1</h1>
+												<div class="date">Date of Invoice: 01/10/2018</div>
+												<div class="date">Due Date: 30/10/2018</div>
+											</div>
+										</div>
+										<table class="table table-hover table-striped">
+											<thead>
+												<tr>
+													<th>#</th>
+													<th class="text-left">Item</th>
+													<th class="text-right">Rate</th>
+													<th class="text-right">Quantity</th>
+													<th class="text-right">TOTAL</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr v-for="(row, index) in rows" :key="index">
+													<td class="">{{ index + 1 }}</td>
+													<td class="text-left">
+														<h3>
+										</h3>
+											<a target="_blank" href="javascript:;">
+                              {{ row.item }}
+									   </a>
+                    </td>
+													<td class="">{{ row.rate }}</td>
+													<td class="">{{ row.quantity }}</td>
+													<td class="">{{ row.amount }}</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="2"></td>
+													<td colspan="2">TOTAL</td>
+													<td>R {{ totalAmount }}</td>
+												</tr>
+											</tfoot>
+										</table>
+									
+								
+									</main>
+								</div>
+								<!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
+								<div></div>
+							</div>
+						</div>
+					</div>
+				</div>
+      </Drawer>
+  </div>
+  </Layout>
+</template>
+
+<script setup>
+import html2pdf from "html2pdf.js";
+import { onClickOutside } from '@vueuse/core'
+import { ref, computed } from 'vue';
+import Layout from '../shared/Layout.vue';
+import Drawer from 'primevue/drawer';
+import BreadCrumb from "@/components/BreadCrumb.vue";
+
+
+const pdfRef = ref(null);
+
+// Reactive array to hold table rows
+const rows = ref([
+  { item: '', rate: 0, quantity: 1, amount: '0' }
+]);
+
+// Reactive property to track selected row
+const selectedRow = ref(null);
+
+// Method to add a new row
+const addRow = () => {
+  rows.value.push({ item: '', rate: 0, quantity: 0, amount: 0 });
+};
+
+// Method to remove a row by index
+const removeRow = (index) => {
+  rows.value.splice(index, 1);
+  selectedRow.value = null;
+};
+
+// Method to update the amount when rate or quantity changes
+const updateAmount = (index) => {
+  const row = rows.value[index];
+  row.amount = row.rate * row.quantity;
+};
+
+// Computed property to calculate the total amount
+const totalAmount = computed(() =>
+  rows.value.reduce((sum, row) => sum + row.amount, 0)
+);
+
+// Method to remove input borders when clicking outside
+const removeBorders = () => {
+  selectedRow.value = null;
+};
+
+const visible = ref(false)
+const previewInvoice = () => {
+  visible.value = true
+}
+const exportPDF = () => {
+      
+}
+const clickOutside = (el, binding) => {
+  onClickOutside(el, () => binding.value());
+};
+
+const exportToPDF = () => {
+      html2pdf(document.getElementById("my-invoice"), {
+        margin: 1,
+      filename: "generated-pdf.pdf",
+      });
+    }
+  
+</script>
+
+<style scoped>
+.text-blue {
+  color: #019BFE;
+}
+
+/* Custom class to remove borders */
+.borderless-input {
+  border: none !important;
+  background-color: transparent;
+}
+</style>

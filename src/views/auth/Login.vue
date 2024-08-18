@@ -47,10 +47,11 @@ export default {
             } else if (
               user.role == "TTG_TALENT" ||
               user.role == "TTG_TALENT"
-            ) {
-				
+            ) {	
 
             router.push("/talent");
+            }else if(user.role == "SUPPLIER") {
+              router.push("/supplier-dashboard");
             }
 			 else {
               router.push("dashboard");
@@ -71,19 +72,11 @@ export default {
     const client = ref(null);
     const clientStore = useClientStore();
 
-
-
     const getClientId = (userId) => {
       clientStore.getClientByUserId(userId).then((response) => {
         useStorage("client", response.data);
       });
     };
-
-
-
-
-
-
 
 
     const onSubmit = async () => {
@@ -101,30 +94,29 @@ export default {
           useStorage("user", response.data.user);
           toaster.success("Welcome back");
           setTimeout(() => {
-            if (response.data.user.role == "TTG_SUPER_ADMIN") {
-              router.push("/clients");
-            } else if (
-              response.data.user.role == "TTG_ACTIVATION_MANAGER" ||
-              response.data.user.role == "TTG_REGIONAL_MANAGER"
-            ) {
-              router.push("/activations-dashboard");
-            } else if (
-              response.data.user.role == "CLIENT" ||
-              response.data.user.role == "CLIENT"
-            ) {
-              getClientId("1");
-              router.push("/client-campaigns");
-            } else if (
-              response.data.user.role == "TTG_TALENT" ||
-              response.data.user.role == "TTG_TALENT"
-            ) {
-				
-
-            router.push("/talent");
-            }
-			 else {
-              router.push("dashboard");
-            }
+            redirect(response.data.user);
+      //       if (response.data.user.role == "TTG_SUPER_ADMIN") {
+      //         router.push("/clients");
+      //       } else if (
+      //         response.data.user.role == "TTG_ACTIVATION_MANAGER" ||
+      //         response.data.user.role == "TTG_REGIONAL_MANAGER"
+      //       ) {
+      //         router.push("/activations-dashboard");
+      //       } else if (
+      //         response.data.user.role == "CLIENT" ||
+      //         response.data.user.role == "CLIENT"
+      //       ) {
+      //         getClientId("1");
+      //         router.push("/client-campaigns");
+      //       } else if (
+      //         response.data.user.role == "TTG_TALENT") {
+			// 	         router.push("/talent");
+      //       }else if(response.data.user.role == "SUPPLIER"){
+      //         router.push("supplier-dashboard");
+      //       }
+			//  else {
+      //         router.push("dashboard");
+      //       }
           }, 1000);
         })
         .catch(function (error) {

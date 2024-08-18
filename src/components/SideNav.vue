@@ -8,6 +8,7 @@ import TTG_CLIENT from './navigations/TTG_CLIENT.vue';
 import TTG_PROMOTERS from './navigations/TTG_PROMOTERS.vue';
 
 import { useAuth } from '@/stores/auth';
+import TTG_SUPPLIERS from './navigations/TTG_SUPPLIERS.vue';
 
 const auth = useAuth();
 const user = JSON.parse(auth.user);
@@ -77,6 +78,7 @@ const getUserRole = (role) => {
                     
                      <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/> 
                      <TTG_PROMOTERS v-if="getUserRole('TTG_TALENT')" :user="user"/> 
+                     <TTG_SUPPLIERS v-if="getUserRole('SUPPLIER')" :user="user"/> 
 
 
             <div class="simplebar-placeholder" style="width: 100%; height: 1905px;"></div>

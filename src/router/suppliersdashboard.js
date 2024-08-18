@@ -2,8 +2,8 @@ import SuppliersDashboard from "../views/suppliers/SuppliersDashboard.vue";
 
 export default [
     {
-        path: '/suppliers-dashboard',
-        name: 'suppliers-dashboard',
+        path: '/supplier-dashboard',
+        name: 'supplier-dashboard',
         component: SuppliersDashboard
     }
 ]
