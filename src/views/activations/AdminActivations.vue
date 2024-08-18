@@ -468,7 +468,7 @@ const onUserChange = (event) => {
 			</div>
 		</div>
 
-		<Dialog v-model:visible="visible" modal header="Add Activation Manager" :style="{ width: '30rem' }">
+		<Dialog v-model:visible="visible" position="top" modal header="Add Activation Manager" :style="{ width: '30rem' }">
              
               <form class="row g-3" @submit.prevent="addActivationManager">
 				<div class="col-md-12">

@@ -446,7 +446,7 @@ const items = (warehouse) => [
                
                 </div>
             </div>
-            <Dialog v-model:visible="visible" modal :header="isEdit ? `Edit ${popupType}` : `Add ${popupType}`" :style="dialogStyle">
+            <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? `Edit ${popupType}` : `Add ${popupType}`" :style="dialogStyle">
                
                 <form @submit.prevent="onSubmit" class="row g-3" v-if="popupType === 'Warehouse'" >
                     

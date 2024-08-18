@@ -384,7 +384,7 @@ const deleteRecord = (event, task) => {
                     </div>
                 </div>
             </div>
-            <Dialog v-model:visible="visible" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
+            <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
                 
                 <form @submit.prevent="onSubmit" class="row g-3">
                      <div class="col-md-6">

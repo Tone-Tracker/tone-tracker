@@ -9,6 +9,7 @@ import ConfirmPopup from 'primevue/confirmpopup';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import { useRoute } from 'vue-router';
+import URLrouter from '@/router';
 import DatePicker from 'primevue/datepicker';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
@@ -26,6 +27,7 @@ import FileUpload from 'primevue/fileupload';
 import Button from 'primevue/button';
 import Badge from 'primevue/badge';
 import PDF from 'pdf-vue3';
+import SplitButton from 'primevue/splitbutton';
 
 
 const route = useRoute();
@@ -33,6 +35,8 @@ const activationName = ref(route.query.name);
 const activation = ref(route.query.activation);
 
 const visible = ref(false);
+const showThirdPartyModal = ref(false);
+
 const tasks = ref([]);
 const position = ref('top');
 
@@ -246,6 +250,12 @@ const openModal = (pos,task) => {
     visible.value = true;
 }
 
+
+const toggleModal = (pos,task) => {
+    position.value = pos;
+    showThirdPartyModal.value = true;
+}
+
 const getStatus = (status) => {
     return statuses.value.find(stat => stat.code === status).name;
 }
@@ -282,27 +292,11 @@ const handlePlaceChanged = (place) => {
 };
 
 
-const deleteRecord = (event, task) => {
-  confirm.require({
-    target: event.currentTarget,
-    message: 'Do you want to delete this task?',
-    icon: '',
-    rejectProps: {
-      label: 'Cancel',
-      severity: '',
-      outlined: true
-    },
-    acceptProps: {
-      label: 'Delete',
-      severity: 'danger'
-    },
-    accept: () => {
-      deleteTask(task);
-    },
-    reject: () => {
-      // do nothing
-    }
-  });
+const deleteRecord = ( task) => {
+  if(!window.confirm("Are you sure you want to delete this task?")) {
+    return
+  }
+  deleteTask(task);
 };
 
 const briefFile = ref(null);
@@ -330,6 +324,40 @@ const previewBase64PDF = () => {
         view_uploaded_file_visible.value = true;
     };
 }
+
+
+const taskItems = (task) => [
+    {
+        label: 'Edit',
+        icon: 'bx bxs-edit fs-4 text-success',
+        command: () => {
+            openModal('top',task);
+        }
+    },
+	{
+        label: 'Add Third Party Suppliers',
+        icon: 'bx bx-user-plus fs-4 text-success',
+        command: () => {
+            toggleModal('top',task);
+        }
+    },
+    {
+        label: 'View',
+        icon: 'bx bx-bullseye fs-4 text-success',
+        command: () => {
+            URLrouter.push(`/tasks/${task.id}?name=${task.name}`);
+        }
+    },
+    
+    {
+        label: 'Delete',
+        icon: 'bx bx-trash text-danger fs-3',
+        command: () => {
+           deleteRecord(task)
+        }
+    }
+];
+
 </script>
 <template>
     <Layout>
@@ -370,17 +398,10 @@ const previewBase64PDF = () => {
                                             <td>{{task.completion}}</td>
                                             <td>
                                                 <div class="d-flex order-actions">
-                                                  <a @click="openModal('top',task)" href="javascript:;" >
-                                                    <i class='bx bxs-edit'></i>
-                                                  </a>
-
-                                                  <router-link v-tooltip.bottom="'View Task'"  :to="`/tasks/${task.id}?name=${task.name}`" class="ms-1" click="openModal('top',task)">
-                                                    <i class='text-success bx bx-bullseye'></i>
-                                                  </router-link>
-                                                  
-                                                  <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-1">
-                                                    <i class='bx bxs-trash text-danger'></i>
-                                                  </a>
+                                                    <SplitButton class="text-white" label="Actions" 
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="taskItems(task)"/>
                                                   <ConfirmPopup></ConfirmPopup>
                                                 </div>
                                                 
@@ -399,7 +420,7 @@ const previewBase64PDF = () => {
                     </div>
                 </div>
             </div>
-            <Dialog v-model:visible="visible" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
+            <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
                 
                 <form @submit.prevent="onSubmit" class="row g-3">
                     <div class="col-md-6">
@@ -536,6 +557,9 @@ const previewBase64PDF = () => {
                     <PDF :src="base64PDF" />
                 </Drawer>
             </div>
+            <Dialog v-model:visible="showThirdPartyModal" position="top" modal header="Add Third Party" :style="{ width: '50rem' }">
+                Common man
+            </Dialog>
     </Layout>
 </template>
 <style scoped>
