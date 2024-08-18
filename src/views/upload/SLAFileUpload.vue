@@ -1,13 +1,14 @@
 <script setup>
 import PDF from 'pdf-vue3';
 import Drawer from 'primevue/drawer';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import useToaster from '@/composables/useToaster';
 import { useDocUpload } from '@/stores/docUpload';
 
 const toaster = useToaster();
-const uploadDoc = useDocUpload();
+const uploadStore = useDocUpload();
 
+const showLoading = ref(false);
 const file = ref(null);
 const isDragging = ref(false);
 
@@ -57,14 +58,37 @@ const previewBase64PDF = () => {
         view_uploaded_file_visible.value = true;
     };
 }
+const emits = defineEmits(['done-uploading']);
+
+const form = reactive({type: 'SLA'});
+
+const config = {
+    useMultipartFormData: true
+};
 
 const submitFile = () => {
-  //upload file
+  if(!file.value) {return}
+  const formData = new FormData();
+  formData.append('file', file.value);
+  formData.append('form', JSON.stringify(form));
+  showLoading.value = true;
+  uploadStore.submit(formData, config).then(() => {
+    emits('done-uploading');
+    form.file = null;
+    file.value = null;
+    toaster.success("SLA uploaded successfully");
+    showLoading.value = false;
+  }).catch((error) => {
+    toaster.error('Error uploading SLA');
+    console.log(error);
+  }).finally(() => {
+    showLoading.value = false;
+  })
 
 }
 </script>
 <template>
-  <div class="container col-md-6 mt-5">
+  <div class="container col-md-6 mt-3">
     <h3>Upload SLA Document</h3>
     <div 
     class="file-drop-zone" 
@@ -76,8 +100,8 @@ const submitFile = () => {
   >
     <div class="text-center">
       <i class='bx bx-cloud-upload fs-1' ></i>
-      <p class="mt-2">Drag and drop your SLA file here or <label for="fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
-      <input id="fileInput" type="file" accept="application/pdf" class="d-none" @change="onFileChange">
+      <p class="mt-2">Drag and drop your SLA file here or <label for="sla-fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
+      <input id="sla-fileInput" type="file" accept="application/pdf" class="d-none" @change="onFileChange">
     </div>
   </div>
 
@@ -95,7 +119,12 @@ const submitFile = () => {
       </button>
     </div>
   </div>
-  <button @click="submitFile" type="button" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3">Submit</button>
+  <div class="d-grid">
+  <button @click="submitFile" type="button" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3">
+    <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    {{ showLoading ? 'Uploading...' : 'Submit' }}
+    </button>
+</div>
   <div class="card flex justify-center">
     <Drawer v-model:visible="view_uploaded_file_visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
         <PDF :src="base64PDF" />

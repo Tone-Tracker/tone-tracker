@@ -4,40 +4,22 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
 import { ref } from 'vue';
 import NDAFileUpload from './NDAFileUpload.vue';
 import SLAFileUpload from './SLAFileUpload.vue';
+import { useDocUpload } from '@/stores/docUpload';
 
-const file = ref(null);
-const isDragging = ref(false);
 
-function onFileChange(event) {
-  const selectedFile = event.target.files[0];
-  if (selectedFile) {
-    file.value = selectedFile;
-  }
-}
+const uploadStore = useDocUpload();
+const files = ref([]);
 
-function onDrop(event) {
-  const droppedFile = event.dataTransfer.files[0];
-  if (droppedFile) {
-    file.value = droppedFile;
-  }
-  isDragging.value = false;
-}
 
-function onDragOverNDA(event) {
-  event.preventDefault();
-}
 
-function onDragEnter() {
-  isDragging.value = true;
-}
-
-function onDragLeave() {
-  isDragging.value = false;
-}
-
-function removeFile() {
-  file.value = null;
-}
+const  getFiles = () => {
+    uploadStore.DocsFiles().then(function (response) {
+        files.value = response.data.content;
+    }).catch(error => {
+        console.log(error);
+        toaster.error("Error fetching files");
+    })
+  };
 
 </script>
 <template>
@@ -51,8 +33,8 @@ function removeFile() {
                 <div class="card">
                     <div class="card-body row">
                         
-                            <NDAFileUpload />
-                            <SLAFileUpload />
+                            <NDAFileUpload @done-uploading="getFiles" />
+                            <SLAFileUpload @done-uploading="getFiles" />
                         
                    
                 </div>

@@ -1,13 +1,17 @@
 <script setup>
 import PDF from 'pdf-vue3';
 import Drawer from 'primevue/drawer';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import useToaster from '@/composables/useToaster';
+import { useDocUpload } from '@/stores/docUpload';
+
 
 const toaster = useToaster();
+const uploadStore = useDocUpload();
 
 const file = ref(null);
 const isDragging = ref(false);
+const showLoading = ref(false);
 
 function onFileChange(event) {
   const selectedFile = event.target.files[0];
@@ -57,9 +61,40 @@ const previewBase64PDF = () => {
     };
 }
 
+const config = {
+    useMultipartFormData: true
+};
+
+const emits = defineEmits(['done-uploading']);
+
+const form = reactive({type: 'NDA'});
+
+const submitFile = () => {
+  if(!file.value) {return}
+  const formData = new FormData();
+  formData.append('file', file.value);
+  formData.append('form', JSON.stringify(form));
+  showLoading.value = true;
+  uploadStore.submit(formData, config).then(() => {
+    emits('done-uploading');
+    form.file = null;
+    file.value = null;
+    toaster.success("NDA uploaded successfully");
+    showLoading.value = false;
+  }).catch((error) => {
+    toaster.error('Error uploading NDA');
+    console.log(error);
+  }).finally(() => {
+    showLoading.value = false;
+  })
+
+}
+
+
+
 </script>
 <template>
-    <div class="container col-md-6 mt-5">
+    <div class="container col-md-6 mt-3">
         <h3>Upload NDA Document</h3>
     <div 
     class="file-drop-zone" 
@@ -71,8 +106,8 @@ const previewBase64PDF = () => {
   >
     <div class="text-center">
       <i class='bx bx-cloud-upload fs-1' ></i>
-      <p class="mt-2">Drag and drop your file here or <label for="fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
-      <input id="fileInput" type="file" accept="application/pdf" class="d-none" @change="onFileChange">
+      <p class="mt-2">Drag and drop your file here or <label for="nda-fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
+      <input id="nda-fileInput" type="file" accept="application/pdf" class="d-none" @change="onFileChange">
     </div>
   </div>
 
@@ -90,7 +125,12 @@ const previewBase64PDF = () => {
       </button>
     </div>
   </div>
-  <button type="button" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3">Submit</button>
+  <div class="d-grid">
+  <button @click="submitFile" type="button" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3">
+    <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    {{ showLoading ? 'Uploading...' : 'Submit' }}
+  </button>
+  </div>
   <div class="card flex justify-center">
     <Drawer v-model:visible="view_uploaded_file_visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
         <PDF :src="base64PDF" />
