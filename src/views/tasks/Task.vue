@@ -221,9 +221,6 @@ const getTasksByActivationId = async () => {
 const taskId = ref(null);
 const isEdit = ref(false);
 
-
-
-
 const openModal = (pos,task) => {
     showLoading.value = false;
     if(task) {//edit
@@ -267,6 +264,7 @@ const openModal = (pos,task) => {
 const toggleModal = (pos,task) => {
     position.value = pos;
     showThirdPartyModal.value = true;
+    taskId.value = task.id;
 }
 
 const getStatus = (status) => {
@@ -373,7 +371,26 @@ const taskItems = (task) => [
 
 const selectedThirdPaties = ref();
 
-
+const submitThirdParty = () => {
+    if(!selectedThirdPaties.value) {
+        toaster.error("Please select a supplier");
+        return
+    }
+    const supplierArray = [];
+    selectedThirdPaties.value.forEach(supplier => {
+        supplierArray.push(supplier.code)
+    });
+    showLoading.value = true;
+   taskStore.addThirdPartiesToTask(taskId.value, supplierArray).then(response => {
+       getTasksByActivationId();
+       showThirdPartyModal.value = false;
+       showLoading.value = false;
+   }).catch(error => {
+       console.log(error);
+   }).finally(() => {
+       showLoading.value = false;
+   })
+}
 </script>
 <template>
     <Layout>
@@ -578,7 +595,13 @@ const selectedThirdPaties = ref();
                 <div class="card flex justify-center">
                     <MultiSelect v-model="selectedThirdPaties" display="chip" :options="thirdPartySuppliers" optionLabel="name" filter placeholder="Select Third Party"
                         :maxSelectedLabels="3" class="w-full md:w-80" />
-                        <FileUploadGeneric docType="thirdPartyFile" title="Attach File" />
+                        <div class="d-grid">
+                            <button @click="submitThirdParty" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3" type="button" 
+                               :disabled="!selectedThirdPaties"> 
+                                <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                {{ showLoading ? '' : 'Submit' }}
+                            </button>
+                          </div>
                 </div>
             </Dialog>
     </Layout>

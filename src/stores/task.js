@@ -18,10 +18,16 @@ export const useTask = defineStore('task', () => {
     const addPromotersToTask = (taskId, arrayOfPromoterIDs) => {
       return axiosInstance.post(
           `/api/tasks/promoters/${taskId}`,
-          arrayOfPromoterIDs 
-          
+          arrayOfPromoterIDs           
       );
-  }
+     }
+     
+     const addThirdPartiesToTask = (taskId, arrayOfThirdPartyIDs) => {
+      return axiosInstance.post(
+          `/api/tasks/thirdParties/${taskId}`,
+          arrayOfThirdPartyIDs           
+      );
+     }
   
   
     const deleteTask = (id) => {
@@ -39,5 +45,5 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.get(`/api/tasks/${id}/promoters`);
     }
   
-    return { submit,getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask }
+    return { submit,getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask,addThirdPartiesToTask }
   })
