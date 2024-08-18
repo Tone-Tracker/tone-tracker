@@ -151,9 +151,9 @@
 										<div class="row contacts">
 											<div class="col invoice-to">
 												<div class="text-gray-light">INVOICE TO:</div>
-												<h2 class="to">John Doe</h2>
+												<h2 class="to" style="color: black">John Doe</h2>
 												<div class="address">796 Silver Harbour, TX 79273, US</div>
-												<div class="email"><a href="mailto:john@example.com">john@example.com</a>
+												<div class="email"><a href="#!" style="color: black;">john@example.com</a>
 												</div>
 											</div>
 											<div class="col invoice-details">
