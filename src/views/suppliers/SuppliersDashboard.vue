@@ -107,7 +107,7 @@
             <td class="text-white">JN_129</td>
             <td class="text-white">JN_129</td>
             <td>
-            <button class="btn btn-secondary btn-sm">View</button>
+            <router-link to="/view-supplier-task/1" class="btn btn-secondary btn-sm">View</router-link>
             </td>
         </tr>
         </tbody>

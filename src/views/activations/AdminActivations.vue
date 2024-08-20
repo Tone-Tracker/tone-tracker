@@ -243,16 +243,8 @@ const items = (activation) => [
         command: () => {
             URLrouter.push(`/create-activation?activation=${activation.id}&campaign=${campaignId.value}&manager=${getUserName(activation)}&name=${activation.campaign.name}`);
         }
-    },
+    },    
     
-    {
-        label: 'Add Activation Images',
-        icon: 'bx bx-images text-success fs-3',
-        command: () => {
-            // unitForm.warehouse = warehouse.id
-			URLrouter.push(`/activation-images?activation=${activation.id}`);
-        }
-    },
 	{
         label: 'Add Activation Manager',
         icon: 'bx bx-user-plus text-success fs-3',

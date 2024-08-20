@@ -1,5 +1,6 @@
 import SupplierBrief from "@/views/suppliers/SupplierBrief.vue";
 import SuppliersDashboard from "../views/suppliers/SuppliersDashboard.vue";
+import ViewSupplierTask from "@/views/suppliers/ViewSupplierTask.vue";
 
 export default [
     {
@@ -11,5 +12,10 @@ export default [
         path: '/supplier-briefs',
         name: 'supplier-briefs',
         component: SupplierBrief
+    },
+    {
+        path: '/view-supplier-task/:id',
+        name: 'view-supplier-task',
+        component: ViewSupplierTask
     }
 ]

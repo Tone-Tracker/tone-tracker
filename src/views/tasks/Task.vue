@@ -312,6 +312,7 @@ const deleteRecord = ( task) => {
 
 const briefFile = ref(null);
 const onFileChange = (event) => {
+    briefFile.value = null;
     if (!event.target.files[0].name.includes(".pdf")) {
         toaster.error("Please upload a pdf file");
         briefFile.value = null;
@@ -337,37 +338,49 @@ const previewBase64PDF = () => {
 }
 
 
-const taskItems = (task) => [
-    {
-        label: 'Edit',
-        icon: 'bx bxs-edit fs-4 text-success',
-        command: () => {
-            openModal('top',task);
-        }
-    },
-	{
-        label: 'Add Third Party Suppliers',
-        icon: 'bx bx-user-plus fs-4 text-success',
-        command: () => {
-            toggleModal('top',task);
-        }
-    },
-    {
-        label: 'View',
-        icon: 'bx bx-bullseye fs-4 text-success',
-        command: () => {
-            URLrouter.push(`/tasks/${task.id}?name=${task.name}`);
-        }
-    },
-    
-    {
+
+
+const taskItems = (task) => {
+    const items = [
+        {
+            label: 'Edit',
+            icon: 'bx bxs-edit fs-4 text-success',
+            command: () => {
+                openModal('top', task);
+            }
+        },
+        {
+            label: 'View',
+            icon: 'bx bx-bullseye fs-4 text-success',
+            command: () => {
+                URLrouter.push(`/tasks/${task.id}?name=${task.name}`);
+            }
+        },
+    ];
+
+    // Conditionally add the "Add Third Party Suppliers" item
+    if (task.type == 'THIRDPARTY') {
+        items.push({
+            label: 'Add Third Party Suppliers',
+            icon: 'bx bx-user-plus fs-4 text-success',
+            command: () => {
+                toggleModal('top', task);
+            }
+        });
+    }
+    items.push({
         label: 'Delete',
         icon: 'bx bx-trash text-danger fs-3',
         command: () => {
-           deleteRecord(task)
+            deleteRecord(task);
         }
-    }
-];
+    });
+
+    return items;
+};
+
+
+
 
 const selectedThirdPaties = ref();
 
@@ -408,8 +421,8 @@ const submitThirdParty = () => {
                                 <table class="table table-dark table-bordered">
                                     <thead>
                                         <tr class="table-dark-color">
-                                            <th>Activation</th>
                                             <th>Task</th>
+                                            <th>Job Number</th>
                                             <th>Risk</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
@@ -420,7 +433,7 @@ const submitThirdParty = () => {
                                     </thead>
                                     <tbody>
                                         <tr v-if="tasks.length > 0" v-for="task in tasks" :key="task.id" class="table-dark-black">
-                                            <td>{{ activationName }}</td>
+                                            <td>{{ task.name }}</td>
                                             <td>{{ task.jobNumber }}</td>
                                             <td  :class="getClass(task.status)">
                                                 {{ getStatus(task.status) }}
@@ -569,7 +582,6 @@ const submitThirdParty = () => {
                             </div>
                         </div>
                     </template>
-
                     <div class="modal-footer" style="margin-top: 2rem">
                        
                         <button type="submit" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center">
