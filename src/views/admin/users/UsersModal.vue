@@ -133,7 +133,7 @@ const onSubmit = async () => {
             <div class="row">
               <div class="col-lg-12">
                 <div class="border border-3 p-4 rounded">
-                  <div class="row g-3">
+                  <div class="row g-3 mb-3">
                     <div class="col-12">
                       <label for="activation-area" class="form-label">Role</label>
                       <select v-model="form.role" class="form-control" id="activation-area">
@@ -187,7 +187,7 @@ const onSubmit = async () => {
                     </div>
                   </div>
 
-                  <div class="col-12">
+                  <div class="col-12 mt-3">
                     <div class="d-grid">
                       <button @click="onSubmit" class="btn maz-gradient-btn" type="button"
                         :disabled="v$.activationArea.$errors?.length > 0">
