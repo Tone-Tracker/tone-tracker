@@ -118,6 +118,16 @@ watch(() => props.modalData, (newVal) => {
 						   <div class="col-lg-12">
 							<div class="border border-3 p-4 rounded">
                               <div class="row g-3">
+								<div class="col-12">
+									<label for="activation-area" class="form-label">Role</label>
+									<select v-model="form.role" class="form-control" id="activation-area">
+										<option :value="''" :selected="true">Select Role</option>
+										<option v-for="role in ROLES" :key="role" :value="role">{{ role }}</option>
+									</select>
+									<div class="input-errors" v-for="error of v$.role.$errors" :key="error.$uid">
+										<div class="text-danger">Role is required</div>
+									  </div>
+								  </div>
 								<div class="col-md-6">
 									<label for="firstName" class="form-label">First Name</label>
 									<input v-model="form.firstName" type="text" class="form-control" id="firstName" >
@@ -151,17 +161,6 @@ watch(() => props.modalData, (newVal) => {
 									<input v-model="form.activationArea" type="text" class="form-control" id="activation-area" >
 									<div class="input-errors" v-for="error of v$.activationArea.$errors" :key="error.$uid">
 										<div class="text-danger">Activation Area is required</div>
-									  </div>
-								  </div>
-
-								  <div class="col-md-6">
-									<label for="activation-area" class="form-label">Role</label>
-									<select v-model="form.role" class="form-control" id="activation-area">
-										<option :value="''" :selected="true">Select Role</option>
-										<option v-for="role in ROLES" :key="role" :value="role">{{ role }}</option>
-									</select>
-									<div class="input-errors" v-for="error of v$.role.$errors" :key="error.$uid">
-										<div class="text-danger">Role is required</div>
 									  </div>
 								  </div>
 								 
