@@ -1,0 +1,42 @@
+<template>
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label for="dress_size" class="form-label">Dress Size</label>
+        <select v-model="form.dressSize" class="form-control" id="dress_size">
+          <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="pantsSize" class="form-label">Pants Size</label>
+        <select v-model="form.pantsSize" class="form-control" id="pantsSize">
+          <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="top-size" class="form-label">Top Size</label>
+        <select v-model="form.topSize" class="form-control" id="top-size">
+          <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="height" class="form-label">Height</label>
+        <input v-model="form.height" type="number" class="form-control" id="height">
+      </div>
+    </div>
+  </template>
+  
+  <script setup>
+  import { defineProps } from 'vue';
+  
+  const props = defineProps({
+    form: {
+      type: Object,
+      required: true
+    },
+    sizes: {
+      type: Array,
+      required: true
+    }
+  });
+  </script>
+  
