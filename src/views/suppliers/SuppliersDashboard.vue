@@ -13,14 +13,14 @@
             <div class="col">
               <div class="card">
                 <div class="card-body">
-                  <div class="text-center">
+                  <router-link   to="/supplier-briefs" class="text-center">
                     <div class="widgets-icons mx-auto  mb-3">
                       <i class='bx bxs-file-blank text-blue'></i>  
                     </div>
                     <p class="mb-0 fs-2 text-secondary">Briefs</p>
                     <h4 class="my-1 maz-height"></h4>
   
-                  </div>
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -95,7 +95,8 @@
             <th class="text-white">Name of quote</th>
             <th class="text-white">Amount</th>
             <th>
-            <button class="btn btn-info btn-sm me-2">Accept</button>
+            <th class="text-white">Action</th>
+            <!-- <button class="btn btn-info btn-sm me-2">Action</button> -->
             </th>
         </tr>
         </thead>
@@ -106,7 +107,7 @@
             <td class="text-white">JN_129</td>
             <td class="text-white">JN_129</td>
             <td>
-            <button class="btn btn-secondary btn-sm">Reject</button>
+            <button class="btn btn-secondary btn-sm">View</button>
             </td>
         </tr>
         </tbody>
