@@ -386,11 +386,24 @@ Date: 04/06/2024
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="d-flex align-items-center mb-3">Bio</h5>
-                                        <p>
-                                            {{ promoterData ? promoterData.bio : '' }}
-                                        </p>
+                                    <div class="card-body row">
+                                        
+                                            <div class="col-11">
+                                                <h5 class="d-flex align-items-center mb-3">Bio</h5>
+                                            <p v-if="!showBioTextarea">
+                                                {{ promoterData ? promoterData.bio : '' }}
+                                            </p>
+                                         {{ myBio }}
+                                                <div v-if="showBioTextarea" class="card flex justify-center">
+                                                    <Textarea v-model="myBio" autoResize rows="5" cols="30" />
+                                                    <button type="button" class="btn btn maz-gradient-btn mt-2">Save</button>
+                                                </div>
+                                            
+                                            </div>
+                                            <div class="col-1">
+                                                <i @click="editBio()" class="bx bx-edit-alt fs-2 cursor-pointer"></i>
+                                            </div>
+                                    
                                     </div>
                                 </div>
                             </div>
@@ -453,6 +466,13 @@ const profilePicName = ref('');
 const profilePicPreview = ref(null);
 const profilePic = ref(null);
 const showTools = ref(false);
+const showBioTextarea = ref(false);
+
+const myBio = ref(promoterData.bio ? promoterData.bio : '');
+
+const editBio = () => {
+    showBioTextarea.value = !showBioTextarea.value
+}
 
 
 
