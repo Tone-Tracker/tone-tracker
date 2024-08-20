@@ -44,9 +44,9 @@ Date: 04/06/2024
                                     </div>
                                 </div>
 
-                                <div class="mt-3">
-                                    <h4 class="text-center">{{ getFullName() }} 
-                                    </h4>
+                                <div class="mt-3 mb-4">
+                                    <h4 class="text- ">{{ getFullName() }} </h4>
+                                    <h4 class="text-center"><Rating :modelValue="4" :readonly="true" class="mt-2" width="20px"/> </h4>
                                 </div>
 
                                 <div class="profile-imgs mb-4">
@@ -368,15 +368,17 @@ Date: 04/06/2024
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div>
+                                    <div class="d-flex justify-content-between">
                                         <h6 class="mb-0">Experience</h6>
+                                        <i v-if="isMyProfile"  @click="showExperienceModal=true" v-tooltip="'Add experience'"  
+                                        class='bx bx-plus-circle fs-3 cursor-pointer' style="margin-top: -1rem;"></i>
                                     </div>
                                 </div>
                                 <div v-for="experience in promoterData?.experiences "  :key="experience?.id" class="row mb-3">
                                     <div>
                                         <h6 class="mb-0">{{ experience?.name}}</h6>
                                         <p>{{ experience?.duration}}</p>
-                                        <p>{{ experience?.description }}</p>
+                                            <p>{{ experience?.description }}</p>
                                     </div>
                                 </div>
                                 
@@ -393,7 +395,6 @@ Date: 04/06/2024
                                             <p v-if="!showBioTextarea">
                                                 {{ promoterData ? promoterData.bio : '' }}
                                             </p>
-                                         {{ myBio }}
                                                 <div v-if="showBioTextarea" class="card flex justify-center">
                                                     <Textarea v-model="myBio" autoResize rows="5" cols="30" />
                                                     <button type="button" class="btn btn maz-gradient-btn mt-2">Save</button>
@@ -401,7 +402,10 @@ Date: 04/06/2024
                                             
                                             </div>
                                             <div class="col-1">
-                                                <i @click="editBio()" class="bx bx-edit-alt fs-2 cursor-pointer"></i>
+                                                <i @click="editBio" v-if="!showBioTextarea && isMyProfile"  v-tooltip="'Edit Bio'"
+                                                class="bx bx-edit-alt fs-2 cursor-pointer"></i>
+                                                <i @click="closeBioTextarea" v-if="showBioTextarea" v-tooltip="'Close'"
+                                                class='bx bx-x fs-2 cursor-pointer text-danger'></i>
                                             </div>
                                     
                                     </div>
@@ -414,7 +418,43 @@ Date: 04/06/2024
 
             </div>
         </div>
-        <!--start switcher-->
+        <Dialog v-model:visible="showExperienceModal" header="Add Experience" :style="{ width: '30rem' }" position="top" :modal="true" :draggable="false">
+            <form @submit.prevent="addExperience">
+            <div class="row g-3">
+                  <div class="col-md-12">
+                  <label for="name" class="form-label">Name</label>
+                 <div class=" flex justify-center">
+                    <InputText type="text" v-model="experienceForm.name" class="w-100" />
+                 </div>
+                  <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
+                    <div class="text-danger">Name is required</div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                  <label for="name" class="form-label">Duration</label>
+                 <div class=" flex justify-center">
+                    <InputText type="text" v-model="experienceForm.duration" class="w-100" placeholder="E.g 2 years"/>
+                 </div>
+                  <div class="input-errors" v-for="error of v$.duration.$errors" :key="error.$uid">
+                    <div class="text-danger">Duration is required</div>
+                    </div>
+                  </div>
+                   <div class="col-md-12">
+                  <label for="description" class="form-label">Description</label>
+                 <div class=" flex justify-center">
+                    <Textarea v-model="experienceForm.description" autoResize rows="5" cols="50" />
+                 </div>
+                  <div class="input-errors" v-for="error of v$.description.$errors" :key="error.$uid">
+                    <div class="text-danger">Description is required</div>
+                    </div>
+                  </div>
+          
+                </div> 
+            <div class="flex justify-end gap-2">
+                <button type="submit" class="btn btn maz-gradient-btn mt-2 w-100">Save</button>
+            </div>
+            </form>
+        </Dialog>
     </Layout>
 </template>
 <script setup>
@@ -438,6 +478,10 @@ import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
 import Textarea from 'primevue/textarea';
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext';
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 
 onMounted(() => {
     getPromoterDetails();
@@ -445,7 +489,7 @@ onMounted(() => {
         getListOtherPromoters();   
     }
 })
-
+const showExperienceModal = ref(false);
 const promoterStore = usePromoter();
 const authStore = useAuth();
 const commentStore = useComments();
@@ -468,10 +512,49 @@ const profilePic = ref(null);
 const showTools = ref(false);
 const showBioTextarea = ref(false);
 
-const myBio = ref(promoterData.bio ? promoterData.bio : '');
+const experienceForm = reactive({
+    promoter: promoterId.value,
+    name: null,
+	duration: null,
+	description: null,
+});
+
+const rules = { 
+	name: { required },
+	duration: { required },
+	description: { required },
+};
+const v$ = useVuelidate(rules, experienceForm);
+
+const addExperience = async () => {
+    const isFormValid = await v$.value.$validate();
+	if (!isFormValid) {return;}
+    promoterStore.addExperience(experienceForm).then(function (response) {
+        experienceForm.name = '';
+        experienceForm.duration = '';
+        experienceForm.description = '';
+        v$.value.$errors = [];
+        v$.value.$reset();
+        getPromoterDetails();
+        toaster.success('Experience added successfully')
+        //reset form and errors
+
+        showExperienceModal.value = false
+    }).catch(function (error) {
+        toaster.error('Something went wrong')
+        console.log(error)
+    })
+}
+
+const myBio = ref(promoterData.value.bio ? promoterData.value.bio : '');
+console.log('myBio',promoterData.value)
 
 const editBio = () => {
     showBioTextarea.value = !showBioTextarea.value
+}
+
+const closeBioTextarea = () => {
+    showBioTextarea.value = false
 }
 
 
@@ -613,6 +696,7 @@ async function getResult() {
 const getPromoterDetails = () => {
     promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
         promoterData.value = response.data;
+        myBio.value = response.data.bio;
   }).catch(function (error) {
     toaster.error("Error fetching profile");
     console.log(error);
