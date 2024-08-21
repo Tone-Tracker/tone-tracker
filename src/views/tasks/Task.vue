@@ -166,7 +166,7 @@ const onSubmit = async () => {
 
         const formData = new FormData();
         formData.append('briefFile', form.briefFile);
-        formData.append('ActivationDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
+        formData.append('taskDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
 
         const config = {
             useMultipartFormData: true // Add this flag to the request config
