@@ -196,9 +196,10 @@
 											</tfoot>
 										</table>
 									
-								
+                    
 									</main>
 								</div>
+                <button @click="onSubmit" type="button" class="btn maz-gradient-btn"><i class="fa fa-file-pdf-o"></i> Send</button>
 								<!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
 								<div></div>
 							</div>
@@ -272,6 +273,10 @@ const exportToPDF = () => {
         margin: 1,
       filename: "generated-pdf.pdf",
       });
+    }
+
+    const onSubmit = () => {
+      
     }
   
 </script>
