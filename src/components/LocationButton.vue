@@ -1,28 +1,39 @@
 <template>
-    <button @click="getLocation" :disabled="isLoading">
-      {{ isLoading ? 'Loading...' : 'Get Location' }}
+    <button @click="getLocation" :disabled="isLoading" class="rounded btn p-0  btn-sm rounded-5"> 
+      {{ isLoading ? 'Loading...' : 'Check in' }}
     </button>
-    <div v-if="showLocation">
-      Latitude: {{ coords.latitude }}
-      Longitude: {{ coords.longitude }}
-    </div>
+    
+    
     <div v-if="error">
-      Error: {{ error }}
+      Please allow location access in your browser settings
     </div>
   </template>
   
   <script setup>
   import { useGeolocation } from '@vueuse/core';
   import { ref } from 'vue';
+  import { usePromoter } from '@/stores/promoter';
   
   const { coords, error, resume, pause } = useGeolocation();
-  const showLocation = ref(false);
+  const showLocationDetails = ref(false);
   const isLoading = ref(false);
+
+  const promoterStore = usePromoter();
   
   const getLocation = () => {
     isLoading.value = true;
     resume();
-    showLocation.value = true;
+    showLocationDetails.value = true;
     isLoading.value = false;
+    const coordObj = {
+      "latitude": coords.value.latitude,
+      "longitude": coords.value.longitude
+    }
+     promoterStore.checkIn(coordObj).then(function (response) {
+        console.log(response.data);
+        isLoading.value = false;
+        showLocationDetails.value = true;
+        isLoading.value = false;
+     })
   };
   </script>

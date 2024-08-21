@@ -126,7 +126,7 @@ const deleteRecord = (event, user) => {
 										<th>Contact Surname</th>
 										<th>Email</th>
 										<th>Cell Number</th>
-										<th>Opt In</th>
+										<th>Role</th>
 										<th>Activation Area</th>
 										<th>Actions</th>
 									</tr>
@@ -138,8 +138,8 @@ const deleteRecord = (event, user) => {
 										<td>{{user.email}}</td>
 										<td>{{user.phone}}</td>
 										<td>
-											<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class='bx bxs-circle align-middle me-1'></i>
-											Yes</div></td>
+											{{ user.role }}
+										</td>
 											<td>
 												Johannesburg
 											</td>

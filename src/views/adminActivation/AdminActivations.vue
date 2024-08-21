@@ -95,7 +95,7 @@ const onInput = () => {
 										<th>Contact Surname</th>
 										<th>Email</th>
 										<th>Cell Number</th>
-										<th>Opt In</th>
+										<th>Role</th>
 										<th>Activation Area</th>
 										<th>Actions</th>
 									</tr>
@@ -107,11 +107,11 @@ const onInput = () => {
 										<td>{{user.email}}</td>
 										<td>{{user.phone}}</td>
 										<td>
-											<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class='bx bxs-circle align-middle me-1'></i>
-											Yes</div></td>
-											<td>
+											{{user.role}}
+										</td>
+										<td>
 												Johannesburg
-											</td>
+										</td>
 										<td>
 											<div class="d-flex order-actions">
 												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
@@ -121,11 +121,8 @@ const onInput = () => {
 										</td>
 									</tr>
 									<tr v-else>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td colspan="7" class="text-center">
-											<!-- <CustomSpinner v-if="showLoading"/> -->
+										<td colspan="7" class="text-center text-danger">
+											No activations found.
 										</td>
 									</tr>
 									

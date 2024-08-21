@@ -355,7 +355,7 @@ const formatSize = (bytes) => {
     </div>
 
 
-	<Dialog v-model:visible="visible" modal header="Add Promoter" :style="{ width: '50rem' }">
+	<Dialog v-model:visible="visible" position="top" modal header="Add Promoter" :style="{ width: '50rem' }">
     <div class="card flex justify-center">
       <label for="input1" class="form-label">Choose User</label>
        <AutoComplete v-model="user_id" forceSelection dropdown :suggestions="dropdownItems" 

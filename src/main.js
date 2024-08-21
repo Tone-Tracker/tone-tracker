@@ -6,8 +6,6 @@ import './assets/css/icons.css';
 import './assets/css/pace.min.css';
 import './assets/css/semi-dark.css';
 import $ from 'jquery';
-import lightbox from 'lightbox2';
-import 'lightbox2/dist/css/lightbox.css';
 
 import './assets/css/app.css';
 
@@ -58,7 +56,6 @@ app.use(PrimeVue, {
 },);
 app.directive('tooltip', Tooltip);
 app.use(ConfirmationService);
-app.use(lightbox)
 app.config.globalProperties.$ = $
 app.component('ConfirmPopup', ConfirmPopup);
 app.mount('#app')

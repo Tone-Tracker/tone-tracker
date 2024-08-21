@@ -118,7 +118,7 @@ const formatSize = (bytes) => {
           <div class="col-img ">
             <div class="gallery">
               <router-link to="/profile">
-                <img src="../../assets/images/gallery/1.jpg" alt="Cinque Terre" class="img-fluid">
+                <img src="#" alt="Cinque Terre" class="img-fluid">
               </router-link>
               <!-- <div class="checkbox">
                 <input type="checkbox" id="select">
@@ -202,7 +202,6 @@ const formatSize = (bytes) => {
 
 
 <style scoped>
-@import 'lightbox2/dist/css/lightbox.css';
 
 .main-dashboard-head {
   display: flex;

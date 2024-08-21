@@ -161,16 +161,6 @@ const deleteRecord = (event, region) => {
     });
 };
 
-const getRegionManagerName = (region) => {
-    console.log('region', region)
-    console.log(staffMembers.value)
-    staffMembers.value.forEach(staff => {
-        if (staff.user === region.staff) {
-            
-            return staff.user.firstName + ' ' + staff.user.lastName
-        }
-    })
-}
 
 const vFocus = {
     mounted: (el) => el.focus()
@@ -216,7 +206,9 @@ const openModal = (pos,region) => {
                                                         <td v-else>
                                                             <input v-focus type="text" v-model="region.name" @blur="update(region)" @keyup.enter="update(region)" class="no-border-input"/>
                                                         </td>
-                                                        <td>{{ getRegionManagerName(region) }}</td>
+                                                        <td>
+                                                            {{ region.firstName ? region.firstName + ' ' + region.lastName : '' }}
+                                                        </td>
                                                         <td>
                                                             <div class="d-flex order-actions">
                                                                 <a v-if="!region.isEditing" @click="editClient(region)" href="javascript:;">
@@ -274,12 +266,12 @@ const openModal = (pos,region) => {
                 </div>
             </div>
         </div>
-        <Dialog v-model:visible="visible" modal :header="`Add ${regionName} Regional Manager`" :style="{ width: '25rem' }">
+        <Dialog v-model:visible="visible" position="top" modal :header="`Add ${regionName} Regional Manager`" :style="{ width: '25rem' }">
             <form @submit.prevent="submitRegionalManager" class="row g-3">
                 <div class="col-md-12">
                     <div class="card my-card flex justify-center">
                         <label for="input1" class="form-label">Regional Manager</label>
-                        <Select v-model="regionalManager" @change="onRegManagerChange($event)" :options="regionalManagers" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" />
+                        <Select v-model="regionalManager" @change="onRegManagerChange($event)" :options="regionalManagers" showClear  optionLabel="name" placeholder="Select Regional Manager" class="w-full md:w-56" />
                           
                 </div>                        
                 </div>

@@ -24,6 +24,28 @@ export const usePromoter = defineStore('promoter', () => {
     const uploadPromoterImages = (formData, config) => {
       return axiosInstance.post(`/api/images`, formData, config);
     }
-      
-    return { submitPromoter, getPromoters, updatePromoter, deletePromoter, uploadPromoterImages }
+    const  getTalentByTalentId = (id) => {
+      return axiosInstance.get(`/api/promoters/${id}`);
+    } 
+    
+    const getOtherPromotersByTaskId = (taskId) => {
+      return axiosInstance.get(`/api/promoters/task/${taskId}`)
+    }
+    
+    const  getTalentByUserId = (id) => {
+      return axiosInstance.get(`/api/promoters/${id}`);
+    }
+
+    const checkIn = (coOrdObj ) => {
+      return axiosInstance.post(`/api/checkins`,coOrdObj);
+    }
+   
+    const submitRating = (raterId, rate) => {
+      return axiosInstance.post(`/api/users/${raterId}`,rate);
+    }
+    const addExperience = (data) => {
+      return axiosInstance.post(`/api/promoters/experiences`,data);
+    }
+
+    return { checkIn, addExperience,submitPromoter, getPromoters, updatePromoter, deletePromoter, submitRating, uploadPromoterImages ,getTalentByTalentId,getTalentByUserId, getOtherPromotersByTaskId}
   })

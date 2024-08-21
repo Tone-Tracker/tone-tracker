@@ -51,7 +51,7 @@ const getCampaignsByClientId = () => {
                                     :to="`/admin-activations?campaign=${campaign.id}&name=${campaign.name}`">
                                     <div class="job-item">
                                         <div class="image-container">
-                                            <img src="../../assets/images/Component 102 – 1.png" :alt="campaign.name">
+                                            <img src="../../assets/images/Component102.png" :alt="campaign.name">
                                             <span>{{ campaign.name }}</span>
                                         </div>
                                         <div class="details">

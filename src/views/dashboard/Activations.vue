@@ -1,5 +1,4 @@
 <template>
-  
   <Layout>
     <div class="page-wrapper">
       <div class="page-content">
@@ -7,42 +6,29 @@
           <div class="col-12 col-lg-12 d-flex">
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
-                <div class="chart-container-1" >
-
-                  <!-- //////////LOCATION BUTTON///////////// -->
-                  <LocationButton />
-                  <!-- //////////LOCATION BUTTON///////////// -->
-
-
-                  <GoogleMap
+                <div class="chart-container-1">
+                  <GoogleMap @click=""
                     api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
                     style="width: 100%; height: 800px"
                     :center="center"
                     :zoom="9"
                     :options="{ styles: mapStyles }"
                   >
-                    <Marker 
-                      v-for="(location, i) in locations"
-                      :key="i"
-                      :options="{ position: location }"
-                      @click="openInfoWindow(i)"
-                    >
-                  
-                      <InfoWindow v-if="activeInfoWindow === i" >
-                        <div class="popup" ref="target">
-                          <i class='bx bx-x float-end cursor-pointer fs-2 text-danger' @click="activeInfoWindow = null"></i>
+                    <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
+                      <InfoWindow>
+                        <div class="popup">
+                          <div  class="text-danger fs-3 text-end" >
+                            <i @click="close = true" class='cursor-pointer bx bx-x'></i></div>
                           <div class="inner-container">
-                            <h2>Team: 01</h2>
+                            <h2>{{ location.title }}</h2>
                             <p>CPC: R 2.00</p>
-                            <p>Start / End date: 22 Jan - 28 Jun</p>
+                            <p>Start / End date: {{ location.startDate }} - {{ location.endDate }}</p>
                             <p>Current Cost: R 25,000.00</p>
                             <p>Leads generated: 100,000</p>
-                            <h3>{{ location.title }}</h3>
-                            <p>247 New Brunswick Rd Aph 282</p>
+                            <h3>{{ location.regionName }} Activation</h3>
                           </div>
                         </div>
                       </InfoWindow>
-                    
                     </Marker>
                   </GoogleMap>
                 </div>
@@ -54,17 +40,12 @@
     </div>
   </Layout>
 </template>
-
 <script setup>
-import { onClickOutside } from '@vueuse/core'
 import { onMounted,watch,ref } from 'vue';
 import Layout from '../shared/Layout.vue';
 import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
 import { useActivation } from '@/stores/activation';
 import { useAuth } from '@/stores/auth';
-import LocationButton from '../../components/LocationButton.vue';
-
-
 
 const center = { lat: -25.6793642, lng: 28.1941785 };
 const infowindow = ref(false); // Will be open when mounted
@@ -74,29 +55,48 @@ const target = ref(null);
 const activationStore = useActivation();
 const authStore = useAuth();
 const staffID = JSON.parse(authStore.user)?.activeUserId;
-onClickOutside(target, event => console.log('Outside'))
+defineEmits(['closeModal']);
 
-function openInfoWindow(index) {
-  activeInfoWindow.value = index;
+const closeInfoWindow = () => {
+  //emit 'closeModal'
+  emit('closeModal');
 }
 
-const activations = ref([]);
-const locations = ref([]);
+watch(infowindow, (v) => {
+  alert('infowindow has been ' + (v ? 'opened' : 'closed'));
+});
 
-const getActivations = () => {
-  activationStore.getActivationByStaffId(staffID).then(function (response) {
-    activations.value = response.data.content;
-    //map activations
-    for (let i = 0; i < activations.value.length; i++) {
-      // locations.value.push({ lat: activations.value[i].latitude, lng: activations.value[i].longitude, title: activations.value[i].name })
-      locations.value.push({ lat: -26.0184568, lng: 28.0055974, title: activations.value[i].name })
-    }
-    console.log(locations.value)
-  }).catch(function (error) {
-    console.log(error);
-  }).finally(function () {
-    ///
-  })
+
+const activations = ref([]);
+let locations = ref([]);
+
+const getAllActivations = () => {
+
+  //get activations for Admins
+  const user = JSON.parse(authStore.user);
+ 
+  if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){  
+    activationStore.getAllActivationsAdmins().then(function (response) {
+      activations.value = response.data;
+      //map activations
+      locations.value = activations.value.map(activation => ({
+          lat: activation.centralPoint.latitude,
+          lng: activation.centralPoint.longitude,
+          startDate: activation.startDate,
+          endDate: activation.endDate,
+          regionName: activation.regionName,
+          title: activation.name
+        }));
+
+        console.log('test location', locations);
+    })
+  }
+
+
+
+
+  
+
 }
 
 const mapStyles = [
@@ -189,36 +189,15 @@ const mapStyles = [
   }
 ];
 
-// const locations = [
-//   { lat: -26.0184568, lng: 28.0055974, title: 'Gauteng Activation' },
-//   { lat: -41.330162, lng: 174.865694, title: 'Eastern Cape Activation' },
-//   { lat: -25.93312, lng: 28.01213, title: 'North West Activation' },
-//   { lat: -26.1851663, lng: 28.315154, title: 'Cape Town Activation' },
-//   { lat: -25.6793642, lng: 28.1941785, title: 'Durban Activation' },
-//   { lat: -26.038240, lng: 28.213280, title: 'Limpopo Activation' },
-// ]
 
-watch(infowindow, (v) => {
-  //alert('infowindow has been ' + (v ? 'opened' : 'closed'));
-});
+
+
 
 
 
 onMounted(() => {
-  getActivations();
+  getAllActivations();
 });
-///////////////////GOOGLE AUTOCOMPLETE//////////////
-// import { ref } from 'vue';
-import GoogleAutocomplete from '../../components/GoogleAutocomplete.vue';
-
-const address = ref('');
-
-const handlePlaceChanged = (place) => {
-  console.log('Selected place:', place);
-  // You can access more details about the place here
-};
-///////////////////GOOGLE AUTOCOMPLETE//////////////
-
 </script>
 
 <style>
@@ -248,11 +227,9 @@ const handlePlaceChanged = (place) => {
 <style scoped>
 .popup {
   width: 300px;
-  background:linear-gradient(135deg, #00a2ff, #481e7e);
+  background: linear-gradient(135deg, #00a2ff, #7000ff);
   color: white;
   font-family: Arial, sans-serif;
-  padding: 20px;
-  padding-bottom: 40px;
   clip-path: 
     polygon(
       20px 0%, 
@@ -267,23 +244,12 @@ const handlePlaceChanged = (place) => {
       0% calc(100% - 40px),
       0% 20px
     );
-  position: relative;
-  overflow: hidden;
-}
-
-.popup::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 20px;
-  background: inherit;
+  padding: 20px;
+  padding-bottom: 40px;
   border-radius: 20px;
 }
 
 .inner-container {
-  position: relative;
   background-color: black;
   padding: 20px 15px 15px 15px;
   border-radius: 10px;

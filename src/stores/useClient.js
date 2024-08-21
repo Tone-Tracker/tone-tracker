@@ -29,4 +29,4 @@ export const useClientStore = defineStore('useClientStore', () => {
    
   
     return {getClientByClientId, submitClient,getClients,updateClient,deleteClient ,getClientByUserId}
-  })
+})

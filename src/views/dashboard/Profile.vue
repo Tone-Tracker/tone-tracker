@@ -2,6 +2,7 @@
 Author: Mazisi Msebele
 Date: 04/06/2024
 **/
+
 <template>
     <Layout>
         <!--start page wrapper -->
@@ -20,45 +21,62 @@ Date: 04/06/2024
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
                                 <div class="image-container">
-                                    <img src="/src/assets/images/gallery/10.png" alt="Admin" class=" zoom-image" style="width: 400px; height: auto;">
+                                    <div class="card flex justify-center">
+                                        <Image alt="Image" preview>
+                                            <template #previewicon>
+                                              <i class='bx bx-search-alt-2' ></i>
+                                            </template>
+                                            <template #image>
+                                                <img 
+                                                src="/src/assets/images/gallery/10.png" 
+                                                alt="image" width="350" />
+                                            </template>
+                                            <template #preview="slotProps">
+                                                <img 
+                                                src="/src/assets/images/gallery/10.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                            </template>
+                                        </Image>
+                                        </div>
+                                    <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
+                                    <div v-if="isMyProfile()" 
+                                        class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
+                                        <i class='bx bx-edit-alt fs-2'></i>
+                                    </div>
                                 </div>
 
-                                <div class="mt-3">
-                                    <h4 class="text-center">John Doe</h4>
+                                <div class="mt-3 mb-4">
+                                    <h4 class="text- ">{{ getFullName() }} </h4>
+                                    <h4 class="text-center"><Rating :modelValue="4" :readonly="true" class="mt-2" width="20px"/> </h4>
                                 </div>
 
                                 <div class="profile-imgs mb-4">
                                     <div class="">
                                         <div class="col-img">
                                             <div class="gallery ms-0">
-                                                <router-link to="/profile">
-                                                    <img src="../../assets/images/avatars/avatar-1.png"
-                                                        alt="Cinque Terre" width="600" height="400">
-                                                </router-link>
+                                                <div class="card flex justify-center">
+                                                    <Image alt="Image" preview>
+                                                        <template #previewicon>
+                                                          <i class='bx bx-search-alt-2' ></i>
+                                                        </template>
+                                                        <template #image>
+                                                            <img 
+                                                            src="../../assets/images/avatars/avatar-1.png" 
+                                                            alt="image" width="250" />
+                                                        </template>
+                                                        <template #preview="slotProps">
+                                                            <img 
+                                                            src="../../assets/images/avatars/avatar-1.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                        </template>
+                                                    </Image>
+                                                    </div>
 
                                             </div>
                                         </div>
-                                        <div class="col-img">
-                                            <div class="gallery">
-                                                <router-link to="/profile">
-                                                    <img src="../../assets/images/avatars/avatar-2.png" alt="Forest"
-                                                        width="600" height="400">
-                                                </router-link>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-img">
-                                            <div class="gallery">
-                                                <router-link to="/profile">
-                                                    <img src="../../assets/images/avatars/avatar-3.png"
-                                                        alt="Northern Lights" width="600" height="400">
-                                                </router-link>
-                                            </div>
-                                        </div>
+                                     
                                     </div>
                                 </div>
                                 <div class="mb-4">
-                                    <button
+                                    <button v-if="isMyProfile()"
                                         class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center"
                                         data-bs-toggle="modal" data-bs-target="#addModal">
                                         <span>
@@ -68,6 +86,7 @@ Date: 04/06/2024
                                             </svg>
                                         </span><span>Add</span>
                                     </button>
+
                                 </div>
                                 <!-- Add Modal -->
                                 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel"
@@ -75,29 +94,57 @@ Date: 04/06/2024
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="addModalLabel">Add images</h5>
+                                                <h5 class="modal-title" id="addModalLabel">Drag and drop your images</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="drag-drop-area" :class="{ 'drag-over': isDragOver }"
-                                                    @dragover.prevent="isDragOver = true"
-                                                    @dragleave.prevent="isDragOver = false" @drop.prevent="onDrop"
-                                                    @click="$refs.fileInput.click()">
-                                                    <input type="file" ref="fileInput" @change="onFileSelected" multiple
-                                                        style="display: none;">
-                                                    <div class="drag-drop-text">
-                                                        <i class='bx bx-cloud-upload fs-1 mb-2'></i>
-                                                        <p>Drag and drop files here or click to select</p>
-                                                    </div>
-                                                    <button class="btn btn-outline-light mt-2">Select Files</button>
-                                                </div>
-                                                <div class="file-list mt-3">
-                                                    <div v-for="(file, index) in files" :key="index" class="file-item">
-                                                        <span>{{ file.name }}</span>
-                                                        <span class="remove-file" @click="removeFile(index)">×</span>
-                                                    </div>
-                                                </div>
+                                                <FileUpload name="demo[]" url="/api/upload" @upload="onTemplatedUpload($event)"  :multiple="true" accept="image/*" @select="onSelectedFiles">
+                                                    <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
+                                                        <div class="d-flex flex-wrap justify-content-between align-items-center flex-grow-1 gap-4">
+                                                            <div class="d-flex gap-2">
+                                                                <Button @click="chooseCallback()" icon="bx bx-images" class="btn btn-outline-secondary text-white rounded"></Button>
+                                                                <Button @click="clearCallback()" icon="bx bx-x" class="btn btn-outline-danger rounded" :disabled="!files || files.length === 0"></Button>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
+                                                        <div class="d-flex flex-column gap-4 pt-4">
+                                                            <div v-if="files.length > 0">
+                                                                <div class="d-flex flex-wrap gap-4">
+                                                                    <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="p-4 rounded border d-flex flex-column border-secondary align-items-center gap-2">
+                                                                        <div>
+                                                                            <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                                                        </div>
+                                                                        <span class="font-weight-bold text-truncate w-75">{{ file.name }}</span>
+                                                                        <div>{{ formatSize(file.size) }}</div>
+                                                                        <Button icon="bx bx-x" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" class="btn btn-outline-danger rounded" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                        
+                                                            <div v-if="uploadedFiles.length > 0">
+                                                                <div class="d-flex flex-wrap gap-4">
+                                                                    <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="p-4 rounded border d-flex flex-column border-secondary align-items-center gap-2">
+                                                                        <div>
+                                                                            <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                                                        </div>
+                                                                        <span class="font-weight-bold text-truncate w-75">{{ file.name }}</span>
+                                                                        <div>{{ formatSize(file.size) }}</div>
+                                                                        <Badge value="Completed" class="mt-4 badge bg-success" />
+                                                                        <Button icon="bx bx-x" @click="removeUploadedFileCallback(index)" class="btn btn-outline-danger rounded" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <template #empty>
+                                                        <div class="d-flex align-items-center justify-content-center flex-column">
+                                                            <i class="bx bx-cloud-upload border border-2 rounded-circle p-4 fs-6 text-muted" />
+                                                            <p class="mt-3 mb-0">Drag and drop files to here to upload.</p>
+                                                        </div>
+                                                    </template>
+                                                </FileUpload>
                                             </div>
 
                                             <div class="modal-footer">
@@ -105,7 +152,7 @@ Date: 04/06/2024
                                                     <div class="d-grid">
                                                         <button @click="onSubmit" class="btn maz-gradient-btn"
                                                             type="button">
-                                                            {{ isEdit ? 'Update' : 'Submit' }}
+                                                            Submit
                                                         </button>
                                                     </div>
                                                 </div>
@@ -114,53 +161,125 @@ Date: 04/06/2024
                                     </div>
                                 </div>
 
-                            </div>
-                            <div class="mb-1">
-                                <p class="text-white">Give Rating</p>
-                            </div>
-                            <div class="card flex justify-center">
-                                <Rating v-model="value" />
-                            </div>
+                                <!-- Add Profile picture modal -->
+                                <div class="modal fade" id="addProfilePicModal" tabindex="-1" aria-labelledby="addModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addModalLabel">Add Profile Picture</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                                
+                                        </div>
+                                        <div class="modal-body">
+                                            <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
+                                           <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label>
+                                          
+                                          <VuePictureCropper
+                                          :boxStyle="{
+                                            width: '100%',
+                                            height: '100%',
+                                            backgroundColor: '#f8f8f8',
+                                            margin: 'auto',
+                                          }"
+                                          :img="pic"
+                                          :options="{
+                                            viewMode: 1,
+                                            dragMode: 'move',
+                                            aspectRatio: 1,
+                                            cropBoxResizable: false,
+                                          }"
+                                          :presetMode="{
+                                            mode: 'fixedSize',
+                                            width: 300,
+                                            height: 400,
+                                          }"
+                                          @ready="ready"
+                                          class="mt-3"
+                                        />
+                                          
+                                        <div class="tools" v-if="showTools">
+                                            <button class="btn" data-bs-dismiss="modal">
+                                              Cancel
+                                            </button>
+                                            <!-- <button class="btn" @click="clear">
+                                              Clear
+                                            </button> -->
+                                            <button class="btn" @click="reset">
+                                              Reset
+                                            </button>
+                                          </div>
+                                        </div>
 
-                            <div class="mt-3">
-                                <h5 class="">Comment</h5>
-                            </div>
-
-                            <!-- comment -->
-                            <div class="accordion" id="accordionExample">
-                                <div class="accordion-item">
-
-                                    <div id="collapseOne" class="accordion-collapse collapse show"
-                                        data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <div>
-                                                <p class="text-white">Give Rating</p>
-                                                <p class="text-white">Top-Notch Professionalism! Our experience with
-                                                    this promoter was
-                                                    marked
-                                                    by exceptional professionalism.
-                                                </p>
-                                                <p>11 August 2023</p>
-                                            </div>
-
-                                            <div>
-                                                <p class="text-white">Give Rating</p>
-                                                <p class="text-white">Impressed by the promoter’s agility and
-                                                    adaptability. They responded
-                                                    swiftly to changes, making the entire process stress-free.
-                                                </p>
-                                                <p>8 September 2023</p>
+                                        <div class="modal-footer">
+                                            <div class="col-12 mt-4">
+                                                <div class="d-grid">
+                                                    <button @click="getResult" class="btn maz-gradient-btn"
+                                                        type="button">
+                                                        Save
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button m" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseOne" aria-expanded="true"
-                                            aria-controls="collapseOne">
-                                        </button>
-                                    </h2>
                                 </div>
                             </div>
+
+                            </div>
+                           
+
+                            <!-- comment -->
+                            <Accordion value="0">
+                                <AccordionPanel value="1">
+                                    <AccordionHeader>
+                                        <h5>Comments</h5>
+                                       
+                                    </AccordionHeader>
+                                    <AccordionContent>
+
+                                        <!-- start comments -->
+                                        <div v-for="rating in promoterData.ratings" :key="rating.id" class="comment">
+                                                <div class="user">
+                                                    <img src="https://via.placeholder.com/40" alt="User avatar">
+                                                    <div>
+                                                        <div class="user-name">{{ rating.firstName + " "+ rating.lastName }}</div>
+                                                        <Rating v-model="rating.rating" />
+                                                    </div>
+                                                </div>
+                                                <div class="comment-text">
+                                                    {{ rating.comment }}
+                                                </div>
+                                               
+                                                    <i @click="deleteComment(rating.id)" class='mt-2 cursor-pointer text-danger fs-3 bx bx-trash'></i>
+                                                
+                                            </div>
+                                         <!-- end comments -->
+                                        <div class="comment-section mt-3">
+                                            
+                                            <div class="mb-3 ">
+                                                <div class="mt-3 mb-3 flex justify-center">
+                                                <Rating v-model="commentForm.rating" />
+                                                <p v-if="!commentForm.rating" class="text-danger" style="font-size: .7rem">Please give rate</p>
+                                            </div>
+                                                <FloatLabel>
+                                                    <Textarea class="form-control" 
+                                                    v-model="commentForm.comment" autoResize rows="5" cols="30" />
+                                                    <label>Write Comment</label>
+                                                </FloatLabel>
+                                                <p v-if="!commentForm.comment" class="text-danger" style="font-size: .7rem">Please write comment</p>
+                                            </div>
+                                            
+                                            <button type="button" @click="submitComment"
+                                        class="btn rounded-0 btn-primary "
+                                        ><span>Post Comment</span>
+                                    </button>
+                                            
+                                          
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionPanel>
+                            </Accordion>
                         </div>
 
                         <div class="prmoters-jobs">
@@ -170,178 +289,61 @@ Date: 04/06/2024
                                     <h4 class="mb-2 mt-5 ml-2">Others promoters jobs</h4>
                                 </div>
 
-                                <div class="d-flex">
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-1.png">
-                                                <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Mazisi Msebele</div>
+                                <div  class="d-flex"> 
+                                    <div v-for="promoter in otherPromotersList" :key="promoter.id">
+                                        <div v-if="promoter.id !== promoterId" class="col-img">
+                                            <div class="gallery">
+                                                <div class="card flex justify-center">
+                                                    <Image alt="Image" preview>
+                                                        <template #previewicon>
+                                                            <i class='bx bx-search-alt-2'></i>
+                                                        </template>
+                                                        <template #image>
+                                                            <img 
+                                                                :src="promoter.profilePicture || '../../assets/images/avatars/avatar-1.png'"
+                                                                :alt="promoter.userDetails.firstName" 
+                                                                width="250" 
+                                                            />
+                                                        </template>
+                                                        <template #preview="slotProps">
+                                                            <img 
+                                                                :src="promoter.profilePicture || '../../assets/images/avatars/avatar-1.png'"
+                                                                :alt="promoter.userDetails.firstName" 
+                                                                :style="slotProps.style" 
+                                                                @click="slotProps.onClick" 
+                                                            />
+                                                        </template>
+                                                    </Image>
+                                                </div>
+                                                <div class="desc">{{ promoter.userDetails.firstName + " " + promoter.userDetails.lastName }}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-2.png">
-                                                <img src="../../assets/images/avatars/avatar-2.png" alt="Forest"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Dave Doe</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-3.png">
-                                                <img src="../../assets/images/avatars/avatar-3.png"
-                                                    alt="Northern Lights" width="600" height="400">
-                                            </a>
-                                            <div class="desc">Nkanyiso Ncube</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-4.png">
-                                                <img src="../../assets/images/avatars/avatar-4.png" alt="Mountains"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Rico Nyathi</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a href="../../assets/images/avatars/avatar-5.png" data-lightbox="image-1"
-                                                data-title="My caption">
-                                                <img src="../../assets/images/avatars/avatar-5.png" alt="Mountains"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Rico Nyathi</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-img">
-                                        <div class="gallery">
-                                            <a data-lightbox="image-1" data-title="My caption"
-                                                href="../../assets/images/avatars/avatar-6.png">
-                                                <img src="../../assets/images/avatars/avatar-6.png" alt="Mountains"
-                                                    width="600" height="400">
-                                            </a>
-                                            <div class="desc">Rico Nyathi</div>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
 
-                                <div
+                                <!-- <div
                                     class="mt-2 text-center cursor-pointer d-flex justify-content-center align-items-center">
                                     <span>Load More</span>
                                     <i class='bx bx-chevron-down fs-2'></i>
-                                </div>
+                                </div> -->
                             </div>
-                            <!-- <div>
-                                <div>
-                                    <div><img src="" alt=""></div>
-                                    <p>David Mwakajumba</p>
-                                </div>
-                                <div>
-                                    <div><img src="" alt=""></div>
-                                    <p>Hailey Thompson</p>
-                                </div>
-                                <div>
-                                    <div><img src="" alt=""></div>
-                                    <p>David Nkosi</p>
-                                </div>
-                                <div>
-                                    <div><img src="" alt=""></div>
-                                    <p>Brandon Michaels</p>
-                                </div>
-                                <div>
-                                    <div><img src="" alt=""></div>
-                                    <p>Gwakisa Mwakajumba</p>
-                                </div>
-                            </div> -->
                         </div>
 
 
-                        <!-- <ul class="list-group list-group-flush">
-                                    <li
-                                        class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-globe me-2 icon-inline">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                <path
-                                                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
-                                                </path>
-                                            </svg>Website</h6>
-                                        <span class="text-secondary">https://codervent.com</span>
-                                    </li>
-                                    <li
-                                        class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-github me-2 icon-inline">
-                                                <path
-                                                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
-                                                </path>
-                                            </svg>Github</h6>
-                                        <span class="text-secondary">codervent</span>
-                                    </li>
-                                    <li
-                                        class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-twitter me-2 icon-inline text-info">
-                                                <path
-                                                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
-                                                </path>
-                                            </svg>Twitter</h6>
-                                        <span class="text-secondary">@codervent</span>
-                                    </li>
-                                    <li
-                                        class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-instagram me-2 icon-inline text-danger">
-                                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                                            </svg>Instagram</h6>
-                                        <span class="text-secondary">codervent</span>
-                                    </li>
-                                    <li
-                                        class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-facebook me-2 icon-inline text-primary">
-                                                <path
-                                                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z">
-                                                </path>
-                                            </svg>Facebook</h6>
-                                        <span class="text-secondary">codervent</span>
-                                    </li>
-                                </ul> -->
+                       
                     </div>
                     <div class="col-lg-5">
                         <div class="card">
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div>
-                                        <h6 class="mb-0">Age: 22</h6>
+                                        <h6 class="mb-0">Age: {{ promoterData ? promoterData.dob : '' }}</h6>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div>
-                                        <h6 class="mb-0">Height: 172</h6>
+                                        <h6 class="mb-0">Height: {{ promoterData ? promoterData.height : '' }}</h6>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -351,64 +353,61 @@ Date: 04/06/2024
                                 </div>
                                 <div class="row mb-3">
                                     <div>
-                                        <h6 class="mb-0">Top size: Medium</h6>
+                                        <h6 class="mb-0">Top size: {{ promoterData ? promoterData.topSize : '' }}</h6>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div>
-                                        <h6 class="mb-0">Pants Size: 30</h6>
+                                        <h6 class="mb-0">Pants Size: {{ promoterData ? promoterData.pantsSize : '' }}</h6>
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <div>
-                                        <h6 class="mb-0">Dress Size: Medium</h6>
+                                        <h6 class="mb-0">Dress Size: {{ promoterData ? promoterData.dressSize : '' }}</h6>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div>
+                                    <div class="d-flex justify-content-between">
                                         <h6 class="mb-0">Experience</h6>
+                                        <i v-if="isMyProfile"  @click="showExperienceModal=true" v-tooltip="'Add experience'"  
+                                        class='bx bx-plus-circle fs-3 cursor-pointer' style="margin-top: -1rem;"></i>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div v-for="experience in promoterData?.experiences "  :key="experience?.id" class="row mb-3">
                                     <div>
-                                        <h6 class="mb-0">Savanna</h6>
+                                        <h6 class="mb-0">{{ experience?.name}}</h6>
+                                        <p>{{ experience?.duration}}</p>
+                                            <p>{{ experience?.description }}</p>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Hennessy</h6>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Sky Vodka</h6>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Castle Lite</h6>
-                                    </div>
-                                </div>
+                                
 
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="d-flex align-items-center mb-3">Bio</h5>
-                                        <p>Web Design</p>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore
-                                            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                                            laboris nisi ut aliquip ex ea commodo
-                                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                            cillum dolore eu fugiat nulla pariatur.
-                                            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                                            deserunt mollit anim id est laborum.
-                                        </p>
+                                    <div class="card-body row">
+                                        
+                                            <div class="col-11">
+                                                <h5 class="d-flex align-items-center mb-3">Bio</h5>
+                                            <p v-if="!showBioTextarea">
+                                                {{ promoterData ? promoterData.bio : '' }}
+                                            </p>
+                                                <div v-if="showBioTextarea" class="card flex justify-center">
+                                                    <Textarea v-model="myBio" autoResize rows="5" cols="30" />
+                                                    <button type="button" class="btn btn maz-gradient-btn mt-2">Save</button>
+                                                </div>
+                                            
+                                            </div>
+                                            <div class="col-1">
+                                                <i @click="editBio" v-if="!showBioTextarea && isMyProfile"  v-tooltip="'Edit Bio'"
+                                                class="bx bx-edit-alt fs-2 cursor-pointer"></i>
+                                                <i @click="closeBioTextarea" v-if="showBioTextarea" v-tooltip="'Close'"
+                                                class='bx bx-x fs-2 cursor-pointer text-danger'></i>
+                                            </div>
+                                    
                                     </div>
                                 </div>
                             </div>
@@ -419,37 +418,375 @@ Date: 04/06/2024
 
             </div>
         </div>
-        <!--start switcher-->
+        <Dialog v-model:visible="showExperienceModal" header="Add Experience" :style="{ width: '30rem' }" position="top" :modal="true" :draggable="false">
+            <form @submit.prevent="addExperience">
+            <div class="row g-3">
+                  <div class="col-md-12">
+                  <label for="name" class="form-label">Name</label>
+                 <div class=" flex justify-center">
+                    <InputText type="text" v-model="experienceForm.name" class="w-100" />
+                 </div>
+                  <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
+                    <div class="text-danger">Name is required</div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                  <label for="name" class="form-label">Duration</label>
+                 <div class=" flex justify-center">
+                    <InputText type="text" v-model="experienceForm.duration" class="w-100" placeholder="E.g 2 years"/>
+                 </div>
+                  <div class="input-errors" v-for="error of v$.duration.$errors" :key="error.$uid">
+                    <div class="text-danger">Duration is required</div>
+                    </div>
+                  </div>
+                   <div class="col-md-12">
+                  <label for="description" class="form-label">Description</label>
+                 <div class=" flex justify-center">
+                    <Textarea v-model="experienceForm.description" autoResize rows="5" cols="50" />
+                 </div>
+                  <div class="input-errors" v-for="error of v$.description.$errors" :key="error.$uid">
+                    <div class="text-danger">Description is required</div>
+                    </div>
+                  </div>
+          
+                </div> 
+            <div class="flex justify-end gap-2">
+                <button type="submit" class="btn btn maz-gradient-btn mt-2 w-100">Save</button>
+            </div>
+            </form>
+        </Dialog>
     </Layout>
 </template>
 <script setup>
+import FloatLabel from 'primevue/floatlabel';
+import VuePictureCropper, { cropper } from 'vue-picture-cropper'
 import Layout from '../shared/Layout.vue';
-import BreadCrumb from '../../components/BreadCrumb.vue';
+import { useComments } from '@/stores/comments';
 import Rating from 'primevue/rating';
-import { ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
+import { usePromoter} from '@/stores/promoter';
+import useToaster from '@/composables/useToaster';
+import { useRoute } from 'vue-router';
+import { usePrimeVue } from 'primevue/config';
+import FileUpload from 'primevue/fileupload';
+import Button from 'primevue/button';
+import Badge from 'primevue/badge';
+import { useAuth } from '@/stores/auth';
+import Image from 'primevue/image';
+import Accordion from 'primevue/accordion';
+import AccordionPanel from 'primevue/accordionpanel';
+import AccordionHeader from 'primevue/accordionheader';
+import AccordionContent from 'primevue/accordioncontent';
+import Textarea from 'primevue/textarea';
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext';
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 
-
-const value = ref(null);
-//////////drag and drop/////////////////////////////////////////
-const isDragOver = ref(false);
+onMounted(() => {
+    getPromoterDetails();
+    if (taskId.value != null) {
+        getListOtherPromoters();   
+    }
+})
+const showExperienceModal = ref(false);
+const promoterStore = usePromoter();
+const authStore = useAuth();
+const commentStore = useComments();
+const route = useRoute();
+const toaster = useToaster();
 const files = ref([]);
+const promoterId = ref(route.params.id);
+const taskId = ref(route.query.taskId);
+const totalSizePercent = ref(0);
 
-const onDrop = (e) => {
-    isDragOver.value = false;
-    handleFiles(e.dataTransfer.files);
+const $primevue = usePrimeVue();
+const totalSize = ref(0);
+
+const user = JSON.parse(authStore.user)
+const promoterData = ref({});
+const otherPromotersList = ref([])
+const profilePicName = ref('');
+const profilePicPreview = ref(null);
+const profilePic = ref(null);
+const showTools = ref(false);
+const showBioTextarea = ref(false);
+
+const experienceForm = reactive({
+    promoter: promoterId.value,
+    name: null,
+	duration: null,
+	description: null,
+});
+
+const rules = { 
+	name: { required },
+	duration: { required },
+	description: { required },
+};
+const v$ = useVuelidate(rules, experienceForm);
+
+const addExperience = async () => {
+    const isFormValid = await v$.value.$validate();
+	if (!isFormValid) {return;}
+    promoterStore.addExperience(experienceForm).then(function (response) {
+        experienceForm.name = '';
+        experienceForm.duration = '';
+        experienceForm.description = '';
+        v$.value.$errors = [];
+        v$.value.$reset();
+        getPromoterDetails();
+        toaster.success('Experience added successfully')
+        //reset form and errors
+
+        showExperienceModal.value = false
+    }).catch(function (error) {
+        toaster.error('Something went wrong')
+        console.log(error)
+    })
+}
+
+const myBio = ref(promoterData.value.bio ? promoterData.value.bio : '');
+console.log('myBio',promoterData.value)
+
+const editBio = () => {
+    showBioTextarea.value = !showBioTextarea.value
+}
+
+const closeBioTextarea = () => {
+    showBioTextarea.value = false
+}
+
+
+
+const commentForm = reactive({
+    rating: null,
+    comment: null,
+    user: user.id,
+    promoter: promoterId.value ? parseInt(promoterId.value, 10) : null
+});
+
+const pic = ref('');
+const uploadInput = ref(null)
+    const result = reactive({
+      dataURL: '',
+      blobURL: '',
+    })
+
+    const submitComment = () => {
+        
+        if( !commentForm.rating || !commentForm.user || !commentForm.promoter) return
+        
+        commentStore.submitComment(commentForm).then(function (response) {
+            
+        const newComment = {
+                ...commentForm,
+                firstName: user.firstName,
+                lastName: user.lastName
+        };
+        
+        // Push the new comment object to the ratings array
+        promoterData.value.ratings.push(newComment);
+            toaster.success("Comment submitted successfully");
+        }).catch(function (error) {
+            toaster.error("Error submitting comment");
+        console.log(error);
+        })
+    }
+
+  
+
+    const deleteComment = (id) => {
+        if(!confirm('Are you sure you want to delete this comment?')) return
+        commentStore.delete(id).then(function (response) {
+            toaster.success("Comment deleted successfully");
+        }).catch(function (error) {
+            toaster.error("Error deleting comment");
+        console.log(error);
+        })
+    }
+const onProfilePicSelect = (event) => {
+
+      // Reset last selection and results
+      pic.value = ''
+      result.dataURL = ''
+      result.blobURL = ''
+
+      // Get selected files
+      const { files } = event.target
+      if (!files || !files.length) return
+
+      // Convert to dataURL and pass to the cropper component
+      const file = files[0]
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        // Update the picture source of the `img` prop
+        pic.value = String(reader.result)
+
+        // Show the modal
+        showTools.value = true
+
+        // Clear selected files of input element
+        if (!uploadInput.value) return
+        uploadInput.value.value = ''
+      }
+
+    //const file = event.target.files[0];
+    
+    if (file) {
+        profilePicName.value = file.name;
+        profilePicPreview.value = URL.createObjectURL(file);
+    }
+    profilePic.value = file;
 };
 
-const onFileSelected = (e) => {
-    handleFiles(e.target.files);
+async function getResult() {
+      if (!cropper) return
+      const base64 = cropper.getDataURL()
+      const blob = await cropper.getBlob()
+      if (!blob) return
+
+      const file = await cropper.getFile({
+        fileName: 'mazisi',
+      })
+
+      console.log({ base64, blob, file })
+      result.dataURL = base64
+      result.blobURL = URL.createObjectURL(blob)
+      //isShowModal.value = false
+      const formData = new FormData();
+        formData.append('pic',  file);
+        const config = {
+        useMultipartFormData: true // Add this flag to the request config
+        };
+        console.log(formData)
+        // return
+
+        promoterStore.uploadPromoterImages(formData, config).then(function (response) {
+            console.log(response);
+        })
+
+    }
+
+    /**
+     * Clear the crop box
+     */
+    function clear() {
+      if (!cropper) return
+      cropper.clear()
+    }
+
+    /**
+     * Reset the default cropping area
+     */
+    function reset() {
+      if (!cropper) return
+      cropper.reset()
+    }
+
+    /**
+     * The ready event passed to Cropper.js
+     */
+    function ready() {
+      console.log('Cropper is ready.')
+    }
+
+
+const getPromoterDetails = () => {
+    promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
+        promoterData.value = response.data;
+        myBio.value = response.data.bio;
+  }).catch(function (error) {
+    toaster.error("Error fetching profile");
+    console.log(error);
+  });
+}
+
+
+//get other promoters on the job
+const getListOtherPromoters = () => {
+    promoterStore.getOtherPromotersByTaskId(taskId.value).then(function (response) {
+        otherPromotersList.value = response.data.content;
+        console.log("test", response);
+  }).catch(function (error) {
+    toaster.error("Error in fetching other promoters");
+    
+  });
+}
+
+
+const isMyProfile = () => {
+    // console.log(promoterId.value, user.activeUserId)
+    return promoterId.value == user.activeUserId;
+}
+const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
+    removeFileCallback(index);
+    totalSize.value -= parseInt(formatSize(file.size));
+    totalSizePercent.value = totalSize.value / 10;
 };
 
-const handleFiles = (fileList) => {
-    files.value = [...files.value, ...Array.from(fileList)];
+
+const onSelectedFiles = (event) => {
+    files.value = event.files;
+    files.value.forEach((file) => {
+        totalSize.value += parseInt(formatSize(file.size));
+    });
 };
 
-const removeFile = (index) => {
-    files.value.splice(index, 1);
+const uploadEvent = (callback) => {
+    totalSizePercent.value = totalSize.value / 10;
+    callback();
 };
+
+const formatSize = (bytes) => {
+    const k = 1024;
+    const dm = 3;
+    const sizes = $primevue.config.locale.fileSizeTypes;
+
+    if (bytes === 0) {
+        return `0 ${sizes[0]}`;
+    }
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+
+    return `${formattedSize} ${sizes[i]}`;
+};
+
+
+const getFullName = () => {
+    if(!promoterData.value.userDetails) {
+        return '';
+    }
+    return `${promoterData.value.userDetails.firstName} ${promoterData.value.userDetails.lastName}`
+}
+
+const onSubmit = () => {
+
+    const formData = new FormData();
+        //   formData.append('images', files.value);
+
+          files.value.forEach((file) => {
+        formData.append('files[]', file); // Append each file to the FormData
+    });
+
+     // Inspect the FormData contents
+     for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+    }
+    const config = {
+    useMultipartFormData: true // Add this flag to the request config
+};
+    promoterStore.uploadPromoterImages(formData, config).then(function (response) {
+        console.log(response);
+    })
+
+}
+
+
+
+
 
 </script>
 <style>
@@ -460,35 +797,6 @@ html.dark-theme .accordion-item {
     border: none;
 }
 
-.accordion-body {
-    padding: 0 0 0 0 !important;
-    background-color: #000;
-}
-
-.accordion-button {
-
-    background-color: #0F0F0F !important;
-    border: none;
-}
-
-.accordion-button:not(.collapsed) {
-    margin-bottom: 10px;
-    /* Adjust the value as needed */
-}
-
-.accordion-button:focus {
-    outline: none;
-    box-shadow: none;
-    border: none;
-}
-
-.accordion-button.m::after {
-    color: #5A5959 !important;
-}
-
-.accordion-button::after {
-    margin: auto !important;
-}
 
 div.gallery {
     margin: 5px;
@@ -531,6 +839,7 @@ div.desc {
 
 .dark-theme .card {
     background-color: transparent !important;
+    padding: 0px !important;
 }
 
 /* Add some basic styling for the modal */
@@ -588,5 +897,80 @@ div.desc {
 .file-item .remove-file {
     cursor: pointer;
     color: #ff6b6b;
+}
+
+
+
+.comment-section {
+    max-width: 700px;
+    margin: 2rem auto;
+    background-color: #2c2e33;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+.form-control {
+    background-color: #1d1f24;
+    color: #ced4da;
+    border: 1px solid #404348;
+}
+.form-control:focus {
+    background-color: #1d1f24;
+    color: #ced4da;
+    border-color: #4a9bfc;
+    box-shadow: none;
+}
+.btn-primary {
+    background-color: #4a9bfc;
+    border-color: #4a9bfc;
+}
+.comment {
+    margin-top: 1.5rem;
+}
+.comment .user {
+    display: flex;
+    align-items: center;
+}
+.comment .user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 0.75rem;
+}
+.comment .user-name {
+    font-weight: 500;
+    color: #fff;
+}
+.comment .comment-date {
+    color: #a9acb0;
+    font-size: 0.9rem;
+}
+.comment .comment-text {
+    margin-top: 0.5rem;
+    color: #ced4da;
+}
+
+
+
+
+
+
+.image-container {
+    width: 370px;
+    position: relative;
+    display: inline-block;
+}
+
+.edit-icon {
+    position: absolute;
+    top: -5px;
+    right: 20px;
+    border-radius: 50%;      
+    padding: 5px;  
+    cursor: pointer;
+}
+
+.edit-icon i {
+    font-size: 20px; 
+    color: #fff;
 }
 </style>

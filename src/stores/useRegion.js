@@ -24,7 +24,8 @@ export const useRegion = defineStore('region', () => {
     }
 
     const addRegionalManager = (data) => {
-      return axiosInstance.post(`/api/regionalManagers`,data);
+      console.log("data", data);
+      return axiosInstance.put(`/api/regions/${data.region}/${data.staff}`,);
     }
     
   

@@ -2,6 +2,21 @@
 import router from '@/router';
 import { useOnline } from '@vueuse/core'
 import { onMounted } from 'vue';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+//////////active///////////
+const isExpanded = ref(false);
+const activeItem = ref('');
+
+const currentRoute = useRoute();
+console.log(currentRoute.path);
+
+const setActiveItem = (item) => {
+  activeItem.value = item;
+};
+///////////active//////////
+
 
 const online = useOnline()
 
@@ -21,94 +36,97 @@ const getRoleName = () => {
 }
 </script>
 <template>
-    <div class="accordion" id="accordionPanelsStayOpenExample">
-
-        <div class="side-nav">
-            <div class="accordion-item">
-                <div class="accordion-header profile">
-                    <button class="d-flex align-items-start justify-content-between accordion-button" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                        aria-controls="panelsStayOpen-collapseOne">
-                        <div class="profile-info">
-                            <span class="name">{{user.firstName}} {{user.lastName}}</span>
-                            <span class="status"><span class="round-guest online" :class="{'online': isOnline, 'offline': !isOnline}"</span>{{ getRoleName() }}</span>
-                            <!-- <span class="edit-profile"> <button class="edit-profile-btn">
-                                    ✏️
+    <div class="side-nav-wrapper">
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="side-nav">
+                <div class="accordion-item">
+                    <div class="accordion-header profile">
+                        <button class="d-flex align-items-center justify-content-between accordion-button" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                            aria-controls="panelsStayOpen-collapseOne">
+                            <div class="profile-info">
+                                <span class="name">{{user.firstName}} {{user.lastName}}</span>
+                                <span class="status">
+                                    <span class="round-guest" :class="{'online': isOnline, 'offline': !isOnline}"></span>
+                                    {{ getRoleName() }}
+                                </span>
+                            </div>
+                            <span class="edit-profile">
+                                <button class="edit-profile-btn">
+                                    <i class='bx bx-edit-alt'></i>
                                 </button>
-                            </span> -->
+                            </span>
+                        </button>
+                    </div>
+
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <ul class="nav-list">
+                                <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat ps-3'></i></span> All</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/jobs' }" ><router-link to="/jobs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Jobs</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>
+                                <!-- <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li> -->
+                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase ps-3'></i></span> CRM</router-link></li>
+                                <!-- <li><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li> -->
+                                <!-- <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li> -->
+                                <li :class="{ 'active': currentRoute.path === '/message-center' }" ><a href="#"><span class="icon"><i class='bx bx-envelope ps-3'></i></span> Message center</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><span class="icon"><i class='bx bx-send ps-3'></i></span> Sent</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><span class="icon"><i class='bx bx-envelope-open ps-3'></i></span> Unread</a></li>
+                            </ul>
 
                         </div>
-
-
-                    </button>
-                </div>
-
-                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                    data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        <ul class="nav-list">
-                            <li><router-link to="/jobs"><span class="icon"><i class='bx bx-chat'></i></span> All</router-link></li>
-                            <li><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li>
-                            <li><router-link to="/users"><span class="icon"><i class='bx bx-user'></i></span> Users</router-link></li>
-                            <li><router-link to="/briefs"><span class="icon"><i class='bx bx-file'></i></span> Briefs</router-link></li>
-                            <!-- <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li> -->
-                            <li><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
-                            <!-- <li><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li> -->
-                            <!-- <li><router-link to="/tasks"><span class="icon">📤</span> Tasks</router-link></li> -->
-                            <li><a href="#"><span class="icon"><i class='bx bx-envelope'></i></span> Message center</a></li>
-                            <li><a href="#"><span class="icon"><i class='bx bx-send'></i></span> Sent</a></li>
-                            <li><a href="#"><span class="icon"><i class='bx bx-envelope-open'></i></span> Unread</a></li>
-                        </ul>
-
                     </div>
                 </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="d-flex gap-2 justify-content-end flex-row-reverse accordion-button w-0 collapsed "
-                        type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo"
-                        aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                        Show more
-                    </button>
-                </h2>
-                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
-                    <div class="accordion-body">
-                        <div class="sidebar">
-                            <div class="menu-section">
-                                <h3>Projects</h3>
-                                <ul>
-                                    <li># Joburg Activations</li>
-                                    <li># Durban Activations</li>
-                                    <li># Cape Town Activations</li>
-                                </ul>
-                            </div>
-                            <div class="menu-section">
-                                <h3>Channels</h3>
-                                <ul>
-                                    <li># Marketing-team</li>
-                                    <li># Competitive</li>
-                                    <li># Announcements</li>
-                                    <li># Quarterly planning</li>
-                                </ul>
-                            </div>
-                            <div class="menu-section">
-                                <h3>Direct Messages</h3>
-                                <ul>
-                                    <li class="active">• Guest (You)</li>
-                                    <li>• Brandley Thomas</li>
-                                    <li>• Michael John</li>
-                                </ul>
-                            </div>
-                            <div class="menu-section">
-                                <h3>Communities</h3>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="d-flex gap-2 justify-content-end flex-row-reverse accordion-button w-0 collapsed "
+                            type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo"
+                            aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                            Show more
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <div class="sidebar">
+                                <div class="menu-section">
+                                    <h3>Projects</h3>
+                                    <ul>
+                                        <li># Joburg Activations</li>
+                                        <li># Durban Activations</li>
+                                        <li># Cape Town Activations</li>
+                                    </ul>
+                                </div>
+                                <div class="menu-section">
+                                    <h3>Channels</h3>
+                                    <ul>
+                                        <li># Marketing-team</li>
+                                        <li># Competitive</li>
+                                        <li># Announcements</li>
+                                        <li># Quarterly planning</li>
+                                    </ul>
+                                </div>
+                                <div class="menu-section">
+                                    <h3>Direct Messages</h3>
+                                    <ul>
+                                        <li class="active">• Guest (You)</li>
+                                        <li>• Brandley Thomas</li>
+                                        <li>• Michael John</li>
+                                    </ul>
+                                </div>
+                                <div class="menu-section">
+                                    <h3>Communities</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
+    
 </template>
 
 <script>
@@ -119,7 +137,7 @@ export default {
 
 <style scoped>
 .profile .accordion-button::after {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .accordion-button::after {
@@ -139,7 +157,6 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
 }
 
 .profile-info {
@@ -199,7 +216,8 @@ export default {
 }
 
 .nav-list a:hover {
-    text-decoration: underline;
+    /* text-decoration: underline; */
+    background-color: #1f1e1e
 }
 
 /* //////////////////// */
@@ -232,8 +250,122 @@ export default {
 .menu-section ul li:hover {
     color: #fff;
 }
-/* //icon// */
+
 .nav-list i {
     font-size: 1.5rem; /* Adjust this value as needed */
 }
+
+/* //////////////////// */
+
+/* header section */
+.accordion-header.profile {
+    background-color: #1e1e1e;
+}
+
+.accordion-button {
+    background-color: transparent;
+    box-shadow: none;
+    padding: 10px 15px;
+    width: 100% !important;
+    
+}
+
+.accordion-button::after {
+    display: none;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.status {
+    font-size: 12px;
+    color: #a0a0a0;
+    display: flex;
+    align-items: center;
+}
+
+.round-guest {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.online {
+    background-color: #ff3b30;
+}
+
+.offline {
+    background-color: #a0a0a0;
+}
+
+.edit-profile-btn {
+    background: none;
+    border: none;
+    color: #a0a0a0;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+}
+
+.edit-profile-btn:hover {
+    color: #ffffff;
+}
+.accordion-button:not(.collapsed) {
+    margin-bottom: 0px;
+}
+
+/* /////////////////// */
+.side-nav-wrapper {
+  height: 100vh; /* Full viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.side-nav {
+  width: 240px;
+  background-color: #000;
+  color: #fff;
+  /* Remove any fixed height if present */
+}
+
+/* Add some padding to the bottom to ensure last items are visible when scrolled */
+.accordion-item:last-child {
+  /* padding-bottom: 20px; */
+}
+
+/* Optional: Customize the scrollbar */
+.side-nav-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.side-nav-wrapper::-webkit-scrollbar-thumb {
+  background-color: #4a4a4a;
+  border-radius: 3px;
+}
+
+.side-nav-wrapper::-webkit-scrollbar-track {
+  background-color: #1e1e1e;
+}
+
+/* ////////Active////////// */
+.side-nav__item.active,
+.side-nav__item:hover {
+  background-color: #333333 !important; /* Adjust this color to match your hover color */
+}
+
+.active{
+    background-color: #333333 !important; /* Adjust this color to match your hover color */
+}
+  
+
+
 </style>

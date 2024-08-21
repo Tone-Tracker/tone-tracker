@@ -9,6 +9,10 @@ Email: mazisimsebele18@gmail.com
 File: app.css
 
 */
+/* Reduce all scroll bars width */
+::-webkit-scrollbar {
+	scrollbar-width: thin;
+}
 
 .accordion-button {
 	padding: 8px !important;
@@ -130,13 +134,13 @@ a {
 
 .sidebar-wrapper {
 
-	width: 241px;
+	width: 286px;
 
 	height: 100%;
 
 	position: fixed;
 
-	top: 90px;
+	top: 78px;
 
 	bottom: 0;
 
@@ -273,9 +277,9 @@ a {
 
 
 .page-content {
-
-	padding: 1.5rem 1.5rem 0.7rem 5.5rem;
-	background-color: #0F0F0F;
+	margin-left: 10%;
+	/* Added by Mazisi; */
+	padding: 1.5rem 1.5rem 0.7rem 7.5rem;
 }
 
 
@@ -298,16 +302,21 @@ a {
 
 	font-size: 14px;
 
-	border-top: 1px solid #e4e4e4;
+	/* border-top: 1px solid #e4e4e4; */
 
 	z-index: 3
+}
+
+html.dark-theme .page-footer {
+	background-color: #060D0E;
+	border-top: none !important;
 }
 
 
 
 .wrapper.toggled .topbar {
 
-	left: 70px
+	/* left: 70px */
 }
 
 
@@ -379,6 +388,12 @@ a {
 .sidebar-wrapper .metismenu li:last-child {
 
 	margin-bottom: 5px
+}
+
+html.dark-theme .sidebar-wrapper {
+	background: #060D0E !important;
+
+	border-right: none !important;
 }
 
 
@@ -1803,7 +1818,7 @@ form select.error:focus {
 
 	background-color: #fff;
 
-	min-height: 680px;
+	/* min-height: 680px; */
 
 	padding: 15px
 }
@@ -1876,11 +1891,6 @@ form select.error:focus {
 
 
 
-.invoice main {
-
-	padding-bottom: 50px
-}
-
 
 
 .invoice main .thanks {
@@ -1916,13 +1926,15 @@ form select.error:focus {
 
 .invoice table {
 
-	width: 100%;
+	/* width: 40%; */
 
 	border-collapse: collapse;
 
 	border-spacing: 0;
 
-	margin-bottom: 20px
+	margin-bottom: 20px;
+
+	float: right;
 }
 
 

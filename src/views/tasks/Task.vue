@@ -1,5 +1,6 @@
 <script setup>
 import moment from 'moment';
+import { useUserStore } from '@/stores/userStore';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
@@ -9,29 +10,35 @@ import ConfirmPopup from 'primevue/confirmpopup';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import { useRoute } from 'vue-router';
+import URLrouter from '@/router';
 import DatePicker from 'primevue/datepicker';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
-import { useActivation } from '@/stores/activation';
 import { useTask } from '@/stores/task';
 import { onMounted, ref, reactive } from 'vue';
 import useToaster from '@/composables/useToaster';
 import { useConfirm } from "primevue/useconfirm";
-import GoogleAutocomplete from '@/components/GoogleAutocomplete.vue';
 import Drawer from 'primevue/drawer';
 import AutoComplete from 'primevue/autocomplete';
 import { watch } from 'vue';
 import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vue-use-places-autocomplete'
+import PDF from 'pdf-vue3';
+import SplitButton from 'primevue/splitbutton';
+import MultiSelect from 'primevue/multiselect';
+import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 
 const route = useRoute();
+const userStore = useUserStore();
 const activationName = ref(route.query.name);
 const activation = ref(route.query.activation);
 
 const visible = ref(false);
+const showThirdPartyModal = ref(false);
+
 const tasks = ref([]);
+const thirdPartySuppliers = ref([]);
 const position = ref('top');
-const showLoading = ref(false);
 
 const toaster = useToaster();
 const taskStore = useTask();
@@ -39,6 +46,7 @@ const confirm = useConfirm();
 
 onMounted(() => {
     getTasksByActivationId();
+    getThirdPartySuppliers();
 })
 
 const query = ref('');
@@ -73,19 +81,32 @@ watch(suggestions, (newSuggestions) => {
     ]);
 
     const onSelectLocation = (event) => {
-        console.log('event',event.value.name);
-        getGeoCode(event.value);
+        console.log('event',event);
+        getGeoCode(event);
        
     };
+    const getThirdPartySuppliers = async () => {
+        userStore.getUserByRole('SUPPLIER').then(response => {
+            let result = response.data.content;
+            if(result.length > 0) {
+                //map third party suppliers
+                thirdPartySuppliers.value = result.map(supplier => {
+                    return { name: supplier.firstName + ' ' + supplier.lastName, code: supplier.id }
+                })
+            }
+        }).catch(error => {
+            console.log(error);
+        })
+    }
 
     const getGeoCode = async (event) => {
-        const results =  await geocodeByAddress(event.name);
-        const byPlacesId = await geocodeByPlaceId(event.place_id)
-        const { lat, lng } =  getLatLng(results);
-        console.log('results',results);
+        const results =  await geocodeByAddress(event.value.name);
+        const byPlacesId = await geocodeByPlaceId(event.value.place_id)
+        // const { lat, lng } =  getLatLng(results);
         form.address = results[0].formatted_address;
         form.longitude = results[0].geometry.viewport.Hh.lo;
         form.latitude = results[0].geometry.viewport.Yh.hi
+
 
     }
 
@@ -96,9 +117,11 @@ watch(suggestions, (newSuggestions) => {
 
 const status = ref(null);
 const type = ref(null);
+const showLoading = ref(false);
 const form = reactive({
     status: '',
     type: '',
+    startDate: null,
 	plannedEndDate: null,
 	timeRecord: null,
     completion: null,
@@ -107,6 +130,7 @@ const form = reactive({
     address: null,
     longitude: null,
     latitude: null,
+    briefFile: null,
     activation: activation.value
 });
 
@@ -114,7 +138,8 @@ const rules = {
     status: { required },
     type: {required},
     name: { required },
-	plannedEndDate: { required },
+    startDate: { required },
+    plannedEndDate: { required },
 	timeRecord: { required },
 	jobNumber: { required },
 	completion: { required },
@@ -126,6 +151,7 @@ const onSubmit = async () => {
     const isFormValid = await v$.value.$validate();
     if (!isFormValid) {return;}
     showLoading.value = true;
+    
     if(isEdit.value){
         taskStore.update(taskId.value,form).then(function (response) {
             toaster.success("Task updated successfully");
@@ -137,20 +163,24 @@ const onSubmit = async () => {
         });
     } 
     else {
-        taskStore.submit(form).then(function (response) {
+
+        const formData = new FormData();
+        formData.append('briefFile', form.briefFile);
+        formData.append('taskDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
+
+        const config = {
+            useMultipartFormData: true // Add this flag to the request config
+        };
+
+        taskStore.submit(form,config).then(function (response) {
+            showLoading.value = false;
         toaster.success("Task created successfully");
-        
-        form.status=null,
-        form.address = null,
-        form.type = null
-        v$.value.$reset();
-        v$.value.$errors = [];
         visible.value = false;
         getTasksByActivationId();
-        showLoading.value = false;
     }).catch(function (error) {
         toaster.error("Error creating task");
         console.log(error);
+    }).finally(() => {
         showLoading.value = false;
     });
     }
@@ -170,9 +200,12 @@ const onPlannedEndDateChange = (event) => {
     form.plannedEndDate = moment(event).format('YYYY-MM-DD');
 }
 
+const onPlannedStartDateChange = (event) => {
+    form.startDate = moment(event).format('YYYY-MM-DD');
+}
+
 const getTasksByActivationId = async () => {
   taskStore.getTasksByActivationId(activation.value).then(response => {
-  console.log("tasks", response.data);
     tasks.value = response.data;
   }).catch(error => {
     toaster.error("Error fetching tasks");
@@ -188,21 +221,20 @@ const getTasksByActivationId = async () => {
 const taskId = ref(null);
 const isEdit = ref(false);
 
-
-
-
 const openModal = (pos,task) => {
+    showLoading.value = false;
     if(task) {//edit
     isEdit.value = true;
     taskId.value=task.id;
     // form.activation = task.activation;
     status.value = statuses.value.find(stat => stat.code === task.status);
     form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
-    form.address = task.address;
+
     type.value = types.value.find(stat => stat.code === task.type);
     form.type = form.type = types.value.find(stat => stat.code === task.type).code;
     Object.assign(form, {
     // status: task.status,
+     startDate: task.startDate,
      plannedEndDate: task.plannedEndDate,
      timeRecord: task.timeRecord,
      completion: task.completion,
@@ -211,14 +243,11 @@ const openModal = (pos,task) => {
     //  activation: task.activation
     })
   }else{
-    // isEdit.value = false;
-    // taskId.value = null;
-    // activation.value = null;
-    // status.value = null;
-    // form.activation = null;
+    
     Object.assign(form, {
      status: null,
      type: null,
+     startDate: null,
      plannedEndDate: null,
      timeRecord: null,
      completion: null,
@@ -231,13 +260,18 @@ const openModal = (pos,task) => {
     visible.value = true;
 }
 
+
+const toggleModal = (pos,task) => {
+    position.value = pos;
+    showThirdPartyModal.value = true;
+    taskId.value = task.id;
+}
+
 const getStatus = (status) => {
     return statuses.value.find(stat => stat.code === status).name;
 }
 
-const getType = (type) => {
-    return types.value.find(typ => typ.code === type).name;
-}
+
 
 const getClass = (status) => {
     if(status === 'FINISHED') {
@@ -269,39 +303,114 @@ const handlePlaceChanged = (place) => {
 };
 
 
-const deleteRecord = (event, task) => {
-  confirm.require({
-    target: event.currentTarget,
-    message: 'Do you want to delete this task?',
-    icon: '',
-    rejectProps: {
-      label: 'Cancel',
-      severity: '',
-      outlined: true
-    },
-    acceptProps: {
-      label: 'Delete',
-      severity: 'danger'
-    },
-    accept: () => {
-      deleteTask(task);
-    },
-    reject: () => {
-      // do nothing
+const deleteRecord = ( task) => {
+  if(!window.confirm("Are you sure you want to delete this task?")) {
+    return
+  }
+  deleteTask(task);
+};
+
+const briefFile = ref(null);
+const onFileChange = (event) => {
+    briefFile.value = null;
+    if (!event.target.files[0].name.includes(".pdf")) {
+        toaster.error("Please upload a pdf file");
+        briefFile.value = null;
+        return
     }
-  });
+    briefFile.value = event.target.files[0];
+    form.briefFile = event.target.files[0];
+}
+
+const removeFile = () => {
+    briefFile.value = null;  
+}
+const view_uploaded_file_visible = ref(false);
+const base64PDF = ref(null);
+const previewBase64PDF = () => {
+    //convert brief file to base64
+    const reader = new FileReader();
+    reader.readAsDataURL(briefFile.value);
+    reader.onloadend = () => {
+        base64PDF.value = reader.result;
+        view_uploaded_file_visible.value = true;
+    };
+}
+
+
+
+
+const taskItems = (task) => {
+    const items = [
+        {
+            label: 'Edit',
+            icon: 'bx bxs-edit fs-4 text-success',
+            command: () => {
+                openModal('top', task);
+            }
+        },
+        {
+            label: 'View',
+            icon: 'bx bx-bullseye fs-4 text-success',
+            command: () => {
+                URLrouter.push(`/tasks/${task.id}?name=${task.name}`);
+            }
+        },
+    ];
+
+    // Conditionally add the "Add Third Party Suppliers" item
+    if (task.type == 'THIRDPARTY') {
+        items.push({
+            label: 'Add Third Party Suppliers',
+            icon: 'bx bx-user-plus fs-4 text-success',
+            command: () => {
+                toggleModal('top', task);
+            }
+        });
+    }
+    items.push({
+        label: 'Delete',
+        icon: 'bx bx-trash text-danger fs-3',
+        command: () => {
+            deleteRecord(task);
+        }
+    });
+
+    return items;
 };
 
 
 
 
+const selectedThirdPaties = ref();
+
+const submitThirdParty = () => {
+    if(!selectedThirdPaties.value) {
+        toaster.error("Please select a supplier");
+        return
+    }
+    const supplierArray = [];
+    selectedThirdPaties.value.forEach(supplier => {
+        supplierArray.push(supplier.code)
+    });
+    showLoading.value = true;
+   taskStore.addThirdPartiesToTask(taskId.value, supplierArray).then(response => {
+       getTasksByActivationId();
+       showThirdPartyModal.value = false;
+       showLoading.value = false;
+   }).catch(error => {
+       console.log(error);
+   }).finally(() => {
+       showLoading.value = false;
+   })
+}
 </script>
 <template>
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb title="Tasks" icon="bx bx-task" />
-                <h4 class="mx-2">Activation: {{ activationName }}</h4>
+                <h4 class="mx-2">{{activationName}}</h4>
                 <div class="card">
                     <div class="card-body">
                             <div class="table-container-colour pt-2 p-5">
@@ -312,36 +421,33 @@ const deleteRecord = (event, task) => {
                                 <table class="table table-dark table-bordered">
                                     <thead>
                                         <tr class="table-dark-color">
-                                            <th>Activation</th>
                                             <th>Task</th>
+                                            <th>Job Number</th>
                                             <th>Risk</th>
-                                            <th>Planned End date</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
                                             <th>Time Record</th>
-                                            <th>Project Responsible</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-if="tasks.length > 0" v-for="task in tasks" :key="task.id" class="table-dark-black">
-                                            <td>{{ activationName }}</td>
+                                            <td>{{ task.name }}</td>
                                             <td>{{ task.jobNumber }}</td>
                                             <td  :class="getClass(task.status)">
                                                 {{ getStatus(task.status) }}
                                             </td>
+                                            <td>{{task.startDate}}</td>
                                             <td>{{task.plannedEndDate}}</td>
                                             <td>{{task.timeRecord}}</td>
-                                            <td>--To be Decided--</td>
                                             <td>{{task.completion}}</td>
                                             <td>
                                                 <div class="d-flex order-actions">
-                                                  <a @click="openModal('top',task)" href="javascript:;" >
-                                                    <i class='bx bxs-edit'></i>
-                                                  </a>
-                                                  
-                                                  <a @click="deleteRecord($event, task)" href="javascript:;" class="ms-3">
-                                                    <i class='bx bxs-trash text-danger'></i>
-                                                  </a>
+                                                    <SplitButton class="text-white" label="Actions" 
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="taskItems(task)"/>
                                                   <ConfirmPopup></ConfirmPopup>
                                                 </div>
                                                 
@@ -360,7 +466,7 @@ const deleteRecord = (event, task) => {
                     </div>
                 </div>
             </div>
-            <Dialog v-model:visible="visible" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
+            <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
                 
                 <form @submit.prevent="onSubmit" class="row g-3">
                     <div class="col-md-6">
@@ -407,8 +513,18 @@ const deleteRecord = (event, task) => {
                                <div class="input-errors" v-for="error of v$.type.$errors" :key="error.$uid">
                                <div class="text-danger">Type is required</div>
                             </div>
-                    </div>                        
+                     </div>                        
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Planned Start Date</label>
+                            <DatePicker v-model="form.startDate" @date-select="onPlannedStartDateChange($event)" showButtonBar showIcon fluid :showOnFocus="true" />
+                               <div class="input-errors" v-for="error of v$.startDate.$errors" :key="error.$uid">
+                               <div class="text-danger">Start date is required</div>
+                            </div>
+                    </div>
+                </div>
 
 
                     <div class="col-md-6">
@@ -440,24 +556,35 @@ const deleteRecord = (event, task) => {
                     </div>
                     
 
-                    <div class="col-md-12 ml-4">
-                        <div class="row ">
-                            <!-- <label for="input1" class="form-label">Location</label> -->
+                    <div class="col-md-6">
+                        <div class="card my-card flex justify-center">
+                            <label for="input1" class="form-label">Location</label>
                             <AutoComplete v-model="query" :suggestions="formattedSuggestions" 
-                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" id="autocomplete-input" class="row mx-1"/>
-                               <!-- <div class="input-errors" v-for="error of v$.completion.$errors" :key="error.$uid">
-                               <div class="text-danger">Completion is required</div>
-                            </div> -->
+                            optionLabel="name" @complete="filterCities" @item-select="onSelectLocation($event)" class="row mx-1" />
+                               <div class="input-errors" v-for="error of v$.completion.$errors" :key="error.$uid">
+                               <div class="text-danger">Location is required</div>
+                            </div>
                     </div>                        
                     </div>
 
-                    <div class="modal-footer">
-                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-                        <button type="submit" 
-                        :disabled="showLoading"
-                        class="btn maz-gradient-btn w-100"
-                        
-                        >
+                    <template v-if="form.type == 'THIRDPARTY'">
+                        <div class="col-md-12 mt-4">
+                            <div class="NDA-container">
+                                <div class="file-upload-wrapper">
+                                    <input id="bief-file-upload-input" type="file" accept="application/pdf" hidden @change="onFileChange($event)">
+                                    <label for="bief-file-upload-input" class="custom-file-upload">Click to upload brief file</label>
+                                </div>
+                            
+                                <div v-if="briefFile" id="file-preview" class="file-upload-preview mt-2">                                    
+                                    <img @click="previewBase64PDF" id="file-preview-image" src="/src/assets/images/pdf.png" alt="File Preview" class="cursor-pointer" />
+                                    <button type="button" class="file-remove-button" @click="removeFile()">×</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <div class="modal-footer" style="margin-top: 2rem">
+                       
+                        <button type="submit" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center">
                             <div
                             v-if="showLoading"
                             class="spinner-border text-white"
@@ -465,12 +592,29 @@ const deleteRecord = (event, task) => {
                           >
                             <span class="visually-hidden">Loading...</span>
                           </div>
-                            
-                            {{ isEdit ? 'Update' : 'Submit' }}
-                        </button>
+                          {{ isEdit ? 'Update' : 'Submit' }}</button>
                     </div>
                     
                 </form>
+            </Dialog>
+            <div class="card flex justify-center">
+                <Drawer v-model:visible="view_uploaded_file_visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+                    <PDF :src="base64PDF" />
+                </Drawer>
+            </div>
+
+            <Dialog v-model:visible="showThirdPartyModal" position="top" modal header="Add Third Party" :style="{ width: '30rem' }">
+                <div class="card flex justify-center">
+                    <MultiSelect v-model="selectedThirdPaties" display="chip" :options="thirdPartySuppliers" optionLabel="name" filter placeholder="Select Third Party"
+                        :maxSelectedLabels="3" class="w-full md:w-80" />
+                        <div class="d-grid">
+                            <button @click="submitThirdParty" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3" type="button" 
+                               :disabled="!selectedThirdPaties"> 
+                                <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                {{ showLoading ? '' : 'Submit' }}
+                            </button>
+                          </div>
+                </div>
             </Dialog>
     </Layout>
 </template>
@@ -532,6 +676,64 @@ const deleteRecord = (event, task) => {
 .my-card {
     box-shadow: 0 0rem 0rem rgb(0 0 0 / 20%) !important;
     margin-bottom: -15px;
+}
+.p-autocomplete-input {
+    width: 100% !important;
+}
+
+
+ .custom-file-upload {
+    border: 2px solid;
+    border-image: linear-gradient(to right, #9A3AB1, #117AD1) 1;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 50px;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+}
+
+.custom-file-upload:hover {
+    background-color: linear-gradient(to right, #9A3AB1, #117AD1);
+    border-image: linear-gradient(to right, #9A3AB1, #117AD1) 1;
+}
+
+.file-upload-wrapper {
+    position: relative;
+    margin-top: 1.5rem;
+}
+
+.file-upload-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #d6d6d6;
+    position: relative;
+    display: inline-block;
+}
+
+.file-upload-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.file-remove-button {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    background-color: #ff4d6d;
+    border-radius: 10%;
+    width: 20px;
+    height: 20px;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 </style>
