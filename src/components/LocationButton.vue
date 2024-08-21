@@ -4,19 +4,21 @@
     </button>
     
     
-    <div v-if="error">
+    <!-- <div v-if="error">
       Please allow location access in your browser settings
-    </div>
+    </div> -->
   </template>
   
   <script setup>
   import { useGeolocation } from '@vueuse/core';
   import { ref } from 'vue';
   import { usePromoter } from '@/stores/promoter';
+  import { useAuth } from '@/stores/auth';
   
   const { coords, error, resume, pause } = useGeolocation();
   const showLocationDetails = ref(false);
   const isLoading = ref(false);
+  const user = JSON.parse(useAuth().user);
 
   const promoterStore = usePromoter();
   
@@ -27,7 +29,9 @@
     isLoading.value = false;
     const coordObj = {
       "latitude": coords.value.latitude,
-      "longitude": coords.value.longitude
+      "longitude": coords.value.longitude,
+      "userId": user.id,
+      "promoterId": user.activeUserId
     }
      promoterStore.checkIn(coordObj).then(function (response) {
         console.log(response.data);
