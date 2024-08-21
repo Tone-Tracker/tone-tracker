@@ -275,15 +275,6 @@ const activationItems = (activation) => [
         command: () => {
             URLrouter.push(`/tasks?activation=${activation.id}&name=${activation.name}`);
         }
-    },
-    
-    {
-        label: 'Add Activation Images',
-        icon: 'bx bx-images text-success fs-3',
-        command: () => {
-            // unitForm.warehouse = warehouse.id
-			URLrouter.push(`/activation-images?activation=${activation.id}`);
-        }
     }
 ];
 

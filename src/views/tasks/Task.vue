@@ -349,6 +349,15 @@ const taskItems = (task) => {
                 openModal('top', task);
             }
         },
+        ,
+    
+    {
+        label: 'Add  Images',
+        icon: 'bx bx-images text-success fs-3',
+        command: () => {
+			URLrouter.push(`/activation-images?activation=${task.id}`);
+        }
+    },
         {
             label: 'View',
             icon: 'bx bx-bullseye fs-4 text-success',
