@@ -28,7 +28,6 @@ const getRoles = async () => {
   try {
     const response = await auth.getRoles();
     ROLES.value = response.data;
-    console.log(ROLES.value);
   } catch (error) {
     console.error("Failed to fetch roles", error);
   }
@@ -73,12 +72,11 @@ const rules = {
   email: { required, email },
   lastName: { required },
   phone: { required },
-  activationArea: { required },
   role: { required },
-  dressSize: { required },
-  pantsSize: { required },
-  topSize: { required },
-  height: { required },
+  // dressSize: { required },
+  // pantsSize: { required },
+  // topSize: { required },
+  // height: { required },
 };
 
 const v$ = useVuelidate(rules, form);
@@ -133,26 +131,7 @@ const onSubmit = async () => {
             <div class="row">
               <div class="col-lg-12">
                 <div class="border border-3 p-4 rounded">
-                  <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                      <label for="activation-area" class="form-label">Role</label>
-                      <select v-model="form.role" class="form-control" id="activation-area">
-                        <option :value="''" :selected="true">Select Role</option>
-                        <option v-for="role in ROLES" :key="role" :value="role">{{ role }}</option>
-                      </select>
-                      <div class="input-errors" v-for="error of v$.role.$errors" :key="error.$uid">
-                        <div class="text-danger">Role is required</div>
-                      </div>
-                    </div>
-					<div class="col-md-6">
-                      <label for="activation-area" class="form-label">Activation Area</label>
-                      <input v-model="form.activationArea" type="text" class="form-control" id="activation-area" >
-                      <div class="input-errors" v-for="error of v$.activationArea.$errors" :key="error.$uid">
-                        <div class="text-danger">Activation Area is required</div>
-                      </div>
-                    </div>
-                  </div>
-                  
+                 
                   <div class="row g-3">
                     <div class="col-md-6">
                       <label for="firstName" class="form-label">First Name</label>
@@ -182,16 +161,27 @@ const onSubmit = async () => {
                         <div class="text-danger">Cell Number is required</div>
                       </div>
                     </div>
+                    <div class="row g-3 mb-3">
+                      <div class="col-md-6">
+                        <label for="role" class="form-label">Role</label>
+                        <select v-model="form.role" class="form-control" id="role">
+                          <option :value="''" :selected="true">Select Role</option>
+                          <option v-for="role in ROLES" :key="role" :value="role">{{ role }}</option>
+                        </select>
+                        <div class="input-errors" v-for="error of v$.role.$errors" :key="error.$uid">
+                          <div class="text-danger">Role is required</div>
+                        </div>
+                      </div>
+                    </div>
                    
                   </div>
 
-				    <!-- Conditionally display SizeAndHeightForm component -->
-					<SizeAndHeightForm v-if="form.role === 'TTG_TALENT'" :form="form" :sizes="sizes" />
+				              <!-- Conditionally display SizeAndHeightForm component -->
+					       <SizeAndHeightForm v-if="form.role === 'TTG_TALENT'" :form="form" :sizes="sizes" />
 
                   <div class="col-12 mt-3">
                     <div class="d-grid">
-                      <button @click="onSubmit" class="btn maz-gradient-btn" type="button"
-                        :disabled="v$.activationArea.$errors?.length > 0">
+                      <button @click="onSubmit" class="btn maz-gradient-btn" type="button">
                         <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         {{ modalData.value?.id ? 'Update' : 'Submit' }}
                       </button>

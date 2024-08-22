@@ -145,9 +145,20 @@ const getRegions = async () => {
 	})
 }
 const onInput = () => {
-	 if(searchInput.value) {
-		// return activations.value = activations.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
-		// || user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
+	 if(searchInput.value){ {
+		activations.value = activations.value.filter((active) => {
+			console.log('active',active.budget)
+			return active.name?.toLowerCase().includes(searchInput.value.toLowerCase()) 
+			|| active.budget?.toString().includes(searchInput.value.toLowerCase())
+			|| active.brief?.toLowerCase().includes(searchInput.value.toLowerCase())
+			|| active.startDate?.toLowerCase().includes(searchInput.value.toLowerCase())
+			|| active.endDate?.toLowerCase().includes(searchInput.value.toLowerCase())
+			|| active.painPoints?.toLowerCase().includes(searchInput.value.toLowerCase())
+			|| active.targetGroup?.toLowerCase().includes(searchInput.value.toLowerCase())
+		})
+	 }
+
+	
 	 }else{
 		if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_CLIENT'){
 			getAllActivations(user.role, campaignId.value);

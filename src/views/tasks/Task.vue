@@ -402,7 +402,7 @@ const taskItems = (task) => {
 
 const selectedThirdPaties = ref();
 
-const submitThirdParty = () => {
+const submitThirdParty = () => {console.log(selectedThirdPaties.value);return
     if(!selectedThirdPaties.value) {
         toaster.error("Please select a supplier");
         return

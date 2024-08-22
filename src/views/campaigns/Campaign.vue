@@ -31,6 +31,7 @@ const confirm = useConfirm();
 const selectedFile = ref(null);
 
 let clients = ref([]);
+const showFilePreview = ref(true);
 const clientName = ref('');
 let campaigns = ref([]);
 const img = ref(null);
@@ -81,6 +82,7 @@ const createCampaign = async () => {
         v$.value.$errors = [];
         v$.value.$reset();
         img.value = null;
+        showFilePreview.value = false
         toaster.success("Campaign created successfully");
         getCampaignsByClientId();
     }).catch(function (error) {
@@ -248,7 +250,12 @@ const vFocus = {
                                                                 <i class="bx bx-cloud-upload mr-1"></i>
                                                                 Select File
                                                             </label>  -->
-                                                            <FileUploadGeneric accept="image/*" fileType="image" @fileUploaded="onFileChange"/>
+                                                            <FileUploadGeneric 
+                                                            :showFilePreview="showFilePreview" 
+                                                            accept="image/*" 
+                                                            fileType="image" 
+                                                            @fileUploaded="onFileChange"
+                                                            />
                                                             <p v-if="fileName" class="text-center text-success">{{ fileName }}({{ fileSize }}Kb)</p>
                                                         </div>
                                                     </div>

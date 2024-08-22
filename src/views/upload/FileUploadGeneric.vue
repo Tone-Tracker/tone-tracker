@@ -9,7 +9,8 @@ const props = defineProps({
   title: String,
   docType: String,
   accept: String,
-  fileType: String
+  fileType: String,
+  showFilePreview: Boolean
 })
 
 const emit = defineEmits(['fileUploaded']);
@@ -119,7 +120,7 @@ const submitFile = () => {
     </div>
   </div>
 
-  <div v-if="file" class="file-details mt-3 p-1 border rounded d-flex align-items-center">
+  <div v-if="file && showFilePreview" class="file-details mt-3 p-1 border rounded d-flex align-items-center">
     <div class="file-icon me-3">
       <img v-if="fileType === 'pdf'" @click="previewBase64PDF" 
       src="/src/assets/images/pdf.png" 
