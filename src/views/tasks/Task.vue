@@ -88,6 +88,7 @@ watch(suggestions, (newSuggestions) => {
     const getThirdPartySuppliers = async () => {
         userStore.getUserByRole('SUPPLIER').then(response => {
             let result = response.data.content;
+            console.log('result',result);
             if(result.length > 0) {
                 //map third party suppliers
                 thirdPartySuppliers.value = result.map(supplier => {

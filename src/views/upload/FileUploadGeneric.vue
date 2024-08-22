@@ -7,9 +7,12 @@ import { useDocUpload } from '@/stores/docUpload';
 
 const props = defineProps({
   title: String,
-  docType: String
+  docType: String,
+  accept: String,
+  fileType: String
 })
 
+const emit = defineEmits(['fileUploaded']);
 const toaster = useToaster();
 const uploadStore = useDocUpload();
 
@@ -21,6 +24,7 @@ function onFileChange(event) {
   const selectedFile = event.target.files[0];
   if (selectedFile) {
     file.value = selectedFile;
+    emit('fileUploaded', selectedFile);
   }
 }
 
@@ -60,7 +64,9 @@ const previewBase64PDF = () => {
     const reader = new FileReader();
     reader.readAsDataURL(file.value);
     reader.onloadend = () => {
-        base64PDF.value = reader.result;
+        base64PDF.value = reader.result
+     
+        
         view_uploaded_file_visible.value = true;
     };
 }
@@ -69,7 +75,6 @@ const config = {
     useMultipartFormData: true
 };
 
-const emits = defineEmits(['done-uploading']);
 
 const form = reactive({type: 'NDA'});
 
@@ -110,13 +115,16 @@ const submitFile = () => {
     <div class="text-center">
       <i class='bx bx-cloud-upload fs-1' ></i>
       <p class="mt-2">Drag and drop your file here or <label for="nda-fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
-      <input id="nda-fileInput" type="file" accept="application/pdf" class="d-none" @change="onFileChange">
+      <input id="nda-fileInput" type="file" :accept="accept" class="d-none" @change="onFileChange">
     </div>
   </div>
 
   <div v-if="file" class="file-details mt-3 p-1 border rounded d-flex align-items-center">
     <div class="file-icon me-3">
-      <img @click="previewBase64PDF" src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
+      <img v-if="fileType === 'pdf'" @click="previewBase64PDF" 
+      src="/src/assets/images/pdf.png" 
+      alt="" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
+      <i v-else class='bx bx-image-alt fs-1 text-info cursor-pointer' @click="previewBase64PDF"></i>
     </div>
     <div class="file-info">
       <p class="m-0">{{ file.name }}</p>
@@ -128,15 +136,16 @@ const submitFile = () => {
       </button>
     </div>
   </div>
-  <div class="d-grid">
+  <!-- <div class="d-grid">
   <button @click="submitFile" type="button" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3">
     <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
     {{ showLoading ? 'Uploading...' : 'Submit' }}
   </button>
-  </div>
+  </div> -->
   <div class="card flex justify-center">
-    <Drawer v-model:visible="view_uploaded_file_visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
-        <PDF :src="base64PDF" />
+    <Drawer v-model:visible="view_uploaded_file_visible" position="right" :header="`Preview ${fileType} File`" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+        <PDF v-if="fileType === 'pdf'" :src="base64PDF" />
+        <img v-else :src="base64PDF" style="width: 26rem!important;" />
     </Drawer>
 </div>
 </div>
