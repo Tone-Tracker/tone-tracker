@@ -10,6 +10,7 @@ import { useCampaignStore } from '@/stores/useCampaign';
 import { useClientStore } from '@/stores/useClient';
 import { useConfirm } from "primevue/useconfirm";
 import { useRoute } from 'vue-router';
+import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 const route = useRoute();
 const clientId = ref(route.query.client);
@@ -52,8 +53,9 @@ const rules = {
 };
 const v$ = useVuelidate(rules, form);
 
-const onFileChange = (event) => {
-    selectedFile.value = event.target.files[0];
+const onFileChange = (uploadedFile) => {
+    console.log('event', uploadedFile);
+    selectedFile.value = uploadedFile;
 }
 
 const createCampaign = async () => {
@@ -241,11 +243,12 @@ const vFocus = {
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="card flex justify-center">  
-                                                            <input accept="image/*" ref="img" type="file" hidden id="img" @change="onFileChange($event)"/>
+                                                            <!-- <input accept="image/*" ref="img" type="file" hidden id="img" @change="onFileChange($event)"/>
                                                             <label for="img" class="btn btn-primary px-5">
                                                                 <i class="bx bx-cloud-upload mr-1"></i>
                                                                 Select File
-                                                            </label> 
+                                                            </label>  -->
+                                                            <FileUploadGeneric accept="image/*" fileType="image" @fileUploaded="onFileChange"/>
                                                             <p v-if="fileName" class="text-center text-success">{{ fileName }}({{ fileSize }}Kb)</p>
                                                         </div>
                                                     </div>
