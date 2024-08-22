@@ -147,7 +147,7 @@ try {
             <span class="maz-gradient-txt">{{ activationManager }}</span>
           </h5>
         </div>
-        <div class="card w-80 m-auto">
+        <div class="mt-3 card w-80 m-auto">
           <div class="card-body">
             <div class="row">
               <div class="col-lg-12">
