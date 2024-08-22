@@ -4,6 +4,11 @@ import Drawer from 'primevue/drawer';
 import { reactive, ref } from 'vue';
 import useToaster from '@/composables/useToaster';
 import { useDocUpload } from '@/stores/docUpload';
+import { useAuth } from '@/stores/auth';
+
+
+const authStore = useAuth();
+const user = JSON.parse(authStore.user);
 
 const toaster = useToaster();
 const uploadStore = useDocUpload();
@@ -60,7 +65,7 @@ const previewBase64PDF = () => {
 }
 const emits = defineEmits(['done-uploading']);
 
-const form = reactive({type: 'SLA'});
+const form = reactive({title: 'NDA', uploadedById:user.activeUserId});
 
 const config = {
     useMultipartFormData: true
@@ -69,7 +74,7 @@ const config = {
 const submitFile = () => {
   if(!file.value) {return}
   const formData = new FormData();
-  formData.append('file', file.value);
+  formData.append('documentDTO', file.value);
   formData.append('form', JSON.stringify(form));
   showLoading.value = true;
   uploadStore.submit(formData, config).then(() => {

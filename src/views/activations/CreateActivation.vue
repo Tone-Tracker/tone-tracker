@@ -192,7 +192,7 @@ try {
                       </div>
                     </div>
 
-                    <div class="card maz-top flex justify-center col-md-4">
+                    <!-- <div class="card maz-top flex justify-center col-md-4">
                       <label for="input1" class="form-label">Campaign</label>
                       <InputText
                         v-model="campaignName"
@@ -200,7 +200,7 @@ try {
                         class="form-control"
                         id="activation-area"
                       />
-                    </div>
+                    </div> -->
 
                     <div class="col-md-3 mt-custom">
                       <label for="region" class="form-label">Region</label>
@@ -457,7 +457,5 @@ try {
 .upload-button:hover {
   background-color: #0056b3;
 }
-.text-areas-container {
-  margin-top: -5rem;
-}
+
 </style>
