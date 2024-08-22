@@ -121,8 +121,10 @@
 					<div class="card-body">
 						<div id="invoice">
 							<div class="toolbar hidden-print">
-								<div class="text-end">
-									<button @click="exportToPDF" type="button" class="btn maz-gradient-btn"><i class="fa fa-file-pdf-o"></i> Export as PDF</button>
+                
+								<div class="d-flex gap-3 justify-content-end">
+                  <button @click="onSubmit" type="button" class="d-flex gap-2 justify-content-center align-items-center btn maz-gradient-btn"><span>Send</span><i class="bx bx-send"></i></button>
+                  <button @click="exportToPDF" type="button" class="d-flex gap-2 justify-content-center align-items-center btn maz-gradient-btn"><span>Export as PDF</span><i class="bx bx-export"></i></button>
 								</div>
 								<hr>
 							</div>
@@ -174,10 +176,10 @@
 											</thead>
 											<tbody>
 												<tr v-for="(row, index) in rows" :key="index">
-													<td class="">{{ index + 1 }}</td>
+													<td class="text-dark">{{ index + 1 }}</td>
 													<td class="text-left text-dark">
 														<h3>
-										</h3>
+										      </h3>
 											<a target="_blank" href="javascript:;">
                               {{ row.item }}
 									   </a>
@@ -199,9 +201,10 @@
                     
 									</main>
 								</div>
-                <button @click="onSubmit" type="button" class="btn maz-gradient-btn"><i class="fa fa-file-pdf-o"></i> Send</button>
 								<!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
-								<div></div>
+								<div>
+
+                </div>
 							</div>
 						</div>
 					</div>
