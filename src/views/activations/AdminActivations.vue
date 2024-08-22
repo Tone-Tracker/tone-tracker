@@ -406,8 +406,10 @@ const onUserChange = (event) => {
 								<tbody > 
 									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
-										<td>{{ activation.campaignDTO.name }}</td>
-										<td>{{ activation.regionName }}</td> 
+										<td></td>
+										<td></td>
+										<!-- <td>{{ activation.campaignDTO.name }}</td>
+										<td>{{ activation.regionName }}</td>  -->
 										<td>R {{activation.budget}}</td>
 										<td>{{activation.startDate}}</td>
 										<td>{{activation.endDate}}</td>

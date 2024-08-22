@@ -126,7 +126,7 @@
 								</div>
 								<hr>
 							</div>
-							<div class="invoice overflow-auto" id="my-invoice" style="background-color: #f0f0f0; color: black" >
+							<div class="invoice overflow-auto" id="my-invoice" style="background-color: #fff; color: black" >
 								<div style="min-width: 600px">
 									<header>
 										<div class="row">

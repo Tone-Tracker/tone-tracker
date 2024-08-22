@@ -92,6 +92,7 @@ const onFileChange = (event) => {
     return;
   }
     selectedFile.value = event.target.files[0];
+    fileName.value = event.target.files[0].name;
 }
 
 const onSubmit = async () => {
