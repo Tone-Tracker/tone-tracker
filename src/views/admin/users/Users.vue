@@ -29,17 +29,24 @@ const toggleModal = () => {
 }
 
 const hideModal = () => {
-	showModal.value = false,
+	showModal.value = false;
 	getAllUsers();
+	
 }
 
     const searchInput = ref('');
 
 const onInput = () => {
-	  console.log('searchInput',searchInput.value, users.value.content)
-	 if(searchInput.value) {
-		// return users.value = users.value.content.filter(user => user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
-		// || user.lastName.toLowerCase().includes(searchInput.value.toLowerCase()))
+	 if(searchInput.value){ {
+		users.value = users.value.filter((user) => {
+			return user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
+			|| user.lastName.toLowerCase().includes(searchInput.value.toLowerCase())
+			|| user.email.toLowerCase().includes(searchInput.value.toLowerCase())
+			|| user.phone.toLowerCase().includes(searchInput.value.toLowerCase())
+		})
+	 }
+
+		
 	 }else{
 		getAllUsers();
 	 }
@@ -49,7 +56,7 @@ const onInput = () => {
 	showLoading.value = true;
 	userStore.getUsers().then(function (response) {
 		showLoading.value = false;
-		users.value = response.data
+		users.value = response.data.content
 	}).catch(function (error) {
 		toaster.error("Error fetching users");
 		console.log(error);
@@ -112,7 +119,8 @@ const deleteRecord = (event, user) => {
 						<div class="d-lg-flex align-items-center mb-4 gap-3">
 							<div class="position-relative">
 								<input v-model="searchInput" @input="onInput"
-								type="text" class="form-control ps-5" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+								type="text" class="form-control ps-5" placeholder="Search"> 
+								<span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
 						  <div class="ms-auto">
 							<a @click="toggleModal" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user"  class="btn maz-gradient-btn mt-2 mt-lg-0">
@@ -127,12 +135,11 @@ const deleteRecord = (event, user) => {
 										<th>Email</th>
 										<th>Cell Number</th>
 										<th>Role</th>
-										<th>Activation Area</th>
 										<th>Actions</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-if="users?.content" v-for="user in users?.content" :key="user.id">
+									<tr v-if="users?.length > 0" v-for="user in users" :key="user.id">
 										<td>{{user.firstName}}</td>
 										<td>{{user.lastName}}</td>
 										<td>{{user.email}}</td>
@@ -140,9 +147,6 @@ const deleteRecord = (event, user) => {
 										<td>
 											{{ user.role }}
 										</td>
-											<td>
-												Johannesburg
-											</td>
 										<td>
 											<div class="d-flex order-actions">
 												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">

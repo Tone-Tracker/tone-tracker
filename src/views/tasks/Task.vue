@@ -88,6 +88,7 @@ watch(suggestions, (newSuggestions) => {
     const getThirdPartySuppliers = async () => {
         userStore.getUserByRole('SUPPLIER').then(response => {
             let result = response.data.content;
+            console.log('result',result);
             if(result.length > 0) {
                 //map third party suppliers
                 thirdPartySuppliers.value = result.map(supplier => {
@@ -401,7 +402,7 @@ const taskItems = (task) => {
 
 const selectedThirdPaties = ref();
 
-const submitThirdParty = () => {
+const submitThirdParty = () => {console.log(selectedThirdPaties.value);return
     if(!selectedThirdPaties.value) {
         toaster.error("Please select a supplier");
         return
