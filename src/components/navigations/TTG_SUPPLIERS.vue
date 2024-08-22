@@ -342,6 +342,9 @@ export default {
 .active{
     background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
+.simplebar-placeholder {
+	background-color: #0F0F0F !important;
+}
   
 
 

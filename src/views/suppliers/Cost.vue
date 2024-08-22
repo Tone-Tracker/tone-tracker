@@ -165,32 +165,32 @@
 										<table class="table table-hover table-striped">
 											<thead>
 												<tr>
-													<th>#</th>
-													<th class="text-left">Item</th>
-													<th class="text-right">Rate</th>
-													<th class="text-right">Quantity</th>
-													<th class="text-right">TOTAL</th>
+													<!-- <th>#</th> -->
+													<th class="text-left text-dark">Item</th>
+													<th class="text-right text-dark">Rate</th>
+													<th class="text-right text-dark">Quantity</th>
+													<th class="text-right text-dark">TOTAL</th>
 												</tr>
 											</thead>
 											<tbody>
 												<tr v-for="(row, index) in rows" :key="index">
 													<td class="">{{ index + 1 }}</td>
-													<td class="text-left">
+													<td class="text-left text-dark">
 														<h3>
 										</h3>
 											<a target="_blank" href="javascript:;">
                               {{ row.item }}
 									   </a>
                     </td>
-													<td class="">{{ row.rate }}</td>
-													<td class="">{{ row.quantity }}</td>
-													<td class="">{{ row.amount }}</td>
+													<td class="text-dark">{{ row.rate }}</td>
+													<td class="text-dark">{{ row.quantity }}</td>
+													<td class="text-dark">{{ row.amount }}</td>
 												</tr>
 											</tbody>
 											<tfoot>
 												<tr>
-													<td colspan="2"></td>
-													<td colspan="2">TOTAL</td>
+													<td colspan="2 text-dark"></td>
+													<td colspan="2 text-dark ">TOTAL</td>
 													<td>R {{ totalAmount }}</td>
 												</tr>
 											</tfoot>
@@ -290,5 +290,10 @@ const exportToPDF = () => {
 .borderless-input {
   border: none !important;
   background-color: transparent;
+}
+
+html.dark-theme a {
+    color: black;
+    text-decoration: none;
 }
 </style>
