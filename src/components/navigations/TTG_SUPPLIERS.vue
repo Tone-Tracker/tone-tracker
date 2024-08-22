@@ -45,7 +45,7 @@ const getRoleName = () => {
 
                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
                     data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
+                    <div class="accordion-body p-0">
                         <ul class="nav-list">
                             <li><router-link to="/supplier-dashboard"><span class="icon ps-3"><i class='bx bx-chat'></i></span> All</router-link></li>
                             <li :class="{ 'active': currentRoute.path === '/profile' || currentRoute.path === `/profile/${user.activeUserId}`}">
