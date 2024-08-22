@@ -276,7 +276,7 @@ const exportToPDF = () => {
     }
 
     const onSubmit = () => {
-      
+      console.log('rows',rows.value);
     }
   
 </script>
