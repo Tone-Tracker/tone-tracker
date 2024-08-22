@@ -126,7 +126,7 @@
 								</div>
 								<hr>
 							</div>
-							<div class="invoice overflow-auto" id="my-invoice" style="background-color: #f0f0f0; color: black" >
+							<div class="invoice overflow-auto" id="my-invoice" style="background-color: #fff; color: black" >
 								<div style="min-width: 600px">
 									<header>
 										<div class="row">
@@ -165,40 +165,41 @@
 										<table class="table table-hover table-striped">
 											<thead>
 												<tr>
-													<th>#</th>
-													<th class="text-left">Item</th>
-													<th class="text-right">Rate</th>
-													<th class="text-right">Quantity</th>
-													<th class="text-right">TOTAL</th>
+													<!-- <th>#</th> -->
+													<th class="text-left text-dark">Item</th>
+													<th class="text-right text-dark">Rate</th>
+													<th class="text-right text-dark">Quantity</th>
+													<th class="text-right text-dark">TOTAL</th>
 												</tr>
 											</thead>
 											<tbody>
 												<tr v-for="(row, index) in rows" :key="index">
 													<td class="">{{ index + 1 }}</td>
-													<td class="text-left">
+													<td class="text-left text-dark">
 														<h3>
 										</h3>
 											<a target="_blank" href="javascript:;">
                               {{ row.item }}
 									   </a>
                     </td>
-													<td class="">{{ row.rate }}</td>
-													<td class="">{{ row.quantity }}</td>
-													<td class="">{{ row.amount }}</td>
+													<td class="text-dark">{{ row.rate }}</td>
+													<td class="text-dark">{{ row.quantity }}</td>
+													<td class="text-dark">{{ row.amount }}</td>
 												</tr>
 											</tbody>
 											<tfoot>
 												<tr>
-													<td colspan="2"></td>
-													<td colspan="2">TOTAL</td>
+													<td colspan="2 text-dark"></td>
+													<td colspan="2 text-dark ">TOTAL</td>
 													<td>R {{ totalAmount }}</td>
 												</tr>
 											</tfoot>
 										</table>
 									
-								
+                    
 									</main>
 								</div>
+                <button @click="onSubmit" type="button" class="btn maz-gradient-btn"><i class="fa fa-file-pdf-o"></i> Send</button>
 								<!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
 								<div></div>
 							</div>
@@ -273,6 +274,10 @@ const exportToPDF = () => {
       filename: "generated-pdf.pdf",
       });
     }
+
+    const onSubmit = () => {
+      console.log('rows',rows.value);
+    }
   
 </script>
 
@@ -285,5 +290,10 @@ const exportToPDF = () => {
 .borderless-input {
   border: none !important;
   background-color: transparent;
+}
+
+html.dark-theme a {
+    color: black;
+    text-decoration: none;
 }
 </style>

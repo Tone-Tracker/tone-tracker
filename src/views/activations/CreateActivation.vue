@@ -92,6 +92,7 @@ const onFileChange = (event) => {
     return;
   }
     selectedFile.value = event.target.files[0];
+    fileName.value = event.target.files[0].name;
 }
 
 const onSubmit = async () => {
@@ -147,16 +148,14 @@ try {
             <span class="maz-gradient-txt">{{ activationManager }}</span>
           </h5>
         </div>
-        <div class="card">
+        <div class="mt-3 card w-80 m-auto">
           <div class="card-body">
             <div class="row">
               <div class="col-lg-12">
                 <div class="border border-3 p-4 rounded">
                   <div class="row g-3">
-                    <div class="col-md-4">
-                      <label for="name" class="form-label"
-                        >Activation Name</label
-                      >
+                    <div class="col-md-4 mb-3">
+                      <label for="name" class="form-label">Activation Name</label>
                       <input
                         v-model="form.name"
                         type="text"
@@ -173,7 +172,7 @@ try {
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-4 maz-top flex justify-center card">
+                    <div class="col-md-4 mb-3">
                       <label for="budget" class="form-label">Budget</label>
                       <InputNumber
                         v-model="form.budget"
@@ -181,7 +180,7 @@ try {
                         mode="currency"
                         currency="ZAR"
                         locale="en-US"
-                        fluid
+                        class="w-100"
                       />
                       <div
                         class="input-errors"
@@ -191,8 +190,7 @@ try {
                         <div class="text-danger">Budget is required</div>
                       </div>
                     </div>
-
-                    <div class="card maz-top flex justify-center col-md-4">
+                    <div class="col-md-4 mb-3">
                       <label for="input1" class="form-label">Campaign</label>
                       <InputText
                         v-model="campaignName"
@@ -201,19 +199,14 @@ try {
                         id="activation-area"
                       />
                     </div>
-
-                    <div class="col-md-3 mt-custom">
+                    <div class="col-md-4 mb-3">
                       <label for="region" class="form-label">Region</label>
                       <select
                         v-model="form.region"
                         class="form-control"
                         id="activation-area"
                       >
-                        <option
-                          :value="''"
-                          :selected="true"
-                          :disabled="disabled"
-                        >
+                        <option value="" selected disabled>
                           Select Region
                         </option>
                         <option
@@ -232,53 +225,40 @@ try {
                         <div class="text-danger">Region is required</div>
                       </div>
                     </div>
-
-                    <div class="col-md-3 card justify-center mt-custom">
-                      <div class="card fuck-top flex justify-center">
-                        <label for="input1" class="form-label"
-                          >Start Date</label
-                        >
-                        <DatePicker
-                          v-model="form.startDate"
-                          showButtonBar
-                          showIcon
-                          fluid
-                          :showOnFocus="true"
-                        />
-                        <div
-                          class="input-errors"
-                          v-for="error of v$.startDate.$errors"
-                          :key="error.$uid"
-                        >
-                          <div class="text-danger">Start Date is required</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-3 card justify-center mt-custom">
-                      <div class="card fuck-top flex justify-center">
-                        <label for="input1" class="form-label">End Date</label>
-                        <DatePicker
-                          v-model="form.endDate"
-                          showButtonBar
-                          showIcon
-                          fluid
-                          :showOnFocus="true"
-                        />
-                        <div
-                          class="input-errors"
-                          v-for="error of v$.endDate.$errors"
-                          :key="error.$uid"
-                        >
-                          <div class="text-danger">End Date is required</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-3 mt-custom">
-                      <label for="targetGroup" class="form-label"
-                        >Target Group</label
+                    <div class="col-md-4 mb-3">
+                      <label for="input1" class="form-label">Start Date</label>
+                      <DatePicker
+                        v-model="form.startDate"
+                        showButtonBar
+                        showIcon
+                        class="w-100"
+                      />
+                      <div
+                        class="input-errors"
+                        v-for="error of v$.startDate.$errors"
+                        :key="error.$uid"
                       >
+                        <div class="text-danger">Start Date is required</div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="input1" class="form-label">End Date</label>
+                      <DatePicker
+                        v-model="form.endDate"
+                        showButtonBar
+                        showIcon
+                        class="w-100"
+                      />
+                      <div
+                        class="input-errors"
+                        v-for="error of v$.endDate.$errors"
+                        :key="error.$uid"
+                      >
+                        <div class="text-danger">End Date is required</div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="targetGroup" class="form-label">Target Group</label>
                       <input
                         v-model="form.targetGroup"
                         type="text"
@@ -293,83 +273,58 @@ try {
                         <div class="text-danger">Target Group is required</div>
                       </div>
                     </div>
-
-                    <div class="text-areas-container">
-                      <div class="col-md-12 mt-custom-2">
-                        <label for="brief" class="form-label">Brief</label>
-                        <textarea
-                          v-model="form.brief"
-                          class="form-control"
-                          id="brief"
-                        ></textarea>
-                        <div
-                          class="input-errors"
-                          v-for="error of v$.brief.$errors"
-                          :key="error.$uid"
-                        >
-                          <div class="text-danger">Brief is required</div>
-                        </div>
-                      </div>
-
-                      <div class="col-md-12 mt-custom-2">
-                        <label for="campaign" class="form-label"
-                          >Pin Points</label
-                        >
-                        <textarea
-                          v-model="form.painPoints"
-                          type="text"
-                          class="form-control"
-                          id="painPoints"
-                        ></textarea>
-                        <div
-                          class="input-errors"
-                          v-for="error of v$.painPoints.$errors"
-                          :key="error.$uid"
-                        >
-                          <div class="text-danger">Pin Points is required</div>
-                        </div>
+                    <div class="col-md-12 mb-3">
+                      <label for="brief" class="form-label">Brief</label>
+                      <textarea
+                        v-model="form.brief"
+                        class="form-control"
+                        id="brief"
+                        rows="4"
+                      ></textarea>
+                      <div
+                        class="input-errors"
+                        v-for="error of v$.brief.$errors"
+                        :key="error.$uid"
+                      >
+                        <div class="text-danger">Brief is required</div>
                       </div>
                     </div>
-
-                    <!-- <div class="upload-section col-md-6 col-sm-12">
-                                    <label for="img-upload" class="img-upload-label">
-                                        <div class="d-flex flex-column align-items-center justify-content-center upload-box text-white">
-                                        <input @change="onImageChange($event)" type="file" id="img-upload" hidden accept="image/*">
-                                        <div class="fs-1">+</div>
-                                        <div class="mb-6">
-                                            <span class="fs-5">Upload Image</span>
-                                        </div>
-                                        </div>
-                                        </label>
-                                        <p v-if="imageName" class="text-center text-danger">{{imageName}}</p>
-                                        </div> -->
-
-                    <div class="upload-section col-md-12 col-sm-12">
-                      <label for="file-upload" class="file-upload-label">
-                        <div
-                          class="d-flex flex-column align-items-center justify-content-center upload-box text-white"
-                        >
-                          <input
-                            type="file"
-                            @change="onFileChange($event)"
-                            id="file-upload"
-                            hidden
-                            accept="application/pdf"
-                          />
-                          <div class="fs-1">+</div>
-                          <div class="mb-6">
-                            <span class="fs-5">Upload Brief file</span>
-                          </div>
-                        </div>
-                      </label>
-                      <p v-if="fileName" class="text-center text-danger">
+                    <div class="col-md-12 mb-3">
+                      <label for="campaign" class="form-label">Pain Points</label>
+                      <textarea
+                        v-model="form.painPoints"
+                        class="form-control"
+                        id="painPoints"
+                        rows="4"
+                      ></textarea>
+                      <div
+                        class="input-errors"
+                        v-for="error of v$.painPoints.$errors"
+                        :key="error.$uid"
+                      >
+                        <div class="text-danger">Pain Points are required</div>
+                      </div>
+                    </div>
+                    <div class="col-md-12 mb-3 w-50 m-auto">
+                      <label for="file-upload" class="form-label">Upload Brief File</label>
+                      <div class="upload-box">
+                        <input
+                          type="file"
+                          @change="onFileChange($event)"
+                          id="file-upload"
+                          hidden
+                          accept="application/pdf"
+                        />
+                        <label for="file-upload" class="file-upload-label">
+                          <div class="upload-icon">+</div>
+                          <div class="upload-text">Click to upload PDF</div>
+                        </label>
+                      </div>
+                      <p v-if="fileName" class="text-center text-danger mt-2">
                         {{ fileName }}
                       </p>
                     </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
+                    <div class="col-12 mt-4">
                   <div class="d-grid">
                     <button
                       @click="onSubmit"
@@ -379,7 +334,7 @@ try {
                     >
                       <div
                         v-if="loading"
-                        class="spinner-border text-white"
+                        class="spinner-border text-white me-2"
                         role="status"
                       >
                         <span class="visually-hidden">Loading...</span>
@@ -388,6 +343,9 @@ try {
                     </button>
                   </div>
                 </div>
+                  </div>
+                </div>
+             
               </div>
             </div>
           </div>
@@ -396,33 +354,25 @@ try {
     </div>
   </Layout>
 </template>
-<style>
-.maz-top {
-  margin-top: 0.3rem !important;
+
+<style scoped>
+.form-label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
-.upload-section {
-  margin: 20px 0;
-}
-.mt-custom {
-  margin-top: -9px !important;
-}
-
-.mt-custom-2 {
-  margin-top: 2rem !important;
-}
-
-.my-card {
-  box-shadow: 0 0rem 0rem rgb(0 0 0 / 20%) !important;
-  margin-bottom: -15px;
-}
-
-.fuck-top {
-  margin-top: -0.9rem !important;
-}
-
+.form-control,
+.p-inputnumber,
 .p-datepicker {
-  margin-top: -0.4rem !important;
+  width: 100%;
+}
+
+.upload-box {
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
 }
 
 .file-upload-label {
@@ -432,32 +382,24 @@ try {
   cursor: pointer;
 }
 
-.file-upload-label input[type="file"] {
-  display: none;
+.upload-icon {
+  font-size: 2em;
+  margin-bottom: 10px;
 }
 
-.upload-box {
-  width: 700px;
-  height: 100px;
-  border: 2px dashed #fff;
-  font-size: 2em;
+.upload-text {
+  font-size: 1em;
   color: #555;
 }
 
-.upload-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1em;
-  cursor: pointer;
+.input-errors {
+  margin-top: 0.25rem;
 }
 
-.upload-button:hover {
-  background-color: #0056b3;
+.maz-gradient-btn {
+  margin-top: 1rem;
 }
-.text-areas-container {
-  margin-top: -5rem;
+.w-80 {
+  width: 90% !important;
 }
 </style>

@@ -4,14 +4,14 @@ import axiosInstance from '@/axiosInstance';
 export const useDocUpload = defineStore('docUpload', () => {
 
     function submit(formData, config) {
-      return axiosInstance.post(`/api/docs`,formData, config);
+      return axiosInstance.post(`/api/documents`,formData, config);
     }
 
     const getDocs = () => {
-      return axiosInstance.get(`/api/docs`);
+      return axiosInstance.get(`/api/documents`);
     }
     const deleteDoc = (id) => {
-      return axiosInstance.delete(`/api/docs/${id}`);
+      return axiosInstance.delete(`/api/documents/${id}`);
     }
     return { submit, getDocs, deleteDoc }
   
