@@ -147,7 +147,7 @@ try {
             <span class="maz-gradient-txt">{{ activationManager }}</span>
           </h5>
         </div>
-        <div class="card">
+        <div class="card w-80 m-auto">
           <div class="card-body">
             <div class="row">
               <div class="col-lg-12">
@@ -304,7 +304,7 @@ try {
                         <div class="text-danger">Pain Points are required</div>
                       </div>
                     </div>
-                    <div class="col-md-12 mb-3">
+                    <div class="col-md-12 mb-3 w-50 m-auto">
                       <label for="file-upload" class="form-label">Upload Brief File</label>
                       <div class="upload-box">
                         <input
@@ -323,9 +323,7 @@ try {
                         {{ fileName }}
                       </p>
                     </div>
-                  </div>
-                </div>
-                <div class="col-12 mt-4">
+                    <div class="col-12 mt-4">
                   <div class="d-grid">
                     <button
                       @click="onSubmit"
@@ -344,6 +342,9 @@ try {
                     </button>
                   </div>
                 </div>
+                  </div>
+                </div>
+             
               </div>
             </div>
           </div>
@@ -396,5 +397,8 @@ try {
 
 .maz-gradient-btn {
   margin-top: 1rem;
+}
+.w-80 {
+  width: 90% !important;
 }
 </style>
