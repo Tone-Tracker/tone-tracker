@@ -246,6 +246,24 @@ a {
 
 }
 
+/* ////////preview////// */
+
+html.dark-theme a {
+	color: black;
+	text-decoration: none;
+}
+
+html.dark-theme .invoice table td,
+html.dark-theme .invoice table th {
+	color: black;
+	background: rgb(255 255 255 / 12%);
+	border-bottom: 1px solid rgb(255 255 255 / 12%);
+}
+
+/* ////////preview////// */
+
+
+
 
 
 .topbar .navbar {
