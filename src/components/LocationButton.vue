@@ -30,8 +30,8 @@
     const coordObj = {
       "latitude": coords.value.latitude,
       "longitude": coords.value.longitude,
-      "userId": user.id,
-      "promoterId": user.activeUserId
+      "user ": user.id,
+      "promoter": user.activeUserId
     }
      promoterStore.checkIn(coordObj).then(function (response) {
         console.log(response.data);
