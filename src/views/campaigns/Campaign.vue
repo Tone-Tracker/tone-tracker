@@ -66,7 +66,8 @@ const createCampaign = async () => {
    
     const formData = new FormData();
     formData.append('campaignImage', selectedFile.value);
-    formData.append('campaignDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
+    formData.append('name', form.name);
+    formData.append('client', form.client);
 
     const config = {
       useMultipartFormData: true // Add this flag to the request config

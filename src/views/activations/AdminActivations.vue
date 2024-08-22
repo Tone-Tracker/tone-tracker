@@ -275,15 +275,6 @@ const activationItems = (activation) => [
         command: () => {
             URLrouter.push(`/tasks?activation=${activation.id}&name=${activation.name}`);
         }
-    },
-    
-    {
-        label: 'Add Activation Images',
-        icon: 'bx bx-images text-success fs-3',
-        command: () => {
-            // unitForm.warehouse = warehouse.id
-			URLrouter.push(`/activation-images?activation=${activation.id}`);
-        }
     }
 ];
 
@@ -415,8 +406,8 @@ const onUserChange = (event) => {
 								<tbody > 
 									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
-										<td>{{ activation.campaign.name }}</td>
-										<td>{{ activation.region.name }}</td> 
+										<td>{{ activation.campaignDTO.name }}</td>
+										<td>{{ activation.regionName }}</td> 
 										<td>R {{activation.budget}}</td>
 										<td>{{activation.startDate}}</td>
 										<td>{{activation.endDate}}</td>

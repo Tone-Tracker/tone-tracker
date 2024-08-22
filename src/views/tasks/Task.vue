@@ -165,14 +165,14 @@ const onSubmit = async () => {
     else {
 
         const formData = new FormData();
-        formData.append('briefFile', form.briefFile);
+        formData.append('briefFile', briefFile.value);
         formData.append('taskDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
 
         const config = {
             useMultipartFormData: true // Add this flag to the request config
         };
 
-        taskStore.submit(form,config).then(function (response) {
+        taskStore.submit(formData,config).then(function (response) {
             showLoading.value = false;
         toaster.success("Task created successfully");
         visible.value = false;
@@ -349,6 +349,15 @@ const taskItems = (task) => {
                 openModal('top', task);
             }
         },
+        ,
+    
+    {
+        label: 'Add  Images',
+        icon: 'bx bx-images text-success fs-3',
+        command: () => {
+			URLrouter.push(`/activation-images?activation=${task.id}`);
+        }
+    },
         {
             label: 'View',
             icon: 'bx bx-bullseye fs-4 text-success',
