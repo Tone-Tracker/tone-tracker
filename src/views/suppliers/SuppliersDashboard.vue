@@ -17,7 +17,7 @@
                     <div class="widgets-icons mx-auto  mb-3">
                       <i class='bx bxs-file-blank text-blue'></i>  
                     </div>
-                    <p class="mb-0 fs-6 text-secondary">Briefs</p>
+                    <p class="mb-0 fs-6 text-secondary text-white">Briefs</p>
                     <h4 class="my-1 maz-height"></h4>
   
                   </router-link>
@@ -36,7 +36,7 @@
                       </svg>
   
                     </div>
-                    <p class="mb-0 fs-6 text-secondary">Upload Documents</p>
+                    <p class="mb-0 fs-6 text-secondary text-white">Upload Documents</p>
                     <h4 class="my-1 maz-height"></h4>
   
                   </div>
@@ -59,7 +59,7 @@
                       </svg>
   
                     </div>
-                    <p class="mb-0 fs-6 text-secondary">Learning Management System</p>
+                    <p class="mb-0 fs-6 text-secondary text-white">Learning Management System</p>
                     <h4 class="my-1 maz-height"></h4>
   
                   </div>
@@ -74,7 +74,7 @@
                       <i class='bx bxs-calculator text-blue'></i>
   
                     </div>
-                    <p class="mb-0 fs-6 text-secondary">CRM</p>
+                    <p class="mb-0 fs-6 text-secondary text-white">CRM</p>
                     <h4 class="my-1 maz-height"></h4>
   
                   </div>
@@ -86,30 +86,29 @@
 
           <div class="row">
             <div class="col">
-                <div class="table-responsive">
-    <table class="table table-dark table-borderless custom-table-bg no-border-table">
-        <thead>
-        <tr>
-            <th class="text-white">Client</th>
-            <th class="text-white">Job number</th>
-            <th class="text-white">Name of quote</th>
-            <th class="text-white">Amount</th>
-            <th>
-            <th class="text-white">Action</th>
-            <!-- <button class="btn btn-info btn-sm me-2">Action</button> -->
-            </th>
-        </tr>
+                <div class="table-responsive p-3">
+    <table class="table table-dark table-borderless w-50 m-auto">
+        <thead class="custom-table-bg">
+          <tr>
+              <th class="text-white border-0">Client</th>
+              <th class="text-white border-0">Job number</th>
+              <th class="text-white border-0">Name of quote</th>
+              <th class="text-white border-0">Amount</th>
+              <th class="border-0">
+              <th class="text-white border-0">Action</th>
+              </th>
+          </tr>
         </thead>
         <tbody>
-        <tr>
-            <td class="text-white">Luc Belair</td>
-            <td class="text-white">JN_129</td>
-            <td class="text-white">JN_129</td>
-            <td class="text-white">JN_129</td>
-            <td>
-            <router-link to="/view-supplier-task/1" class="btn btn-secondary btn-sm">View</router-link>
-            </td>
-        </tr>
+          <tr class="custom-table-bg">
+              <td class="text-white border-0">Luc Belair</td>
+              <td class="text-white border-0">JN_129</td>
+              <td class="text-white border-0">JN_129</td>
+              <td class="text-white border-0">JN_129</td>
+              <td class="border-0">
+              <router-link to="/view-supplier-task/1" class="btn btn-secondary btn-sm">View</router-link>
+              </td>
+          </tr>
         </tbody>
     </table>
     </div>
@@ -142,6 +141,15 @@ onMounted(() => {
 
 .card {
   background-color: #12181a !important;
+  padding: 1rem !important;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24) !important;
+}
+html.dark-theme .table thead th {
+    border-bottom: 2px solid rgb(255 255 255 / 12%);
+}
+
+.custom-table-bg{
+background-color: #12181a;
 }
 </style>
 
