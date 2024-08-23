@@ -18,7 +18,7 @@
                       <i class='bx bxs-file-blank text-blue'></i>  
                     </div>
                     <p class="mb-0 fs-6 text-secondary text-white">Briefs</p>
-                    <h4 class="my-1 maz-height"></h4>
+                    <h4 class="my-1 maz-height">823</h4>
   
                   </router-link>
                 </div>
@@ -37,7 +37,7 @@
   
                     </div>
                     <p class="mb-0 fs-6 text-secondary text-white">Upload Documents</p>
-                    <h4 class="my-1 maz-height"></h4>
+                    <h4 class="my-1 maz-height">23</h4>
   
                   </div>
                 </div>
@@ -60,7 +60,7 @@
   
                     </div>
                     <p class="mb-0 fs-6 text-secondary text-white">Learning Management System</p>
-                    <h4 class="my-1 maz-height"></h4>
+                    <h4 class="my-1 maz-height">53</h4>
   
                   </div>
                 </div>
@@ -75,7 +75,7 @@
   
                     </div>
                     <p class="mb-0 fs-6 text-secondary text-white">CRM</p>
-                    <h4 class="my-1 maz-height"></h4>
+                    <h4 class="my-1 maz-height">7</h4>
   
                   </div>
                 </div>
