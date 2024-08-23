@@ -28,7 +28,9 @@ import MultiSelect from 'primevue/multiselect';
 import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 
+
 const route = useRoute();
+const envPath = import.meta.env.VITE_S3_URL;
 const userStore = useUserStore();
 const activationName = ref(route.query.name);
 const activation = ref(route.query.activation);
@@ -229,9 +231,11 @@ const getTasksByActivationId = async () => {
 
 const taskId = ref(null);
 const isEdit = ref(false);
+const viewedTask = ref({});
 
 const openModal = (pos,task) => {
     showLoading.value = false;
+    viewedTask.value = task;
     if(task) {//edit
     isEdit.value = true;
     taskId.value=task.id;
@@ -337,6 +341,10 @@ const removeFile = () => {
 const view_uploaded_file_visible = ref(false);
 const base64PDF = ref(null);
 const previewBase64PDF = () => {
+    if(viewedTask.value.path) {
+        view_uploaded_file_visible.value = true;
+        return
+    }
     //convert brief file to base64
     const reader = new FileReader();
     reader.readAsDataURL(briefFile.value);
@@ -402,7 +410,7 @@ const taskItems = (task) => {
 
 const selectedThirdPaties = ref();
 
-const submitThirdParty = () => {console.log(selectedThirdPaties.value);return
+const submitThirdParty = () => {
     if(!selectedThirdPaties.value) {
         toaster.error("Please select a supplier");
         return
@@ -600,6 +608,12 @@ const submitThirdParty = () => {console.log(selectedThirdPaties.value);return
                             </div>
                         </div>
                     </template>
+                    <template v-if="isEdit && viewedTask?.path">
+                        <div v-if="viewedTask?.path" id="file-preview" class="file-upload-preview mt-2">                                    
+                            <img @click="previewBase64PDF" id="file-preview-image" src="/src/assets/images/pdf.png" alt="File Preview" class="cursor-pointer" />
+                            <button type="button" class="file-remove-button" @click="removeFile()">×</button>
+                        </div>
+                    </template>
                     <div class="modal-footer" style="margin-top: 2rem">
                        
                         <button type="submit" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center">
@@ -617,7 +631,7 @@ const submitThirdParty = () => {console.log(selectedThirdPaties.value);return
             </Dialog>
             <div class="card flex justify-center">
                 <Drawer v-model:visible="view_uploaded_file_visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
-                    <PDF :src="base64PDF" />
+                    <PDF :src="viewedTask ? envPath + viewedTask?.path : base64PDF" />
                 </Drawer>
             </div>
 
