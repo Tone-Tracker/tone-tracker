@@ -52,28 +52,18 @@ const getBriefById = async () => {
 };
 const visible = ref(false);
 const docName = ref(false);
+const filePath = ref(null);
 
 const downloadDocument = (brief) => {
+    filePath.value = import.meta.env.VITE_S3_URL + brief.path;
     visible.value = true;
     docName.value = brief.activationName;
-    // try {
-    //     const response = await briefStore.getDocument(path);
-    //     const url = window.URL.createObjectURL(new Blob([response.data]));
-    //     const link = document.createElement('a');
-    //     link.href = url;
-    //     link.setAttribute('download', 'document.pdf'); // Adjust filename and type as needed
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     link.remove();
-    // } catch (error) {
-    //     console.error('Error downloading document:', error);
-    // }
 };
 
-const download = (docPath) => {
+const download = () => {
      try {
         const link = document.createElement('a');
-        link.href = url;
+        link.href = filePath.value;
         link.setAttribute('download', '');
         document.body.appendChild(link);
         link.click();
@@ -83,15 +73,18 @@ const download = (docPath) => {
     }
 };
 
+const shareFile = ref(null);
 const options = ref({
-  title: 'TTG Activations',
-  text: 'Share TTG Activations',
-  url: isClient ? 'https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf' : '',
+  title: shareFile.value ? shareFile?.value.name : '',
+  text: shareFile.value ? shareFile?.value.name : '',
+  url: (isClient && shareFile.value) ? import.meta.env.VITE_S3_URL + shareFile?.value.path : '',
 })
 
 const { share, isSupported } = useShare(options)
 
-function startShare() {
+function startShare(file) {
+    console.log(file)
+    shareFile.value = file;
   return share().catch(err => err)
 }
 
@@ -119,7 +112,7 @@ function startShare() {
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <button class="btn bg-black text-white w-100 rounded-0 btn-outline-light" @click="downloadDocument(briefItem)">Read</button>
-                                        <button @click="startShare()" type="button" class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light">Share</button>
+                                        <button @click="startShare(briefItem)" type="button" class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light">Share</button>
                                     </div>
                                     <!-- <div>
                                         <div class="d-flex mt-4 mb-3 custom-checkbox">
@@ -146,8 +139,8 @@ function startShare() {
         </div>
         <div class="card flex justify-center">
             <Drawer v-model:visible="visible" position="right" :header="docName" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
-                <PDF src="ttps://ttg-dev-bucket.s3.amazonaws.com/brief/03569_promofaccestoinfoact2.pdf" />
-                <a @click="download('https://ttg-dev-bucket.s3.amazonaws.com/brief/03569_promofaccestoinfoact2.pdf')" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+                <PDF :src="filePath" />
+                <a @click="download" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
                     <!-- <div v-if="isDownloading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
                    </div> -->
                    <i class='bx bxs-download'></i>
