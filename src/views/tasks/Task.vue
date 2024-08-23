@@ -1,6 +1,7 @@
 <script setup>
 import moment from 'moment';
 import { useUserStore } from '@/stores/userStore';
+import { useSupplier } from '@/stores/supplier';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
@@ -29,7 +30,7 @@ import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 
 const route = useRoute();
-const userStore = useUserStore();
+const supplierStore = useSupplier();
 const activationName = ref(route.query.name);
 const activation = ref(route.query.activation);
 
@@ -86,7 +87,8 @@ watch(suggestions, (newSuggestions) => {
        
     };
     const getThirdPartySuppliers = async () => {
-        userStore.getUserByRole('SUPPLIER').then(response => {
+        supplierStore.getThirdParties().then(response => {
+            console.log('response',response.data);
             let result = response.data.content;
             console.log('result',result);
             if(result.length > 0) {
@@ -402,7 +404,7 @@ const taskItems = (task) => {
 
 const selectedThirdPaties = ref();
 
-const submitThirdParty = () => {console.log(selectedThirdPaties.value);return
+const submitThirdParty = () => {
     if(!selectedThirdPaties.value) {
         toaster.error("Please select a supplier");
         return
