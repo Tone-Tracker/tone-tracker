@@ -11,13 +11,13 @@
           </div>
           <div class="row row-cols-1 row-cols-md-3 row-cols-xl-4">
             <div class="col">
-              <div class="card">
+              <div class="card ">
                 <div class="card-body">
                   <router-link   to="/supplier-briefs" class="text-center">
                     <div class="widgets-icons mx-auto  mb-3">
                       <i class='bx bxs-file-blank text-blue'></i>  
                     </div>
-                    <p class="mb-0 fs-2 text-secondary">Briefs</p>
+                    <p class="mb-0 fs-6 text-secondary">Briefs</p>
                     <h4 class="my-1 maz-height"></h4>
   
                   </router-link>
@@ -36,7 +36,7 @@
                       </svg>
   
                     </div>
-                    <p class="mb-0 fs-2 text-secondary">Upload Documents</p>
+                    <p class="mb-0 fs-6 text-secondary">Upload Documents</p>
                     <h4 class="my-1 maz-height"></h4>
   
                   </div>
@@ -59,7 +59,7 @@
                       </svg>
   
                     </div>
-                    <p class="mb-0 fs-3 text-secondary">Learning Management System</p>
+                    <p class="mb-0 fs-6 text-secondary">Learning Management System</p>
                     <h4 class="my-1 maz-height"></h4>
   
                   </div>
@@ -74,7 +74,7 @@
                       <i class='bx bxs-calculator text-blue'></i>
   
                     </div>
-                    <p class="mb-0 fs-3 text-secondary">CRM</p>
+                    <p class="mb-0 fs-6 text-secondary">CRM</p>
                     <h4 class="my-1 maz-height"></h4>
   
                   </div>
@@ -138,6 +138,10 @@ onMounted(() => {
 <style scoped>
 .text-blue{
   color: #019BFE;
+}
+
+.card {
+  background-color: #12181a !important;
 }
 </style>
 
