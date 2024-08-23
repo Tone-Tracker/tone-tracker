@@ -74,8 +74,9 @@ const config = {
 const submitFile = () => {
   if(!file.value) {return}
   const formData = new FormData();
-  formData.append('documentDTO', file.value);
-  formData.append('form', JSON.stringify(form));
+  formData.append('documentFile', file.value);
+  formData.append('title', "NDA");
+  formData.append('uploadedById', user.activeUserId);
   showLoading.value = true;
   uploadStore.submit(formData, config).then(() => {
     emits('done-uploading');

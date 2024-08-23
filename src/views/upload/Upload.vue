@@ -1,19 +1,23 @@
 <script setup>
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import NDAFileUpload from './NDAFileUpload.vue';
 import SLAFileUpload from './SLAFileUpload.vue';
 import { useDocUpload } from '@/stores/docUpload';
+import useToaster from '@/composables/useToaster';
 
 
 const uploadStore = useDocUpload();
+const toaster = useToaster();
 const files = ref([]);
 
 
 
+
 const  getFiles = () => {
-    uploadStore.DocsFiles().then(function (response) {
+    uploadStore.getDocs().then(function (response) {
+        console.log(response.data);
         files.value = response.data.content;
     }).catch(error => {
         console.log(error);
@@ -21,6 +25,9 @@ const  getFiles = () => {
     })
   };
 
+onMounted(() => {
+    getFiles();
+})
 </script>
 <template>
     <Layout>

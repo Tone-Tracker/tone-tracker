@@ -88,13 +88,12 @@ watch(suggestions, (newSuggestions) => {
     };
     const getThirdPartySuppliers = async () => {
         supplierStore.getThirdParties().then(response => {
-            console.log('response',response.data);
             let result = response.data.content;
             console.log('result',result);
             if(result.length > 0) {
                 //map third party suppliers
                 thirdPartySuppliers.value = result.map(supplier => {
-                    return { name: supplier.firstName + ' ' + supplier.lastName, code: supplier.id }
+                    return { name: supplier.userDetails.firstName + ' ' + supplier.userDetails.lastName, code: supplier.id }
                 })
             }
         }).catch(error => {
@@ -413,6 +412,10 @@ const submitThirdParty = () => {
     selectedThirdPaties.value.forEach(supplier => {
         supplierArray.push(supplier.code)
     });
+    let myObj = {
+        thirdPartySupplierId: supplierArray,
+        task: taskId.value
+    }
     showLoading.value = true;
    taskStore.addThirdPartiesToTask(taskId.value, supplierArray).then(response => {
        getTasksByActivationId();
