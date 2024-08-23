@@ -25,7 +25,7 @@ const getRoleName = () => {
         <div class="side-nav side-nav--remove">
             <div class="accordion-item">
                 <div class="accordion-header profile">
-                    <button class="d-flex align-items-center justify-content-between accordion-button" type="button"
+                    <button class="d-flex align-items-center justify-content-between accordion-button rounded-0" type="button"
                         data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
                         aria-controls="panelsStayOpen-collapseOne">
                         <div class="profile-info">
@@ -60,14 +60,14 @@ const getRoleName = () => {
             </div>
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="d-flex gap-2 justify-content-end flex-row-reverse accordion-button w-0 collapsed "
+                    <button class="d-flex gap-2 justify-content-end flex-row-reverse accordion-button w-0 collapsed rounded-0"
                         type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo"
                         aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
                         Show more
                     </button>
                 </h2>
                 <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
-                    <div class="accordion-body">
+                    <div class="accordion-body accordion-body-background">
                         <div class="sidebar">
                             <div class="menu-section">
                                 <h3>Projects</h3>
@@ -113,6 +113,9 @@ export default {
 </script>
 
 <style scoped>
+.accordion-body-background {
+    background-color: #000000 !important;
+}
 .profile .accordion-button::after {
     /* margin-bottom: 10px; */
 }
@@ -173,12 +176,9 @@ export default {
 }
 
 .nav-list {
+    background-color: #000000 !important;
     list-style: none;
     padding: 0;
-}
-
-.nav-list li {
-    /* margin: 15px 0; */
 }
 
 .nav-list a {
@@ -244,6 +244,7 @@ export default {
     box-shadow: none;
     padding: 10px 15px;
     width: 100% !important;
+    
     
 }
 
@@ -342,10 +343,8 @@ export default {
 .active{
     background-color: #333333 !important; /* Adjust this color to match your hover color */
 }
-.simplebar-placeholder {
-	background-color: #0F0F0F !important;
-}
-  
+
+
 
 
 </style>

@@ -21,7 +21,7 @@ const getUserRole = (role) => {
 <template>
 
     <div class="sidebar-wrapper  toggled d-flex" data-simplebar="init">
-        <div class="simplebar-wrapper" style="margin: 0px; width: 75%;background: #141414;">
+        <div class="simplebar-wrapper" style="margin: 0px; width: 75%;background: #1C1C1C;">
           <div class="simplebar-height-auto-observer-wrapper">
             <div class="simplebar-height-auto-observer"></div>
           </div>
@@ -81,7 +81,7 @@ const getUserRole = (role) => {
                      <TTG_SUPPLIERS v-if="getUserRole('SUPPLIER')" :user="user"/> 
 
 
-            <div class="simplebar-placeholder" style="width: 100%; height: 1905px;"></div>
+            <!-- <div class="simplebar-place" style="width: 100%; height: 1905px;"></div> -->
           </div>
         <!-- <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
           <div class="simplebar-scrollbar" style="width: 0px; display: none; transform: translate3d(0px, 0px, 0px);"></div>
@@ -102,7 +102,7 @@ const getUserRole = (role) => {
 </template>
 
 <style scoped>
-.simplebar-placeholder {
-  background-color: #1C1C1C !important;
+.simplebar-place {
+  /* background-color: # !important; */
 }
 </style>
