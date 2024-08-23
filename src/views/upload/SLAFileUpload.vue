@@ -75,7 +75,7 @@ const submitFile = () => {
   if(!file.value) {return}
   const formData = new FormData();
   formData.append('documentFile', file.value);
-  formData.append('title', "NDA");
+  formData.append('title', "SLA");
   formData.append('uploadedById', user.activeUserId);
   showLoading.value = true;
   uploadStore.submit(formData, config).then(() => {
