@@ -107,8 +107,9 @@ watch(suggestions, (newSuggestions) => {
         // const { lat, lng } =  getLatLng(results);
         form.address = results[0].formatted_address;
         form.longitude = results[0].geometry.viewport.Hh.lo;
-        form.latitude = results[0].geometry.viewport.Yh.hi
+        form.latitude = results[0].geometry.viewport.ci.lo;
 
+        
 
     }
 
@@ -145,7 +146,8 @@ const rules = {
 	timeRecord: { required },
 	jobNumber: { required },
 	completion: { required },
-    activation: { required }
+    activation: { required },
+    address :  {required}
 };
 const v$ = useVuelidate(rules, form);
 
@@ -174,6 +176,9 @@ const onSubmit = async () => {
         formData.append('startDate', form.startDate);
         formData.append('plannedEndDate', form.plannedEndDate);
         formData.append('timeRecord', form.timeRecord);
+        formData.append('latitude', form.latitude);
+        formData.append('longitude', form.longitude);
+        formData.append('address', form.address);
         formData.append('jobNumber', form.jobNumber);
         formData.append('completion', form.completion);
         formData.append('activation', form.activation);
@@ -259,6 +264,9 @@ const openModal = (pos,task) => {
      type: null,
      startDate: null,
      plannedEndDate: null,
+     latitude: null,
+     longitude: null,
+     address: null,
      timeRecord: null,
      completion: null,
      jobNumber: null,
