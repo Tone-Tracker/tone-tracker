@@ -5,6 +5,8 @@ import { useAuth } from '@/stores/auth';
 import { useTask } from "@/stores/task";
 import { onMounted, ref } from "vue";
 import { useRoute } from 'vue-router';
+import Drawer from "primevue/drawer";
+import PDF from "pdf-vue3";
 
 const taskStore = useTask();
 const authStore = useAuth();
@@ -31,6 +33,27 @@ const getTask = async () => {
   }).finally(() => {
     //
   });
+};
+
+const visible = ref(false);
+const fullPath = ref(null);
+
+const previewBase64PDF = () => {
+        visible.value = true;
+		fullPath.value = import.meta.env.VITE_S3_URL + singleTask.value.path;
+   console.log(fullPath.value)
+}
+const download = () => {
+     try {
+        const link = document.createElement('a');
+        link.href = import.meta.env.VITE_S3_URL + singleTask.value.path;
+        link.setAttribute('download', '');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error downloading document:', error);
+    }
 };
 </script>
 
@@ -100,15 +123,14 @@ const getTask = async () => {
 								<form class="row g-3">
 									<div class="col-md-12">
                                         <div  class="file-details mt-3 p-1 border rounded d-flex align-items-center">
-                                            <div class="file-icon me-3">
-                                              <img  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
+                                            <div class="file-icon me-3" v-tooltip.bottom="'View File'">
+                                              <img @click="previewBase64PDF"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
                                             </div>
                                             <div class="file-info">
-                                              <p class="m-0">Brief.pdf</p>
-                                              <small class="m-0 text-dark">233 KB</small>
+                                              <p class="m-0 text-white">Brief.pdf</p>
                                             </div>
                                             <div class="ms-auto">
-                                                <i class='bx bxs-download text-success fs-2 cursor-pointer' v-tooltip="'Download'" ></i>
+                                                <i @click="download" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip="'Download'" ></i>
                                              
                                             </div>
                                           </div>
@@ -120,7 +142,15 @@ const getTask = async () => {
 				</div>
 				<!--end row-->
 
-
+				<div class="card flex justify-center">
+					<Drawer v-model:visible="visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+						<button @click="download" class="btn w-100 maz-gradient-btn mb-2" type="button">
+							<i class='bx bxs-download'></i>
+							Download</button>
+						<PDF :src="fullPath" />
+					</Drawer>
+					
+				</div>
 
 			</div>
 		</div>
