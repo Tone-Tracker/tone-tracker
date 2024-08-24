@@ -85,6 +85,7 @@ const createCampaign = async () => {
         showFilePreview.value = false
         toaster.success("Campaign created successfully");
         getCampaignsByClientId();
+        loading.value = false;
     }).catch(function (error) {
         loading.value = false;
         toaster.error("Error creating campaign");

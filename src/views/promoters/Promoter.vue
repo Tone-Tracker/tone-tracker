@@ -299,11 +299,11 @@ const formatSize = (bytes) => {
                 </span>
               </div>
               <div class="ms-auto">
-                <a  @click="openPosition('top')" class="btn mr-2 maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                  <i class="bx bxs-plus-square"></i>Add Promoter</a>
-                  <label for="csv-file" class="mx-2 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+                <!-- <a  @click="openPosition('top')" class="btn mr-2 maz-gradient-btn radius-30 mt-2 mt-lg-0">
+                  <i class="bx bxs-plus-square"></i>Add Promoter</a> -->
+                  <!-- <label for="csv-file" class="mx-2 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
                     <i class="bx bx-import"></i>Upload CSV</label>
-                    <input type="file" id="csv-file" ref="file" hidden />
+                    <input type="file" id="csv-file" ref="file" hidden /> -->
               </div>
             </div>
             <div class="table-responsive">
@@ -334,9 +334,9 @@ const formatSize = (bytes) => {
                         <a @click="openPosition('top',promoter)" href="javascript:;" >
                           <i class='bx bxs-edit'></i>
                         </a>
-                        <a @click="deleteRecord($event, promoter)" href="javascript:;" class="ms-3">
+                        <!-- <a @click="deleteRecord($event, promoter)" href="javascript:;" class="ms-3">
                           <i class='bx bxs-trash text-danger'></i>
-                        </a>
+                        </a> -->
                         <ConfirmPopup></ConfirmPopup>
                       </div>
 					  
@@ -357,12 +357,14 @@ const formatSize = (bytes) => {
 
 	<Dialog v-model:visible="visible" position="top" modal header="Add Promoter" :style="{ width: '50rem' }">
     <div class="card flex justify-center">
-      <label for="input1" class="form-label">Choose User</label>
-       <AutoComplete v-model="user_id" forceSelection dropdown :suggestions="dropdownItems" 
-        @item-select="onUserChange" @complete="search" field="name" />
-         <div class="input-errors" v-for="error of v$.user.$errors" :key="error.$uid">
-         <div class="text-danger">User is required</div>
-          </div>
+      <label for="input1" class="form-label">Gender </label>
+       
+
+            
+      <select v-model="form.gender" class="form-control" id="gender">
+    <option value="MALE">MALE</option>
+    <option value="FEMALE">FEMALE</option>
+  </select>
      </div>
      <div class="row g-3">
       <div class="col-md-3">
@@ -376,9 +378,9 @@ const formatSize = (bytes) => {
         </div>
         <div class="col-md-3">
         <label for="pantsSize" class="form-label">Pants Size</label>
-        <select v-model="form.pantsSize" class="form-control" id="pantsSize" >
-          <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
-        </select>
+        
+        <input  v-model="form.pantsSize" class="form-control" id="pantsSize"   />
+        
         <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
           <div class="text-danger">Pants Size is required</div>
           </div>
@@ -409,60 +411,7 @@ const formatSize = (bytes) => {
 
       </div> 
 
-      <FileUpload name="demo[]" url="/api/upload" @upload="onTemplatedUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
-        <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-4">
-                <div class="d-flex gap-2">
-                    <Button @click="chooseCallback()"  class="btn btn-outline-secondary rounded">
-                        <i class='bx bx-images fs-4 text-white'></i>
-                    </Button>
-                    <!-- <Button @click="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" class="btn btn-outline-success rounded" :disabled="!files || files.length === 0">
-                        <i class='bx bx-cloud-upload fs-2'></i>
-                    </Button> -->
-                    <!-- <Button @click="clearCallback()" icon="bx bx-x-circle" class="btn btn-outline-danger rounded" :disabled="!files || files.length === 0">
-                      <i class='bx bx-x-circle fs-2'></i>
-                    </Button> -->
-                </div>
-            </div>
-        </template>
-        <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
-            <div class="d-flex flex-column gap-8 pt-1">
-                <div v-if="files.length > 0">
-                    <div class="d-flex flex-wrap gap-4">
-                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="p-8 rounded-border d-flex flex-column border border-surface align-items-center gap-4">
-                            <div>
-                                <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                            </div>
-                            <span class="fw-semibold text-ellipsis max-w-60 text-nowrap overflow-hidden">{{ file.name }}</span>
-                            <div>{{ formatSize(file.size) }}</div>
-                            <a  @click="onRemoveTemplatingFile(file, removeFileCallback, index)" class="cursor-pointer">
-                              <i class='bx bx-x-circle fs-2 text-danger'></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
     
-                <div v-if="uploadedFiles.length > 0">
-                    <h5>Completed</h5>
-                    <div class="d-flex flex-wrap gap-4">
-                        <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="p-8 rounded-border d-flex flex-column border border-surface align-items-center gap-4">
-                            <div>
-                                <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                            </div>
-                            <span class="fw-semibold text-ellipsis max-w-60 text-nowrap overflow-hidden">{{ file.name }}</span>
-                            <div>{{ formatSize(file.size) }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
-        <template #empty>
-            <div class="d-flex align-items-center justify-content-center flex-column">
-                <i class="pi pi-cloud-upload border-2 rounded-circle p-8 fs-1 text-muted" />
-                <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
-            </div>
-        </template>
-    </FileUpload>
     
     
     <div class="col-12 mt-4">
