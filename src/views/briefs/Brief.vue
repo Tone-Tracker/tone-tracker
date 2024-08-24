@@ -65,7 +65,7 @@ const onInput = () => {
     getBriefs(); // Reset the list to the full set of briefs when the search input is cleared
   }
 };
-;
+
 
 
 

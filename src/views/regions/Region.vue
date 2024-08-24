@@ -26,7 +26,7 @@ const position = ref('top');
 const regionalManager = ref(null);
 const regionalManagers = ref([]);
 const loading = ref(false);
-
+let searchInput = ref('');
 const form = reactive({ name: '' });
 const nameInput = ref(null); // Reference for the input field
 
@@ -189,6 +189,34 @@ const openModal = (pos, region) => {
     position.value = pos;
     visible.value = true;
 };
+
+
+const onInput = () => {
+  if (searchInput.value) {
+    const searchTerm = searchInput.value.toLowerCase();
+
+    regions.value = regions.value.filter((region) => {
+     
+      const name = region.name?.toLowerCase() || '';
+      const firstName = region.firstName?.toLowerCase() || '';
+      const lastName = region.lastName?.toLowerCase() || '';
+
+     
+      return (
+        name.includes(searchTerm) ||
+        firstName.includes(searchTerm) ||
+        lastName.includes(searchTerm)
+      );
+    });
+  } else {
+    getRegions(); 
+  }
+};
+
+
+
+
+
 </script>
 
 <template>
@@ -197,6 +225,24 @@ const openModal = (pos, region) => {
             <div class="page-content">
                 <BreadCrumb title="Regions" icon="bx bx-map" />
                 <div class="card">
+                    <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
+                <!-- <button class="btn rounded-0 btn-primary">+ New</button> -->
+
+                <div class="position-relative">
+                  <input
+                    v-model="searchInput"
+                    @input="onInput"
+                    type="text"
+                    class="form-control ps-5"
+                    placeholder="Search"
+                  />
+                  <span
+                    class="position-absolute top-50 product-show translate-middle-y"
+                  >
+                    <i class="bx bx-search"></i>
+                  </span>
+                </div>
+              </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-8 col-lg-8 col-xl-8 d-flex">
