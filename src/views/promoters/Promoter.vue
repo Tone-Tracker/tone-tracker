@@ -39,7 +39,8 @@ const form = reactive({
 	client: null,
   topSize: null,
   height: null,
-  bio: null
+  bio: null,
+  gender: null
 });
 
 onMounted(() => {
@@ -56,6 +57,8 @@ const rules = {
 	height: { required },
 	topSize: { required },
   bio: { required },
+  gender: { required },
+
 };
 const v$ = useVuelidate(rules, form);
 
@@ -101,14 +104,30 @@ const onSubmit = async () => {
 
 const onInput = () => {
   if (searchInput.value) {
-    users.value = users.value.content.filter(user =>
-      user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchInput.value.toLowerCase())
-    );
+    const searchTerm = searchInput.value.toLowerCase();
+
+    promoters.value = promoters.value.filter((promoter) => {
+      const userDetails = promoter.userDetails;
+      const experiences = promoter.experiences.map(exp => `${exp.name} ${exp.description} ${exp.duration}`).join(" ");
+
+      return (
+        promoter.height?.toString().includes(searchTerm) ||
+        promoter.topSize?.toLowerCase().includes(searchTerm) ||
+        promoter.pantsSize?.toLowerCase().includes(searchTerm) ||
+        promoter.dressSize?.toLowerCase().includes(searchTerm) ||
+        promoter.bio?.toLowerCase().includes(searchTerm) ||
+        userDetails.firstName?.toLowerCase().includes(searchTerm) ||
+        userDetails.lastName?.toLowerCase().includes(searchTerm) ||
+        userDetails.email?.toLowerCase().includes(searchTerm) ||
+        userDetails.phone?.toLowerCase().includes(searchTerm) ||
+        experiences?.toLowerCase().includes(searchTerm)
+      );
+    });
   } else {
-    getAllPromoters();
+    getAllPromoters(); 
   }
 };
+
 
 
 const getAllSizes = async () => {
@@ -192,7 +211,8 @@ const openPosition = (pos,promoter) => {
       pantsSize: promoter.pantsSize,
       topSize: promoter.topSize,
       height: promoter.height,
-      bio: promoter.bio
+      bio: promoter.bio,
+      gender: promoter.gender
     })
   }else{
     isEdit.value = false
@@ -203,7 +223,8 @@ const openPosition = (pos,promoter) => {
       pantsSize: null,
       topSize: null,
       height: null,
-      bio: null
+      bio: null,
+      gender: null
     })
   }
     position.value = pos;
@@ -281,6 +302,10 @@ const formatSize = (bytes) => {
 
     return `${formattedSize} ${sizes[i]}`;
 };
+
+
+
+
 </script>
 
 <template>
@@ -293,7 +318,7 @@ const formatSize = (bytes) => {
             <div class="d-lg-flex align-items-center mb-4 gap-3">
               <div class="position-relative">
                 <input v-model="searchInput" @input="onInput"
-                  type="text" class="form-control ps-5 radius-30" placeholder="Search">
+                  type="text" class="form-control ps-5" placeholder="Search">
                 <span class="position-absolute top-50 product-show translate-middle-y">
                   <i class="bx bx-search"></i>
                 </span>
@@ -362,6 +387,7 @@ const formatSize = (bytes) => {
 
             
       <select v-model="form.gender" class="form-control" id="gender">
+        <option value="MALE">{{ gender }}</option>
     <option value="MALE">MALE</option>
     <option value="FEMALE">FEMALE</option>
   </select>
