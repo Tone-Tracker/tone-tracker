@@ -30,6 +30,7 @@ const clientStore = useClientStore();
 const confirm = useConfirm();
 const selectedFile = ref(null);
 
+let searchInput = ref('');
 let clients = ref([]);
 const showFilePreview = ref(true);
 const clientName = ref('');
@@ -174,6 +175,21 @@ const deleteRecord = (event, campaign) => {
 const vFocus = {
     mounted: (el) => el.focus()
 };
+
+const onInput = () => {
+  if (searchInput.value) {
+    const searchTerm = searchInput.value.toLowerCase();
+    campaigns.value = campaigns.value.filter((campaign) => {
+      const name = campaign.name?.toLowerCase() || '';
+      
+      return (
+        name.includes(searchTerm) 
+      );
+    });
+  } else {
+    getCampaignsByClientId(); 
+  }
+};
 </script>
 
 <template>
@@ -182,6 +198,24 @@ const vFocus = {
             <div class="page-content">
                 <BreadCrumb title="Campaigns" icon="" />
                 <div class="card">
+             <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
+              
+
+                <div class="position-relative">
+                  <input
+                    v-model="searchInput"
+                    @input="onInput"
+                    type="text"
+                    class="form-control ps-5"
+                    placeholder="Search"
+                  />
+                  <span
+                    class="position-absolute top-50 product-show translate-middle-y"
+                  >
+                    <i class="bx bx-search"></i>
+                  </span>
+                </div>
+              </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-8 col-lg-8 col-xl-8 d-flex">
