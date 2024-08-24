@@ -69,6 +69,7 @@ watch(infowindow, (v) => {
 
 const activations = ref([]);
 let locations = ref([]);
+const tasks = ref([]);
 
 const getAllActivations = () => {
 
@@ -78,7 +79,6 @@ const getAllActivations = () => {
   if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){  
     activationStore.getAllActivationsAdmins().then(function (response) {
       activations.value = response.data;
-      console.log('test', activations.value);
       //map activations
       locations.value = activations.value.map(activation => ({
           lat: activation.centralLatitude,
@@ -89,14 +89,12 @@ const getAllActivations = () => {
           title: activation.name
         }));
 
-        console.log('test location', locations);
     })
   } 
 
   if(user.role == 'TTG_REGIONAL_MANAGER'){  
     activationStore.getAllActivationsRegionalManager(user.activeUserId).then(function (response) {
       activations.value = response.data;
-      console.log('test', response);
       //map activations
       locations.value = activations.value.map(activation => ({
           lat: activation.centralLatitude,
@@ -107,14 +105,12 @@ const getAllActivations = () => {
           title: activation.name
         }));
 
-        console.log('test location', locations);
     })
   }
 
   if(user.role == 'TTG_ACTIVATION_MANAGER'){  
     activationStore.getAllActivationsManager(user.activeUserId).then(function (response) {
       activations.value = response.data;
-      console.log('test', response);
       //map activations
       locations.value = activations.value.map(activation => ({
           lat: activation.centralLatitude,
@@ -125,7 +121,22 @@ const getAllActivations = () => {
           title: activation.name
         }));
 
-        console.log('test location', locations);
+    })
+  }
+
+  if(user.role == 'TTG_TALENT' || user.role == 'SUPPLIER'){
+    activationStore.getAllTasksLocation(user.activeUserId, user.role).then(function (response) {
+      tasks.value = response.data;
+      //map activations
+      locations.value = tasks.value.map(task => ({
+          lat: task.centralLatitude,
+          lng: task.centralLongitude,
+          startDate: task.startDate,
+          endDate: task.endDate,
+          regionName: task.regionName,
+          title: task.name
+        }));
+
     })
   }
 
