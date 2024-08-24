@@ -5,6 +5,8 @@ import { useAuth } from '@/stores/auth';
 import { useTask } from "@/stores/task";
 import { onMounted, ref } from "vue";
 import { useRoute } from 'vue-router';
+import Drawer from "primevue/drawer";
+import PDF from "pdf-vue3";
 
 const taskStore = useTask();
 const authStore = useAuth();
@@ -21,16 +23,39 @@ onMounted(() => {
   }
   getTask();
 });
-
+const bid = ref(null)
 const getTask = async () => {
   taskStore.getTask(taskId.value).then(response => {
-    singleTask.value = response.data
+	console.log(response.data)
+    singleTask.value = response.data?.taskDTO;
+	bid.value =response.data
   }).catch(error => {
     toaster.error("Error fetching task");
     console.log(error);
   }).finally(() => {
     //
   });
+};
+
+const visible = ref(false);
+const fullPath = ref(null);
+
+const previewBase64PDF = () => {
+        visible.value = true;
+		fullPath.value = import.meta.env.VITE_S3_URL + singleTask.value.path;
+   console.log(fullPath.value)
+}
+const download = () => {
+     try {
+        const link = document.createElement('a');
+        link.href = import.meta.env.VITE_S3_URL + singleTask.value.path;
+        link.setAttribute('download', '');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error downloading document:', error);
+    }
 };
 </script>
 
@@ -44,13 +69,13 @@ const getTask = async () => {
 					
 					<div class="ms-auto">
 						<div class="btn-group">
-							<router-link to="/add-supplier-costing/1" class="btn btn maz-gradient-btn">Add Costing</router-link>
+							<router-link :to="`/add-supplier-costing/${bid?.id}`" class="btn btn maz-gradient-btn">Add Costing</router-link>
 						</div>
 					</div>
 				</div>
 				<!--end breadcrumb-->
 				<div class="row">
-					<div class="col-xl-8 ">
+					<div class="col-xl-8">
 						
 						<div class="card">
 							<div class="card-body p-4">
@@ -59,57 +84,34 @@ const getTask = async () => {
 										<label for="input1" class="form-label">Name</label>
 										<input type="text" class="form-control" id="input1" :value="singleTask.name">
 									</div>
-									<div class="col-md-6">
-										<label for="input2" class="form-label">Last Name</label>
-										<input type="text" class="form-control" id="input2" placeholder="Last Name">
-									</div>
-									<div class="col-md-12">
-										<label for="input3" class="form-label">Phone</label>
-										<input type="text" class="form-control" id="input3" placeholder="Phone">
-									</div>
-									<div class="col-md-12">
-										<label for="input4" class="form-label">Email</label>
-										<input type="email" class="form-control" id="input4" placeholder="Email">
-									</div>
-									<div class="col-md-12">
-										<label for="input5" class="form-label">Password</label>
-										<input type="password" class="form-control" id="input5" placeholder="Password">
-									</div>
-									<div class="col-md-12">
-										<label for="input6" class="form-label">DOB</label>
-										<input type="date" class="form-control" id="input6" placeholder="Date of Birth">
-									</div>
-									<div class="col-md-12">
-										<label for="input7" class="form-label">Country</label>
-										<select id="input7" class="form-select">
-											<option selected="">Choose...</option>
-											<option>One</option>
-											<option>Two</option>
-											<option>Three</option>
-										</select>
-									</div>
+
 									
 									<div class="col-md-6">
-										<label for="input8" class="form-label">City</label>
-										<input type="text" class="form-control" id="input8" placeholder="City">
+										<label for="input2" class="form-label">Job Number</label>
+										<input type="text" class="form-control" id="input2" :value="singleTask.jobNumber">
 									</div>
-									<div class="col-md-4">
-										<label for="input9" class="form-label">State</label>
-										<select id="input9" class="form-select">
-											<option selected="">Choose...</option>
-											<option>One</option>
-											<option>Two</option>
-											<option>Three</option>
-										</select>
+									<div class="col-md-6">
+										<label for="input3" class="form-label">Status</label>
+										<input type="text" class="form-control" id="input3" :value="singleTask.status">
 									</div>
-									<div class="col-md-2">
-										<label for="input10" class="form-label">Zip</label>
-										<input type="text" class="form-control" id="input10" placeholder="Zip">
+									<div class="col-md-6">
+										<label for="input4" class="form-label">Address</label>
+										<input type="email" class="form-control" id="input4" :value="singleTask.address">
 									</div>
-									<div class="col-md-12">
-										<label for="input11" class="form-label">Address</label>
-										<textarea class="form-control" id="input11" placeholder="Address ..." rows="3"></textarea>
+									<div class="col-md-6">
+										<label for="input5" class="form-label">Start Date</label>
+										<input type="text" class="form-control" id="input5" :value="singleTask.startDate">
 									</div>
+									<div class="col-md-6">
+										<label for="input6" class="form-label">End Date</label>
+										<input type="text" class="form-control" id="input6" :value="singleTask.plannedEndtext">
+									</div>
+
+									<div class="col-md-6">
+										<label for="input6" class="form-label">Time Record</label>
+										<input type="date" class="form-control" id="input6" :value="singleTask.timeRecord">
+									</div>
+									
 								</form>
 							</div>
 						</div>
@@ -120,30 +122,38 @@ const getTask = async () => {
 						<h4>Documents</h4>
 						<div class="card">
 							<div class="card-body p-4">
-								<form class="row g-3">
+								<form class="row g-3" v-if="singleTask.path">
 									<div class="col-md-12">
                                         <div  class="file-details mt-3 p-1 border rounded d-flex align-items-center">
-                                            <div class="file-icon me-3">
-                                              <img  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
+                                            <div class="file-icon me-3" v-tooltip.bottom="'View File'">
+                                              <img @click="previewBase64PDF"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
                                             </div>
                                             <div class="file-info">
-                                              <p class="m-0">Brief.pdf</p>
-                                              <small class="m-0 text-dark">233 KB</small>
+                                              <!-- <p class="m-0 text-white">Brief.pdf</p> -->
                                             </div>
                                             <div class="ms-auto">
-                                                <i class='bx bxs-download text-success fs-2 cursor-pointer' v-tooltip="'Download'" ></i>
+                                                <i @click="download" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip="'Download'" ></i>
                                              
                                             </div>
                                           </div>
 									</div>
 								</form>
+								<div class="text-danger">No brief document uploaded.</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<!--end row-->
 
-
+				<div class="card flex justify-center">
+					<Drawer v-model:visible="visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+						<button @click="download" class="btn w-100 maz-gradient-btn mb-2" type="button">
+							<i class='bx bxs-download'></i>
+							Download</button>
+						<PDF :src="fullPath" />
+					</Drawer>
+					
+				</div>
 
 			</div>
 		</div>

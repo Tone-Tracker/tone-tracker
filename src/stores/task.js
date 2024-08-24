@@ -11,8 +11,8 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.get(`/api/tasks`);
     }
 
-    const update = (id,formData) => {
-      return axiosInstance.put(`/api/tasks/${id}`,formData);
+    const update = (id,formData, config) => {
+      return axiosInstance.put(`/api/tasks/${id}`,formData, config);
     }
 
     const addPromotersToTask = (taskId, arrayOfPromoterIDs) => {
@@ -35,7 +35,7 @@ export const useTask = defineStore('task', () => {
     }
 
     const getTask = (id) => {
-      return axiosInstance.get(`/api/tasks/${id}`);
+      return axiosInstance.get(`/api/bids/${id}`);
     }
 
     const getTasksByActivationId = (id) => {

@@ -3,7 +3,7 @@ import { onMounted, ref, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import Layout from '@/views/shared/Layout.vue';
-import { useConfirm } from "primevue/useconfirm";
+import { useConfirm } from 'primevue/useconfirm';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
 import Select from 'primevue/select';
@@ -25,8 +25,10 @@ const visible = ref(false);
 const position = ref('top');
 const regionalManager = ref(null);
 const regionalManagers = ref([]);
-
-const form = reactive({name: ''});
+const loading = ref(false);
+let searchInput = ref('');
+const form = reactive({ name: '' });
+const nameInput = ref(null); // Reference for the input field
 
 onMounted(() => {
   getRegions();
@@ -35,90 +37,103 @@ onMounted(() => {
 });
 
 const rules = { 
-	name: { required }
+    name: { required }
 };
 const v$ = useVuelidate(rules, form);
 
 const createRegion = async () => {
-	const isFormValid = await v$.value.$validate();
-	if (!isFormValid) {
-		return;
-	}
-    regionStore.submit(form).then(function (response) {
-        toaster.success("Region created successfully");        
-        // form.name = '';v$.value.$reset;
-        getRegions();
-        }).catch(function (error) {
+    const isFormValid = await v$.value.$validate();
+    if (!isFormValid) {
+        return;
+    }
+    loading.value = true;
+    try {
+        await regionStore.submit(form);
+        toaster.success("Region created successfully");
+        form.name = ''; // Reset the form input
+        v$.value.$reset(); // Reset the validation
+        if (nameInput.value) {
+            nameInput.value.blur(); // Unfocus the input field
+        }
+        await getRegions();
+    } catch (error) {
         toaster.error("Error creating region");
         console.log(error);
-    });
+    } finally {
+        loading.value = false;
+    }
 };
 
 const getStaff = async () => {
-    staff.getStaff().then(function (response) {
+    try {
+        const response = await staff.getStaff();
         staffMembers.value = response.data.content;
-    }).catch(function (error) {
+    } catch (error) {
         toaster.error("Error fetching staff members");
         console.log(error);
-    });
-}
-
-const getRegionalManagers = async () => {
-    userStore.getUserByRole('TTG_REGIONAL_MANAGER').then(function (response) {
-        let users = response.data.content.filter(user => user.role === 'TTG_REGIONAL_MANAGER');
-         regionalManagers.value = users.map(user => {
-            return {
-                name: user.firstName + ' ' + user.lastName,
-                id: user.id
-            }
-        }
-        );
-        
-    }).catch(function (error) {
-        toaster.error("Error fetching regions");
-        console.log(error);
-    }).finally(function () {
-    });
+    }
 };
 
-const regionalManagerForm = reactive({region: '', staff: ''});
+const getRegionalManagers = async () => {
+    try {
+        const response = await userStore.getUserByRole('TTG_REGIONAL_MANAGER');
+        let users = response.data.content.filter(user => user.role === 'TTG_REGIONAL_MANAGER');
+        regionalManagers.value = users.map(user => ({
+            name: user.firstName + ' ' + user.lastName,
+            id: user.id
+        }));
+    } catch (error) {
+        toaster.error("Error fetching regional managers");
+        console.log(error);
+    }
+};
+
+const regionalManagerForm = reactive({ region: '', staff: '' });
 
 const onRegManagerChange = (event) => {
     let reg = staffMembers.value.find(regMan => regMan.user === event.value.id);
-    regionalManagerForm.staff = reg.id;
-}
+    regionalManagerForm.staff = reg ? reg.id : ''; // Ensure reg is found
+};
 
 const submitRegionalManager = async () => {
-    regionStore.addRegionalManager(regionalManagerForm).then(function (response) {
+    console.log('API Error:gggg', regionalManagerForm);
+    if (!regionalManagerForm.region || !regionalManagerForm.staff) {
+        toaster.error("Please select both region and staff member");
+        return;
+    }
+    try {
+        // Sending the `regionalManagerForm` object to the backend
+        await regionStore.addRegionalManager(regionalManagerForm);
         toaster.success("Regional Manager added successfully");
-        regionalManagerForm.staff = '';
-        visible.value = false;
-        getRegions();
-        }).catch(function (error) {
+        regionalManagerForm.staff = ''; // Reset staff field
+        visible.value = false; // Hide modal
+        await getRegions(); // Refresh regions list
+    } catch (error) {
         toaster.error("Error adding regional manager");
-        console.log(error);
-    });
-}
-const getRegions = async () => {
-    regionStore.getRegions().then(function (response) {
-        regions.value = response.data.content;
-    }).catch(function (error) {
-        toaster.error("Error fetching regions");
-        console.log(error);
-    }).finally(function () {
-    });
+        console.error('API Error:', error);
+    }
 };
 
 
-const deleteRegion = (region) => {
-            regionStore.deleteRegion(region.id).then(function (response) {
-            toaster.success("Region deleted successfully");
-            getRegions();
-        }).catch(function (error) {
-            toaster.error("Error deleting region");
-            console.log(error);
-        });
-    
+const getRegions = async () => {
+    try {
+        const response = await regionStore.getRegions();
+        regions.value = response.data.content;
+    } catch (error) {
+        toaster.error("Error fetching regions");
+        console.log(error);
+    }
+};
+
+const deleteRegion = async (region) => {
+    try {
+        await regionStore.deleteRegion(region.id);
+        toaster.success("Region deleted successfully");
+        await getRegions();
+    } catch (error) {
+        toaster.error("Error deleting region");
+        console.log(error);
+    }
 };
 
 const editClient = (client) => {
@@ -126,23 +141,23 @@ const editClient = (client) => {
     client.isEditing = true;
 };
 
-const update = (client) => {
+const update = async (client) => {
     client.isEditing = false;
-    regionStore.update(client).then(response => {
+    try {
+        await regionStore.update(client);
         toaster.success("Region updated successfully");
-        getRegions();
-    }).catch(error => {
+        await getRegions();
+    } catch (error) {
         toaster.error("Error updating client");
         console.log(error);
-    });
+    }
 };
 
 const deleteRecord = (event, region) => {
     confirm.require({
         target: event.currentTarget,
         message: 'Do you want to delete this region?',
-        // icon: 'bx bx-trash text-danger',
-		icon: '',
+        icon: '',
         rejectProps: {
             label: 'Cancel',
             severity: '',
@@ -153,27 +168,53 @@ const deleteRecord = (event, region) => {
             severity: 'danger'
         },
         accept: () => {
-			deleteRegion(region);
+            deleteRegion(region);
         },
         reject: () => {
-            //do nothing
+            // do nothing
         }
     });
 };
 
-
 const vFocus = {
     mounted: (el) => el.focus()
 };
+
 let regionName = ref('');
-const openModal = (pos,region) => {
-    if(region) {
+const openModal = (pos, region) => {
+    if (region) {
         regionName.value = region.name;
+        regionalManagerForm.region = region.id;
     }
     position.value = pos;
     visible.value = true;
-    regionalManagerForm.region = region.id;
-}
+};
+
+
+const onInput = () => {
+  if (searchInput.value) {
+    const searchTerm = searchInput.value.toLowerCase();
+
+    regions.value = regions.value.filter((region) => {
+     
+      const name = region.name?.toLowerCase() || '';
+      const firstName = region.firstName?.toLowerCase() || '';
+      const lastName = region.lastName?.toLowerCase() || '';
+
+     
+      return (
+        name.includes(searchTerm) ||
+        firstName.includes(searchTerm) ||
+        lastName.includes(searchTerm)
+      );
+    });
+  } else {
+    getRegions(); 
+  }
+};
+
+
+
 
 
 </script>
@@ -184,6 +225,24 @@ const openModal = (pos,region) => {
             <div class="page-content">
                 <BreadCrumb title="Regions" icon="bx bx-map" />
                 <div class="card">
+                    <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
+                <!-- <button class="btn rounded-0 btn-primary">+ New</button> -->
+
+                <div class="position-relative">
+                  <input
+                    v-model="searchInput"
+                    @input="onInput"
+                    type="text"
+                    class="form-control ps-5"
+                    placeholder="Search"
+                  />
+                  <span
+                    class="position-absolute top-50 product-show translate-middle-y"
+                  >
+                    <i class="bx bx-search"></i>
+                  </span>
+                </div>
+              </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-8 col-lg-8 col-xl-8 d-flex">
@@ -217,16 +276,15 @@ const openModal = (pos,region) => {
                                                                 <a v-else @click="update(region)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bx-check text-success'></i>
                                                                 </a>
-                                                                <a  @click="openModal('top',region)" href="javascript:;" class="ms-3">
+                                                                <a @click="openModal('top', region)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bx-user text-success'></i>
                                                                 </a>
-                                                                <a @click="deleteRecord($event,region)" href="javascript:;" class="ms-3">
+                                                                <a @click="deleteRecord($event, region)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash text-danger'></i>
                                                                 </a>
                                                                 <ConfirmPopup></ConfirmPopup>
                                                             </div>
                                                         </td>
-                                                       
                                                     </tr>
                                                     <tr v-else>
                                                         <td colspan="7" class="text-center text-danger">No regions found.</td>
@@ -244,17 +302,18 @@ const openModal = (pos,region) => {
                                             <form class="">
                                                 <div class="col-md-12">
                                                     <label for="input1" class="form-label">Region Name</label>
-                                                    <input v-model="form.name" type="text" class="form-control" id="input1" />
+                                                    <input ref="nameInput" v-model="form.name" type="text" class="form-control" id="input1" />
                                                     <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                                                         <div class="text-danger">Region name is required</div>
                                                     </div>
                                                 </div>
-                                                
-                                                
                                             </form>
                                             <div class="ms-auto mt-4">
                                                 <a @click="createRegion" href="javascript:;" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                                                    <i class="bx bxs-plus-square"></i>Create
+                                                    <div v-if="loading" class="spinner-border text-white " role="status">
+                                                         <span class="visually-hidden">Loading...</span>
+                                                    </div>
+                                                    <i class="bx bxs-plus-square"></i>  {{ loading ?  '' : 'Create' }}
                                                 </a>
                                             </div>
                                         </div>
@@ -275,35 +334,19 @@ const openModal = (pos,region) => {
                           
                 </div>                        
                 </div>
-                <div class="mt-4">
-                    <button type="submit" class="btn maz-gradient-btn w-100">{{ isEdit ? 'Update' : 'Submit' }}</button>
+                <div class="col-12 mt-4 d-flex justify-content-end">
+                    <button @click="submitRegionalManager" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+                        <i class="bx bxs-plus-square"></i>  Add Regional Manager
+                    </button>
                 </div>
-                
+          
             </form>
         </Dialog>
     </Layout>
 </template>
 
 <style scoped>
-.mt-4 {
-    margin-top: 1rem;
-}
-.no-border-input {
-    border: none;
-	color: #000;
-    outline: none;
-	background: #fff
-}
-
-.card {
-    padding-top: 10px !important;
-    padding: 0px
-}
-.p-button {
-    width: 25rem !important;
-}
-
-.text-danger {
-    color: red;
+.table td {
+    vertical-align: middle;
 }
 </style>

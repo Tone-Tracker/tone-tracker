@@ -64,6 +64,7 @@ const { suggestions,loading,sessionToken,refreshSessionToken } = usePlacesAutoco
     const filterCities = (event) => {
       const searchQuery = event.query.toLowerCase();
       filteredCities.value = formattedSuggestions.value.filter(city => city.name.toLowerCase().includes(searchQuery));
+
     };
 
 watch(suggestions, (newSuggestions) => {
@@ -152,23 +153,12 @@ const rules = {
 const v$ = useVuelidate(rules, form);
 
 const onSubmit = async () => {
+   
     const isFormValid = await v$.value.$validate();
     if (!isFormValid) {return;}
     showLoading.value = true;
-    
-    if(isEdit.value){
-        taskStore.update(taskId.value,form).then(function (response) {
-            toaster.success("Task updated successfully");
-            visible.value = false;
-            getTasksByActivationId();
-        }).catch(function (error) {
-            toaster.error("Error updating task");
-            console.log(error);
-        });
-    } 
-    else {
 
-        const formData = new FormData();
+    const formData = new FormData();
         formData.append('briefFile', briefFile.value);
         formData.append('status', form.status);
         formData.append('type', form.type);
@@ -182,11 +172,26 @@ const onSubmit = async () => {
         formData.append('jobNumber', form.jobNumber);
         formData.append('completion', form.completion);
         formData.append('activation', form.activation);
+        formData.append('address', form.address);
+        formData.append('longitude', form.longitude);
+        formData.append('latitude', form.latitude);
 
         const config = {
             useMultipartFormData: true // Add this flag to the request config
         };
-
+    
+    if(isEdit.value){
+        
+        taskStore.update(taskId.value,form, config).then(function (response) {
+            toaster.success("Task updated successfully");
+            visible.value = false;
+            getTasksByActivationId();
+        }).catch(function (error) {
+            toaster.error("Error updating task");
+            console.log(error);
+        });
+    } 
+    else {
         taskStore.submit(formData,config).then(function (response) {
             showLoading.value = false;
         toaster.success("Task created successfully");
@@ -241,7 +246,7 @@ const openModal = (pos,task) => {
     if(task) {//edit
     isEdit.value = true;
     taskId.value=task.id;
-    // form.activation = task.activation;
+    query.value = task.address;
     status.value = statuses.value.find(stat => stat.code === task.status);
     form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
 
@@ -255,7 +260,9 @@ const openModal = (pos,task) => {
      completion: task.completion,
      jobNumber: Number(task.jobNumber),
      name: task.name,
-    //  activation: task.activation
+     longitude: task.longitude,
+     latitude: task.latitude,
+     address: task.address
     })
   }else{
     
@@ -362,7 +369,7 @@ const taskItems = (task) => {
     const items = [
         {
             label: 'Edit',
-            icon: 'bx bxs-edit fs-4 text-success',
+            icon: 'bx bxs-edit fs-4 maz-gradient-txt',
             command: () => {
                 openModal('top', task);
             }
@@ -371,14 +378,14 @@ const taskItems = (task) => {
     
     {
         label: 'Add  Images',
-        icon: 'bx bx-images text-success fs-3',
+        icon: 'bx bx-images maz-gradient-txt fs-3',
         command: () => {
 			URLrouter.push(`/activation-images?activation=${task.id}`);
         }
     },
         {
             label: 'View',
-            icon: 'bx bx-bullseye fs-4 text-success',
+            icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
             command: () => {
                 URLrouter.push(`/tasks/${task.id}?name=${task.name}`);
             }
@@ -389,7 +396,7 @@ const taskItems = (task) => {
     if (task.type == 'THIRDPARTY') {
         items.push({
             label: 'Add Third Party Suppliers',
-            icon: 'bx bx-user-plus fs-4 text-success',
+            icon: 'bx bx-user-plus fs-4 maz-gradient-txt',
             command: () => {
                 toggleModal('top', task);
             }
@@ -457,7 +464,7 @@ const submitThirdParty = () => {
                                             <th>Risk</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
-                                            <th>Time Record</th>
+                                            <th>Type</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
                                         </tr>

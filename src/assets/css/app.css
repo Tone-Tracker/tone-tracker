@@ -95,6 +95,19 @@ body {
 	display: none !important;
 }
 
+.p-button {
+    background: linear-gradient(to right, #9A3AB1, #117AD1) !important;
+	border: none !important;
+	color: #fff !important;
+}
+
+.p-button:hover {
+	background: linear-gradient(to right, #117AD1, #9A3AB1) !important;
+	background: linear-gradient(to right, #9A3AB1, #117AD1) !important;
+	border: none !important;
+	color: #fff !important;
+}
+
 .maz-gradient-txt {
 	color: linear-gradient(to right, #9A3AB1, #117AD1);
 	border: none !important;
