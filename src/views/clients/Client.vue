@@ -141,7 +141,7 @@ const vFocus = {
                               <input v-focus type="text" v-model="client.name" @blur="updateClient(client)" @keyup.enter="updateClient(client)" class="no-border-input"/>
                             </td>
                             <td>
-                              <button type="button" class="btn btn-primary">
+                              <button type="button" class="btn maz-gradient-btn">
                                 <RouterLink :to="`/campaigns?client=${client.id}`">View Campaign</RouterLink>
                                 <!-- <span class="badge bg-dark">4</span> -->
                               </button>
