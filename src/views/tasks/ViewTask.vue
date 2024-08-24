@@ -19,7 +19,7 @@ const isLoading = ref(false);
 const taskName = ref(route.query.name);
 
 const singleTask = ref({});
-const users = ref([]);
+const bids = ref([]);
 const availablePromoters = ref([]);
 
 const taskStore = useTask();
@@ -28,6 +28,7 @@ const taskId = ref(route.params.id);
 onMounted(() => {
     getAvailablePromoters();
     getTask();
+    getBids();
     
 });
 
@@ -59,6 +60,19 @@ const form = reactive({
 const getTask = async () => {
   taskStore.getTask(taskId.value).then(response => {
     singleTask.value = response.data
+    Object.assign(form, response.data);
+  }).catch(error => {
+    toaster.error("Error fetching task");
+    console.log(error);
+  }).finally(() => {
+    //
+  });
+};
+
+const getBids = async () => {
+  taskStore.getBids(taskId.value).then(response => {
+    console.log("bids", response.data);
+    bids.value = response.data
     Object.assign(form, response.data);
   }).catch(error => {
     toaster.error("Error fetching task");
@@ -300,8 +314,15 @@ const saveSelectedPromoters = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td colspan="8">Test</td>
+              <tr v-if="bids?.length > 0" v-for="bid in bids" :key="bid.id">
+                <td>Test</td>
+                <td>{{ bid.taskDTO?.name }}</td>
+                <td>{{ bid.taskDTO?.status }}</td>
+                <td>{{ bid.taskDTO?.startDate }}</td>
+                <td>{{ bid.taskDTO?.plannedEndDate }}</td>
+                <td>{{ bid.taskDTO?.timeRecord }}</td>
+                <td>{{ bid.taskDTO?.completion }}</td>
+                <td></td>
               </tr>
             </tbody>
           </table>

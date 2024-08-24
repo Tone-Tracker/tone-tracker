@@ -141,7 +141,7 @@ const vFocus = {
                               <input v-focus type="text" v-model="client.name" @blur="updateClient(client)" @keyup.enter="updateClient(client)" class="no-border-input"/>
                             </td>
                             <td>
-                              <button type="button" class="btn maz-gradient-btn">
+                              <button v-tooltip.bottom="'View'" type="button" class="btn maz-gradient-btn">
                                 <RouterLink :to="`/campaigns?client=${client.id}`">View Campaign</RouterLink>
                                 <!-- <span class="badge bg-dark">4</span> -->
                               </button>
@@ -149,13 +149,13 @@ const vFocus = {
                             <td>
                               <div class="d-flex order-actions">
                                 <a v-if="!client.isEditing" @click="editClient(client)" href="javascript:;">
-                                  <i class='bx bxs-edit'></i>
+                                  <i class='bx bxs-edit' v-tooltip.bottom="'Edit'"></i>
                                 </a>
                                 <a v-else @click="updateClient(client)" href="javascript:;" class="ms-3">
                                   <i class='bx bx-check text-success'></i>
                                 </a>
                                 <a @click="deleteRecord($event,client)" href="javascript:;" class="ms-3">
-                                  <i class='bx bxs-trash text-danger'></i>
+                                  <i class='bx bxs-trash text-danger' v-tooltip.bottom="'Delete'"></i>
                                 </a>
                                 <ConfirmPopup></ConfirmPopup>
                               </div>

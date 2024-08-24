@@ -79,7 +79,7 @@ const download = () => {
 						
 						<div class="card">
 							<div class="card-body p-4">
-								<form class="row g-3">
+								<div class="row g-3">
 									<div class="col-md-6">
 										<label for="input1" class="form-label">Name</label>
 										<input type="text" class="form-control" id="input1" :value="singleTask.name">
@@ -109,10 +109,10 @@ const download = () => {
 
 									<div class="col-md-6">
 										<label for="input6" class="form-label">Time Record</label>
-										<input type="date" class="form-control" id="input6" :value="singleTask.timeRecord">
+										<input type="text" class="form-control" id="input6" :value="singleTask.timeRecord">
 									</div>
 									
-								</form>
+								</div>
 							</div>
 						</div>
 					</div>

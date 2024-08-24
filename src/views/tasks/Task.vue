@@ -428,15 +428,17 @@ const submitThirdParty = () => {
         supplierArray.push(supplier.code)
     });
     let myObj = {
-        thirdPartySupplierId: supplierArray,
-        task: taskId.value
+        "thirdParties": supplierArray,
+        "task": taskId.value
     }
     showLoading.value = true;
-   taskStore.addThirdPartiesToTask(taskId.value, supplierArray).then(response => {
+   taskStore.addThirdPartiesToTask(myObj).then(response => {
        getTasksByActivationId();
+       toaster.success("Third party suppliers added successfully");
        showThirdPartyModal.value = false;
        showLoading.value = false;
    }).catch(error => {
+       toaster.error("Error adding third party suppliers");
        console.log(error);
    }).finally(() => {
        showLoading.value = false;
