@@ -18,6 +18,8 @@ import Button from 'primevue/button';
 import { useUserStore } from '@/stores/userStore';
 import Badge from 'primevue/badge';
 import { useSizes } from '@/stores/sizes';
+import Popover from 'primevue/popover';
+import Select from 'primevue/select';
 
 const promoterStore = usePromoter();
 const toaster = useToaster();
@@ -213,7 +215,8 @@ const openPosition = (pos,promoter) => {
       height: promoter.height,
       bio: promoter.bio,
       gender: promoter.gender
-    })
+    });
+    myGender.value = form.gender
   }else{
     isEdit.value = false
     Object.assign(form, {
@@ -303,8 +306,39 @@ const formatSize = (bytes) => {
     return `${formattedSize} ${sizes[i]}`;
 };
 
-
-
+const genders = ref([
+    { name: 'MALE', code: 'MALE' },
+    { name: 'FEMALE', code: 'FEMALE' },
+]);
+const myGender = ref();
+const genderChange = (event) => {
+    //  myGender.value = event.value.code;
+     form.gender = myGender.value.code
+}
+const getDressSize = (size) => {
+    if (!size) {return ""}
+    if (size === "SMALL") {
+      return "S"      
+    } else if (size === "MEDIUM") {
+      return "M"
+    } else if (size === "LARGE") {
+      return "L"
+    } else if (size === "X_LARGE") {
+      return "XL"
+    } else if (size === "XX_LARGE") {
+      return "XXL"
+    } else if (size === "XXX_LARGE") {
+      return "XXXL"
+    }else if (size === "X_SMALL") {
+      return "XS"
+    }
+}
+const op = ref();
+const selectedPromoter = ref(null);
+const toggle = (event, promoter) => {
+  selectedPromoter.value = promoter;
+    op.value.toggle(event);
+}
 
 </script>
 
@@ -347,12 +381,13 @@ const formatSize = (bytes) => {
                 <tbody>
                   <tr v-if="promoters.length > 0" v-for="promoter in promoters" :key="promoter.id">
                     <td>{{ promoter.userDetails.firstName }}{{ promoter.userDetails.lastName }}</td>
-                    <td> <Badge :value="promoter.height" severity="success"></Badge></td>
-                    <td><Badge :value="promoter.dressSize" severity="info"></Badge></td>
+                    <td> <Badge :value="`${promoter.height} cm`" severity="success"></Badge></td>
+                    <td><Badge :value="getDressSize(promoter.dressSize)" severity="info"></Badge></td>
                     <td><Badge :value="promoter.pantsSize" severity="warn"></Badge></td>
                     <td><Badge :value="promoter.topSize" severity="danger"></Badge></td>
                     <td>{{ truncateText(promoter.bio,60) }} 
-                      <span @click="openPosition('top',promoter)" class="cursor-pointer text-primary">See More</span>
+                      <span @click="toggle($event, promoter)" class="cursor-pointer text-primary">See More</span>
+                     
                     </td>
                     <td>
                       <div class="d-flex order-actions">
@@ -375,22 +410,22 @@ const formatSize = (bytes) => {
             </div>
           </div>
         </div>
-
+        <Popover ref="op" appendTo="body">
+          <p>{{ selectedPromoter.bio }}</p>
+      </Popover>
       </div>
     </div>
 
 
-	<Dialog v-model:visible="visible" position="top" modal header="Add Promoter" :style="{ width: '50rem' }">
+	<Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter' " :style="{ width: '50rem' }">
     <div class="card flex justify-center">
       <label for="input1" class="form-label">Gender </label>
-       
-
-            
-      <select v-model="form.gender" class="form-control" id="gender">
-        <option value="MALE">{{ gender }}</option>
-    <option value="MALE">MALE</option>
-    <option value="FEMALE">FEMALE</option>
-  </select>
+      <Select v-model="myGender" :options="genders"  @change="genderChange"
+      optionLabel="name" placeholder="Select gender" 
+      checkmark :highlightOnSelect="false" class="w-full md:w-56" />
+      <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
+        <div class="text-danger">Gender is required</div>
+        </div>
      </div>
      <div class="row g-3">
       <div class="col-md-3">
@@ -471,5 +506,8 @@ const formatSize = (bytes) => {
 .p-button {
   background: transparent;
   border: 0;
+}
+.p-popover.p-component {
+  left: 50rem !important;
 }
 </style>
