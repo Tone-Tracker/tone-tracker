@@ -22,10 +22,8 @@ export const useTask = defineStore('task', () => {
       );
      }
      
-     const addThirdPartiesToTask = (taskId, arrayOfThirdPartyIDs) => {
-      return axiosInstance.post(
-          `/api/tasks/thirdParties/${taskId}`,
-          arrayOfThirdPartyIDs           
+     const addThirdPartiesToTask = (arrayOfThirdPartyIDs) => {
+      return axiosInstance.post(`/api/bids`,arrayOfThirdPartyIDs           
       );
      }
   
@@ -45,9 +43,14 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.get(`/api/tasks/${id}/promoters`);
     }
 
+    const getBids = (taskId) => {
+      return axiosInstance.get(`/api/bids/task/${taskId}`);
+    }
+    
+
     const getSuppliers = () => {
       return axiosInstance.get(`/api/bids`);
     }
   
-    return { submit, getSuppliers, getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask,addThirdPartiesToTask }
+    return { submit, getSuppliers,getBids, getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask,addThirdPartiesToTask }
   })

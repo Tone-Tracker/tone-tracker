@@ -19,6 +19,7 @@ onMounted(() => {
 
 const getSuppliertasks = () => {
   supplierStore.getThirdPartyTasks(user.activeUserId).then(response => {
+    console.log('tasks', response)
     tasks.value = response.data;
   })
 }
