@@ -15,6 +15,7 @@ const confirm = useConfirm();
 let clients = ref([]);
 let showLoading = ref(false);
 let loading = ref(false);  
+let searchInput = ref('');
 
 const form = reactive({ name: '' });
 onMounted(() => {
@@ -110,6 +111,30 @@ const vFocus = {
   mounted: (el) => el.focus()
 };
 
+
+
+
+
+
+const onInput = () => {
+  if (searchInput.value) {
+    const searchTerm = searchInput.value.toLowerCase();
+    clients.value = clients.value.filter((client) => {
+      const name = client.name?.toLowerCase() || '';
+      return (
+        name.includes(searchTerm) 
+      );
+    });
+  } else {
+    getAllClients(); 
+  }
+};
+
+
+
+
+
+
 </script>
 
 <template>
@@ -118,6 +143,25 @@ const vFocus = {
       <div class="page-content">
         <BreadCrumb title="Clients" icon="" />
         <div class="card">
+
+          <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
+                <!-- <button class="btn rounded-0 btn-primary">+ New</button> -->
+
+                <div class="position-relative">
+                  <input
+                    v-model="searchInput"
+                    @input="onInput"
+                    type="text"
+                    class="form-control ps-5"
+                    placeholder="Search"
+                  />
+                  <span
+                    class="position-absolute top-50 product-show translate-middle-y"
+                  >
+                    <i class="bx bx-search"></i>
+                  </span>
+                </div>
+              </div>
           <div class="card-body">
             <div class="row">
               <div class="col-8 col-lg-8 col-xl-8 d-flex">
