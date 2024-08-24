@@ -23,10 +23,12 @@ onMounted(() => {
   }
   getTask();
 });
-
+const bid = ref(null)
 const getTask = async () => {
   taskStore.getTask(taskId.value).then(response => {
-    singleTask.value = response.data
+	console.log(response.data)
+    singleTask.value = response.data?.taskDTO;
+	bid.value =response.data
   }).catch(error => {
     toaster.error("Error fetching task");
     console.log(error);
@@ -67,7 +69,7 @@ const download = () => {
 					
 					<div class="ms-auto">
 						<div class="btn-group">
-							<router-link to="/add-supplier-costing/1" class="btn btn maz-gradient-btn">Add Costing</router-link>
+							<router-link :to="`/add-supplier-costing/${bid?.id}`" class="btn btn maz-gradient-btn">Add Costing</router-link>
 						</div>
 					</div>
 				</div>
@@ -120,14 +122,14 @@ const download = () => {
 						<h4>Documents</h4>
 						<div class="card">
 							<div class="card-body p-4">
-								<form class="row g-3">
+								<form class="row g-3" v-if="singleTask.path">
 									<div class="col-md-12">
                                         <div  class="file-details mt-3 p-1 border rounded d-flex align-items-center">
                                             <div class="file-icon me-3" v-tooltip.bottom="'View File'">
                                               <img @click="previewBase64PDF"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
                                             </div>
                                             <div class="file-info">
-                                              <p class="m-0 text-white">Brief.pdf</p>
+                                              <!-- <p class="m-0 text-white">Brief.pdf</p> -->
                                             </div>
                                             <div class="ms-auto">
                                                 <i @click="download" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip="'Download'" ></i>
@@ -136,6 +138,7 @@ const download = () => {
                                           </div>
 									</div>
 								</form>
+								<div class="text-danger">No brief document uploaded.</div>
 							</div>
 						</div>
 					</div>

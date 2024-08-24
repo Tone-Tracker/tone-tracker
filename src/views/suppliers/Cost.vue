@@ -32,7 +32,8 @@
                       @click.outside="removeBorders"
                     >
                       <td>
-                        <input
+                        <input 
+                          ref="itemRef"
                           type="text"
                           v-model="row.item"
                           :class="{'borderless-input': selectedRow !== index}"
@@ -123,8 +124,12 @@
 							<div class="toolbar hidden-print">
                 
 								<div class="d-flex gap-3 justify-content-end">
-                  <button @click="onSubmit" type="button" class="d-flex gap-2 justify-content-center align-items-center btn maz-gradient-btn"><span>Send</span><i class="bx bx-send"></i></button>
-                  <button @click="exportToPDF" type="button" class="d-flex gap-2 justify-content-center align-items-center btn maz-gradient-btn"><span>Export as PDF</span><i class="bx bx-export"></i></button>
+                  <button @click="onSubmit" :disabled="totalAmount == '00'" type="button" class="d-flex  justify-content-center align-items-center btn maz-gradient-btn">
+                    <i class="bx bx-send"></i><span>Send</span></button>
+                  <button @click="exportToPDF" type="button" class="d-flex  justify-content-center align-items-center btn maz-gradient-btn">
+                    <i class="bx bx-export"></i>
+                    <span>Export as PDF</span>
+                  </button>
 								</div>
 								<hr>
 							</div>
@@ -140,34 +145,20 @@
 											<div class="col company-details">
 												<h2 class="name">
 									<a target="_blank" href="javascript:;">
-									Mazisi Msebele
+									{{ user.firstName + ' ' + user.lastName }}
 									</a>
 								</h2>
-												<div>110 Caldon Drive, Kempton Park</div>
-												<div>(+27) 11 000 0000()</div>
-												<div>mazisi@mrnlabs.com</div>
+												<!-- <div>110 Caldon Drive, Kempton Park</div> -->
+												<div>{{ user.phone }}</div>
+												<div>{{ user.email }}</div>
 											</div>
 										</div>
 									</header>
 									<main>
-										<div class="row contacts">
-											<div class="col invoice-to">
-												<div class="text-gray-light">INVOICE TO:</div>
-												<h2 class="to" style="color: black">John Doe</h2>
-												<div class="address">796 Silver Harbour, TX 79273, US</div>
-												<div class="email"><a href="#!" style="color: black;">john@example.com</a>
-												</div>
-											</div>
-											<div class="col invoice-details">
-												<h1 class="invoice-id">INVOICE 3-2-1</h1>
-												<div class="date">Date of Invoice: 01/10/2018</div>
-												<div class="date">Due Date: 30/10/2018</div>
-											</div>
-										</div>
 										<table class="table table-hover table-striped">
 											<thead>
 												<tr>
-													<!-- <th>#</th> -->
+													<th class="text-primary">#</th>
 													<th class="text-left text-dark">Item</th>
 													<th class="text-right text-dark">Rate</th>
 													<th class="text-right text-dark">Quantity</th>
@@ -186,7 +177,7 @@
                     </td>
 													<td class="text-dark">{{ row.rate }}</td>
 													<td class="text-dark">{{ row.quantity }}</td>
-													<td class="text-dark">{{ row.amount }}</td>
+													<td class="text-dark fw-bold">{{ row.amount }}</td>
 												</tr>
 											</tbody>
 											<tfoot>
@@ -220,12 +211,19 @@ import { onClickOutside } from '@vueuse/core'
 import { ref, computed } from 'vue';
 import Layout from '../shared/Layout.vue';
 import Drawer from 'primevue/drawer';
+import { useAuth } from "@/stores/auth";
+import { useSupplier } from "@/stores/supplier";
 import BreadCrumb from "@/components/BreadCrumb.vue";
+import useToaster from "@/composables/useToaster";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
+const authStore = useAuth();
+const supplierStore = useSupplier();
+const toaster = useToaster();
+const user = JSON.parse(authStore.user);
+const bidId = ref(route.params.id);
 
-const pdfRef = ref(null);
-
-// Reactive array to hold table rows
 const rows = ref([
   { item: '', rate: 0, quantity: 1, amount: '0' }
 ]);
@@ -279,7 +277,17 @@ const exportToPDF = () => {
     }
 
     const onSubmit = () => {
-      console.log('rows',rows.value);
+      supplierStore.submitBid(rows.value, bidId.value).then(response => {
+        toaster.success("Submitted successfully");
+        //reset rows
+        rows.value = [
+          { item: '', rate: 0, quantity: 1, amount: '0' }
+        ]
+        visible.value = false
+      }).catch(error => {
+        toaster.error("Error submitting form");
+        console.log(error);
+      })
     }
   
 </script>

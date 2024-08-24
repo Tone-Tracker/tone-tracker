@@ -35,7 +35,7 @@ export const useTask = defineStore('task', () => {
     }
 
     const getTask = (id) => {
-      return axiosInstance.get(`/api/tasks/${id}`);
+      return axiosInstance.get(`/api/bids/${id}`);
     }
 
     const getTasksByActivationId = (id) => {
