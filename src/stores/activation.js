@@ -60,6 +60,18 @@ export const useActivation = defineStore('activation', () => {
 
       return axiosInstance.get(`/api/activations/admins`);
     }
+
+
+    const getAllActivationsRegionalManager = (StaffId) => {
+
+      return axiosInstance.get(`/api/activations/region/staff/${StaffId}`);
+    }
+
+    const getAllActivationsManager = (StaffId) => {
+
+      return axiosInstance.get(`/api/activations/manager/staff/${StaffId}`);
+    }
+    
   
-    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages , getAllActivations, getActivationImages, getAllActivationsAdmins}
+    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,uploadImages , getAllActivations, getActivationImages, getAllActivationsAdmins, getAllActivationsRegionalManager, getAllActivationsManager}
   })

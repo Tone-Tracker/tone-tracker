@@ -18,7 +18,7 @@
                       <InfoWindow>
                         <div class="popup">
                           <div  class="text-danger fs-3 text-end" >
-                            <i @click="close = true" class='cursor-pointer bx bx-x'></i></div>
+                            <i @click="close=true" class='cursor-pointer bx bx-x'></i></div>
                           <div class="inner-container">
                             <h2>{{ location.title }}</h2>
                             <p>CPC: R 2.00</p>
@@ -72,16 +72,35 @@ let locations = ref([]);
 
 const getAllActivations = () => {
 
-  //get activations for Admins
+  
   const user = JSON.parse(authStore.user);
  
   if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){  
     activationStore.getAllActivationsAdmins().then(function (response) {
       activations.value = response.data;
+      console.log('test', activations.value);
       //map activations
       locations.value = activations.value.map(activation => ({
-          lat: activation.centralPoint.latitude,
-          lng: activation.centralPoint.longitude,
+          lat: activation.centralLatitude,
+          lng: activation.centralLongitude,
+          startDate: activation.startDate,
+          endDate: activation.endDate,
+          regionName: activation.regionName,
+          title: activation.name
+        }));
+
+        console.log('test location', locations);
+    })
+  } 
+
+  if(user.role == 'TTG_REGIONAL_MANAGER'){  
+    activationStore.getAllActivationsRegionalManager(user.activeUserId).then(function (response) {
+      activations.value = response.data;
+      console.log('test', response);
+      //map activations
+      locations.value = activations.value.map(activation => ({
+          lat: activation.centralLatitude,
+          lng: activation.centralLongitude,
           startDate: activation.startDate,
           endDate: activation.endDate,
           regionName: activation.regionName,
@@ -92,10 +111,24 @@ const getAllActivations = () => {
     })
   }
 
+  if(user.role == 'TTG_ACTIVATION_MANAGER'){  
+    activationStore.getAllActivationsManager(user.activeUserId).then(function (response) {
+      activations.value = response.data;
+      console.log('test', response);
+      //map activations
+      locations.value = activations.value.map(activation => ({
+          lat: activation.centralLatitude,
+          lng: activation.centralLongitude,
+          startDate: activation.startDate,
+          endDate: activation.endDate,
+          regionName: activation.regionName,
+          title: activation.name
+        }));
 
+        console.log('test location', locations);
+    })
+  }
 
-
-  
 
 }
 
