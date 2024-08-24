@@ -64,6 +64,7 @@ const { suggestions,loading,sessionToken,refreshSessionToken } = usePlacesAutoco
     const filterCities = (event) => {
       const searchQuery = event.query.toLowerCase();
       filteredCities.value = formattedSuggestions.value.filter(city => city.name.toLowerCase().includes(searchQuery));
+
     };
 
 watch(suggestions, (newSuggestions) => {
@@ -152,6 +153,7 @@ const rules = {
 const v$ = useVuelidate(rules, form);
 
 const onSubmit = async () => {
+   
     const isFormValid = await v$.value.$validate();
     if (!isFormValid) {return;}
     showLoading.value = true;
@@ -244,7 +246,7 @@ const openModal = (pos,task) => {
     if(task) {//edit
     isEdit.value = true;
     taskId.value=task.id;
-    // form.activation = task.activation;
+    query.value = task.address;
     status.value = statuses.value.find(stat => stat.code === task.status);
     form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
 
@@ -367,7 +369,7 @@ const taskItems = (task) => {
     const items = [
         {
             label: 'Edit',
-            icon: 'bx bxs-edit fs-4 text-success',
+            icon: 'bx bxs-edit fs-4 maz-gradient-txt',
             command: () => {
                 openModal('top', task);
             }
@@ -376,14 +378,14 @@ const taskItems = (task) => {
     
     {
         label: 'Add  Images',
-        icon: 'bx bx-images text-success fs-3',
+        icon: 'bx bx-images maz-gradient-txt fs-3',
         command: () => {
 			URLrouter.push(`/activation-images?activation=${task.id}`);
         }
     },
         {
             label: 'View',
-            icon: 'bx bx-bullseye fs-4 text-success',
+            icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
             command: () => {
                 URLrouter.push(`/tasks/${task.id}?name=${task.name}`);
             }
@@ -394,7 +396,7 @@ const taskItems = (task) => {
     if (task.type == 'THIRDPARTY') {
         items.push({
             label: 'Add Third Party Suppliers',
-            icon: 'bx bx-user-plus fs-4 text-success',
+            icon: 'bx bx-user-plus fs-4 maz-gradient-txt',
             command: () => {
                 toggleModal('top', task);
             }
