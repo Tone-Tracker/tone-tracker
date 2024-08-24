@@ -371,6 +371,7 @@ const toggle = (event, promoter) => {
                   <tr>
                     <th>Full Name</th>
                     <th>Height</th>
+                    <th>Gender</th>
                     <th>Dress Size</th>
                     <th>Pants Size</th>
                     <th>Top Size</th>
@@ -382,9 +383,10 @@ const toggle = (event, promoter) => {
                   <tr v-if="promoters.length > 0" v-for="promoter in promoters" :key="promoter.id">
                     <td>{{ promoter.userDetails.firstName }}{{ promoter.userDetails.lastName }}</td>
                     <td> <Badge :value="`${promoter.height} cm`" severity="success"></Badge></td>
+                    <td>{{ promoter.gender }}</td>
                     <td><Badge :value="getDressSize(promoter.dressSize)" severity="info"></Badge></td>
                     <td><Badge :value="promoter.pantsSize" severity="warn"></Badge></td>
-                    <td><Badge :value="promoter.topSize" severity="danger"></Badge></td>
+                    <td><Badge :value="getDressSize(promoter.topSize)" severity="danger"></Badge></td>
                     <td>{{ truncateText(promoter.bio,60) }} 
                       <span @click="toggle($event, promoter)" class="cursor-pointer text-primary">See More</span>
                      
