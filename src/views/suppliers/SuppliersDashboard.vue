@@ -1,3 +1,28 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import Layout from '../shared/Layout.vue';
+import { useAuth } from '@/stores/auth';
+import { useSupplier } from '@/stores/supplier';
+
+const supplierStore = useSupplier();
+const authStore = useAuth();
+
+const user = JSON.parse(authStore.user);
+const tasks = ref([]);
+
+onMounted(() => {
+  if(!user.activeUserId){
+    return
+  }
+  getSuppliertasks();
+});
+
+const getSuppliertasks = () => {
+  supplierStore.getThirdPartyTasks(user.activeUserId).then(response => {
+    tasks.value = response.data;
+  })
+}
+</script>
 <template>
     <Layout>
     <div class="page-wrapper">
@@ -100,14 +125,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="custom-table-bg">
+          <tr v-if="tasks?.length > 0" v-for="task in tasks" :key="task.id" class="custom-table-bg">
               <td class="text-white border-0">Luc Belair</td>
               <td class="text-white border-0">JN_129</td>
               <td class="text-white border-0">JN_129</td>
               <td class="text-white border-0">JN_129</td>
               <td class="border-0">
-              <router-link to="/view-supplier-task/1" class="btn btn-secondary btn-sm">View</router-link>
+              <router-link :to="`/view-supplier-task/${task.id}`" class="btn btn-secondary btn-sm">View</router-link>
               </td>
+          </tr>
+          <tr v-else>
+              <td class="text-danger text-center" colspan="5">No tasks found</td>
           </tr>
         </tbody>
     </table>
@@ -122,16 +150,7 @@
   </Layout>
   </template>
   
-  <script setup>
-import { ref, onMounted } from 'vue';
-import Layout from '../shared/Layout.vue';
 
-
-onMounted(() => {
-  console.log('Component mounted');
-  // Any initialization code can go here
-});
-</script>
 
   
 <style scoped>
