@@ -1,3 +1,39 @@
+<script setup>
+import BreadCrumb from "@/components/BreadCrumb.vue";
+import Layout from "../shared/Layout.vue";
+import { useAuth } from '@/stores/auth';
+import { useTask } from "@/stores/task";
+import { onMounted, ref } from "vue";
+import { useRoute } from 'vue-router';
+
+const taskStore = useTask();
+const authStore = useAuth();
+const route = useRoute();
+
+const user = JSON.parse(authStore.user);
+const taskId = ref(route.params.id);
+const singleTask = ref({});
+const tasks = ref([]);
+
+onMounted(() => {
+  if(!user.activeUserId){
+    return
+  }
+  getTask();
+});
+
+const getTask = async () => {
+  taskStore.getTask(taskId.value).then(response => {
+    singleTask.value = response.data
+  }).catch(error => {
+    toaster.error("Error fetching task");
+    console.log(error);
+  }).finally(() => {
+    //
+  });
+};
+</script>
+
 <template>
     <Layout>
         <div class="page-wrapper">
@@ -20,8 +56,8 @@
 							<div class="card-body p-4">
 								<form class="row g-3">
 									<div class="col-md-6">
-										<label for="input1" class="form-label">First Name</label>
-										<input type="text" class="form-control" id="input1" placeholder="First Name">
+										<label for="input1" class="form-label">Name</label>
+										<input type="text" class="form-control" id="input1" :value="singleTask.name">
 									</div>
 									<div class="col-md-6">
 										<label for="input2" class="form-label">Last Name</label>
@@ -113,10 +149,4 @@
 		</div>
     </Layout>
   </template>
-  
-  <script setup>
-  import BreadCrumb from "@/components/BreadCrumb.vue";
-import Layout from "../shared/Layout.vue";
-  </script>
-  
   

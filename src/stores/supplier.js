@@ -10,9 +10,12 @@ export const useSupplier = defineStore('supplier', () => {
     const getThirdParties = () => {
       return axiosInstance.get(`/api/thirdParties`);
     }
-    const deleteDoc = (id) => {
-      return axiosInstance.delete(`/api/docs/${id}`);
+
+
+    const getThirdPartyTasks = (thirdPartyId) => {
+      return axiosInstance.get(`api/tasks/thirdParty/${thirdPartyId}`);
     }
-    return { submit, getThirdParties, deleteDoc }
+
+    return { submit, getThirdParties,getThirdPartyTasks }
   
   })  
