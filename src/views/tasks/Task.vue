@@ -153,20 +153,8 @@ const onSubmit = async () => {
     const isFormValid = await v$.value.$validate();
     if (!isFormValid) {return;}
     showLoading.value = true;
-    
-    if(isEdit.value){
-        taskStore.update(taskId.value,form).then(function (response) {
-            toaster.success("Task updated successfully");
-            visible.value = false;
-            getTasksByActivationId();
-        }).catch(function (error) {
-            toaster.error("Error updating task");
-            console.log(error);
-        });
-    } 
-    else {
 
-        const formData = new FormData();
+    const formData = new FormData();
         formData.append('briefFile', briefFile.value);
         formData.append('status', form.status);
         formData.append('type', form.type);
@@ -177,11 +165,26 @@ const onSubmit = async () => {
         formData.append('jobNumber', form.jobNumber);
         formData.append('completion', form.completion);
         formData.append('activation', form.activation);
+        formData.append('address', form.address);
+        formData.append('longitude', form.longitude);
+        formData.append('latitude', form.latitude);
 
         const config = {
             useMultipartFormData: true // Add this flag to the request config
         };
-
+    
+    if(isEdit.value){
+        
+        taskStore.update(taskId.value,form, config).then(function (response) {
+            toaster.success("Task updated successfully");
+            visible.value = false;
+            getTasksByActivationId();
+        }).catch(function (error) {
+            toaster.error("Error updating task");
+            console.log(error);
+        });
+    } 
+    else {
         taskStore.submit(formData,config).then(function (response) {
             showLoading.value = false;
         toaster.success("Task created successfully");
@@ -250,7 +253,9 @@ const openModal = (pos,task) => {
      completion: task.completion,
      jobNumber: Number(task.jobNumber),
      name: task.name,
-    //  activation: task.activation
+     longitude: task.longitude,
+     latitude: task.latitude,
+     address: task.address
     })
   }else{
     
@@ -449,7 +454,7 @@ const submitThirdParty = () => {
                                             <th>Risk</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
-                                            <th>Time Record</th>
+                                            <th>Type</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
                                         </tr>
