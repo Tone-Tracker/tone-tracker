@@ -15,6 +15,7 @@ const confirm = useConfirm();
 let clients = ref([]);
 let showLoading = ref(false);
 let loading = ref(false);  
+let searchInput = ref('');
 
 const form = reactive({ name: '' });
 onMounted(() => {
@@ -110,6 +111,30 @@ const vFocus = {
   mounted: (el) => el.focus()
 };
 
+
+
+
+
+
+const onInput = () => {
+  if (searchInput.value) {
+    const searchTerm = searchInput.value.toLowerCase();
+    clients.value = clients.value.filter((client) => {
+      const name = client.name?.toLowerCase() || '';
+      return (
+        name.includes(searchTerm) 
+      );
+    });
+  } else {
+    getAllClients(); 
+  }
+};
+
+
+
+
+
+
 </script>
 
 <template>
@@ -118,6 +143,25 @@ const vFocus = {
       <div class="page-content">
         <BreadCrumb title="Clients" icon="" />
         <div class="card">
+
+          <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
+                <!-- <button class="btn rounded-0 btn-primary">+ New</button> -->
+
+                <div class="position-relative">
+                  <input
+                    v-model="searchInput"
+                    @input="onInput"
+                    type="text"
+                    class="form-control ps-5"
+                    placeholder="Search"
+                  />
+                  <span
+                    class="position-absolute top-50 product-show translate-middle-y"
+                  >
+                    <i class="bx bx-search"></i>
+                  </span>
+                </div>
+              </div>
           <div class="card-body">
             <div class="row">
               <div class="col-8 col-lg-8 col-xl-8 d-flex">
@@ -141,7 +185,7 @@ const vFocus = {
                               <input v-focus type="text" v-model="client.name" @blur="updateClient(client)" @keyup.enter="updateClient(client)" class="no-border-input"/>
                             </td>
                             <td>
-                              <button type="button" class="btn btn-primary">
+                              <button v-tooltip.bottom="'View'" type="button" class="btn maz-gradient-btn">
                                 <RouterLink :to="`/campaigns?client=${client.id}`">View Campaign</RouterLink>
                                 <!-- <span class="badge bg-dark">4</span> -->
                               </button>
@@ -149,13 +193,13 @@ const vFocus = {
                             <td>
                               <div class="d-flex order-actions">
                                 <a v-if="!client.isEditing" @click="editClient(client)" href="javascript:;">
-                                  <i class='bx bxs-edit'></i>
+                                  <i class='bx bxs-edit' v-tooltip.bottom="'Edit'"></i>
                                 </a>
                                 <a v-else @click="updateClient(client)" href="javascript:;" class="ms-3">
                                   <i class='bx bx-check text-success'></i>
                                 </a>
                                 <a @click="deleteRecord($event,client)" href="javascript:;" class="ms-3">
-                                  <i class='bx bxs-trash text-danger'></i>
+                                  <i class='bx bxs-trash text-danger' v-tooltip.bottom="'Delete'"></i>
                                 </a>
                                 <ConfirmPopup></ConfirmPopup>
                               </div>

@@ -115,6 +115,8 @@ body {
 	transition: background 0.3s ease-in-out;
 }
 
+
+
 .maz-gradient-btn {
 	background: linear-gradient(to right, #9A3AB1, #117AD1);
 	border: none !important;

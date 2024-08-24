@@ -11,6 +11,7 @@ import { useClientStore } from '@/stores/useClient';
 import { useConfirm } from "primevue/useconfirm";
 import { useRoute } from 'vue-router';
 import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
+import Avatar from 'primevue/avatar';
 
 const route = useRoute();
 const clientId = ref(route.query.client);
@@ -30,12 +31,14 @@ const clientStore = useClientStore();
 const confirm = useConfirm();
 const selectedFile = ref(null);
 
+let searchInput = ref('');
 let clients = ref([]);
 const showFilePreview = ref(true);
 const clientName = ref('');
 let campaigns = ref([]);
 const img = ref(null);
 const loading = ref(false);
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const form = reactive({
 	name: "",
@@ -174,6 +177,21 @@ const deleteRecord = (event, campaign) => {
 const vFocus = {
     mounted: (el) => el.focus()
 };
+
+const onInput = () => {
+  if (searchInput.value) {
+    const searchTerm = searchInput.value.toLowerCase();
+    campaigns.value = campaigns.value.filter((campaign) => {
+      const name = campaign.name?.toLowerCase() || '';
+      
+      return (
+        name.includes(searchTerm) 
+      );
+    });
+  } else {
+    getCampaignsByClientId(); 
+  }
+};
 </script>
 
 <template>
@@ -182,6 +200,24 @@ const vFocus = {
             <div class="page-content">
                 <BreadCrumb title="Campaigns" icon="" />
                 <div class="card">
+             <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
+              
+
+                <div class="position-relative">
+                  <input
+                    v-model="searchInput"
+                    @input="onInput"
+                    type="text"
+                    class="form-control ps-5"
+                    placeholder="Search"
+                  />
+                  <span
+                    class="position-absolute top-50 product-show translate-middle-y"
+                  >
+                    <i class="bx bx-search"></i>
+                  </span>
+                </div>
+              </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-8 col-lg-8 col-xl-8 d-flex">
@@ -199,7 +235,9 @@ const vFocus = {
                                                 </thead>
                                                 <tbody>
                                                     <tr v-if="campaigns.length > 0" v-for="(campaign, index) in campaigns" :key="campaign.id">
-                                                        <td>{{ index + 1 }}</td>
+                                                        <td>
+                                                            <Avatar :image="envPath + campaign.path" class="mr-2" size="large" shape="circle" />
+                                                        </td>
                                                         <td v-if="!campaign.isEditing">{{ campaign.name }}</td>
                                                         <td v-else>
                                                             <input v-focus type="text" v-model="campaign.name" @blur="updateCampaign(campaign)" @keyup.enter="updateCampaign(campaign)" class="no-border-input"/>
@@ -208,16 +246,18 @@ const vFocus = {
                                                         <td>
                                                             <div class="d-flex order-actions">
                                                                 <a v-if="!campaign.isEditing" @click="editClient(campaign)" href="javascript:;">
-                                                                    <i class='bx bxs-edit'></i>
+                                                                    <i class='bx bxs-edit ' v-tooltip.bottom="'Edit'"></i>
                                                                 </a>
                                                                 <a v-else @click="updateCampaign(campaign)" href="javascript:;" class="ms-3">
-                                                                    <i class='bx bx-check text-success'></i>
+                                                                    <i class='bx bx-check ' 
+                                                                    v-tooltip.bottom="'Edit'" ></i>
                                                                 </a>
-                                                                <router-link :to="`/admin-activations?campaign=${campaign.id}`" v-tooltip.bottom="'View Activations'" class="ms-3">
-                                                                    <i class='bx bxs-bullseye text-success'></i>
+                                                                <router-link :to="`/admin-activations?campaign=${campaign.id}`" 
+                                                                v-tooltip.bottom="'View Activations'" class="ms-3">
+                                                                    <i class='bx bxs-bullseye '></i>
                                                                 </router-link>
                                                                 <a @click="deleteRecord($event,campaign)" href="javascript:;" class="ms-3">
-                                                                    <i class='bx bxs-trash text-danger'></i>
+                                                                    <i class='bx bxs-trash text-danger' v-tooltip.bottom="'Delete'"></i>
                                                                 </a>
                                                                 <ConfirmPopup></ConfirmPopup>
                                                             </div>
