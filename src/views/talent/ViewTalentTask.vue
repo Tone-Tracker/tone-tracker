@@ -70,7 +70,7 @@ const download = () => {
 					
 					<div class="ms-auto">
 						<div class="btn-group">
-							<router-link :to="`/add-supplier-costing/${bid?.id}`" class="btn btn maz-gradient-btn">Add Costing</router-link>
+							<button class="btn btn maz-gradient-btn">Add Images</button>
 						</div>
 					</div>
 				</div>
