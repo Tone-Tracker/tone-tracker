@@ -1,13 +1,19 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { usePromoter } from '@/stores/promoter';
 import { useTask } from '@/stores/task';
 import { useRoute, useRouter } from 'vue-router';
 import Image from 'primevue/image';
 import avatarGenerator from '@/helpers/avatarGenerator';
 import useToaster from '@/composables/useToaster';
+import SplitButton from 'primevue/splitbutton';
+import Drawer from 'primevue/drawer';
+import html2pdf from "html2pdf.js";
+import URLrouter from '@/router';
+import Dialog from 'primevue/dialog';
+import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -28,8 +34,7 @@ const taskId = ref(route.params.id);
 onMounted(() => {
     getAvailablePromoters();
     getTask();
-    getBids();
-    
+    getBids();    
 });
 
 const statuses = ref([
@@ -139,7 +144,75 @@ const saveSelectedPromoters = () => {
     });
 }
 
+const items = (bid) => [    {
+        label: 'View Costing',
+        icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
+        command: () => {
+          previewCosting(bid);
+        }
+    },
+	{
+        label: 'View Supplier',
+        icon: 'bx bxs-user-pin fs-4 maz-gradient-txt',
+        command: () => {
+            URLrouter.push(`/profile/${bid.thirdPartyDTO?.id}`);
+        }
+    }
+];
 
+const costVisible = ref(false)
+const viewBid = ref(false)
+const previewCosting = (bid) => {
+  costVisible.value = true;
+  viewBid.value = bid
+}
+
+const totalAmount = computed(() => {
+  if(!viewBid.value?.costs) return 0
+  return viewBid.value.costs.reduce((sum, row) => sum + row.amount, 0);
+});
+
+const exportToPDF = () => {
+      html2pdf(document.getElementById("my-invoice"), {
+        margin: 1,
+       filename: `${viewBid.value.thirdPartyDTO?.userDetails.firstName} ${viewBid.value.thirdPartyDTO?.userDetails.lastName}_Costs.pdf`,
+      });
+    }
+    const showPoDocModal = ref(false)
+    const awardJob = () => {
+      costVisible.value = false;
+      showPoDocModal.value = true
+    }
+
+    const selectedFile = ref(null);
+    const showFilePreview = ref(true);
+ const onFileChange = (uploadedFile) => {
+    console.log('event', uploadedFile);
+    selectedFile.value = uploadedFile;
+}
+const onSubmitPO = () => {
+  const awardFormData = new FormData();
+  awardFormData.append("poDocument", selectedFile.value);
+  awardFormData.append("taskId", taskId.value);
+  awardFormData.append("thirdPartyId", viewBid.value.thirdPartyDTO?.id);
+  awardFormData.append("awardDate", "2024-08-24");
+  awardFormData.append("jobStatus", "Planned");
+
+  const config = {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }
+  taskStore.submitPODocument(awardFormData,config).then(response => {
+    toaster.success("PO Document submitted successfully");
+    console.log("response", response);
+    getTask();
+    showPoDocModal.value = false
+  }).catch(error => {
+    toaster.error("Error submitting PO Document");
+    console.log(error);
+  })
+}
 </script>
 <template>
   <Layout>
@@ -315,14 +388,19 @@ const saveSelectedPromoters = () => {
             </thead>
             <tbody>
               <tr v-if="bids?.length > 0" v-for="bid in bids" :key="bid.id">
-                <td>Test</td>
+                <td>{{ bid.taskDTO?.activationDetails?.name }}</td>
                 <td>{{ bid.taskDTO?.name }}</td>
                 <td>{{ bid.taskDTO?.status }}</td>
                 <td>{{ bid.taskDTO?.startDate }}</td>
                 <td>{{ bid.taskDTO?.plannedEndDate }}</td>
                 <td>{{ bid.taskDTO?.timeRecord }}</td>
                 <td>{{ bid.taskDTO?.completion }}</td>
-                <td></td>
+                <td>
+                  <SplitButton class="text-white" label="Actions" 
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="items(bid)"/>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -331,7 +409,109 @@ const saveSelectedPromoters = () => {
 
       </div>
     </div>
-    <!--start switcher-->
+    <div class="card flex justify-center">
+      <Drawer v-model:visible="costVisible" position="right" 
+      :header="viewBid?.thirdPartyDTO?.userDetails.firstName + ' ' + viewBid?.thirdPartyDTO?.userDetails.lastName + ' Costs'" style="width: 40%">
+        <div class="card">
+					<div class="card-body">
+						<div id="invoice">
+							<div class="toolbar hidden-print">
+                
+								<div class="d-flex gap-3 justify-content-end">
+                  <button @click="awardJob" :disabled="totalAmount == '00'" type="button" class="d-flex  justify-content-center align-items-center btn maz-gradient-btn">
+                    <i class='bx bxs-user-check' ></i><span>Award Job</span></button>
+                  <button @click="exportToPDF" type="button" class="d-flex  justify-content-center align-items-center btn maz-gradient-btn">
+                    <i class='bx bxs-download' ></i>
+                    <span>Download</span>
+                  </button>
+								</div>
+								<hr>
+							</div>
+							<div class="invoice overflow-auto" id="my-invoice" style="background-color: #fff; color: black" >
+								<div style="min-width: 600px">
+									<header>
+										<div class="row">
+											<div class="col">
+												<a href="javascript:;">
+													<!-- <img src="assets/images/logo-icon.png" width="80" alt=""> -->
+												</a>
+											</div>
+											<div class="col company-details">
+												<h2 class="name" >
+									<a target="_blank" href="javascript:;">
+									{{ viewBid?.thirdPartyDTO?.userDetails.firstName + ' ' + viewBid?.thirdPartyDTO?.userDetails.lastName }}
+									</a>
+								</h2>
+												<!-- <div>110 Caldon Drive, Kempton Park</div> -->
+												<div>{{ viewBid?.thirdPartyDTO?.userDetails.phone }}</div>
+												<div>{{ viewBid?.thirdPartyDTO?.userDetails.email }}</div>
+											</div>
+										</div>
+									</header>
+									<main>
+										<table class="table table-hover table-striped">
+											<thead>
+												<tr>
+													<th class="text-primary">#</th>
+													<th class="text-left text-dark">Item</th>
+													<th class="text-right text-dark">Rate</th>
+													<th class="text-right text-dark">Quantity</th>
+													<th class="text-right text-dark">TOTAL</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr v-if="viewBid.costs?.length > 0" v-for="(row, index) in viewBid.costs" :key="row + index">
+													<td class="text-dark">{{ index + 1 }}</td>
+													<td class="text-left text-dark">
+														<h3>
+										      </h3>
+											<a target="_blank" href="javascript:;">
+                              {{ row.item }}
+									   </a>
+                    </td>
+													<td class="text-dark">{{ row.rate }}</td>
+													<td class="text-dark">{{ row.quantity }}</td>
+													<td class="text-dark fw-bold">{{ row.amount }}</td>
+												</tr>
+                        <tr v-else>
+                          <td colspan="7" class="text-danger text-center">No Cost Added</td>
+                        </tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="2 text-dark"></td>
+													<td colspan="2 text-dark ">TOTAL</td>
+                          <!-- calculate total amount here -->                           
+													<td>R {{ viewBid.costs?.length > 0 ? totalAmount : '00' }}</td>
+												</tr>
+											</tfoot>
+										</table>
+									
+                    
+									</main>
+								</div>
+								<!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
+								<div>
+
+                </div>
+							</div>
+						</div>
+					</div>
+				</div>
+      </Drawer>
+
+      <Dialog v-model:visible="showPoDocModal" position="top" modal header="Upload PO Document" :style="{ width: '30rem' }">
+        <div class="card flex justify-center">
+          <FileUploadGeneric 
+          :showFilePreview="showFilePreview" 
+          accept="application/pdf" 
+          fileType="pdf" 
+          @fileUploaded="onFileChange"
+          />
+          <button @click="onSubmitPO" type="button" class="btn w-100 maz-gradient-btn">Submit</button>
+        </div>
+    </Dialog>
+  </div>
   </Layout>
 </template>
 
@@ -469,6 +649,11 @@ div.desc {
 html.dark-theme .table td,
 html.dark-theme .table th {
   border-color: #141414;
+}
+
+html.dark-theme a {
+  color: black;
+  text-decoration: none;
 }
 
 @media (max-width: 768px) {
