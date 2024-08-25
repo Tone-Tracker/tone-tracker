@@ -85,7 +85,7 @@ const getBids = async () => {
 
 
   const getAvailablePromoters = async () => {  
-  taskStore.getTasksByPromoterId(taskId.value).then(response => {
+  taskStore.getAvailablePromotersByTaskId(taskId.value).then(response => {
     console.log("tasks", response.data);
     availablePromoters.value = response.data;
   }).catch(error => {

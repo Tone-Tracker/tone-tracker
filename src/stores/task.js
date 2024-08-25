@@ -40,6 +40,10 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.get(`/api/tasks/activation/all/${id}`);
     }
     const getTasksByPromoterId = (id) => {
+      return axiosInstance.get(`/api/tasks/promoter/${id}`);
+    }
+
+    const getAvailablePromotersByTaskId = (id) => {
       return axiosInstance.get(`/api/tasks/${id}/promoters`);
     }
 
@@ -52,5 +56,5 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.get(`/api/bids`);
     }
   
-    return { submit, getSuppliers,getBids, getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask,addThirdPartiesToTask }
+    return { submit, getSuppliers,getBids, getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask,addThirdPartiesToTask , getAvailablePromotersByTaskId}
   })
