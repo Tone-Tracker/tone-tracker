@@ -206,6 +206,7 @@ const viewBriefFile = () => {
   showPreviewBriefSheet.value = true
 }
 const onSubmitPO = () => {
+  if(!selectedFile.value) return toaster.error("Please select a file");
   const awardFormData = new FormData();
   awardFormData.append("poDocument", selectedFile.value);
   awardFormData.append("taskId", taskId.value);

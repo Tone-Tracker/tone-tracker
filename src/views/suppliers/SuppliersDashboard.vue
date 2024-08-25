@@ -127,8 +127,8 @@ const getSuppliertasks = () => {
         </thead>
         <tbody>
           <tr v-if="tasks?.length > 0" v-for="task in tasks" :key="task.id" class="custom-table-bg">
-              <td class="text-white border-0">Luc Belair</td>
-              <td class="text-white border-0">JN_129</td>
+              <td class="text-white border-0">{{task?.taskDTO.name}}</td>
+              <td class="text-white border-0">{{task?.taskDTO.jobNumber}}</td>
               <td class="text-white border-0">JN_129</td>
               <td class="text-white border-0">JN_129</td>
               <td class="border-0">

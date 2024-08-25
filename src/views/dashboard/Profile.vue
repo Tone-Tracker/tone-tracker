@@ -663,7 +663,7 @@ async function getResult() {
         console.log(formData)
         // return
 
-        promoterStore.uploadPromoterImages(formData, config).then(function (response) {
+        promoterStore.uploadImages(formData, config).then(function (response) {
             console.log(response);
         })
 
@@ -778,7 +778,7 @@ const onSubmit = () => {
     const config = {
     useMultipartFormData: true // Add this flag to the request config
 };
-    promoterStore.uploadPromoterImages(formData, config).then(function (response) {
+    promoterStore.uploadImages(formData, config).then(function (response) {
         console.log(response);
     })
 
