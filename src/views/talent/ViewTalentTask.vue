@@ -25,6 +25,7 @@ const user = JSON.parse(authStore.user);
 const taskId = ref(route.params.id);
 const singleTask = ref({});
 const images = ref([]);
+const showLoading = ref(false);
 
 onMounted(() => {
   if(!user.activeUserId){
@@ -122,7 +123,12 @@ const formatSize = (bytes) => {
 };
 
 const onSubmit = () => {
-  
+  if(!files.value.length){
+	  toaster.error("Please select at least one image");
+	  return
+  }
+
+  showLoading.value = true;
   const formData = new FormData();
 
   for (let i = 0; i < files.value.length; i++) {
@@ -137,12 +143,16 @@ const onSubmit = () => {
 	  useMultipartFormData: true // Add this flag to the request config
 	   };
   promoterStore.uploadImages(formData, config).then(function (response) {
+	   getTaskImages();
 	  toaster.success("Images uploaded successfully");
 	  showImagesSheet.value = false;
-
+	  showLoading.value = false;
+	  files.value = [];
   }).catch(error => {
 	  toaster.error("Error uploading images");
 	  console.log(error);
+  }).finally(() => {
+	  showLoading.value = false;
   })
 };
 
@@ -273,12 +283,6 @@ const onSubmit = () => {
 							<div v-else class="text-danger">No images uploaded.</div>
 							
 						</div>
-
-						<!-- <div
-							class="mt-2 text-center cursor-pointer d-flex justify-content-center align-items-center">
-							<span>Load More</span>
-							<i class='bx bx-chevron-down fs-2'></i>
-						</div> -->
 					</div>
 				</div>
 
@@ -339,7 +343,9 @@ const onSubmit = () => {
 								</template>
 							</FileUpload>
 							<div class="d-grid mt-3">
-								<button @click="onSubmit" class="btn maz-gradient-btn d-flex justify-content-center align-items-center" type="button"> 
+								<button @click="onSubmit" class="btn maz-gradient-btn" type="button" 
+								   :disabled="showLoading"> 
+									<span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
 									Submit
 								</button>
 							  </div>
