@@ -189,7 +189,7 @@ const onPlannedStartDateChange = (event) => {
 
 const getTasksByPromoterId = async (promoterId) => {
   taskStore.getTasksByPromoterId(promoterId).then(response => {
-  console.log("tasks", response.data);
+  
     tasks.value = response.data;
   }).catch(error => {
     toaster.error("Error fetching tasks");
