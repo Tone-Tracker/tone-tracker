@@ -11,7 +11,7 @@
                     api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
                     style="width: 100%; height: 800px"
                     :center="center"
-                    :zoom="9"
+                    :zoom="6"
                     :options="{ styles: mapStyles }"
                   >
                     <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
@@ -47,7 +47,7 @@ import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
 import { useActivation } from '@/stores/activation';
 import { useAuth } from '@/stores/auth';
 
-const center = { lat: -25.6793642, lng: 28.1941785 };
+const center = { lat: -30.5595, lng: 22.9375 };
 const infowindow = ref(false); // Will be open when mounted
 
 const activeInfoWindow = ref(null);
@@ -129,11 +129,11 @@ const getAllActivations = () => {
       tasks.value = response.data;
       //map activations
       locations.value = tasks.value.map(task => ({
-          lat: task.centralLatitude,
-          lng: task.centralLongitude,
+          lat: task.latitude,
+          lng: task.longitude,
           startDate: task.startDate,
-          endDate: task.endDate,
-          regionName: task.regionName,
+          endDate: task.plannedEndDate,
+          regionName: task.address,
           title: task.name
         }));
 

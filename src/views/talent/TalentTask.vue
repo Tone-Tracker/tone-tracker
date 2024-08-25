@@ -259,7 +259,8 @@ const openModal = (pos,task) => {
 
 const getStatus = (status) => {
     return statuses.value.find(stat => stat.code === status).name;
-}
+   
+ }
 
 const getType = (type) => {
     return types.value.find(typ => typ.code === type).name;
@@ -354,7 +355,7 @@ const deleteRecord = (event, task) => {
                                             <td>{{ task.jobNumber }}</td>
                                             <td  :class="getClass(task.status)">
                                                 {{ getStatus(task.status) }}
-                                            </td>
+                                            </td> 
                                             <td>{{task.plannedEndDate}}</td>
                                             <td>{{task.timeRecord}}</td>
                                             <td>--To be Decided--</td>
