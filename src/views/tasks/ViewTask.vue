@@ -14,11 +14,12 @@ import html2pdf from "html2pdf.js";
 import URLrouter from '@/router';
 import Dialog from 'primevue/dialog';
 import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
+import PDF from 'pdf-vue3';
 
 const route = useRoute();
 const router = useRouter();
 const toaster = useToaster();
-
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const isLoading = ref(false);
 
@@ -152,6 +153,13 @@ const items = (bid) => [    {
         }
     },
 	{
+        label: 'Award Job',
+        icon: 'bx bxs-user-check fs-4 maz-gradient-txt',
+        command: () => {
+            awardJob();
+        }
+    },
+    {
         label: 'View Supplier',
         icon: 'bx bxs-user-pin fs-4 maz-gradient-txt',
         command: () => {
@@ -190,6 +198,13 @@ const exportToPDF = () => {
     console.log('event', uploadedFile);
     selectedFile.value = uploadedFile;
 }
+
+const showPreviewBriefSheet = ref(false) 
+const viewBriefFile = () => {
+  if(!singleTask.value?.path) return toaster.error("Brief file not uploaded");
+  
+  showPreviewBriefSheet.value = true
+}
 const onSubmitPO = () => {
   const awardFormData = new FormData();
   awardFormData.append("poDocument", selectedFile.value);
@@ -219,7 +234,15 @@ const onSubmitPO = () => {
     <!--start page wrapper -->
     <div class="page-wrapper">
       <div class="page-content">
-        <BreadCrumb :title="taskName" icon="bx bx-task" />
+        <div class="d-flex">
+          <BreadCrumb :title="taskName" icon="bx bx-task" />
+          <div class="ms-auto">
+							<button @click="viewBriefFile" type="button" class="btn mt-3 btn maz-gradient-btn" data-bs-toggle="dropdown">
+                View Brief File
+							</button>
+						</div>
+				
+        </div>
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -511,6 +534,11 @@ const onSubmitPO = () => {
           <button @click="onSubmitPO" type="button" class="btn w-100 maz-gradient-btn">Submit</button>
         </div>
     </Dialog>
+
+    <Drawer v-model:visible="showPreviewBriefSheet" position="right" header="Preview Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+      <PDF :src="envPath + singleTask?.path" />
+       <!-- {{singleTask?.path}} -->
+  </Drawer>
   </div>
   </Layout>
 </template>
