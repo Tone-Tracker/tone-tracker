@@ -148,7 +148,7 @@ function startShare(file) {
             <div class="row">
               <div
                 v-if="briefs.length > 0"
-                v-for="(briefItem, index) in briefs"
+                v-for="(briefItem, index) in briefs" 
                 :key="briefItem.id"
                 class="col-md-4 col-lg-3 mb-4"
               >
