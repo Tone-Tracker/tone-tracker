@@ -236,7 +236,8 @@ const onInput = () => {
                                                 <tbody>
                                                     <tr v-if="campaigns.length > 0" v-for="(campaign, index) in campaigns" :key="campaign.id">
                                                         <td>
-                                                            <Avatar :image="envPath + campaign.path" class="mr-2" size="large" shape="circle" />
+                                                            <Avatar v-if="campaign.path" :image="envPath + campaign.path" class="mr-2" size="large" shape="circle" />
+                                                            <Avatar v-else :label="campaign.name[0]?.toUpperCase()" class="mr-2" size="large" shape="circle" />
                                                         </td>
                                                         <td v-if="!campaign.isEditing">{{ campaign.name }}</td>
                                                         <td v-else>

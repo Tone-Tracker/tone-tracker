@@ -116,10 +116,10 @@ const getSuppliertasks = () => {
     <table class="table table-dark table-borderless w-50 m-auto">
         <thead class="custom-table-bg">
           <tr>
-              <th class="text-white border-0">Client</th>
+              <th class="text-white border-0">Name</th>
               <th class="text-white border-0">Job number</th>
               <th class="text-white border-0">Name of quote</th>
-              <th class="text-white border-0">Amount</th>
+              <th class="text-white border-0">Location</th>
               <th class="border-0">
               <th class="text-white border-0">Action</th>
               </th>
@@ -127,10 +127,10 @@ const getSuppliertasks = () => {
         </thead>
         <tbody>
           <tr v-if="tasks?.length > 0" v-for="task in tasks" :key="task.id" class="custom-table-bg">
-              <td class="text-white border-0">Luc Belair</td>
+              <td class="text-white border-0">{{task?.taskDTO.name}}</td>
+              <td class="text-white border-0">{{task?.taskDTO.jobNumber}}</td>
               <td class="text-white border-0">JN_129</td>
-              <td class="text-white border-0">JN_129</td>
-              <td class="text-white border-0">JN_129</td>
+              <td class="text-white border-0">{{task?.taskDTO.address}}</td>
               <td class="border-0">
               <router-link :to="`/view-supplier-task/${task.id}`" class="btn btn-secondary btn-sm">View</router-link>
               </td>

@@ -59,8 +59,12 @@ export const useTask = defineStore('task', () => {
     const submitPODocument = (formData, config) => {
       return axiosInstance.post(`/api/taskAwards`,formData, config);
     }
+
+    const getTaskImages = (taskId, entity) => {
+      return axiosInstance.get(`/api/images/all/${entity}/${taskId}`);
+    }
   
-    return { submit, getSuppliers,getBids, submitPODocument,getAvailablePromotersByTaskId,
+    return { submit, getSuppliers,getBids, submitPODocument,getAvailablePromotersByTaskId,getTaskImages,
       getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask,addThirdPartiesToTask }
     
   })
