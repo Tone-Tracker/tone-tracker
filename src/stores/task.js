@@ -60,8 +60,8 @@ export const useTask = defineStore('task', () => {
       return axiosInstance.post(`/api/taskAwards`,formData, config);
     }
 
-    const getTaskImages = (taskId, entity) => {
-      return axiosInstance.get(`/api/images/all/${entity}/${taskId}`);
+    const getTaskImages = (taskId, entity,activeUserId) => {
+      return axiosInstance.get(`/api/images/all/${entity}/${taskId}/activeUser/${activeUserId}`);
     }
   
     return { submit, getSuppliers,getBids, submitPODocument,getAvailablePromotersByTaskId,getTaskImages,

@@ -39,9 +39,14 @@ const  getFiles = () => {
     })
   };
 
+  const envFile =  import.meta.env.VITE_AWS_S3_BUCKET;
+
   async function previewBase64PDF(file) {
     //open link in new tab
-    window.open(import.meta.env.VITE_S3_URL + file.path, '_blank');
+    // window.open(import.meta.env.VITE_S3_URL + file.path, '_blank');
+    base64PDFURL.value = import.meta.env.VITE_S3_URL + file.path;
+    console.log(envFile + file.path);
+    view_uploaded_file_visible.value = true;
 }
 
 onMounted(() => {
