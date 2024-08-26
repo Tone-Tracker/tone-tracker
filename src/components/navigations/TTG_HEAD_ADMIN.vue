@@ -66,6 +66,7 @@ const getRoleName = () => {
                             <ul class="nav-list">
                                 <li :class="{ 'active': currentRoute.path === '/jobs' }"><router-link to="/jobs"><span class="icon"><i class='bx bx-chat ps-3'></i></span> All</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/users' }"><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
+                                <!-- <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pe-3'></i> Learning & Teaching</router-link></li> -->
                                 <li :class="{ 'active': currentRoute.path === '/admin-contacts' }"><router-link to="/admin-contacts"><span class="icon ps-3"><i class='bx bxs-user-rectangle'></i></span> Admin</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/message-center' }"><a href="#"><span class="icon"><i class='bx bx-envelope ps-3'></i></span> Message center</a></li>
                                 <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><span class="icon"><i class='bx bx-send ps-3'></i></span> Sent</a></li>
