@@ -63,8 +63,11 @@ export const useTask = defineStore('task', () => {
     const getTaskImages = (taskId, entity) => {
       return axiosInstance.get(`/api/images/all/${entity}/${taskId}`);
     }
+    const getCheckins = () => {
+      return axiosInstance.get(`/api/checkins`);
+    }
   
     return { submit, getSuppliers,getBids, submitPODocument,getAvailablePromotersByTaskId,getTaskImages,
-      getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask,addThirdPartiesToTask }
+      getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask,addThirdPartiesToTask,getCheckins }
     
   })

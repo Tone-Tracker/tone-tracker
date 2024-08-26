@@ -28,14 +28,15 @@ const taskName = ref(route.query.name);
 const singleTask = ref({});
 const bids = ref([]);
 const availablePromoters = ref([]);
-
+const checkins = ref([]);
 const taskStore = useTask();
 const taskId = ref(route.params.id);
 
 onMounted(() => {
     getAvailablePromoters();
     getTask();
-    getBids();    
+    getBids(); 
+    getCheckins();   
 });
 
 const statuses = ref([
@@ -101,6 +102,23 @@ const getBids = async () => {
     
   });
 };
+
+
+const getCheckins = async () => {  
+  useTask.getCheckins().then(response => {
+    console.log("tasks", response.data);
+    checkins.value = response.data;
+  }).catch(error => {
+    //toaster.error("Error fetching users");
+    console.log(error);
+  }).finally(() => {
+    
+  });
+};
+
+
+
+
 
 
 
@@ -300,6 +318,57 @@ const onSubmitPO = () => {
             </div>
          
         </div>
+<div class="row col-lg-12 card card-bod">
+  <table class="table table-dark table-bordered">
+                                    <thead>
+                                        <tr class="table-dark-color">
+                                            <th>Checkin Date</th>
+                                            <th>Date</th>
+                                            <th>latitude</th>
+                                            <th>longitude</th>
+                                            <th>Task</th>
+                                            <th>User</th>
+                                            <th>promoter</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="checkins.length > 0" v-for="checkin in checkins" :key="checkin.id" class="table-dark-black">
+                                            <td>{{ checkin.checkinDate }}</td>
+                                            <td>{{ checkin.datetime }}</td>
+                                            <td  >
+                                                {{ checkin.latitude }}
+                                            </td>
+                                            <td>{{checkin.longitude}}</td>
+                                            <td>{{checkin.task}}</td>
+                                            <td>{{checkin.user}}</td>
+                                            <td>{{tcheckin.promoter}}</td>
+                                            <td>
+                                                <div class="d-flex order-actions">
+                                                    <SplitButton class="text-white" label="Actions" 
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													/>
+                                                  <ConfirmPopup></ConfirmPopup>
+                                                </div>
+                                                
+                                              </td>
+                                        </tr>
+                                        <tr v-else>
+                                            <td colspan="7" class="text-center text-danger">
+                                                No Checkins found.
+                                            </td>
+                                        </tr>
+                                       
+                                    </tbody>
+                                </table>
+</div>
+
+
+
+
+
+
 
         <!-- show promoters -->
         <div v-if="singleTask && singleTask.type === 'INHOUSE'">
@@ -338,7 +407,7 @@ const onSubmitPO = () => {
               </div>  
             </template>  
             <template v-else>
-              <div class="text-center mt-2 text-danger">No available Promoters on the job.</div>
+              <div class="text-center mt-2 text-danger">No available Promoters on the job. </div>
             </template> 
           </div>        
           <div class="row mt-6 row-cols-xl-9 gap-4">
