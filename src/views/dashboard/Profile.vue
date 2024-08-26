@@ -50,7 +50,7 @@ Date: 04/06/2024
                                 </div>
 
                                 <div class="profile-imgs mb-4">
-                                    <div class="d-flex">
+                                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
                                         <div v-if="images?.length > 0" v-for="image in images" :key="image.id">
                                         <div class="col-img">
                                             <div class="gallery ms-0">
