@@ -28,12 +28,12 @@ Date: 04/06/2024
                                             </template>
                                             <template #image>
                                                 <img 
-                                                src="/src/assets/images/gallery/10.png" 
+                                                src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" 
                                                 alt="image" width="350" />
                                             </template>
                                             <template #preview="slotProps">
                                                 <img 
-                                                src="/src/assets/images/gallery/10.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                                             </template>
                                         </Image>
                                         </div>

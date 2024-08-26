@@ -67,6 +67,7 @@ const getRoleName = () => {
                                 <li :class="{ 'active': currentRoute.path === '/jobs' }" ><router-link to="/jobs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Jobs</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>
+                                <!-- <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pe-3'></i> Learning & Teaching</router-link></li> -->
                                 <!-- <li><router-link to="/campaigns"><span class="icon">📄</span> Campaigns</router-link></li> -->
                                 <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase ps-3'></i></span> CRM</router-link></li>
                                 <!-- <li><router-link to="/upload"><span class="icon"><i class='bx bx-upload'></i></span> Upload contract</router-link></li> -->
