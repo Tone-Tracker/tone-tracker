@@ -50,7 +50,8 @@ Date: 04/06/2024
                                 </div>
 
                                 <div class="profile-imgs mb-4">
-                                    <div class="">
+                                    <div class="d-flex">
+                                        <div v-if="images?.length > 0" v-for="image in images" :key="image.id">
                                         <div class="col-img">
                                             <div class="gallery ms-0">
                                                 <div class="card flex justify-center">
@@ -60,17 +61,18 @@ Date: 04/06/2024
                                                         </template>
                                                         <template #image>
                                                             <img 
-                                                            src="../../assets/images/avatars/avatar-1.png" 
+                                                            :src="envPath + image.path" 
                                                             alt="image" width="250" />
                                                         </template>
                                                         <template #preview="slotProps">
                                                             <img 
-                                                            src="../../assets/images/avatars/avatar-1.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                            :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                                                         </template>
                                                     </Image>
                                                     </div>
 
                                             </div>
+                                        </div>
                                         </div>
                                      
                                     </div>
@@ -89,7 +91,7 @@ Date: 04/06/2024
 
                                 </div>
                                 <!-- Add Modal -->
-                                <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel"
+                                <div v-if="showModal" class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel"
                                     aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -149,12 +151,13 @@ Date: 04/06/2024
 
                                             <div class="modal-footer">
                                                 <div class="col-12 mt-4">
-                                                    <div class="d-grid">
-                                                        <button @click="onSubmit" class="btn maz-gradient-btn"
-                                                            type="button">
+                                                    <div class="d-grid mt-3">
+                                                        <button @click="onSubmit" class="btn maz-gradient-btn" type="button" 
+                                                           :disabled="showLoading"> 
+                                                            <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                                             Submit
                                                         </button>
-                                                    </div>
+                                                      </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -483,8 +486,11 @@ import InputText from 'primevue/inputtext';
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+
 onMounted(() => {
     getPromoterDetails();
+    getImages();
     if (taskId.value != null) {
         getListOtherPromoters();   
     }
@@ -502,6 +508,7 @@ const totalSizePercent = ref(0);
 
 const $primevue = usePrimeVue();
 const totalSize = ref(0);
+const showLoading = ref(false);
 
 const user = JSON.parse(authStore.user)
 const promoterData = ref({});
@@ -656,18 +663,17 @@ async function getResult() {
       result.blobURL = URL.createObjectURL(blob)
       //isShowModal.value = false
       const formData = new FormData();
-        formData.append('imageFile',  file);
-        formData.append('imageDTO',  file);
-        formData.append('entity', "promoters");
-        formData.append('entityId', promoterId.value);
-        formData.append('uploaderId', user.activeUserId);
+        formData.append('profilePicture',  file);
+        // formData.append('entity', "promoters");
+        // formData.append('entityId', promoterId.value);
+        // formData.append('uploaderId', user.activeUserId);
         const config = {
         useMultipartFormData: true // Add this flag to the request config
         };
         console.log(formData)
         // return
 
-        promoterStore.uploadSingleImage(formData, config).then(function (response) {
+        promoterStore.uploadSingleImage(user.id,formData, config).then(function (response) {
             console.log(response);
         })
 
@@ -766,8 +772,13 @@ const getFullName = () => {
     return `${promoterData.value.userDetails.firstName} ${promoterData.value.userDetails.lastName}`
 }
 
+const showModal = ref(true);
 const onSubmit = () => {
-
+    if(!files.value.length){
+      toaster.error("Please select at least one image");
+      return
+    }
+    showLoading.value = true;
     const formData = new FormData();
 
      let imageFiles = [];
@@ -776,20 +787,40 @@ const onSubmit = () => {
         // imageFiles.push(files.value[i]);
 	  formData.append('imageFiles', files.value[i]);
   }
-
-        //formData.append('imageFiles',  imageFiles);
-        // formData.append('imageDTO',  file);
         formData.append('entity', "promoters");
-        formData.append('entityId', promoterId.value);
+        formData.append('entityId', user.id);
         formData.append('uploaderId', user.activeUserId);
     const config = {
     useMultipartFormData: true // Add this flag to the request config
 };
     promoterStore.uploadImages(formData, config).then(function (response) {
-        console.log(response);
+        showModal = false;
+        document.querySelector('.modal-backdrop').remove();
+        showLoading.value = false;
+        files.value = [];
+        getImages();
+        toaster.success("Image uploaded successfully");
+    }).catch(function (error) {
+        toaster.error("Error in uploading image");
+        console.log(error);
+    }).finally(() => {
+        showLoading.value = false;
     })
 
 }
+const images = ref([]);
+const getImages = async () => {
+    promoterStore.getImages(user.id, 'promoters', user.activeUserId).then(response => {
+        console.log('images',response.data)
+	images.value = response.data;
+	console.log('images',images.value)
+  }).catch(error => {
+	toaster.error("Error fetching task");
+	console.log(error);
+  }).finally(() => {
+	//
+  });
+};
 
 
 

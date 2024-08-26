@@ -21,13 +21,17 @@ export const usePromoter = defineStore('promoter', () => {
       return axiosInstance.delete(`/api/promoters/${id}`);
     }
 
-    const uploadSingleImage = (formData, config) => {
-      return axiosInstance.post(`/api/images/single`, formData, config);
+    const uploadSingleImage = (userId,formData, config) => {
+      return axiosInstance.put(`/api/images/profile-picture/${userId}`, formData, config);
     }
 
     const uploadImages = (formData, config) => {
       return axiosInstance.post(`/api/images`, formData, config);
     }
+    const getImages = (userId, entity,activeUserId) => {
+      return axiosInstance.get(`/api/images/all/${entity}/${userId}/activeUser/${activeUserId}`);
+    }
+
     const  getTalentByTalentId = (id) => {
       return axiosInstance.get(`/api/promoters/${id}`);
     } 
@@ -51,6 +55,6 @@ export const usePromoter = defineStore('promoter', () => {
       return axiosInstance.post(`/api/promoters/experiences`,data);
     }
 
-    return { checkIn, addExperience,submitPromoter, getPromoters, updatePromoter, deletePromoter, submitRating, uploadSingleImage,
+    return { checkIn, addExperience,submitPromoter, getPromoters,getImages, updatePromoter, deletePromoter, submitRating, uploadSingleImage,
       uploadImages ,getTalentByTalentId,getTalentByUserId, getOtherPromotersByTaskId}
   })

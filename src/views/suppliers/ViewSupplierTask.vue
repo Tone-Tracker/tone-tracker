@@ -55,7 +55,7 @@ const getTask = async () => {
 
 const getTaskImages = async () => {
   taskStore.getTaskImages(taskId.value, 'task', user.activeUserId).then(response => {
-	images.value = response.data.content;
+	images.value = response.data;
 	console.log('images',images.value)
   }).catch(error => {
 	toaster.error("Error fetching task");

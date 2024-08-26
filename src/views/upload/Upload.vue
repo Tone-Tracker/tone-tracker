@@ -7,7 +7,6 @@ import SLAFileUpload from './SLAFileUpload.vue';
 import { useDocUpload } from '@/stores/docUpload';
 import useToaster from '@/composables/useToaster';
 import Drawer from 'primevue/drawer';
-import axios from 'axios';
 import PDF from 'pdf-vue3';
 
 
