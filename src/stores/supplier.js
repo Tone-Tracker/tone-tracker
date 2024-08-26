@@ -7,12 +7,19 @@ export const useSupplier = defineStore('supplier', () => {
       return axiosInstance.post(`/api/costs/thirdPartyId/${supplierId}`,data);
     }
 
-    const getcosts = () => {
-      return axiosInstance.get(`/api/costs`);
+    const getThirdParties = () => {
+      return axiosInstance.get(`/api/thirdParties`);
     }
-    const deleteDoc = (id) => {
-      return axiosInstance.delete(`/api/docs/${id}`);
+
+
+    const getThirdPartyTasks = (thirdPartyId) => {
+      return axiosInstance.get(`api/bids/thirdParty/${thirdPartyId}`);
     }
-    return { submit, getDocs, deleteDoc }
+
+    const submitBid = (data, bidId) => {
+      return axiosInstance.post(`/api/bids/${bidId}/costs`,data);
+    }
+
+    return { submit, getThirdParties,getThirdPartyTasks,submitBid }
   
   })  

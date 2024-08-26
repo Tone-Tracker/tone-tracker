@@ -53,6 +53,7 @@ const getRegions = async () => {
 };
 
 const form = reactive({
+  type: "ACTIVATION",
   name: "",
   budget: null,
   campaign: campaignId.value,
@@ -106,6 +107,7 @@ loading.value = true;
 
 const formData = new FormData();
 formData.append('briefFile', selectedFile.value);
+formData.append('type', "ACTIVATION");
 formData.append('ActivationDTO', new Blob([JSON.stringify(form)], { type: 'application/json' }));
 
 const config = {

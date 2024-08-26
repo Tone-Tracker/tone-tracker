@@ -5,7 +5,7 @@ import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
 import { usePlacesAutocomplete } from 'vue-use-places-autocomplete'
 import InputText from 'primevue/inputtext';
-import ConfirmPopup from 'primevue/confirmpopup';
+import URLrouter from '@/router';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import { useRoute } from 'vue-router';
@@ -21,6 +21,7 @@ import AutoComplete from 'primevue/autocomplete';
 import { watch } from 'vue';
 import { geocodeByAddress, getLatLng,geocodeByLatLng,geocodeByPlaceId } from 'vue-use-places-autocomplete'
 import { useAuth } from "@/stores/auth";
+import SplitButton from 'primevue/splitbutton';
 
 
 const route = useRoute();
@@ -189,7 +190,7 @@ const onPlannedStartDateChange = (event) => {
 
 const getTasksByPromoterId = async (promoterId) => {
   taskStore.getTasksByPromoterId(promoterId).then(response => {
-  console.log("tasks", response.data);
+  
     tasks.value = response.data;
   }).catch(error => {
     toaster.error("Error fetching tasks");
@@ -259,7 +260,8 @@ const openModal = (pos,task) => {
 
 const getStatus = (status) => {
     return statuses.value.find(stat => stat.code === status).name;
-}
+   
+ }
 
 const getType = (type) => {
     return types.value.find(typ => typ.code === type).name;
@@ -319,6 +321,23 @@ const deleteRecord = (event, task) => {
 };
 
 
+const promoterItems = (task) => [    {
+        label: 'View',
+        icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
+        command: () => {
+            URLrouter.push(`/view-talent-task/${task.id}`);
+        }
+    },
+	{
+        label: 'Add Images',
+        icon: 'bx bx-image-add fs-4 maz-gradient-txt',
+        command: () => {
+            URLrouter.push(`/talent/images/${task.id}`);
+        }
+    }
+    
+];
+
 
 
 </script>
@@ -340,10 +359,10 @@ const deleteRecord = (event, task) => {
                                         <tr class="table-dark-color">
                                             <th>Activation</th>
                                             <th>Task</th>
+                                            <th>Job Number</th>
                                             <th>Risk</th>
                                             <th>End date</th>
-                                            <th>Time Rec</th>
-                                            <th>Project Responsible</th>
+                                            <th>Location</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
                                         </tr>
@@ -351,28 +370,26 @@ const deleteRecord = (event, task) => {
                                     <tbody>
                                         <tr v-if="tasks.length > 0" v-for="task in tasks" :key="task.id" class="table-dark-black">
                                             <td>{{ activationName }}</td>
+                                            <td>{{ task.name }}</td>
                                             <td>{{ task.jobNumber }}</td>
                                             <td  :class="getClass(task.status)">
                                                 {{ getStatus(task.status) }}
-                                            </td>
+                                            </td> 
                                             <td>{{task.plannedEndDate}}</td>
-                                            <td>{{task.timeRecord}}</td>
-                                            <td>--To be Decided--</td>
+                                            <td>{{task.address}}</td>
                                             <td>{{task.completion}}</td>
                                             <td>
                                                 <div class="d-flex order-actions">
-                                                  <a href="javascript:;" >
-                                                    <i class='bx bxs-bullseye'></i>
-                                                  </a>
-                                                  
-                                                
-                                                  <ConfirmPopup></ConfirmPopup>
+                                                    <SplitButton class="text-white" label="Actions" 
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="promoterItems(task)"/>
                                                 </div>
                                                 
                                               </td>
                                         </tr>
                                         <tr v-else>
-                                            <td colspan="7" class="text-center text-danger">
+                                            <td colspan="8" class="text-center text-danger">
                                                 No tasks found.
                                             </td>
                                         </tr>

@@ -18,6 +18,8 @@ import Button from 'primevue/button';
 import { useUserStore } from '@/stores/userStore';
 import Badge from 'primevue/badge';
 import { useSizes } from '@/stores/sizes';
+import Popover from 'primevue/popover';
+import Select from 'primevue/select';
 
 const promoterStore = usePromoter();
 const toaster = useToaster();
@@ -39,7 +41,8 @@ const form = reactive({
 	client: null,
   topSize: null,
   height: null,
-  bio: null
+  bio: null,
+  gender: null
 });
 
 onMounted(() => {
@@ -56,6 +59,8 @@ const rules = {
 	height: { required },
 	topSize: { required },
   bio: { required },
+  gender: { required },
+
 };
 const v$ = useVuelidate(rules, form);
 
@@ -101,14 +106,30 @@ const onSubmit = async () => {
 
 const onInput = () => {
   if (searchInput.value) {
-    users.value = users.value.content.filter(user =>
-      user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchInput.value.toLowerCase())
-    );
+    const searchTerm = searchInput.value.toLowerCase();
+
+    promoters.value = promoters.value.filter((promoter) => {
+      const userDetails = promoter.userDetails;
+      const experiences = promoter.experiences.map(exp => `${exp.name} ${exp.description} ${exp.duration}`).join(" ");
+
+      return (
+        promoter.height?.toString().includes(searchTerm) ||
+        promoter.topSize?.toLowerCase().includes(searchTerm) ||
+        promoter.pantsSize?.toLowerCase().includes(searchTerm) ||
+        promoter.dressSize?.toLowerCase().includes(searchTerm) ||
+        promoter.bio?.toLowerCase().includes(searchTerm) ||
+        userDetails.firstName?.toLowerCase().includes(searchTerm) ||
+        userDetails.lastName?.toLowerCase().includes(searchTerm) ||
+        userDetails.email?.toLowerCase().includes(searchTerm) ||
+        userDetails.phone?.toLowerCase().includes(searchTerm) ||
+        experiences?.toLowerCase().includes(searchTerm)
+      );
+    });
   } else {
-    getAllPromoters();
+    getAllPromoters(); 
   }
 };
+
 
 
 const getAllSizes = async () => {
@@ -192,8 +213,10 @@ const openPosition = (pos,promoter) => {
       pantsSize: promoter.pantsSize,
       topSize: promoter.topSize,
       height: promoter.height,
-      bio: promoter.bio
-    })
+      bio: promoter.bio,
+      gender: promoter.gender
+    });
+    myGender.value = form.gender
   }else{
     isEdit.value = false
     Object.assign(form, {
@@ -203,7 +226,8 @@ const openPosition = (pos,promoter) => {
       pantsSize: null,
       topSize: null,
       height: null,
-      bio: null
+      bio: null,
+      gender: null
     })
   }
     position.value = pos;
@@ -281,6 +305,41 @@ const formatSize = (bytes) => {
 
     return `${formattedSize} ${sizes[i]}`;
 };
+
+const genders = ref([
+    { name: 'MALE', code: 'MALE' },
+    { name: 'FEMALE', code: 'FEMALE' },
+]);
+const myGender = ref();
+const genderChange = (event) => {
+    //  myGender.value = event.value.code;
+     form.gender = myGender.value.code
+}
+const getDressSize = (size) => {
+    if (!size) {return ""}
+    if (size === "SMALL") {
+      return "S"      
+    } else if (size === "MEDIUM") {
+      return "M"
+    } else if (size === "LARGE") {
+      return "L"
+    } else if (size === "X_LARGE") {
+      return "XL"
+    } else if (size === "XX_LARGE") {
+      return "XXL"
+    } else if (size === "XXX_LARGE") {
+      return "XXXL"
+    }else if (size === "X_SMALL") {
+      return "XS"
+    }
+}
+const op = ref();
+const selectedPromoter = ref(null);
+const toggle = (event, promoter) => {
+  selectedPromoter.value = promoter;
+    op.value.toggle(event);
+}
+
 </script>
 
 <template>
@@ -293,17 +352,17 @@ const formatSize = (bytes) => {
             <div class="d-lg-flex align-items-center mb-4 gap-3">
               <div class="position-relative">
                 <input v-model="searchInput" @input="onInput"
-                  type="text" class="form-control ps-5 radius-30" placeholder="Search">
+                  type="text" class="form-control ps-5" placeholder="Search">
                 <span class="position-absolute top-50 product-show translate-middle-y">
                   <i class="bx bx-search"></i>
                 </span>
               </div>
               <div class="ms-auto">
-                <a  @click="openPosition('top')" class="btn mr-2 maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                  <i class="bx bxs-plus-square"></i>Add Promoter</a>
-                  <label for="csv-file" class="mx-2 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+                <!-- <a  @click="openPosition('top')" class="btn mr-2 maz-gradient-btn radius-30 mt-2 mt-lg-0">
+                  <i class="bx bxs-plus-square"></i>Add Promoter</a> -->
+                  <!-- <label for="csv-file" class="mx-2 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
                     <i class="bx bx-import"></i>Upload CSV</label>
-                    <input type="file" id="csv-file" ref="file" hidden />
+                    <input type="file" id="csv-file" ref="file" hidden /> -->
               </div>
             </div>
             <div class="table-responsive">
@@ -312,6 +371,7 @@ const formatSize = (bytes) => {
                   <tr>
                     <th>Full Name</th>
                     <th>Height</th>
+                    <th>Gender</th>
                     <th>Dress Size</th>
                     <th>Pants Size</th>
                     <th>Top Size</th>
@@ -322,21 +382,23 @@ const formatSize = (bytes) => {
                 <tbody>
                   <tr v-if="promoters.length > 0" v-for="promoter in promoters" :key="promoter.id">
                     <td>{{ promoter.userDetails.firstName }}{{ promoter.userDetails.lastName }}</td>
-                    <td> <Badge :value="promoter.height" severity="success"></Badge></td>
-                    <td><Badge :value="promoter.dressSize" severity="info"></Badge></td>
+                    <td> <Badge :value="`${promoter.height} cm`" severity="success"></Badge></td>
+                    <td>{{ promoter.gender }}</td>
+                    <td><Badge :value="getDressSize(promoter.dressSize)" severity="info"></Badge></td>
                     <td><Badge :value="promoter.pantsSize" severity="warn"></Badge></td>
-                    <td><Badge :value="promoter.topSize" severity="danger"></Badge></td>
+                    <td><Badge :value="getDressSize(promoter.topSize)" severity="danger"></Badge></td>
                     <td>{{ truncateText(promoter.bio,60) }} 
-                      <span @click="openPosition('top',promoter)" class="cursor-pointer text-primary">See More</span>
+                      <span @click="toggle($event, promoter)" class="cursor-pointer text-primary">See More</span>
+                     
                     </td>
                     <td>
                       <div class="d-flex order-actions">
                         <a @click="openPosition('top',promoter)" href="javascript:;" >
                           <i class='bx bxs-edit'></i>
                         </a>
-                        <a @click="deleteRecord($event, promoter)" href="javascript:;" class="ms-3">
+                        <!-- <a @click="deleteRecord($event, promoter)" href="javascript:;" class="ms-3">
                           <i class='bx bxs-trash text-danger'></i>
-                        </a>
+                        </a> -->
                         <ConfirmPopup></ConfirmPopup>
                       </div>
 					  
@@ -350,19 +412,22 @@ const formatSize = (bytes) => {
             </div>
           </div>
         </div>
-
+        <Popover ref="op" appendTo="body">
+          <p>{{ selectedPromoter.bio }}</p>
+      </Popover>
       </div>
     </div>
 
 
-	<Dialog v-model:visible="visible" position="top" modal header="Add Promoter" :style="{ width: '50rem' }">
+	<Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter' " :style="{ width: '50rem' }">
     <div class="card flex justify-center">
-      <label for="input1" class="form-label">Choose User</label>
-       <AutoComplete v-model="user_id" forceSelection dropdown :suggestions="dropdownItems" 
-        @item-select="onUserChange" @complete="search" field="name" />
-         <div class="input-errors" v-for="error of v$.user.$errors" :key="error.$uid">
-         <div class="text-danger">User is required</div>
-          </div>
+      <label for="input1" class="form-label">Gender </label>
+      <Select v-model="myGender" :options="genders"  @change="genderChange"
+      optionLabel="name" placeholder="Select gender" 
+      checkmark :highlightOnSelect="false" class="w-full md:w-56" />
+      <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
+        <div class="text-danger">Gender is required</div>
+        </div>
      </div>
      <div class="row g-3">
       <div class="col-md-3">
@@ -376,9 +441,9 @@ const formatSize = (bytes) => {
         </div>
         <div class="col-md-3">
         <label for="pantsSize" class="form-label">Pants Size</label>
-        <select v-model="form.pantsSize" class="form-control" id="pantsSize" >
-          <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
-        </select>
+        
+        <input  v-model="form.pantsSize" class="form-control" id="pantsSize"   />
+        
         <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
           <div class="text-danger">Pants Size is required</div>
           </div>
@@ -409,60 +474,7 @@ const formatSize = (bytes) => {
 
       </div> 
 
-      <FileUpload name="demo[]" url="/api/upload" @upload="onTemplatedUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
-        <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-4">
-                <div class="d-flex gap-2">
-                    <Button @click="chooseCallback()"  class="btn btn-outline-secondary rounded">
-                        <i class='bx bx-images fs-4 text-white'></i>
-                    </Button>
-                    <!-- <Button @click="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" class="btn btn-outline-success rounded" :disabled="!files || files.length === 0">
-                        <i class='bx bx-cloud-upload fs-2'></i>
-                    </Button> -->
-                    <!-- <Button @click="clearCallback()" icon="bx bx-x-circle" class="btn btn-outline-danger rounded" :disabled="!files || files.length === 0">
-                      <i class='bx bx-x-circle fs-2'></i>
-                    </Button> -->
-                </div>
-            </div>
-        </template>
-        <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
-            <div class="d-flex flex-column gap-8 pt-1">
-                <div v-if="files.length > 0">
-                    <div class="d-flex flex-wrap gap-4">
-                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="p-8 rounded-border d-flex flex-column border border-surface align-items-center gap-4">
-                            <div>
-                                <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                            </div>
-                            <span class="fw-semibold text-ellipsis max-w-60 text-nowrap overflow-hidden">{{ file.name }}</span>
-                            <div>{{ formatSize(file.size) }}</div>
-                            <a  @click="onRemoveTemplatingFile(file, removeFileCallback, index)" class="cursor-pointer">
-                              <i class='bx bx-x-circle fs-2 text-danger'></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
     
-                <div v-if="uploadedFiles.length > 0">
-                    <h5>Completed</h5>
-                    <div class="d-flex flex-wrap gap-4">
-                        <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="p-8 rounded-border d-flex flex-column border border-surface align-items-center gap-4">
-                            <div>
-                                <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                            </div>
-                            <span class="fw-semibold text-ellipsis max-w-60 text-nowrap overflow-hidden">{{ file.name }}</span>
-                            <div>{{ formatSize(file.size) }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
-        <template #empty>
-            <div class="d-flex align-items-center justify-content-center flex-column">
-                <i class="pi pi-cloud-upload border-2 rounded-circle p-8 fs-1 text-muted" />
-                <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
-            </div>
-        </template>
-    </FileUpload>
     
     
     <div class="col-12 mt-4">
@@ -496,5 +508,8 @@ const formatSize = (bytes) => {
 .p-button {
   background: transparent;
   border: 0;
+}
+.p-popover.p-component {
+  left: 50rem !important;
 }
 </style>

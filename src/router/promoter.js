@@ -1,6 +1,7 @@
 import TalentTask from '@/views/talent/TalentTask.vue';
 import Promoter from '../views/promoters/Promoter.vue';
 import Profile from '@/views/dashboard/Profile.vue';
+import ViewTalentTask from '@/views/talent/ViewTalentTask.vue';
 export default [
     {
         path: '/promoters',
@@ -26,5 +27,11 @@ export default [
         path: '/talent/check',
         name: 'talent/check',
         component: TalentTask
+      },
+
+      {
+        path: '/view-talent-task/:id',
+        name: 'view-talent-task',
+        component: ViewTalentTask
       },
   ]

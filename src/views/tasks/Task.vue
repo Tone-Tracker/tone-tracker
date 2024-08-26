@@ -1,6 +1,7 @@
 <script setup>
 import moment from 'moment';
 import { useUserStore } from '@/stores/userStore';
+import { useSupplier } from '@/stores/supplier';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
@@ -30,7 +31,6 @@ import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 
 const route = useRoute();
-const envPath = import.meta.env.VITE_S3_URL;
 const userStore = useUserStore();
 const activationName = ref(route.query.name);
 const activation = ref(route.query.activation);
@@ -65,6 +65,7 @@ const { suggestions,loading,sessionToken,refreshSessionToken } = usePlacesAutoco
     const filterCities = (event) => {
       const searchQuery = event.query.toLowerCase();
       filteredCities.value = formattedSuggestions.value.filter(city => city.name.toLowerCase().includes(searchQuery));
+
     };
 
 watch(suggestions, (newSuggestions) => {
@@ -88,13 +89,13 @@ watch(suggestions, (newSuggestions) => {
        
     };
     const getThirdPartySuppliers = async () => {
-        userStore.getUserByRole('SUPPLIER').then(response => {
+        supplierStore.getThirdParties().then(response => {
             let result = response.data.content;
             console.log('result',result);
             if(result.length > 0) {
                 //map third party suppliers
                 thirdPartySuppliers.value = result.map(supplier => {
-                    return { name: supplier.firstName + ' ' + supplier.lastName, code: supplier.id }
+                    return { name: supplier.userDetails.firstName + ' ' + supplier.userDetails.lastName, code: supplier.id }
                 })
             }
         }).catch(error => {
@@ -108,8 +109,9 @@ watch(suggestions, (newSuggestions) => {
         // const { lat, lng } =  getLatLng(results);
         form.address = results[0].formatted_address;
         form.longitude = results[0].geometry.viewport.Hh.lo;
-        form.latitude = results[0].geometry.viewport.Yh.hi
+        form.latitude = results[0].geometry.viewport.ci.lo;
 
+        
 
     }
 
@@ -146,17 +148,42 @@ const rules = {
 	timeRecord: { required },
 	jobNumber: { required },
 	completion: { required },
-    activation: { required }
+    activation: { required },
+    address :  {required}
 };
 const v$ = useVuelidate(rules, form);
 
 const onSubmit = async () => {
+   
     const isFormValid = await v$.value.$validate();
     if (!isFormValid) {return;}
     showLoading.value = true;
+
+    const formData = new FormData();
+        formData.append('briefFile', briefFile.value);
+        formData.append('status', form.status);
+        formData.append('type', form.type);
+        formData.append('name', form.name);
+        formData.append('startDate', form.startDate);
+        formData.append('plannedEndDate', form.plannedEndDate);
+        formData.append('timeRecord', form.timeRecord);
+        formData.append('latitude', form.latitude);
+        formData.append('longitude', form.longitude);
+        formData.append('address', form.address);
+        formData.append('jobNumber', form.jobNumber);
+        formData.append('completion', form.completion);
+        formData.append('activation', form.activation);
+        formData.append('address', form.address);
+        formData.append('longitude', form.longitude);
+        formData.append('latitude', form.latitude);
+
+        const config = {
+            useMultipartFormData: true // Add this flag to the request config
+        };
     
     if(isEdit.value){
-        taskStore.update(taskId.value,form).then(function (response) {
+        
+        taskStore.update(taskId.value,form, config).then(function (response) {
             toaster.success("Task updated successfully");
             visible.value = false;
             getTasksByActivationId();
@@ -166,23 +193,6 @@ const onSubmit = async () => {
         });
     } 
     else {
-
-        const formData = new FormData();
-        formData.append('briefFile', briefFile.value);
-        formData.append('status', form.status);
-        formData.append('type', form.type);
-        formData.append('name', form.name);
-        formData.append('startDate', form.startDate);
-        formData.append('plannedEndDate', form.plannedEndDate);
-        formData.append('timeRecord', form.timeRecord);
-        formData.append('jobNumber', form.jobNumber);
-        formData.append('completion', form.completion);
-        formData.append('activation', form.activation);
-
-        const config = {
-            useMultipartFormData: true // Add this flag to the request config
-        };
-
         taskStore.submit(formData,config).then(function (response) {
             showLoading.value = false;
         toaster.success("Task created successfully");
@@ -239,7 +249,7 @@ const openModal = (pos,task) => {
     if(task) {//edit
     isEdit.value = true;
     taskId.value=task.id;
-    // form.activation = task.activation;
+    query.value = task.address;
     status.value = statuses.value.find(stat => stat.code === task.status);
     form.status = form.status = statuses.value.find(stat => stat.code === task.status).code;
 
@@ -253,7 +263,9 @@ const openModal = (pos,task) => {
      completion: task.completion,
      jobNumber: Number(task.jobNumber),
      name: task.name,
-    //  activation: task.activation
+     longitude: task.longitude,
+     latitude: task.latitude,
+     address: task.address
     })
   }else{
     
@@ -262,6 +274,9 @@ const openModal = (pos,task) => {
      type: null,
      startDate: null,
      plannedEndDate: null,
+     latitude: null,
+     longitude: null,
+     address: null,
      timeRecord: null,
      completion: null,
      jobNumber: null,
@@ -361,7 +376,7 @@ const taskItems = (task) => {
     const items = [
         {
             label: 'Edit',
-            icon: 'bx bxs-edit fs-4 text-success',
+            icon: 'bx bxs-edit fs-4 maz-gradient-txt',
             command: () => {
                 openModal('top', task);
             }
@@ -370,14 +385,14 @@ const taskItems = (task) => {
     
     {
         label: 'Add  Images',
-        icon: 'bx bx-images text-success fs-3',
+        icon: 'bx bx-images maz-gradient-txt fs-3',
         command: () => {
 			URLrouter.push(`/activation-images?activation=${task.id}`);
         }
     },
         {
             label: 'View',
-            icon: 'bx bx-bullseye fs-4 text-success',
+            icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
             command: () => {
                 URLrouter.push(`/tasks/${task.id}?name=${task.name}`);
             }
@@ -388,7 +403,7 @@ const taskItems = (task) => {
     if (task.type == 'THIRDPARTY') {
         items.push({
             label: 'Add Third Party Suppliers',
-            icon: 'bx bx-user-plus fs-4 text-success',
+            icon: 'bx bx-user-plus fs-4 maz-gradient-txt',
             command: () => {
                 toggleModal('top', task);
             }
@@ -419,12 +434,18 @@ const submitThirdParty = () => {
     selectedThirdPaties.value.forEach(supplier => {
         supplierArray.push(supplier.code)
     });
+    let myObj = {
+        "thirdParties": supplierArray,
+        "task": taskId.value
+    }
     showLoading.value = true;
-   taskStore.addThirdPartiesToTask(taskId.value, supplierArray).then(response => {
+   taskStore.addThirdPartiesToTask(myObj).then(response => {
        getTasksByActivationId();
+       toaster.success("Third party suppliers added successfully");
        showThirdPartyModal.value = false;
        showLoading.value = false;
    }).catch(error => {
+       toaster.error("Error adding third party suppliers");
        console.log(error);
    }).finally(() => {
        showLoading.value = false;
@@ -452,7 +473,7 @@ const submitThirdParty = () => {
                                             <th>Risk</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
-                                            <th>Time Record</th>
+                                            <th>Type</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
                                         </tr>

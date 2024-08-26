@@ -11,14 +11,14 @@
                     api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
                     style="width: 100%; height: 800px"
                     :center="center"
-                    :zoom="9"
+                    :zoom="6"
                     :options="{ styles: mapStyles }"
                   >
                     <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
                       <InfoWindow>
                         <div class="popup">
                           <div  class="text-danger fs-3 text-end" >
-                            <i @click="close = true" class='cursor-pointer bx bx-x'></i></div>
+                            <i @click="close=true" class='cursor-pointer bx bx-x'></i></div>
                           <div class="inner-container">
                             <h2>{{ location.title }}</h2>
                             <p>CPC: R 2.00</p>
@@ -47,7 +47,7 @@ import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
 import { useActivation } from '@/stores/activation';
 import { useAuth } from '@/stores/auth';
 
-const center = { lat: -25.6793642, lng: 28.1941785 };
+const center = { lat: -30.5595, lng: 22.9375 };
 const infowindow = ref(false); // Will be open when mounted
 
 const activeInfoWindow = ref(null);
@@ -69,10 +69,10 @@ watch(infowindow, (v) => {
 
 const activations = ref([]);
 let locations = ref([]);
+const tasks = ref([]);
 
 const getAllActivations = () => {
 
-  //get activations for Admins
   const user = JSON.parse(authStore.user);
  
   if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){  
@@ -80,22 +80,65 @@ const getAllActivations = () => {
       activations.value = response.data;
       //map activations
       locations.value = activations.value.map(activation => ({
-          lat: activation.centralPoint.latitude,
-          lng: activation.centralPoint.longitude,
+          lat: activation.centralLatitude,
+          lng: activation.centralLongitude,
           startDate: activation.startDate,
           endDate: activation.endDate,
           regionName: activation.regionName,
           title: activation.name
         }));
 
-        console.log('test location', locations);
+    })
+  } 
+
+  if(user.role == 'TTG_REGIONAL_MANAGER'){  
+    activationStore.getAllActivationsRegionalManager(user.activeUserId).then(function (response) {
+      activations.value = response.data;
+      //map activations
+      locations.value = activations.value.map(activation => ({
+          lat: activation.centralLatitude,
+          lng: activation.centralLongitude,
+          startDate: activation.startDate,
+          endDate: activation.endDate,
+          regionName: activation.regionName,
+          title: activation.name
+        }));
+
     })
   }
 
+  if(user.role == 'TTG_ACTIVATION_MANAGER'){  
+    activationStore.getAllActivationsManager(user.activeUserId).then(function (response) {
+      activations.value = response.data;
+      //map activations
+      locations.value = activations.value.map(activation => ({
+          lat: activation.centralLatitude,
+          lng: activation.centralLongitude,
+          startDate: activation.startDate,
+          endDate: activation.endDate,
+          regionName: activation.regionName,
+          title: activation.name
+        }));
 
+    })
+  }
 
+  if(user.role == 'TTG_TALENT' || user.role == 'SUPPLIER'){
+    activationStore.getAllTasksLocation(user.activeUserId, user.role).then(function (response) {
+      tasks.value = response.data;
+      //map activations
+      locations.value = tasks.value.map(task => ({
+          lat: task.latitude,
+          lng: task.longitude,
+          startDate: task.startDate,
+          endDate: task.plannedEndDate,
+          regionName: task.address,
+          title: task.name
+        }));
 
-  
+    })
+  }
+
 
 }
 

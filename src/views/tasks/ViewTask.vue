@@ -1,34 +1,42 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { usePromoter } from '@/stores/promoter';
 import { useTask } from '@/stores/task';
 import { useRoute, useRouter } from 'vue-router';
 import Image from 'primevue/image';
 import avatarGenerator from '@/helpers/avatarGenerator';
 import useToaster from '@/composables/useToaster';
+import SplitButton from 'primevue/splitbutton';
+import Drawer from 'primevue/drawer';
+import html2pdf from "html2pdf.js";
+import URLrouter from '@/router';
+import Dialog from 'primevue/dialog';
+import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
+import PDF from 'pdf-vue3';
 
 const route = useRoute();
 const router = useRouter();
 const toaster = useToaster();
-
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const isLoading = ref(false);
 
 const taskName = ref(route.query.name);
 
 const singleTask = ref({});
-const users = ref([]);
+const bids = ref([]);
 const availablePromoters = ref([]);
-
+const checkins = ref([]);
 const taskStore = useTask();
 const taskId = ref(route.params.id);
 
 onMounted(() => {
     getAvailablePromoters();
     getTask();
-    
+    getBids(); 
+    getCheckins();   
 });
 
 const statuses = ref([
@@ -68,10 +76,23 @@ const getTask = async () => {
   });
 };
 
+const getBids = async () => {
+  taskStore.getBids(taskId.value).then(response => {
+    console.log("bids", response.data);
+    bids.value = response.data
+    Object.assign(form, response.data);
+  }).catch(error => {
+    toaster.error("Error fetching task");
+    console.log(error);
+  }).finally(() => {
+    //
+  });
+};
+
 
 
   const getAvailablePromoters = async () => {  
-  taskStore.getTasksByPromoterId(taskId.value).then(response => {
+  taskStore.getAvailablePromotersByTaskId(taskId.value).then(response => {
     console.log("tasks", response.data);
     availablePromoters.value = response.data;
   }).catch(error => {
@@ -81,6 +102,23 @@ const getTask = async () => {
     
   });
 };
+
+
+const getCheckins = async () => {  
+  taskStore.getCheckins().then(response => {
+    console.log("tasks", response.data);
+    checkins.value = response.data;
+  }).catch(error => {
+    //toaster.error("Error fetching users");
+    console.log(error);
+  }).finally(() => {
+    
+  });
+};
+
+
+
+
 
 
 
@@ -125,14 +163,105 @@ const saveSelectedPromoters = () => {
     });
 }
 
+const items = (bid) => [    {
+        label: 'View Costing',
+        icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
+        command: () => {
+          previewCosting(bid);
+        }
+    },
+	{
+        label: 'Award Job',
+        icon: 'bx bxs-user-check fs-4 maz-gradient-txt',
+        command: () => {
+            awardJob();
+        }
+    },
+    {
+        label: 'View Supplier',
+        icon: 'bx bxs-user-pin fs-4 maz-gradient-txt',
+        command: () => {
+            URLrouter.push(`/profile/${bid.thirdPartyDTO?.id}`);
+        }
+    }
+];
 
+const costVisible = ref(false)
+const viewBid = ref(false)
+const previewCosting = (bid) => {
+  costVisible.value = true;
+  viewBid.value = bid
+}
+
+const totalAmount = computed(() => {
+  if(!viewBid.value?.costs) return 0
+  return viewBid.value.costs.reduce((sum, row) => sum + row.amount, 0);
+});
+
+const exportToPDF = () => {
+      html2pdf(document.getElementById("my-invoice"), {
+        margin: 1,
+       filename: `${viewBid.value.thirdPartyDTO?.userDetails.firstName} ${viewBid.value.thirdPartyDTO?.userDetails.lastName}_Costs.pdf`,
+      });
+    }
+    const showPoDocModal = ref(false)
+    const awardJob = () => {
+      costVisible.value = false;
+      showPoDocModal.value = true
+    }
+
+    const selectedFile = ref(null);
+    const showFilePreview = ref(true);
+ const onFileChange = (uploadedFile) => {
+    console.log('event', uploadedFile);
+    selectedFile.value = uploadedFile;
+}
+
+const showPreviewBriefSheet = ref(false) 
+const viewBriefFile = () => {
+  if(!singleTask.value?.path) return toaster.error("Brief file not uploaded");
+  
+  showPreviewBriefSheet.value = true
+}
+const onSubmitPO = () => {
+  if(!selectedFile.value) return toaster.error("Please select a file");
+  const awardFormData = new FormData();
+  awardFormData.append("poDocument", selectedFile.value);
+  awardFormData.append("taskId", taskId.value);
+  awardFormData.append("thirdPartyId", viewBid.value.thirdPartyDTO?.id);
+  awardFormData.append("awardDate", "2024-08-24");
+  awardFormData.append("jobStatus", "Planned");
+
+  const config = {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }
+  taskStore.submitPODocument(awardFormData,config).then(response => {
+    toaster.success("PO Document submitted successfully");
+    console.log("response", response);
+    getTask();
+    showPoDocModal.value = false
+  }).catch(error => {
+    toaster.error("Error submitting PO Document");
+    console.log(error);
+  })
+}
 </script>
 <template>
   <Layout>
     <!--start page wrapper -->
     <div class="page-wrapper">
       <div class="page-content">
-        <BreadCrumb :title="taskName" icon="bx bx-task" />
+        <div class="d-flex">
+          <BreadCrumb :title="taskName" icon="bx bx-task" />
+          <div class="ms-auto">
+							<button @click="viewBriefFile" type="button" class="btn mt-3 btn maz-gradient-btn" data-bs-toggle="dropdown">
+                View Brief File
+							</button>
+						</div>
+				
+        </div>
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -189,6 +318,48 @@ const saveSelectedPromoters = () => {
             </div>
          
         </div>
+<div class="row col-lg-12 card card-bod">
+  <table class="table table-dark table-bordered">
+                                    <thead>
+                                        <tr class="table-dark-color">
+                                            <th>Checkin Date</th>
+                                            <th>Date</th>
+                                            <th>latitude</th>
+                                            <th>longitude</th>
+                                            <th>Task</th>
+                                            <th>User</th>
+                                            <th>promoter</th>
+                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="checkins.length > 0" v-for="checkin in checkins" :key="checkin.id" class="table-dark-black">
+                                            <td>{{ checkin.checkinDate }}</td>
+                                            <td>{{ checkin.datetime }}</td>
+                                            <td  >
+                                                {{ checkin.latitude }}
+                                            </td>
+                                            <td>{{checkin.longitude}}</td>
+                                            <td>{{checkin.task}}</td>
+                                            <td>{{checkin.user}}</td>
+                                            <td>{{checkin.promoter}}</td>
+                                           
+                                        </tr>
+                                        <tr v-else>
+                                            <td colspan="7" class="text-center text-danger">
+                                                No Checkins found.
+                                            </td>
+                                        </tr>
+                                       
+                                    </tbody>
+                                </table>
+</div>
+
+
+
+
+
+
 
         <!-- show promoters -->
         <div v-if="singleTask && singleTask.type === 'INHOUSE'">
@@ -227,7 +398,7 @@ const saveSelectedPromoters = () => {
               </div>  
             </template>  
             <template v-else>
-              <div class="text-center mt-2 text-danger">No available Promoters on the job.</div>
+              <div class="text-center mt-2 text-danger">No available Promoters on the job. </div>
             </template> 
           </div>        
           <div class="row mt-6 row-cols-xl-9 gap-4">
@@ -300,8 +471,20 @@ const saveSelectedPromoters = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td colspan="8">Test</td>
+              <tr v-if="bids?.length > 0" v-for="bid in bids" :key="bid.id">
+                <td>{{ bid.taskDTO?.activationDetails?.name }}</td>
+                <td>{{ bid.taskDTO?.name }}</td>
+                <td>{{ bid.taskDTO?.status }}</td>
+                <td>{{ bid.taskDTO?.startDate }}</td>
+                <td>{{ bid.taskDTO?.plannedEndDate }}</td>
+                <td>{{ bid.taskDTO?.timeRecord }}</td>
+                <td>{{ bid.taskDTO?.completion }}</td>
+                <td>
+                  <SplitButton class="text-white" label="Actions" 
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="items(bid)"/>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -310,7 +493,114 @@ const saveSelectedPromoters = () => {
 
       </div>
     </div>
-    <!--start switcher-->
+    <div class="card flex justify-center">
+      <Drawer v-model:visible="costVisible" position="right" 
+      :header="viewBid?.thirdPartyDTO?.userDetails.firstName + ' ' + viewBid?.thirdPartyDTO?.userDetails.lastName + ' Costs'" style="width: 40%">
+        <div class="card">
+					<div class="card-body">
+						<div id="invoice">
+							<div class="toolbar hidden-print">
+                
+								<div class="d-flex gap-3 justify-content-end">
+                  <button @click="awardJob" :disabled="totalAmount == '00'" type="button" class="d-flex  justify-content-center align-items-center btn maz-gradient-btn">
+                    <i class='bx bxs-user-check' ></i><span>Award Job</span></button>
+                  <button @click="exportToPDF" type="button" class="d-flex  justify-content-center align-items-center btn maz-gradient-btn">
+                    <i class='bx bxs-download' ></i>
+                    <span>Download</span>
+                  </button>
+								</div>
+								<hr>
+							</div>
+							<div class="invoice overflow-auto" id="my-invoice" style="background-color: #fff; color: black" >
+								<div style="min-width: 600px">
+									<header>
+										<div class="row">
+											<div class="col">
+												<a href="javascript:;">
+													<!-- <img src="assets/images/logo-icon.png" width="80" alt=""> -->
+												</a>
+											</div>
+											<div class="col company-details">
+												<h2 class="name" >
+									<a target="_blank" href="javascript:;">
+									{{ viewBid?.thirdPartyDTO?.userDetails.firstName + ' ' + viewBid?.thirdPartyDTO?.userDetails.lastName }}
+									</a>
+								</h2>
+												<!-- <div>110 Caldon Drive, Kempton Park</div> -->
+												<div>{{ viewBid?.thirdPartyDTO?.userDetails.phone }}</div>
+												<div>{{ viewBid?.thirdPartyDTO?.userDetails.email }}</div>
+											</div>
+										</div>
+									</header>
+									<main>
+										<table class="table table-hover table-striped">
+											<thead>
+												<tr>
+													<th class="text-primary">#</th>
+													<th class="text-left text-dark">Item</th>
+													<th class="text-right text-dark">Rate</th>
+													<th class="text-right text-dark">Quantity</th>
+													<th class="text-right text-dark">TOTAL</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr v-if="viewBid.costs?.length > 0" v-for="(row, index) in viewBid.costs" :key="row + index">
+													<td class="text-dark">{{ index + 1 }}</td>
+													<td class="text-left text-dark">
+														<h3>
+										      </h3>
+											<a target="_blank" href="javascript:;">
+                              {{ row.item }}
+									   </a>
+                    </td>
+													<td class="text-dark">{{ row.rate }}</td>
+													<td class="text-dark">{{ row.quantity }}</td>
+													<td class="text-dark fw-bold">{{ row.amount }}</td>
+												</tr>
+                        <tr v-else>
+                          <td colspan="7" class="text-danger text-center">No Cost Added</td>
+                        </tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="2 text-dark"></td>
+													<td colspan="2 text-dark ">TOTAL</td>
+                          <!-- calculate total amount here -->                           
+													<td>R {{ viewBid.costs?.length > 0 ? totalAmount : '00' }}</td>
+												</tr>
+											</tfoot>
+										</table>
+									
+                    
+									</main>
+								</div>
+								<!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
+								<div>
+
+                </div>
+							</div>
+						</div>
+					</div>
+				</div>
+      </Drawer>
+
+      <Dialog v-model:visible="showPoDocModal" position="top" modal header="Upload PO Document" :style="{ width: '30rem' }">
+        <div class="card flex justify-center">
+          <FileUploadGeneric 
+          :showFilePreview="showFilePreview" 
+          accept="application/pdf" 
+          fileType="pdf" 
+          @fileUploaded="onFileChange"
+          />
+          <button @click="onSubmitPO" type="button" class="btn w-100 maz-gradient-btn">Submit</button>
+        </div>
+    </Dialog>
+
+    <Drawer v-model:visible="showPreviewBriefSheet" position="right" header="Preview Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+      <PDF :src="envPath + singleTask?.path" />
+       <!-- {{singleTask?.path}} -->
+  </Drawer>
+  </div>
   </Layout>
 </template>
 
@@ -448,6 +738,11 @@ div.desc {
 html.dark-theme .table td,
 html.dark-theme .table th {
   border-color: #141414;
+}
+
+html.dark-theme a {
+  color: black;
+  text-decoration: none;
 }
 
 @media (max-width: 768px) {

@@ -28,12 +28,12 @@ Date: 04/06/2024
                                             </template>
                                             <template #image>
                                                 <img 
-                                                src="/src/assets/images/gallery/10.png" 
+                                                src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" 
                                                 alt="image" width="350" />
                                             </template>
                                             <template #preview="slotProps">
                                                 <img 
-                                                src="/src/assets/images/gallery/10.png" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                                             </template>
                                         </Image>
                                         </div>
@@ -648,7 +648,7 @@ async function getResult() {
       if (!blob) return
 
       const file = await cropper.getFile({
-        fileName: 'mazisi',
+        fileName: `${promoterData.value.userDetails.firstName}_${promoterData.value.userDetails.lastName}`
       })
 
       console.log({ base64, blob, file })
@@ -656,14 +656,18 @@ async function getResult() {
       result.blobURL = URL.createObjectURL(blob)
       //isShowModal.value = false
       const formData = new FormData();
-        formData.append('pic',  file);
+        formData.append('imageFile',  file);
+        formData.append('imageDTO',  file);
+        formData.append('entity', "promoters");
+        formData.append('entityId', promoterId.value);
+        formData.append('uploaderId', user.activeUserId);
         const config = {
         useMultipartFormData: true // Add this flag to the request config
         };
         console.log(formData)
         // return
 
-        promoterStore.uploadPromoterImages(formData, config).then(function (response) {
+        promoterStore.uploadSingleImage(formData, config).then(function (response) {
             console.log(response);
         })
 
@@ -765,20 +769,23 @@ const getFullName = () => {
 const onSubmit = () => {
 
     const formData = new FormData();
-        //   formData.append('images', files.value);
 
-          files.value.forEach((file) => {
-        formData.append('files[]', file); // Append each file to the FormData
-    });
+     let imageFiles = [];
 
-     // Inspect the FormData contents
-     for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-    }
+    for (let i = 0; i < files.value.length; i++) {
+        // imageFiles.push(files.value[i]);
+	  formData.append('imageFiles', files.value[i]);
+  }
+
+        //formData.append('imageFiles',  imageFiles);
+        // formData.append('imageDTO',  file);
+        formData.append('entity', "promoters");
+        formData.append('entityId', promoterId.value);
+        formData.append('uploaderId', user.activeUserId);
     const config = {
     useMultipartFormData: true // Add this flag to the request config
 };
-    promoterStore.uploadPromoterImages(formData, config).then(function (response) {
+    promoterStore.uploadImages(formData, config).then(function (response) {
         console.log(response);
     })
 
