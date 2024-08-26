@@ -329,7 +329,7 @@ const onSubmitPO = () => {
                                             <th>Task</th>
                                             <th>User</th>
                                             <th>promoter</th>
-                                            <!-- <th>Actions</th> -->
+                                           
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -343,16 +343,7 @@ const onSubmitPO = () => {
                                             <td>{{checkin.task}}</td>
                                             <td>{{checkin.user}}</td>
                                             <td>{{checkin.promoter}}</td>
-                                            <!-- <td>
-                                                <div class="d-flex order-actions">
-                                                    <SplitButton class="text-white" label="Actions" 
-													icon="bx bx-cog fs-4" 
-													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
-													/>
-                                                  <ConfirmPopup></ConfirmPopup>
-                                                </div>
-                                                
-                                              </td> -->
+                                           
                                         </tr>
                                         <tr v-else>
                                             <td colspan="7" class="text-center text-danger">
