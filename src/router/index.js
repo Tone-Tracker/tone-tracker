@@ -108,7 +108,7 @@ const router = createRouter({
     },
 
     {
-      path: '/profile/:id',
+      path: '/profile/:id/:userId',
       name: 'view-profile',
       component: Profile
     },

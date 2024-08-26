@@ -244,7 +244,7 @@ Date: 04/06/2024
                                         <!-- start comments -->
                                         <div v-for="rating in promoterData.ratings" :key="rating.id" class="comment">
                                                 <div class="user">
-                                                    <img src="https://via.placeholder.com/40" alt="User avatar">
+                                                    <img :src="envPath + userInfo?.path" alt="User avatar">
                                                     <div>
                                                         <div class="user-name">{{ rating.firstName + " "+ rating.lastName }}</div>
                                                         <Rating v-model="rating.rating" />
@@ -485,10 +485,12 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
+import { useUserStore } from '@/stores/userStore';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 onMounted(() => {
+    getUser();
     getPromoterDetails();
     getImages();
     if (taskId.value != null) {
@@ -501,10 +503,13 @@ const authStore = useAuth();
 const commentStore = useComments();
 const route = useRoute();
 const toaster = useToaster();
+const userStore = useUserStore();
 const files = ref([]);
 const promoterId = ref(route.params.id);
+const userIdParam = ref(route.params.userId);
 const taskId = ref(route.query.taskId);
 const totalSizePercent = ref(0);
+
 
 const $primevue = usePrimeVue();
 const totalSize = ref(0);
@@ -655,7 +660,7 @@ async function getResult() {
       if (!blob) return
 
       const file = await cropper.getFile({
-        fileName: `${promoterData.value.userDetails.firstName}_${promoterData.value.userDetails.lastName}`
+        fileName: `${userInfo.value.firstName}_${userInfo.value.lastName}`
       })
 
       console.log({ base64, blob, file })
@@ -702,9 +707,21 @@ async function getResult() {
       console.log('Cropper is ready.')
     }
 
+const userInfo = ref(null);
+const getUser = () => {
+    userStore.getUser(userIdParam.value).then(function (response) {
+        console.log('userInfo',response);
+        userInfo.value = response.data;
+        myBio.value = response.data.bio;
+  }).catch(function (error) {
+    toaster.error("Error fetching profile");
+    console.log(error);
+  });
+}
 
 const getPromoterDetails = () => {
     promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
+        console.log('Fuck',response.data);
         promoterData.value = response.data;
         myBio.value = response.data.bio;
   }).catch(function (error) {
@@ -766,13 +783,13 @@ const formatSize = (bytes) => {
 
 
 const getFullName = () => {
-    if(!promoterData.value.userDetails) {
+    if(!userInfo.value) {
         return '';
     }
-    return `${promoterData.value.userDetails.firstName} ${promoterData.value.userDetails.lastName}`
+    return `${userInfo.value.firstName} ${userInfo.value.lastName}`
 }
 
-const showModal = ref(true);
+let showModal = ref(true);
 const onSubmit = () => {
     if(!files.value.length){
       toaster.error("Please select at least one image");

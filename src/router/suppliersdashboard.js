@@ -1,6 +1,7 @@
 import SupplierBrief from "@/views/suppliers/SupplierBrief.vue";
 import SuppliersDashboard from "../views/suppliers/SuppliersDashboard.vue";
 import ViewSupplierTask from "@/views/suppliers/ViewSupplierTask.vue";
+import SupplierAwarded from "@/views/suppliers/SupplierAwarded.vue";
 
 export default [
     {
@@ -17,5 +18,10 @@ export default [
         path: '/view-supplier-task/:id',
         name: 'view-supplier-task',
         component: ViewSupplierTask
+    },
+    {
+        path: '/supplier-awarded-tasks',
+        name: 'supplier-awarded-tasks',
+        component: SupplierAwarded
     }
 ]

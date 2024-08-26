@@ -140,19 +140,20 @@ const canAddMaterial = () => {
             <div class="page-content">
                 <BreadCrumb title="Teaching and Learning" icon="" />
                 <p>Procedures when running an activation</p>
-                <div>
+                <div class="d-flex">
                     <p>Duties for promoters</p>
+                    <div v-if="canAddMaterial()" class="ms-auto mb-2">
+                        <!-- Button to trigger the dialog -->
+                        <button @click="showAddTrainingMaterialDialog" class="btn maz-gradient-btn mt-2 mt-lg-0">
+                        <i class="bx bxs-plus-square"></i>Add Training Material
+                        </button>
+                    </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
 
-                        <div v-if="canAddMaterial()" class="ms-auto">
-                            <!-- Button to trigger the dialog -->
-                            <button @click="showAddTrainingMaterialDialog" class="btn maz-gradient-btn mt-2 mt-lg-0">
-                            <i class="bx bxs-plus-square"></i>Add Training Material
-                            </button>
-                        </div>
+                        
 
                         <div class="row">
                             <div v-for="material in materials" :key="material.id" class="col-md-3 col-lg-2">

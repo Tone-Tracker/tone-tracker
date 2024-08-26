@@ -22,7 +22,7 @@ export const usePromoter = defineStore('promoter', () => {
     }
 
     const uploadSingleImage = (userId,formData, config) => {
-      return axiosInstance.put(`/api/images/profile-picture/${userId}`, formData, config);
+      return axiosInstance.put(`/api/users/profile-picture/${userId}`, formData, config);
     }
 
     const uploadImages = (formData, config) => {
@@ -35,6 +35,8 @@ export const usePromoter = defineStore('promoter', () => {
     const  getTalentByTalentId = (id) => {
       return axiosInstance.get(`/api/promoters/${id}`);
     } 
+
+    
     
     const getOtherPromotersByTaskId = (taskId) => {
       return axiosInstance.get(`/api/promoters/task/${taskId}`)
