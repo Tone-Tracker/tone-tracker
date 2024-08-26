@@ -5,17 +5,16 @@ import { onMounted, ref, watch } from "vue";
 import { useBrief } from "@/stores/brief";
 import { useRoute } from "vue-router";
 import Drawer from "primevue/drawer";
-// import PDF from "pdf-vue3";
 import { isClient } from "@vueuse/shared";
 import { useShare } from "@vueuse/core";
 import PDF from "pdf-vue3";
-// import PDF from 'pdf-vue3';
 
 const route = useRoute();
 const briefStore = useBrief();
 let briefs = ref([]);
 let brief = ref({});
 let searchInput = ref('');
+
 const briefId = ref(route.query.brief?.id || null);
 
 watch(
@@ -67,11 +66,6 @@ const onInput = () => {
 };
 
 
-
-
-
-
-
 const getBriefById = async () => {
   try {
     const response = await briefStore.getBriefById(briefId.value);
@@ -85,7 +79,7 @@ const docName = ref(false);
 const filePath = ref(null);
 
 const downloadDocument = (brief) => {
-  filePath.value = import.meta.env.VITE_S3_URL + brief.path;
+  filePath.value = import.meta.env.VITE_AWS_S3_BUCKET + brief.path;
   visible.value = true;
   docName.value = brief.activationName;
 };
@@ -104,12 +98,13 @@ const download = () => {
 };
 
 const shareFile = ref(null);
+
 const options = ref({
   title: shareFile.value ? shareFile?.value.name : "",
   text: shareFile.value ? shareFile?.value.name : "",
   url:
     isClient && shareFile.value
-      ? import.meta.env.VITE_S3_URL + shareFile?.value.path
+      ? import.meta.env.VITE_AWS_S3_BUCKET + shareFile?.value.path
       : "",
 });
 
@@ -153,7 +148,7 @@ function startShare(file) {
             <div class="row">
               <div
                 v-if="briefs.length > 0"
-                v-for="(briefItem, index) in briefs"
+                v-for="(briefItem, index) in briefs" 
                 :key="briefItem.id"
                 class="col-md-4 col-lg-3 mb-4"
               >

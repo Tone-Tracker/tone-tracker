@@ -7,7 +7,7 @@ export const useBrief = defineStore('brief', () => {
       return axiosInstance.post(`/api/briefs`,formData, config);
     }
 
-    const getBriefs = () => {
+    const getBriefs = (userRole, activeUserId) => {
       return axiosInstance.get(`/api/briefs`);
     }
 

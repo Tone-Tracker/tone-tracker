@@ -82,7 +82,6 @@ onMounted(() => {
 
 //get campaign details
 const getCampaignDetails = () => {
-
 	campaignStore.getCampaignName(campaignId.value).then(function (response) {
 		campaignDetails.value = response.data;
 	}).catch(function (error) {

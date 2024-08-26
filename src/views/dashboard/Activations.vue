@@ -73,7 +73,6 @@ const tasks = ref([]);
 
 const getAllActivations = () => {
 
-  
   const user = JSON.parse(authStore.user);
  
   if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){  

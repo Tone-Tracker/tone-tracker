@@ -54,7 +54,7 @@ const getTask = async () => {
 };
 
 const getTaskImages = async () => {
-  taskStore.getTaskImages(taskId.value, 'task').then(response => {
+  taskStore.getTaskImages(taskId.value, 'task', user.activeUserId).then(response => {
 	images.value = response.data.content;
 	console.log('images',images.value)
   }).catch(error => {
