@@ -105,7 +105,7 @@ const getBids = async () => {
 
 
 const getCheckins = async () => {  
-  useTask.getCheckins().then(response => {
+  taskStore.getCheckins().then(response => {
     console.log("tasks", response.data);
     checkins.value = response.data;
   }).catch(error => {
@@ -329,7 +329,7 @@ const onSubmitPO = () => {
                                             <th>Task</th>
                                             <th>User</th>
                                             <th>promoter</th>
-                                            <th>Actions</th>
+                                            <!-- <th>Actions</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -342,8 +342,8 @@ const onSubmitPO = () => {
                                             <td>{{checkin.longitude}}</td>
                                             <td>{{checkin.task}}</td>
                                             <td>{{checkin.user}}</td>
-                                            <td>{{tcheckin.promoter}}</td>
-                                            <td>
+                                            <td>{{checkin.promoter}}</td>
+                                            <!-- <td>
                                                 <div class="d-flex order-actions">
                                                     <SplitButton class="text-white" label="Actions" 
 													icon="bx bx-cog fs-4" 
@@ -352,7 +352,7 @@ const onSubmitPO = () => {
                                                   <ConfirmPopup></ConfirmPopup>
                                                 </div>
                                                 
-                                              </td>
+                                              </td> -->
                                         </tr>
                                         <tr v-else>
                                             <td colspan="7" class="text-center text-danger">
