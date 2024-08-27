@@ -21,6 +21,7 @@ const authStore = useAuth();
 const route = useRoute();
 const promoterStore = usePromoter();
 const showLoading = ref(false);
+const isBid = ref(route.query.isBid);
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const toaster = useToaster();
@@ -170,8 +171,9 @@ showLoading.value = true;
 					<div class="breadcrumb-title pe-3">View Task</div>
 					
 					<div class="ms-auto">
-						<div class="btn-group">
-							<button @click="showImagesSheet = true" type="button" class="btn btn maz-gradient-btn">Add Images</button>
+						<div class="btn-group ms-auto">
+							<button v-if="isBid == false" @click="showImagesSheet = true" type="button" class="btn btn maz-gradient-btn mx-2">Add Images</button>
+							<router-link :to="`/add-supplier-costing/${bid?.id}`" class="btn btn maz-gradient-btn">Add Costing</router-link>
 						</div>
 					</div>
 				</div>
