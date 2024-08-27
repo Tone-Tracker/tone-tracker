@@ -8,6 +8,7 @@ const supplierStore = useSupplier();
 const authStore = useAuth();
 
 const user = JSON.parse(authStore.user);
+
 const tasks = ref([]);
 
 onMounted(() => {
@@ -132,7 +133,7 @@ const getSuppliertasks = () => {
               <td class="text-white border-0">JN_129</td>
               <td class="text-white border-0">{{task?.taskDTO.address}}</td>
               <td class="border-0">
-              <router-link :to="`/view-supplier-task/${task.id}`" class="btn btn-secondary btn-sm">View</router-link>
+              <router-link :to="`/view-supplier-task/${task.id}?isBid=false`" class="btn btn-secondary btn-sm">View</router-link>
               </td>
           </tr>
           <tr v-else>
