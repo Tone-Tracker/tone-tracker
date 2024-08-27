@@ -114,7 +114,7 @@ const submitFile = () => {
     :class="{ 'file-drop-zone-active': isDragging }"
   >
     <div class="text-center">
-      <i class='bx bx-cloud-upload fs-1' ></i>
+      <i class='bx bx-cloud-upload text-dark fs-1' ></i>
       <p class="mt-2">Drag and drop your file here or <label for="nda-fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
       <input id="nda-fileInput" type="file" :accept="accept" class="d-none" @change="onFileChange">
     </div>

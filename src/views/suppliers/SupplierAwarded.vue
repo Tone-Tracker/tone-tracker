@@ -87,7 +87,7 @@ const getClass = (status) => {
                                     <th>Start Date</th>
                                     <th>End Date</th>
                                     <th>Status</th>
-                                    <th>Address</th>
+                                    <th>Address</th>  
                                     <th>Region</th>
                                 </tr>
                             </thead>
@@ -99,7 +99,7 @@ const getClass = (status) => {
                                     <td>{{task.taskDetails.plannedEndDate}}</td>
                                     <td :class="getClass(task.taskDetails.status)">{{getStatus(task.taskDetails.status)}}</td>
                                     <td>{{task.taskDetails.address}}</td>
-                                    <td><button class="btn maz-gradient-btn">View</button></td>
+                                    <td><router-link :to="`/view-awarded-tasks/${task.id}?isBid=true`" type="button" class="btn maz-gradient-btn">View</router-link></td>
                                 </tr>
                                 <tr v-else>
                                     <td colspan="7" class="text-center">No records found</td>
