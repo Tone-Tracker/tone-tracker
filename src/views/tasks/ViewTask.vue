@@ -318,17 +318,17 @@ const onSubmitPO = () => {
             </div>
          
         </div>
-<div class="row col-lg-12 card card-bod">
-  <table class="table table-dark table-bordered">
+                        <div class="row col-lg-12 card card-bod">
+                          <table class="table table-dark table-bordered">
                                     <thead>
                                         <tr class="table-dark-color">
                                             <th>Checkin Date</th>
                                             <th>Date</th>
-                                            <th>latitude</th>
-                                            <th>longitude</th>
+                                            <th>Latitude</th>
+                                            <th>Longitude</th>
                                             <th>Task</th>
                                             <th>User</th>
-                                            <th>promoter</th>
+                                            <th>Promoter</th>
                                            
                                         </tr>
                                     </thead>

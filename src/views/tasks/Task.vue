@@ -32,8 +32,10 @@ import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 const route = useRoute();
 const userStore = useUserStore();
+const supplierStore = useSupplier();
 const activationName = ref(route.query.name);
 const activation = ref(route.query.activation);
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const visible = ref(false);
 const showThirdPartyModal = ref(false);

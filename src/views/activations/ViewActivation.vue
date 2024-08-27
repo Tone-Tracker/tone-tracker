@@ -8,7 +8,7 @@ import { useTask } from '@/stores/task';
 import Image from 'primevue/image';
 
 
-const envPath = import.meta.env.VITE_S3_URL;
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const taskStore = useTask();
 const route = useRoute();
 const activationStore = useActivation();
