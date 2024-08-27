@@ -73,7 +73,7 @@ const showImagesSheet = ref(false);
 const previewBase64PDF = () => {
         visible.value = true;
 		fullPath.value = import.meta.env.VITE_AWS_S3_BUCKET + singleTask.value.path;
-   console.log(fullPath.value)
+        console.log(fullPath.value)
 }
 const download = () => {
      try {
@@ -206,7 +206,7 @@ showLoading.value = true;
 									</div>
 									<div class="col-md-6">
 										<label for="input6" class="form-label">End Date</label>
-										<input type="text" class="form-control" id="input6" :value="singleTask?.plannedEndtext">
+										<input type="text" class="form-control" id="input6" :value="singleTask?.plannedEndDate">
 									</div>
 
 									<div class="col-md-6">
@@ -240,7 +240,7 @@ showLoading.value = true;
                                           </div>
 									</div>
 								</form>
-								<div class="text-danger">No brief document uploaded.</div>
+								<div v-else class="text-danger">No brief document uploaded.</div>
 							</div>
 						</div>
 					</div>

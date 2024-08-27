@@ -65,7 +65,8 @@ watch(() => props.modalData, (newVal) => {
     dressSize: modalData.value.dressSize || 'X_LARGE',
     height: modalData.value.height || '',
     role: modalData.value.role || '',
-    bio: modalData.value.bio || ''
+    bio: modalData.value.bio || '',
+    name: "Supplier",
   });
 }, { deep: true });
 
