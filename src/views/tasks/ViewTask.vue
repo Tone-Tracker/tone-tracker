@@ -164,9 +164,11 @@ const saveSelectedPromoters = () => {
 }
 
 const items = (bid) => [    {
+  
         label: 'View Costing',
         icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
         command: () => {
+          console.log("bid", bid);
           previewCosting(bid);
         }
     },
@@ -181,7 +183,7 @@ const items = (bid) => [    {
         label: 'View Supplier',
         icon: 'bx bxs-user-pin fs-4 maz-gradient-txt',
         command: () => {
-            URLrouter.push(`/profile/${bid.thirdPartyDTO?.id}`);
+            URLrouter.push(`/profile/${bid.thirdPartyDTO?.id}/${bid.thirdPartyDTO?.user}`);
         }
     }
 ];
