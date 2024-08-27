@@ -72,13 +72,13 @@ const showImagesSheet = ref(false);
 
 const previewBase64PDF = () => {
         visible.value = true;
-		fullPath.value = import.meta.env.VITE_S3_URL + singleTask.value.path;
+		fullPath.value = import.meta.env.VITE_AWS_S3_BUCKET + singleTask.value.path;
    console.log(fullPath.value)
 }
 const download = () => {
      try {
         const link = document.createElement('a');
-        link.href = import.meta.env.VITE_S3_URL + singleTask.value.path;
+        link.href = import.meta.env.VITE_AWS_S3_BUCKET + singleTask.value.path;
         link.setAttribute('download', '');
         document.body.appendChild(link);
         link.click();

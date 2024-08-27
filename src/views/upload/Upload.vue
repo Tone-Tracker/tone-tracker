@@ -42,8 +42,8 @@ const  getFiles = () => {
 
   async function previewBase64PDF(file) {
     //open link in new tab
-    // window.open(import.meta.env.VITE_S3_URL + file.path, '_blank');
-    base64PDFURL.value = import.meta.env.VITE_S3_URL + file.path;
+   
+    base64PDFURL.value = import.meta.env.VITE_AWS_S3_BUCKET + file.path;
     console.log(envFile + file.path);
     view_uploaded_file_visible.value = true;
 }

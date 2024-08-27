@@ -48,6 +48,7 @@ const form = reactive({
   pantsSize: "",
   dressSize: "",
   height: "",
+  bio: ""
 });
 
 watch(() => props.modalData, (newVal) => {
@@ -64,6 +65,7 @@ watch(() => props.modalData, (newVal) => {
     dressSize: modalData.value.dressSize || 'X_LARGE',
     height: modalData.value.height || '',
     role: modalData.value.role || '',
+    bio: modalData.value.bio || ''
   });
 }, { deep: true });
 

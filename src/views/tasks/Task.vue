@@ -32,6 +32,7 @@ import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 const route = useRoute();
 const userStore = useUserStore();
+const supplierStore  = useSupplier();
 const activationName = ref(route.query.name);
 const activation = ref(route.query.activation);
 

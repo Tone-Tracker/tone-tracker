@@ -54,6 +54,7 @@ const getRoleName = () => {
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul class="nav-list pt-2">
+                                <li :class="{ 'active': currentRoute.path === '/activations' }"><router-link to="/activations"><span class="icon"><i class='bx bx-chat ps-3'></i></span> Map</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat ps-3'></i></span> All</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>

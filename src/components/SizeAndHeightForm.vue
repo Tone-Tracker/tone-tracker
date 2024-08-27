@@ -8,9 +8,7 @@
       </div>
       <div class="col-md-3">
         <label for="pantsSize" class="form-label">Pants Size</label>
-        <select v-model="form.pantsSize" class="form-control" id="pantsSize">
-          <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
-        </select>
+        <input v-model="form.pantsSize" type="number" class="form-control" id="height">
       </div>
       <div class="col-md-3">
         <label for="top-size" class="form-label">Top Size</label>
@@ -22,6 +20,10 @@
         <label for="height" class="form-label">Height</label>
         <input v-model="form.height" type="number" class="form-control" id="height">
       </div>
+      <div class="col-md-12">
+        <label for="bio" class="form-label">Bio</label>
+        <textarea v-model="form.bio" class="form-control" id="bio" rows="4"></textarea>
+    </div>
     </div>
   </template>
   
