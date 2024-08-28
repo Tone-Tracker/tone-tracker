@@ -164,6 +164,7 @@ const saveSelectedPromoters = () => {
 }
 
 const items = (bid) => [    {
+  
         label: 'View Costing',
         icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
         command: () => {
@@ -181,7 +182,7 @@ const items = (bid) => [    {
         label: 'View Supplier',
         icon: 'bx bxs-user-pin fs-4 maz-gradient-txt',
         command: () => {
-            URLrouter.push(`/profile/${bid.thirdPartyDTO?.id}`);
+            URLrouter.push(`/profile/${bid.thirdPartyDTO?.id}/${bid.thirdPartyDTO?.user}`);
         }
     }
 ];
@@ -318,17 +319,17 @@ const onSubmitPO = () => {
             </div>
          
         </div>
-<div class="row col-lg-12 card card-bod">
-  <table class="table table-dark table-bordered">
+                        <div class="row col-lg-12 card card-bod">
+                          <table class="table table-dark table-bordered">
                                     <thead>
                                         <tr class="table-dark-color">
                                             <th>Checkin Date</th>
                                             <th>Date</th>
-                                            <th>latitude</th>
-                                            <th>longitude</th>
+                                            <th>Latitude</th>
+                                            <th>Longitude</th>
                                             <th>Task</th>
                                             <th>User</th>
-                                            <th>promoter</th>
+                                            <th>Promoter</th>
                                            
                                         </tr>
                                     </thead>
@@ -376,13 +377,13 @@ const onSubmitPO = () => {
                         <i class='bx bx-search-alt-2'></i>
                       </template>
                       <template #image>
-                          <img v-if="promoter.userDetails.image != null"
-                          :src="promoter.userDetails.image ? promoter.userDetails.image : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
+                          <img 
+                          :src="promoter.userDetails.path ? promoter.userDetails.path : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
                           alt="image" width="250" />
                       </template>
                       <template #preview="slotProps">
                         <img 
-                          :src="promoter.userDetails.image ? promoter.userDetails.image : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
+                          :src="promoter.userDetails.path ? promoter.userDetails.path : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
                           alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                       </template>
                     </Image>

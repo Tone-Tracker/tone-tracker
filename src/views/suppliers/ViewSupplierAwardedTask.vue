@@ -14,10 +14,17 @@ import useToaster from '@/composables/useToaster';
 import { usePromoter } from "@/stores/promoter";
 import Badge from "primevue/badge";
 import Image from "primevue/image";
+import { useSupplier } from "@/stores/supplier";
+import FileUploadGeneric from "../upload/FileUploadGeneric.vue";
+import SignedNDAFileUpload from "./SignedNDAFileUpload.vue";
+import SignedSLAFileUpload from "./SignedSLAFileUpload.vue";
+import Dialog from "primevue/dialog";
+import SplitButton from "primevue/splitbutton";
 
 
 const taskStore = useTask();
 const authStore = useAuth();
+const supplierStore = useSupplier();
 const route = useRoute();
 const promoterStore = usePromoter();
 const showLoading = ref(false);
@@ -36,11 +43,11 @@ onMounted(() => {
   if(!user.activeUserId){
     return
   }
-  getTask();
+  getThirdPartyAwardedTasks();
 });
 const bid = ref(null)
-const getTask = async () => {
-  taskStore.getTask(taskId.value).then(response => {
+const getThirdPartyAwardedTasks = async () => {
+	supplierStore.getThirdPartyAwardedTasks(taskId.value).then(response => {
 	console.log('singleTask',response.data)
     singleTask.value = response.data;
     // singleTask.value = response.data?.taskDTO;
@@ -57,7 +64,6 @@ const getTask = async () => {
 const getTaskImages = async () => {
   taskStore.getTaskImages(taskId.value, 'task', user.activeUserId).then(response => {
 	images.value = response.data;
-	console.log('images',images.value)
   }).catch(error => {
 	toaster.error("Error fetching task");
 	console.log(error);
@@ -70,6 +76,7 @@ const getTaskImages = async () => {
 const visible = ref(false);
 const fullPath = ref(null);
 const showImagesSheet = ref(false);
+const showDocumentSheet = ref(false);
 
 const previewBase64PDF = () => {
         visible.value = true;
@@ -160,6 +167,105 @@ showLoading.value = true;
 	  showLoading.value = false;
   })
 };
+
+const NDAFile = ref(null)
+const SLAFile = ref(null)
+const onSubmitSLA = () => {
+  if(!SLAFile.value){
+	  toaster.error("Please upload SLA document");
+	  return
+  }
+      const formData = new FormData();
+      showLoading.value = true;
+	  formData.append('SLAFile', SLAFile.value); 
+		formData.append('title ', 'SLA');
+		// formData.append('signedAt ', new Date());
+		formData.append('templateId', taskId.value);
+		formData.append('signedById', user.activeUserId);
+
+  const config = {
+	  useMultipartFormData: true // Add this flag to the request config
+	   };
+	   supplierStore.uploadSignedDocuments(formData, config).then(function (response) {
+	  getTaskImages();
+	  toaster.success("Documents uploaded successfully");
+	  showImagesSheet.value = false;
+	  showLoading.value = false;
+	  files.value = [];
+
+  }).catch(error => {
+	  toaster.error("Error uploading documents");
+	  console.log(error);
+  }).finally(() => {
+	  showLoading.value = false;
+  })
+};
+const onSubmitNDA = () => {
+	if(!NDAFile.value){
+		toaster.error("Please upload NDA document");
+		return
+	}
+      const formData = new FormData();
+      showLoading.value = true;
+	  formData.append('NDAFile', NDAFile.value);
+		formData.append('title ', 'NDA');
+		formData.append('templateId', taskId.value);
+		formData.append('signedById', user.activeUserId);
+
+  const config = {
+	  useMultipartFormData: true // Add this flag to the request config
+	   };
+  supplierStore.uploadSignedDocuments(formData, config).then(function (response) {
+	  getTaskImages();
+	  toaster.success("NDA document uploaded successfully");
+	  showImagesSheet.value = false;
+	  showLoading.value = false;
+	  files.value = [];
+
+  }).catch(error => {
+	  toaster.error("Error uploading documents");
+	  console.log(error);
+  }).finally(() => {
+	  showLoading.value = false;
+  })
+};
+
+const showFilePreview = ref(true);
+
+const onSLAFileChange = (uploadedFile) => {
+	SLAFile.value = null;
+    SLAFile.value = uploadedFile;
+}
+
+const onNDAFileChange = (uploadedFile) => {
+	NDAFile.value = null;
+    NDAFile.value = uploadedFile;
+}
+const showSLADocumentSheet = ref(false);
+const showNDADocumentSheet = ref(false);
+const items = [
+    {
+        label: 'Signed NDA Document',
+        icon: 'bx bxs-file-doc fs-4 text-white',
+        command: () => {
+            showNDADocumentSheet.value = true;
+        }
+    },
+	{
+        label: 'Signed SLA Document',
+        icon: 'bx bxs-file-doc fs-4 text-white',
+        command: () => {
+            showSLADocumentSheet.value = true;
+        }
+    },
+	{
+        label: 'Images',
+        icon: 'bx bx-image-add fs-4 text-white',
+        command: () => {
+            showImagesSheet.value = true;
+        }
+    }
+];
 </script>
 
 <template>
@@ -172,21 +278,26 @@ showLoading.value = true;
 					
 					<div class="ms-auto">
 						<div class="btn-group ms-auto">
-							<button v-if="isBid == false" @click="showImagesSheet = true" type="button" class="btn btn maz-gradient-btn mx-2">Add Images</button>
-							<router-link :to="`/add-supplier-costing/${bid?.id}`" class="btn btn maz-gradient-btn">Add Costing</router-link>
+							<SplitButton class="text-white" label="Upload" 
+							icon="bx bx-cloud-upload fs-4" 
+							dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+							:model="items"
+							/>
+							<!-- <button  @click="showDocumentSheet = true" type="button" class="btn btn maz-gradient-btn mx-2">Upload Signed NDA and SLA</button>
+							<button @click="showImagesSheet = true" type="button" class="btn btn maz-gradient-btn mx-2">Add Images</button> -->
 						</div>
 					</div>
 				</div>
 				<!--end breadcrumb-->
 				<div class="row">
 					<div class="col-xl-8">
-						
+				
 						<div class="card">
 							<div class="card-body p-4">
 								<div class="row g-3">
 									<div class="col-md-6">
 										<label for="input1" class="form-label">Name</label>
-										<input type="text" class="form-control" id="input1" :value="singleTask?.name">
+										<input type="text" class="form-control" id="input1" :value="singleTask?.taskDetails?.name">
 									</div>
 
 									
@@ -196,24 +307,24 @@ showLoading.value = true;
 									</div>
 									<div class="col-md-6">
 										<label for="input3" class="form-label">Status</label>
-										<input type="text" class="form-control" id="input3" :value="singleTask?.status">
+										<input type="text" class="form-control" id="input3" :value="singleTask?.taskDetails?.status">
 									</div>
 									<div class="col-md-6">
 										<label for="input4" class="form-label">Address</label>
-										<input type="email" class="form-control" id="input4" :value="singleTask?.address">
+										<input type="email" class="form-control" id="input4" :value="singleTask?.taskDetails?.address">
 									</div>
 									<div class="col-md-6">
 										<label for="input5" class="form-label">Start Date</label>
-										<input type="text" class="form-control" id="input5" :value="singleTask?.startDate">
+										<input type="text" class="form-control" id="input5" :value="singleTask?.taskDetails?.startDate">
 									</div>
 									<div class="col-md-6">
 										<label for="input6" class="form-label">End Date</label>
-										<input type="text" class="form-control" id="input6" :value="singleTask?.plannedEndDate">
+										<input type="text" class="form-control" id="input6" :value="singleTask?.taskDetails?.plannedEndDate">
 									</div>
 
 									<div class="col-md-6">
 										<label for="input6" class="form-label">Time Record</label>
-										<input type="text" class="form-control" id="input6" :value="singleTask?.timeRecord">
+										<input type="text" class="form-control" id="input6" :value="singleTask?.taskDetails?.timeRecord">
 									</div>
 									
 								</div>
@@ -223,7 +334,7 @@ showLoading.value = true;
 
 
                     <div class="col-xl-4 ">
-						<h4>Documents</h4>
+						<h4>PO Documents</h4>
 						<div class="card">
 							<div class="card-body p-4">
 								<form class="row g-3" v-if="singleTask?.path">
@@ -293,7 +404,7 @@ showLoading.value = true;
 
 
 				<div class="card flex justify-center">
-					<Drawer v-model:visible="visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+					<Drawer v-model:visible="visible" position="right" header="View PO Document" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
 						<button @click="download" class="btn w-100 maz-gradient-btn mb-2" type="button">
 							<i class='bx bxs-download'></i>
 							Download</button>
@@ -358,6 +469,44 @@ showLoading.value = true;
 							  </div>
 						</div>
 					</Drawer>
+
+					<Dialog v-model:visible="showNDADocumentSheet" position="top" header="Upload Signed NDA Document" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+						<div>
+								<SignedNDAFileUpload
+								:showFilePreview="showFilePreview" 
+								accept="application/pdf" 
+								fileType="pdf" 
+								@fileUploaded="onNDAFileChange"
+								/>
+					    </div>
+						<div class="ms-auto">
+							<a @click="onSubmitNDA" href="javascript:;" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+								<div v-if="showLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+								</div>
+								{{ showLoading ?  '' : 'Submit' }}
+							</a>
+						</div>
+					</Dialog>
+
+					<Dialog v-model:visible="showSLADocumentSheet" position="top" header="Upload Signed SLA Document" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+						
+						<div>
+								<SignedSLAFileUpload
+								:showFilePreview="showFilePreview" 
+								accept="application/pdf" 
+								fileType="pdf" 
+								@SLAFileUploaded="onSLAFileChange"
+								/>
+					    </div>
+						<div class="ms-auto">
+							<a @click="onSubmitSLA" href="javascript:;" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+								<div v-if="showLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+								</div>
+								{{ showLoading ?  '' : 'Submit' }}
+							</a>
+						</div>
+					</Dialog>
+						
 					
 				</div>
 

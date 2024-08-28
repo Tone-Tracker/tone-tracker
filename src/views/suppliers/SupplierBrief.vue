@@ -5,9 +5,6 @@ import { onMounted, ref, watch } from 'vue';
 import { useBrief } from '@/stores/brief';
 import { useRoute } from 'vue-router';
 import Drawer from 'primevue/drawer';
-// import PDF from "pdf-vue3";
-import { isClient } from '@vueuse/shared'
-import { useShare } from '@vueuse/core'
 import PDF from 'pdf-vue3';
 import Tabs from 'primevue/tabs';
 import TabList from 'primevue/tablist';
@@ -15,10 +12,14 @@ import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
 import Button from 'primevue/button';
 import Tab from 'primevue/tab';
-// import PDF from 'pdf-vue3';
+import { useAuth } from '@/stores/auth';
 
 const route = useRoute();
 const briefStore = useBrief();
+const authStore = useAuth();
+
+const user = JSON.parse(authStore.user);
+
 let briefs = ref([]);
 let brief = ref({});
 const briefId = ref(route.query.brief?.id || null);
@@ -31,6 +32,13 @@ watch(() => route.query.brief?.id, (newId) => {
 });
 
 onMounted(() => {
+//     if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){	
+//         getBriefs();
+// } else if(user.role == 'TTG_ACTIVATION_MANAGER'){
+//     getBriefs(user.role, user.activeUserId);
+// } else if('TTG_REGIONAL_MANAGER'){
+//     getAllActivations(user.role, regionId.value);
+// }
     getBriefs();
     if (briefId.value) {
         getBriefById();
@@ -58,28 +66,18 @@ const getBriefById = async () => {
 };
 const visible = ref(false);
 const docName = ref(false);
+const filePath = ref(null);
 
-const downloadDocument = (brief) => {
+const viewDocument = (brief) => {
     visible.value = true;
+    filePath.value = import.meta.env.VITE_AWS_S3_BUCKET + brief.path;
     docName.value = brief.activationName;
-    // try {
-    //     const response = await briefStore.getDocument(path);
-    //     const url = window.URL.createObjectURL(new Blob([response.data]));
-    //     const link = document.createElement('a');
-    //     link.href = url;
-    //     link.setAttribute('download', 'document.pdf'); // Adjust filename and type as needed
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     link.remove();
-    // } catch (error) {
-    //     console.error('Error downloading document:', error);
-    // }
 };
 
-const download = (url) => {
+const download = () => {
      try {
         const link = document.createElement('a');
-        link.href = url;
+        link.href = filePath.value;
         link.setAttribute('download', '');
         document.body.appendChild(link);
         link.click();
@@ -89,17 +87,20 @@ const download = (url) => {
     }
 };
 
-const options = ref({
-  title: 'TTG Activations',
-  text: 'Share TTG Activations',
-  url: isClient ? 'https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf' : '',
-})
-
-const { share, isSupported } = useShare(options)
-
-function startShare() {
-  return share().catch(err => err)
+const downloadNow = (brief) => {
+    filePath.value = import.meta.env.VITE_AWS_S3_BUCKET + brief.path;
+    try {
+        const link = document.createElement('a');
+        link.href = filePath.value;
+        link.setAttribute('download', '');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error downloading document:', error);
+    }
 }
+
 const value = ref('0');
 </script>
 <template>
@@ -132,8 +133,8 @@ const value = ref('0');
                                                         <img src="https://www.iconpacks.net/icons/1/free-document-icon-901-thumb.png" class="bg-white" />
                                                     </div>
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <button class="btn bg-black text-white w-100 rounded-0 btn-outline-light" @click="downloadDocument(briefItem)">View</button>
-                                                        <button @click="startShare()" type="button" class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light">Download</button>
+                                                        <button class="btn bg-black text-white w-100 rounded-0 btn-outline-light" @click="viewDocument(briefItem)">View</button>
+                                                        <button @click="downloadNow(briefItem)" type="button" class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light">Download</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -148,8 +149,8 @@ const value = ref('0');
                                                         <img src="https://www.iconpacks.net/icons/1/free-document-icon-901-thumb.png" class="bg-white" />
                                                     </div>
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <button class="btn bg-black text-white w-100 rounded-0 btn-outline-light" @click="downloadDocument(briefItem)">View</button>
-                                                        <button @click="startShare()" type="button" class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light">Download</button>
+                                                        <button class="btn bg-black text-white w-100 rounded-0 btn-outline-light" @click="viewDocument(briefItem)">View</button>
+                                                        <button @click="downloadNow(briefItem)" type="button" class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light">Download</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -166,8 +167,8 @@ const value = ref('0');
         </div>
         <div class="card flex justify-center">
             <Drawer v-model:visible="visible" position="right" :header="docName" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
-                <PDF src="ttps://ttg-dev-bucket.s3.amazonaws.com/brief/03569_promofaccestoinfoact2.pdf" />
-                <a @click="download('https://ttg-dev-bucket.s3.amazonaws.com/brief/03569_promofaccestoinfoact2.pdf')" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+                <PDF :src="filePath" />
+                <a @click="download" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
                     
                    <i class='bx bxs-download'></i>
                    Download
