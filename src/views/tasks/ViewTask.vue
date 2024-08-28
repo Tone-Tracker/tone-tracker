@@ -298,7 +298,7 @@ const onSubmitPO = () => {
       <div class="page-content">
         <div class="d-flex">
           <BreadCrumb :title="taskName" icon="bx bx-task" />
-          <div class="ms-auto">
+          <div  class="ms-auto">
 							<button @click="viewBriefFile" type="button" class="btn mt-3 btn maz-gradient-btn" data-bs-toggle="dropdown">
                 View Brief File
 							</button>
