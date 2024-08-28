@@ -59,6 +59,10 @@ export const useUserStore = defineStore('useUserStore', () => {
     const deleteUser = (id) => {
       return axiosInstance.delete(`/api/users/${id}`);
     }
+
+    const updateProfile = (userId, data) => {
+      return axiosInstance.put(`/api/users/${userId}`,data);
+    }
       
-    return { submitUser,createStaffMember,getUsers,updateUser,deleteUser,getUser,getUserByRole }
+    return { updateProfile,submitUser,createStaffMember,getUsers,updateUser,deleteUser,getUser,getUserByRole }
   })

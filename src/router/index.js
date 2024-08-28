@@ -29,6 +29,7 @@ import resertpassword from './resertpassword';
 import ActivationManagerDashboard from '@/views/dashboard/activation-manager/ActivationManagerDashboard.vue';
 import suppliersdashboard from './suppliersdashboard';
 import costs from './costs';
+import SupplierProfile from '@/views/dashboard/SupplierProfile.vue';
 
 
 
@@ -116,6 +117,11 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: Profile
+    },
+    {
+      path: '/supplier-profile/:id/:userId',
+      name: 'supplier-profile',
+      component: SupplierProfile
     },
 
 
