@@ -177,7 +177,7 @@ const onSubmitSLA = () => {
   }
       const formData = new FormData();
       showLoading.value = true;
-	  formData.append('SLAFile', SLAFile.value); 
+	  formData.append('documentFile', SLAFile.value); 
 		formData.append('title ', 'SLA');
 		// formData.append('signedAt ', new Date());
 		formData.append('templateId', taskId.value);
@@ -188,6 +188,7 @@ const onSubmitSLA = () => {
 	   };
 	   supplierStore.uploadSignedDocuments(formData, config).then(function (response) {
 	  getTaskImages();
+	  showSLADocumentSheet.value = false;
 	  toaster.success("Documents uploaded successfully");
 	  showImagesSheet.value = false;
 	  showLoading.value = false;
@@ -207,7 +208,7 @@ const onSubmitNDA = () => {
 	}
       const formData = new FormData();
       showLoading.value = true;
-	  formData.append('NDAFile', NDAFile.value);
+	  formData.append('documentFile', NDAFile.value);
 		formData.append('title ', 'NDA');
 		formData.append('templateId', taskId.value);
 		formData.append('signedById', user.activeUserId);
@@ -217,6 +218,7 @@ const onSubmitNDA = () => {
 	   };
   supplierStore.uploadSignedDocuments(formData, config).then(function (response) {
 	  getTaskImages();
+	  showNDADocumentSheet.value = false;
 	  toaster.success("NDA document uploaded successfully");
 	  showImagesSheet.value = false;
 	  showLoading.value = false;
@@ -356,6 +358,7 @@ const items = [
 								<div v-else class="text-danger">No brief document uploaded.</div>
 							</div>
 						</div>
+						
 					</div>
 				</div>
 				

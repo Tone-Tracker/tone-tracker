@@ -24,6 +24,11 @@ const showLoading = ref(false);
 function onFileChange(event) {
   let selectedFile = null;
   selectedFile = event.target.files[0];
+  if (!selectedFile.name.includes(".pdf")) {
+		selectedFile = null;
+		toaster.error("Only pdf files are allowed");
+		return;
+	}
   if (selectedFile) {
     file.value = selectedFile;
     emit('fileUploaded', selectedFile);
