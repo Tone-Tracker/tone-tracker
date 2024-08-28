@@ -13,6 +13,7 @@ import TTG_SUPPLIERS from './navigations/TTG_SUPPLIERS.vue';
 const auth = useAuth();
 const user = JSON.parse(auth.user);
 
+
 const getUserRole = (role) => {
     return user.role == role
 };

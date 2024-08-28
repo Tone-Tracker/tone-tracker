@@ -159,7 +159,7 @@ Date: 04/06/2024
 										</div>
 									</div>
 									<div class="row mb-3">
-										<label for="email" class="col-sm-3 col-form-label ">Name <i v-tooltip.top="'Update your business name if you are a business.'" class='bx bx-info-circle' ></i></label>
+										<label for="email" class="col-sm-3 col-form-label">Name</label>
 										<div class="col-sm-9">
 											<div class="position-relative input-icon">
 												<input type="text" class="form-control" id="email" v-model="form.name" placeholder="Business Name">
@@ -168,12 +168,12 @@ Date: 04/06/2024
 										</div>
 									</div>
                                     <div class="row mb-3">
-										<label for="description" class="col-sm-3 col-form-label">Description <i v-tooltip.top="'Describe your business if you are a business.'" class='bx bx-info-circle' ></i></label>
+										<label for="bio" class="col-sm-3 col-form-label">Bio</label>
 										<div class="col-sm-9">
-											<textarea class="form-control" id="description" rows="3" v-model="form.description" placeholder="Business Description"></textarea>
+											<textarea class="form-control" id="bio" rows="3" v-model="form.bio" placeholder="Your Bio"></textarea>
 										</div>
 									</div>
-									<div class="row" v-if="isMyProfile()">
+									<div class="row">
 										<label class="col-sm-3 col-form-label"></label>
 										<div class="col-sm-9">
 											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -189,51 +189,7 @@ Date: 04/06/2024
                         </div>
                        <!-- fgfgfg -->
                     </div>
-                    <div class="col-lg-3">
-                       <div>
-                        <h4 class="mb-2 ml-2">Signed NDA Document</h4>
-						<div  class="d-flex w-100"> 
-							<div v-if="ndaFile"  class="file-details mt-2 w-100 p-1 border rounded d-flex align-items-center">
-                                <div class="file-icon me-3" v-tooltip.bottom="'View NDA File'">
-                                  <img @click="previewDocs('nda')"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
-                                </div>
-                                <div class="file-info">
-                                  <!-- <p class="m-0 text-white">Brief.pdf</p> -->
-                                </div>
-                                <div class="ms-auto">
-                                    <i @click="download('nda')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download NDA'" ></i>
-                                 
-                                </div>
-                              </div>
-							<!-- <div v-else class="text-danger">No signed NDA document.</div> -->
-							
-						</div>
-                       </div>
-                       <div>
-                        <h4 class="mb-2 ml-2 mt-2">Signed SLA Document</h4>
-						<div  class="d-flex w-100"> 
-							<div v-if="slaFile"  class="file-details mt-2 w-100 p-1 border rounded d-flex align-items-center">
-                                <div class="file-icon me-3" v-tooltip.bottom="'View SLA File'">
-                                  <img @click="previewDocs('sla')"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
-                                </div>
-                                <div class="file-info">
-                                  <!-- <p class="m-0 text-white">Brief.pdf</p> -->
-                                </div>
-                                <div class="ms-auto">
-                                    <i @click="download('sla')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download SLA'" ></i>
-                                 
-                                </div>
-                              </div>
-							<!-- <div v-else class="text-danger">No signed NDA document.</div> -->
-							
-						</div>
-                       </div>
-                    </div>
-                </div>
-                <div class="card flex justify-center">
-                    <Drawer v-model:visible="showPreviewSheet" position="right" :header="`Preview ${fileType} File`" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
-                        <PDF :src="previewFile" />
-                    </Drawer>
+                    
                 </div>
 
             </div>
@@ -251,15 +207,11 @@ import { useAuth } from '@/stores/auth';
 import Image from 'primevue/image';
 import { useUserStore } from '@/stores/userStore';
 import { useSupplier } from '@/stores/supplier';
-import PDF from 'pdf-vue3';
-import Drawer from 'primevue/drawer';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 onMounted(() => {
     getUser();
-    getSignedNDADocuments('NDA');
-    getSignedSLADocuments('SLA');
 })
 const promoterStore = usePromoter();
 const supplierStore = useSupplier();
@@ -282,31 +234,12 @@ const profilePicPreview = ref(null);
 const profilePic = ref(null);
 const showTools = ref(false);
 
-const ndaFile = ref(null);
-const slaFile = ref(null);
-
-const getSignedNDADocuments = (type) => {
-    supplierStore.getSignedDocuments(activeUserId.value, type).then(function (response) {
-        ndaFile.value = response.data;
-        console.log('NDA File', ndaFile.value)
-    }).catch(function (error) {
-        console.log(error)
-    })
-}
-const getSignedSLADocuments = (type) => {
-    supplierStore.getSignedDocuments(activeUserId.value, type).then(function (response) {
-        slaFile.value = response.data;
-        console.log('SLA File', slaFile.value)
-    }).catch(function (error) {
-        console.log(error)
-    })
-}
-
 
 const updateProfile = () => {
     showLoading.value = true;
     userStore.updateProfile(user.id,form.value).then(function (response) {
         getUser();
+        localStorage.setItem('user', JSON.stringify(userInfo.value))
         showLoading.value = false;
         toaster.success('Profile updated successfully')
     }).catch(function (error) {
