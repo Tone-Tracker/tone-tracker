@@ -25,12 +25,13 @@ Date: 04/06/2024
                                             </template>
                                             <template #image>
                                                 <img 
-                                                src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" 
+                                                :src="userInfo?.path ? envPath + userInfo?.path 
+                                                : `https://ui-avatars.com/api/?name=${ getFullName() }&background=4263C5`" 
                                                 alt="image" width="350" />
                                             </template>
                                             <template #preview="slotProps">
                                                 <img 
-                                                src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                :src="userInfo?.path ? envPath + userInfo?.path : `https://ui-avatars.com/api/?name=${ getFullName() }&background=4263C5`" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                                             </template>
                                         </Image>
                                         </div>
@@ -58,8 +59,14 @@ Date: 04/06/2024
                                                 
                                         </div>
                                         <div class="modal-body">
-                                            <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
-                                           <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label>
+                                            <!-- <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
+                                           <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label> -->
+                                           <FileUploadForCropper
+                                           :showFilePreview="showFilePreview" 
+                                            accept="image/*" 
+                                            fileType="image" 
+                                            @fileUploaded="onProfilePicSelect"
+                                         />
                                           
                                           <VuePictureCropper
                                           :boxStyle="{
@@ -173,7 +180,7 @@ Date: 04/06/2024
 											<textarea class="form-control" id="bio" rows="3" v-model="form.bio" placeholder="Your Bio"></textarea>
 										</div>
 									</div>
-									<div class="row">
+									<div class="row" v-if="isMyProfile">
 										<label class="col-sm-3 col-form-label"></label>
 										<div class="col-sm-9">
 											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -206,7 +213,8 @@ import { useRoute } from 'vue-router';
 import { useAuth } from '@/stores/auth';
 import Image from 'primevue/image';
 import { useUserStore } from '@/stores/userStore';
-import { useSupplier } from '@/stores/supplier';
+import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
+import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
@@ -214,7 +222,6 @@ onMounted(() => {
     getUser();
 })
 const promoterStore = usePromoter();
-const supplierStore = useSupplier();
 const authStore = useAuth();
 const route = useRoute();
 const toaster = useToaster();
@@ -258,9 +265,10 @@ const uploadInput = ref(null)
       blobURL: '',
     })
 
+    const showFilePreview = ref(true);
 
 const onProfilePicSelect = (event) => {
-
+    console.log('event', event)
       // Reset last selection and results
       pic.value = ''
       result.dataURL = ''
