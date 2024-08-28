@@ -30,6 +30,7 @@ import ActivationManagerDashboard from '@/views/dashboard/activation-manager/Act
 import suppliersdashboard from './suppliersdashboard';
 import costs from './costs';
 import SupplierProfile from '@/views/dashboard/SupplierProfile.vue';
+import StaffProfile from '@/views/dashboard/StaffProfile.vue';
 
 
 
@@ -122,6 +123,11 @@ const router = createRouter({
       path: '/supplier-profile/:id/:userId',
       name: 'supplier-profile',
       component: SupplierProfile
+    },
+    {
+      path: '/staff-profile/:id/:userId',
+      name: 'staff-profile',
+      component: StaffProfile
     },
 
 

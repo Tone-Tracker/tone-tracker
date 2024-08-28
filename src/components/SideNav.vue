@@ -14,7 +14,7 @@ const auth = useAuth();
 const user = JSON.parse(auth.user);
 
 const getUserRole = (role) => {
-    return user.role == role
+    return user?.role == role
 };
 
 </script>

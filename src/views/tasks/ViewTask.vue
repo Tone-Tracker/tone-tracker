@@ -182,7 +182,7 @@ const items = (bid) => [    {
         label: 'View Supplier',
         icon: 'bx bxs-user-pin fs-4 maz-gradient-txt',
         command: () => {
-            URLrouter.push(`/profile/${bid.thirdPartyDTO?.id}/${bid.thirdPartyDTO?.user}`);
+            URLrouter.push(`/supplier-profile/${bid.thirdPartyDTO?.id}/${bid.thirdPartyDTO?.user}`);
         }
     }
 ];

@@ -63,9 +63,12 @@ const getRoleName = () => {
                                 <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pe-3'></i> Learning & Teaching</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/jobs' }"><router-link to="/jobs"><i class='bx bx-briefcase ps-3 pe-3'></i> Jobs</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/upload' }"><router-link to="/upload"><i class='bx bx-upload ps-3 pe-3'></i> Upload contract</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/message-center' }"><a href="#"><i class='bx bx-envelope ps-3 pe-3'></i> Message center</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><i class='bx bx-send ps-3 pe-3'></i> Sent</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><i class='bx bx-envelope-open ps-3 pe-3'></i> Unread</a></li>
+                                <li :class="{ 'active': currentRoute.path === `/staff-profile/${user?.activeUserId}/${user?.id}` }">
+                                    <router-link  :to="{ path: `/staff-profile/${user?.activeUserId}/${user?.id}` }">
+                                        <span class="icon ps-3"><i class='bx bx-user-pin'></i></span> Profile </router-link>
+                                </li>
+                                <!-- <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><i class='bx bx-send ps-3 pe-3'></i> Sent</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><i class='bx bx-envelope-open ps-3 pe-3'></i> Unread</a></li> -->
                             </ul>
 
                         </div>
