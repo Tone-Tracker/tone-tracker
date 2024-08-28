@@ -101,7 +101,7 @@ onMounted(() => {
             </div>
         </div>
         </div>
-        <div class="card flex justify-center">
+        <div class="card flex justify-cen
             <Drawer v-model:visible="view_uploaded_file_visible" position="right" header="View Brief File" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
                 
                  <PDF :src="base64PDFURL" />
