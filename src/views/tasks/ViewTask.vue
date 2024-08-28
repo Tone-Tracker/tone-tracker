@@ -319,48 +319,7 @@ const onSubmitPO = () => {
             </div>
          
         </div>
-                        <div class="row col-lg-12 card card-bod">
-                          <table class="table table-dark table-bordered">
-                                    <thead>
-                                        <tr class="table-dark-color">
-                                            <th>Checkin Date</th>
-                                            <th>Date</th>
-                                            <th>Latitude</th>
-                                            <th>Longitude</th>
-                                            <th>Task</th>
-                                            <th>User</th>
-                                            <th>Promoter</th>
-                                           
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-if="checkins.length > 0" v-for="checkin in checkins" :key="checkin.id" class="table-dark-black">
-                                            <td>{{ checkin.checkinDate }}</td>
-                                            <td>{{ checkin.datetime }}</td>
-                                            <td  >
-                                                {{ checkin.latitude }}
-                                            </td>
-                                            <td>{{checkin.longitude}}</td>
-                                            <td>{{checkin.task}}</td>
-                                            <td>{{checkin.user}}</td>
-                                            <td>{{checkin.promoter}}</td>
-                                           
-                                        </tr>
-                                        <tr v-else>
-                                            <td colspan="7" class="text-center text-danger">
-                                                No Checkins found.
-                                            </td>
-                                        </tr>
-                                       
-                                    </tbody>
-                                </table>
-</div>
-
-
-
-
-
-
+      
 
         <!-- show promoters -->
         <div v-if="singleTask && singleTask.type === 'INHOUSE'">
@@ -455,6 +414,8 @@ const onSubmitPO = () => {
           </div>
         </div>
 
+
+
       <!-- end show promoters -->
        <!-- show a table of bids -->
         <div v-if="singleTask && singleTask.type === 'THIRDPARTY'">
@@ -491,6 +452,39 @@ const onSubmitPO = () => {
           </table>
         </div>
        <!-- end show here -->
+                <!-- checkins  -->
+                <div class="row col-lg-12 card card-bod" v-if="checkins.length > 0">
+          <div>
+              <h4 class="mb-2 ml-2">Promoter Checkins</h4>
+          </div>
+          <table class="table table-dark table-bordered">
+              <thead>
+                    <tr class="table-dark-color">
+                      <th>Promoter</th>
+                      <th>Checkin Date</th>
+                      <th>Date</th>
+                      <th>Latitude</th>
+                      <th>Longitude</th>
+                      <th>Task</th>
+                      <th>User</th>                     
+                        </tr>
+              </thead>
+              <tbody>
+                <tr  v-for="checkin in checkins" :key="checkin.id" class="table-dark-black">
+                   <td>{{ checkin.checkinDate }}</td>
+                   <td>{{ checkin.datetime }}</td>
+                   <td >{{ checkin.latitude }}</td>
+                   <td>{{checkin.longitude}}</td>
+                                            <td>{{checkin.task}}</td>
+                                            <td>{{checkin.user}}</td>
+                                            <td>{{checkin.promoter}}</td>
+                                           
+                                        </tr>
+                                                                               
+                                    </tbody>
+                          </table>
+        </div>
+        <!-- end of checkin -->
 
       </div>
     </div>
