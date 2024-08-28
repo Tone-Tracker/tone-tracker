@@ -2,9 +2,17 @@
   <header>
     <div class="topbar d-flex align-items-center">
       <nav class="navbar navbar-expand-lg flex justify-content-between flex-direction-row w-100">
-        <!-- <div class="mobile-toggle-menu d-md-none d-lg-block">
-          <i class='bx bx-menu'></i>
-        </div> -->
+        <button
+          class="navbar-toggler d-lg-none"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
         <div class="logo-container">
           <img class="logo" src="/src/assets/images/logo/white-logo.png" alt="Logo">
