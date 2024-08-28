@@ -18,6 +18,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
+    const auth = useAuth();
+    // const user = JSON.parse(auth.user);
+    // if(!user){
+    //   router.push('/');
+    //   window.location.reload();
+    // }
+
     const isOnline = useNetworkStatus();
     if (!isOnline.online) {
       const toaster = useToaster();
