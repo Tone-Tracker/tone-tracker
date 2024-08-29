@@ -19,7 +19,7 @@ Date: 04/06/2024
 					</div>
 					<div class="ms-auto">
 						<div class="btn-group">
-							<button v-if="isMyProfile"  @click="showExperienceModal=true" v-tooltip="'Add experience'" type="button" class="btn maz-gradient-btn">Add Experience</button>
+							
 						</div>
 					</div>
 				</div>
@@ -64,7 +64,7 @@ Date: 04/06/2024
                                     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
                                         <div v-if="images?.length > 0" v-for="image in images" :key="image.id">
                                         <div class="col-img">
-                                            <div class="gallery ms-0">
+                                            <div class="gallery ms-2 mx-4">
                                                 <div class="card flex justify-center">
                                                     <Image alt="Image" preview>
                                                         <template #previewicon>
@@ -475,55 +475,25 @@ Date: 04/06/2024
                     </div>
 
                     <div class="col-lg-3">
-                        <div class="card">
+                        <div class="card mb-3">
                             <div class="card-body p-4">
-                                <h4 class="mb-2 text-center mt-2">Change Password</h4>
+                                <h4 class="mb-2 text-center mt-2">Experience</h4>
 									<div class="row mb-3">
-										<label for="password" class="col-sm-3 col-form-label">New Password</label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="passwordForm.password">
-												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-											</div>
-                                            <div
-                                            class="input-errors"
-                                            v-for="error of vv$.password.$errors"
-                                            :key="error.$uid">
-                                            <div class="text-danger">Password is required</div>
+										<div v-for="experience in promoterData?.experiences "  :key="experience?.id" class="row mb-3">
+                                            <div>
+                                                <h6 class="mb-0">{{ experience?.name}}</h6>
+                                                <p>{{ experience?.duration}}</p>
+                                                    <p>{{ experience?.description }}</p>
                                             </div>
-										</div>
+                                        </div>
 									</div>
-                                    <div class="row mb-3">
-										<label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="passwordForm.confirmPassword">
-												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-											</div>
-                                            <div
-                                            class="input-errors"
-                                            v-for="error of vv$.confirmPassword.$errors"
-                                            :key="error.$uid">
-                                            <div class="text-danger">Please confirm your password</div>
-                                            </div>
-										</div>
-									</div>
-									<div class="row" v-if="isMyProfile">
-										<label class="col-sm-3 col-form-label"></label>
-										<div class="col-sm-9">
-											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
-												<button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
-                                                    <div v-if="showPasswordLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
-                                                    </div>
-                                                    {{ showPasswordLoading ?  '' : 'Update Password' }}
-                                                </button>
-											</div>
-										</div>
+									<div class="row col-9 float-end" v-if="isMyProfile">
+										<button v-if="isMyProfile"  @click="showExperienceModal=true"type="button" class="btn maz-gradient-btn">Add Experience</button>
 									</div>
 								</div>
                         </div>
 
-                        <div class="card">
+                        <div class="card maz-gradient-border-top mt-4">
                             <div class="card-body p-4">
                                 <h4 class="mb-2 text-center mt-2">Change Password</h4>
 									<div class="row mb-3">
