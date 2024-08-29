@@ -279,7 +279,8 @@ const totalSize = ref(0);
 const showLoading = ref(false);
 const showPasswordLoading = ref(false);
 
-const user = JSON.parse(authStore.user)
+const user = JSON.parse(authStore.user);
+console.log('User',user)
 const profilePicName = ref('');
 const profilePicPreview = ref(null);
 const profilePic = ref(null);
