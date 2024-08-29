@@ -891,7 +891,8 @@ const profileForm = ref({
     dressSize: '',
     height: '',
     gender: '',
-    bio: ''
+    bio: '',
+    promoter: promoterId.value
 
 });
 const getUser = () => {
