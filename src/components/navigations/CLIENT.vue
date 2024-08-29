@@ -16,7 +16,7 @@ const setActiveItem = (item) => {
 
 <template>
   <div class="accordion" id="accordionPanelsStayOpenExample">
-    <ul class="side-nav">
+    <ul class="side-nav list-unstyled ps-0">
       <li v-tooltip="'Activation'" class="side-nav__item activation" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
         <a href="javascript:;" data-bs-toggle="collapse" data-bs-target="#activationMenu" aria-expanded="false" aria-controls="activationMenu">
           <div class="side-nav__link">

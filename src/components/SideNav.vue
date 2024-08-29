@@ -20,10 +20,9 @@ const getUserRole = (role) => {
   return user.role == role;
 };
 
-
-
 const visible = ref(false);
 </script>
+
 <template>
   <div class="sidebar-wrapper toggled d-flex" data-simplebar="init">
     <div
@@ -38,32 +37,6 @@ const visible = ref(false);
           <div class="simplebar-content-wrapper" style="height: 100%">
             <div class="simplebar-content mm-active" style="padding: 0px">
               <!--navigation-->
-              <!-- <ul class="metismenu mm-show" id="menu">
-                    <li v-tooltip="'Activation'">
-                      <a href="javascript:;" class="has-arrow">
-                        <div class="parent-icon"><i class="bx bx-home-alt"></i>
-                        </div>
-                        <div class="menu-title">Dashboard</div>
-                      </a>                     
-                    </li>
-                    <li>
-                      <a href="javascript:;" class="has-arrow">
-                        <div class="parent-icon"><i class="bx bx-category"></i>
-                        </div>
-                        <div class="menu-title">Application</div>
-                      </a>                    
-                    </li>
-                  
-                
-                   
-                    <li>
-                      <a href="https://themeforest.net/user/codervent" target="_blank">
-                        <div class="parent-icon"><i class="bx bx-support"></i>
-                        </div>
-                        <div class="menu-title">Support</div>
-                      </a>
-                    </li>
-                  </ul> -->
               <CLIENT />
               <!--end navigation-->
             </div>
@@ -80,113 +53,99 @@ const visible = ref(false);
       class="mazisi simplebar-wrapper"
       style="background-color: black; width: 300px"
     >
-      
-        <Drawer
-          v-model:visible="visible"
-          style="background-color: black; width: 300px"
-        >
-          <template #container="{ closeCallback }">
-            <div class="flex flex-col h-full">
-              <div class="flex items-center justify-between px-6 pt-4 shrink-0">
-                <span>
-                  <Button
-                    type="button"
-                    @click="closeCallback"
-                    icon="pi pi-times"
-                    rounded
-                    outlined
-                  ></Button>
-                </span>
-              </div>
-              <div class="">
-                <TTG_SUPER_ADMIN
-                  v-if="getUserRole('TTG_SUPER_ADMIN')"
-                  :user="user"
-                />
-                <TTG_REGIONAL_MANAGER
-                  v-if="getUserRole('TTG_REGIONAL_MANAGER')"
-                  :user="user"
-                />
-                <TTG_HEAD_ADMIN
-                  v-if="getUserRole('TTG_HEAD_ADMIN')"
-                  :user="user"
-                />
-
-                <TTG_ACTIVATION_MANAGER
-                  v-if="getUserRole('TTG_ACTIVATION_MANAGER')"
-                  :user="user"
-                />
-                <TTG_PROMOTERS v-if="getUserRole('TTG_TALENT')" :user="user" />
-                <TTG_SUPPLIERS v-if="getUserRole('SUPPLIER')" :user="user" />
-              </div>
+      <Drawer
+        v-model:visible="visible"
+        style="background-color: black; width: 285px; border: none; margin-top: 153px"
+      >
+        <template #container="{ closeCallback }">
+          <div class="flex flex-col h-full">
+            <div class="flex items-center justify-between shrink-0">
+              <span>
+                <Button
+                  type="button"
+                  @click="closeCallback"
+                  icon="pi pi-times"
+                  rounded
+                  outlined
+                ></Button>
+              </span>
             </div>
-          </template>
-        </Drawer>
 
-        <i class="bx bx-menu" @click="visible = true"></i>
-     
-      <!-- <div class="simplebar-height-auto-observer-wrapper">
-              <div class="simplebar-height-auto-observer"></div>
-            </div> -->
-      <!-- <AdminNav/> -->
-      <!-- <CLIENT v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user" style="z-index: 9999"/> -->
+            <div class="d-flex justify-content-start">
+              <!-- Include the Client Component -->
+              <CLIENT />
+              <div>
+                <TTG_SUPER_ADMIN
+                v-if="getUserRole('TTG_SUPER_ADMIN')"
+                :user="user"
+              />
+              <TTG_REGIONAL_MANAGER
+                v-if="getUserRole('TTG_REGIONAL_MANAGER')"
+                :user="user"
+              />
+              <TTG_HEAD_ADMIN
+                v-if="getUserRole('TTG_HEAD_ADMIN')"
+                :user="user"
+              />
+              <TTG_ACTIVATION_MANAGER
+                v-if="getUserRole('TTG_ACTIVATION_MANAGER')"
+                :user="user"
+              />
+              <TTG_PROMOTERS
+                v-if="getUserRole('TTG_TALENT')"
+                :user="user"
+              />
+              <TTG_SUPPLIERS
+                v-if="getUserRole('SUPPLIER')"
+                :user="user"
+              />
+              </div>
+              
+            </div>
+          </div>
+        </template>
+      </Drawer>
+
+      <i class="bx bx-menu" @click="visible = true"></i>
+
       <TTG_SUPER_ADMIN
-  v-if="getUserRole('TTG_SUPER_ADMIN')"
-  :user="user"
-  class="d-none d-xl-block"
-/>
-<TTG_REGIONAL_MANAGER
-  v-if="getUserRole('TTG_REGIONAL_MANAGER')"
-  :user="user"
-  class="d-none d-xl-block"
-/>
-<TTG_HEAD_ADMIN
-  v-if="getUserRole('TTG_HEAD_ADMIN')"
-  :user="user"
-  class="d-none d-xl-block"
-/>
-<TTG_ACTIVATION_MANAGER
-  v-if="getUserRole('TTG_ACTIVATION_MANAGER')"
-  :user="user"
-  class="d-none d-xl-block"
-/>
-<TTG_PROMOTERS
-  v-if="getUserRole('TTG_TALENT')"
-  :user="user"
-  class="d-none d-xl-block"
-/>
-<TTG_SUPPLIERS
-  v-if="getUserRole('SUPPLIER')"
-  :user="user"
-  class="d-none d-xl-block"
-/>
-
-
-      <!-- <div class="simplebar-place" style="width: 100%; height: 1905px;"></div> -->
+        v-if="getUserRole('TTG_SUPER_ADMIN')"
+        :user="user"
+        class="d-none d-xl-block"
+      />
+      <TTG_REGIONAL_MANAGER
+        v-if="getUserRole('TTG_REGIONAL_MANAGER')"
+        :user="user"
+        class="d-none d-xl-block"
+      />
+      <TTG_HEAD_ADMIN
+        v-if="getUserRole('TTG_HEAD_ADMIN')"
+        :user="user"
+        class="d-none d-xl-block"
+      />
+      <TTG_ACTIVATION_MANAGER
+        v-if="getUserRole('TTG_ACTIVATION_MANAGER')"
+        :user="user"
+        class="d-none d-xl-block"
+      />
+      <TTG_PROMOTERS
+        v-if="getUserRole('TTG_TALENT')"
+        :user="user"
+        class="d-none d-xl-block"
+      />
+      <TTG_SUPPLIERS
+        v-if="getUserRole('SUPPLIER')"
+        :user="user"
+        class="d-none d-xl-block"
+      />
     </div>
-    <!-- <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-          <div class="simplebar-scrollbar" style="width: 0px; display: none; transform: translate3d(0px, 0px, 0px);"></div>
-        </div>
-        <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
-          <div class="simplebar-scrollbar" style="height: 569px; transform: translate3d(0px, 0px, 0px); display: block;"></div>
-        </div> -->
   </div>
-
-  <!--navigation-->
-
-  <!--end navigation-->
 </template>
 
-
-
-
-
-
-
 <style scoped>
-  @media (min-width: 768px) and (max-width: 991.98px) {
+  /* @media (min-width: 768px) and (max-width: 991.98px) {
     .mazisi.simplebar-wrapper {
       width: 50px !important;
     }
-  }
+  } */
 </style>
