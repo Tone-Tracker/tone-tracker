@@ -11,6 +11,10 @@ export const useUnit = defineStore('unit', () => {
       return axiosInstance.get(`/api/units`);
     }
 
+    const getUnitsByWarehouseId = (warehouseId) => {
+      return axiosInstance.get(`/api/units/${warehouseId}`);
+    }
+
     const updateUnit = (id,formData) => {
       return axiosInstance.put(`/api/units/${id}`,formData);
     }
@@ -19,5 +23,5 @@ export const useUnit = defineStore('unit', () => {
     }
 
   
-    return { addUnit,getUnits,updateUnit,deleteUnit }
+    return { addUnit,getUnits,updateUnit,deleteUnit,getUnitsByWarehouseId }
   })

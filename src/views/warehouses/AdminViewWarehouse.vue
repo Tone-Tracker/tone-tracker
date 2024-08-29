@@ -17,6 +17,7 @@ import InputText from 'primevue/inputtext';
 import Badge from "primevue/badge";
 import InputNumber from "primevue/inputnumber";
 import { useUnit } from "@/stores/unit";
+import Drawer from "primevue/drawer";
 
 
 
@@ -162,7 +163,6 @@ const openModal = (pos, warehouese, isEdit=false) => {
     }
     if (warehouese) {
         regionName.value = warehouese.name;
-        regionalManagerForm.region = warehouese.id;
     }
     position.value = pos;
     visible.value = true;
@@ -176,6 +176,20 @@ const onWarehouseSubmit = async () => {
         return;
     }
     loading.value = true;
+    if(!clickedWarehouse.value) {
+        warehouseForm.region = regionId.value
+        await warehouseStore.submit(warehouseForm);
+        toaster.success("Warehouse created successfully");
+        warehouseForm.name = '';
+        warehouseForm.streetAddress = null;
+        warehouseForm.zipCode = null;
+        warehouseV$.value.$errors = [];
+        warehouseV$.value.$reset();
+        warehouseVisible.value = false;
+        loading.value = false;
+        await getWarehouses();
+        return;
+    }
         await warehouseStore.update(clickedWarehouse.value.id,warehouseForm);
         toaster.success("Warehouse updated successfully");
         clickedWarehouse.value = null;
@@ -289,13 +303,26 @@ const items = (warehouse) => [
         }
     }
 ];
+
+const showUnitDrawer = ref(false);
+const allUnits = ref([]);
+const viewUnits = async (warehouse) => {
+    // unitStore.getUnitsByWarehouseId(warehouse.id).then(function (response) {
+    //     console.log(response.data);
+    //     allUnits.value = response.data.content;
+    // }).catch(function (error) {
+    //     toaster.error("Error deleting warehouse");
+    //     console.log(error);
+    // });
+    showUnitDrawer.value = true;
+}
 </script>
 
 <template>
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <BreadCrumb :title="regionQueryName + ' Warehouses'" icon="bx bx-building-house" />
+                <BreadCrumb :title="regionQueryName + ' Region'" icon="bx bx-building-house" />
                 <div class="card">
                     <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
 
@@ -335,7 +362,7 @@ const items = (warehouse) => [
                                                         <td>{{ index + 1 }}</td>
                                                         <td>{{ region.name }}</td>
                                                         <td>
-                                                            <button type="button" v-tooltip.bottom="region.unitsList?.length + ' units'"
+                                                            <button @click="viewUnits(region)" type="button" v-tooltip.bottom="region.unitsList?.length + ' units'"
                                                               class="btn maz-gradient-btn position-relative me-lg-5"> 
                                                                 <i class='bx bx-building-house align-middle' ></i> 
                                                                 View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
@@ -365,23 +392,47 @@ const items = (warehouse) => [
                                 <div class="card w-100 radius-10">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <form class="">
+                                            <form @submit.prevent="onWarehouseSubmit" class="row">
+                
                                                 <div class="col-md-12">
-                                                    <label for="input1" class="form-label">Region Name</label>
-                                                    <input ref="nameInput" v-model="form.name" type="text" class="form-control" id="input1" />
-                                                    <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-                                                        <div class="text-danger">Region name is required</div>
+                                                    <div class="card my-card flex justify-center">
+                                                        <label for="input1" class="form-label">Name</label>
+                                                           <InputText type="text" v-model="warehouseForm.name" />
+                                                           <div class="input-errors" v-for="error of warehouseV$.name.$errors" :key="error.$uid">
+                                                           <div class="text-danger">Warehouse name is required</div>
                                                     </div>
+                                                </div>                        
                                                 </div>
+                                                <div class="col-md-12">
+                                                    <div class="card my-card flex justify-center">
+                                                        <label for="input1" class="form-label">Street address</label>
+                                                           <InputText type="text" v-model="warehouseForm.streetAddress" />
+                                                           <div class="input-errors" v-for="error of warehouseV$.streetAddress.$errors" :key="error.$uid">
+                                                           <div class="text-danger">Street address is required</div>
+                                                        </div>
+                                                </div>                        
+                                                </div>
+                                                
+                                
+                                
+                                                <div class="col-md-12">
+                                                    <div class="card my-card flex justify-center">
+                                                        <label for="input1" class="form-label">Zip Code</label>
+                                                           <InputText type="text" v-model="warehouseForm.zipCode" />
+                                                           <div class="input-errors" v-for="error of warehouseV$.zipCode.$errors" :key="error.$uid">
+                                                           <div class="text-danger">Zip Code is required</div>
+                                                        </div>
+                                                </div>                        
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn maz-gradient-btn w-100 d-flex justify-content-center align-items-center" :disabled="loading">
+                                                        <div v-if="loading && !isEdit" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                                        </div>
+                                                        {{ loading ?  '' : 'Add New Warehouse' }}
+                                                    </button>
+                                                </div>
+                                                
                                             </form>
-                                            <div class="ms-auto mt-4">
-                                                <a @click="createRegion" href="javascript:;" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                                                    <div v-if="loading" class="spinner-border text-white " role="status">
-                                                         <span class="visually-hidden">Loading...</span>
-                                                    </div>
-                                                    <i class="bx bxs-plus-square"></i>  {{ loading ?  '' : 'Create' }}
-                                                </a>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -391,6 +442,62 @@ const items = (warehouse) => [
                 </div>
             </div>
         </div>
+        <div class="card flex justify-center">
+            <Drawer
+              v-model:visible="showUnitDrawer"
+              position="right"
+              header="docName"
+              class="!w-full md:!w-80 lg:!w-[40rem]"
+              style="width: 30rem !important"
+            >
+            <div class="col-12 col-lg-12 d-flex">
+                <div class="card radius-10 w-100">
+                    <div class="card-body">
+                     <div class="chart-container-2">
+                        <table class="table table-dark table-bordered">
+                            <thead>
+                                <tr class="table-dark-color">
+                                    <th>Name</th>
+                                    <th>Capacity</th>
+                                    <th>Warehouse</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-if="allUnits.length > 0" v-for="unit in allUnits" :key="unit.id" class="table-dark-black">
+                                    <td>{{unit.name}}</td>
+                                    <td>{{unit.capacity}}</td>
+                                    <td>WarehouseName</td>
+                                    <td>
+                                        <div class="d-flex order-actions">
+                                          <a @click="openModal('top','Unit',unit)" href="javascript:;" >
+                                            <i class='bx bxs-edit'></i>
+                                          </a>
+                                          <a @click="deleteRecord($event,unit)" href="javascript:;" class="ms-3">
+                                            <i class='bx bxs-trash text-danger'></i>
+                                          </a>
+                                          <ConfirmPopup></ConfirmPopup>
+                                        </div>
+                                        
+                                      </td>
+                                </tr>
+                                <tr cols="7" v-else>
+                                    <td colspan="7" class="text-center text-danger">
+                                        <p class="text-danger">No units found</p>
+                                    </td>
+                                
+                                </tr>
+                               
+                            </tbody>
+                            
+                        </table>
+                       </div>
+                    </div>
+                </div>
+            </div>
+              
+            </Drawer>
+          </div>
         <Dialog v-model:visible="warehouseVisible" position="top" modal header="Edit Warehouse" style="width: 26rem">
                
             <form @submit.prevent="onWarehouseSubmit" class="row">
