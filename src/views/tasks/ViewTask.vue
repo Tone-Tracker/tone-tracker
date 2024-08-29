@@ -105,23 +105,65 @@ const getBids = async () => {
 
 
 const getCheckins = async () => {  
-  taskStore.getCheckins().then(response => {
+  taskStore.getCheckins(taskId.value).then(response => {
     console.log("tasks", response.data);
     checkins.value = response.data;
   }).catch(error => {
-    //toaster.error("Error fetching users");
-    console.log(error);
+    
   }).finally(() => {
     
   });
 };
 
+const getDate = (actualDate) => {
+  // Check if actualDate is null or undefined
+  if (actualDate == null) {
+    console.error('Date is null or undefined');
+    return null;
+  }
 
+  // Ensure actualDate is a string
+  const dateString = String(actualDate);
 
+  // Replace the space with 'T' if it exists
+  const formattedDate = dateString.replace(' ', 'T');
+  const date = new Date(formattedDate);
+  
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    console.error('Invalid date');
+    return null;
+  }
+  
+  return date.toISOString().split('T')[0];
+}
 
+const getTime = (actualDate) => {
+  // Check if actualDate is null or undefined
+  if (actualDate == null) {
+    console.error('Date is null or undefined');
+    return null;
+  }
 
+  // Ensure actualDate is a string
+  const dateString = String(actualDate);
 
+  // Replace the space with 'T' if it exists
+  const formattedDate = dateString.replace(' ', 'T');
+  const date = new Date(formattedDate);
+  
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    console.error('Invalid date');
+    return null;
+  }
+  
+  return date.toTimeString().split(' ')[0];
+}
 
+const getFullName = (firstName, lastName) => {
+  return `${firstName} ${lastName}`;
+}
 
 const redirectToProfile = (user) => {
   alert("user", user);
@@ -182,7 +224,7 @@ const items = (bid) => [    {
         label: 'View Supplier',
         icon: 'bx bxs-user-pin fs-4 maz-gradient-txt',
         command: () => {
-            URLrouter.push(`/profile/${bid.thirdPartyDTO?.id}/${bid.thirdPartyDTO?.user}`);
+            URLrouter.push(`/supplier-profile/${bid.thirdPartyDTO?.id}/${bid.thirdPartyDTO?.user}`);
         }
     }
 ];
@@ -256,7 +298,7 @@ const onSubmitPO = () => {
       <div class="page-content">
         <div class="d-flex">
           <BreadCrumb :title="taskName" icon="bx bx-task" />
-          <div class="ms-auto">
+          <div  class="ms-auto">
 							<button @click="viewBriefFile" type="button" class="btn mt-3 btn maz-gradient-btn" data-bs-toggle="dropdown">
                 View Brief File
 							</button>
@@ -319,48 +361,7 @@ const onSubmitPO = () => {
             </div>
          
         </div>
-                        <div class="row col-lg-12 card card-bod">
-                          <table class="table table-dark table-bordered">
-                                    <thead>
-                                        <tr class="table-dark-color">
-                                            <th>Checkin Date</th>
-                                            <th>Date</th>
-                                            <th>Latitude</th>
-                                            <th>Longitude</th>
-                                            <th>Task</th>
-                                            <th>User</th>
-                                            <th>Promoter</th>
-                                           
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-if="checkins.length > 0" v-for="checkin in checkins" :key="checkin.id" class="table-dark-black">
-                                            <td>{{ checkin.checkinDate }}</td>
-                                            <td>{{ checkin.datetime }}</td>
-                                            <td  >
-                                                {{ checkin.latitude }}
-                                            </td>
-                                            <td>{{checkin.longitude}}</td>
-                                            <td>{{checkin.task}}</td>
-                                            <td>{{checkin.user}}</td>
-                                            <td>{{checkin.promoter}}</td>
-                                           
-                                        </tr>
-                                        <tr v-else>
-                                            <td colspan="7" class="text-center text-danger">
-                                                No Checkins found.
-                                            </td>
-                                        </tr>
-                                       
-                                    </tbody>
-                                </table>
-</div>
-
-
-
-
-
-
+      
 
         <!-- show promoters -->
         <div v-if="singleTask && singleTask.type === 'INHOUSE'">
@@ -455,6 +456,8 @@ const onSubmitPO = () => {
           </div>
         </div>
 
+
+
       <!-- end show promoters -->
        <!-- show a table of bids -->
         <div v-if="singleTask && singleTask.type === 'THIRDPARTY'">
@@ -491,6 +494,34 @@ const onSubmitPO = () => {
           </table>
         </div>
        <!-- end show here -->
+                <!-- checkins  -->
+          <div class="row col-lg-12 card card-bod gap-4" v-if="checkins.length > 0" >
+          <div>
+              <h4 class="mb-2 ml-2">Promoter Checkins</h4>
+          </div>
+          <table class="table table-dark table-bordered">
+              <thead>
+                    <tr class="table-dark-color">
+                      <th>Promoter</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Latitude</th>
+                      <th>Longitude</th>                  
+                    </tr>
+              </thead>
+              <tbody v-if="checkins.length > 0">
+                <tr v-for="checkin in checkins" :key="checkin.id" class="table-dark-black">
+                   <td>{{getFullName(checkin.firstName, checkin.lastName)}}</td>
+                   <td>{{ getDate(checkin.datetime)}}</td>
+                   <td>{{ getTime(checkin.datetime)}}</td>
+                   <td>{{ checkin.latitude }}</td>
+                   <td>{{checkin.longitude}}</td>
+                </tr>
+                                                                               
+               </tbody>
+            </table>
+        </div>
+        <!-- end of checkin -->
 
       </div>
     </div>
