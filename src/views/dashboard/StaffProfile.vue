@@ -297,14 +297,14 @@ const onProfilePicSelect = (event) => {
 };
 
 const onfileDropped = (dropedFile) => {
-    // console.log('files', dropedFile)
+   console.log('dropedFile', dropedFile)
       // Reset last selection and results
       pic.value = ''
       result.dataURL = ''
       result.blobURL = ''
 
       // Get selected files
-      const { files } = dropedFile;
+      const files = dropedFile;
       console.log('filesDrop', files)
       if (!files || !files.length) return
 
@@ -354,10 +354,12 @@ async function getResult() {
         useMultipartFormData: true // Add this flag to the request config
         };
         promoterStore.uploadSingleImage(user.id,formData, config).then(function (response) {
+            console.log('response', response);
             toaster.success('Profile picture updated successfully');
+            getUser();
             showModal.value = false;
             document.querySelector('.modal-backdrop').remove();
-            getUser();
+            
         }).catch(function (error) {
             toaster.error('Ooops! Something went wrong');
             console.log(error)
