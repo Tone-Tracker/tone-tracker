@@ -11,6 +11,11 @@ export const useWarehouse = defineStore('warehouse', () => {
       return axiosInstance.get(`/api/warehouses`);
     }
 
+
+    const getWarehousesByRegionId = (regionId) => {
+      return axiosInstance.get(`/api/warehouses/region/${regionId}`);
+    }
+
     const update = (id,formData) => {
       return axiosInstance.put(`/api/warehouses/${id}`,formData);
     }
@@ -19,5 +24,5 @@ export const useWarehouse = defineStore('warehouse', () => {
     }
 
   
-    return { submit,getWarehouses,update,deleteWarehouse }
+    return { submit,getWarehouses,update,deleteWarehouse,getWarehousesByRegionId }
   })

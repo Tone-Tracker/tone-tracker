@@ -4,7 +4,6 @@ import { onMounted, ref, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import Layout from '@/views/shared/Layout.vue';
-import { useConfirm } from 'primevue/useconfirm';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
 import Select from 'primevue/select';
@@ -15,23 +14,28 @@ import { useWarehouse } from '@/stores/warehouse';
 import { useStaff } from '@/stores/staff';
 import SplitButton from 'primevue/splitbutton';
 import InputText from 'primevue/inputtext';
+import Badge from "primevue/badge";
+import InputNumber from "primevue/inputnumber";
+import { useUnit } from "@/stores/unit";
+
+
+
+
 const route = useRoute();
+const unitStore = useUnit();
 
 const toaster = useToaster();
 const regionStore = useRegion();
 const warehouseStore = useWarehouse();
-const confirm = useConfirm();
 const userStore = useUserStore();
 const staff = useStaff();
 
 const regionQueryName = ref(route.query.name);
-
-let clients = ref([]);
-let regions = ref([]);
+const regionId = ref(route.params.id);
+let warehouses = ref([]);
 let staffMembers = ref([]);
 const visible = ref(false);
 const position = ref('top');
-const regionalManager = ref(null);
 const regionalManagers = ref([]);
 const loading = ref(false);
 let searchInput = ref('');
@@ -39,7 +43,7 @@ const form = reactive({ name: '' });
 const nameInput = ref(null); // Reference for the input field
 
 onMounted(() => {
-  getRegions();
+  getWarehouses();
   getRegionalManagers();
   getStaff();
 });
@@ -63,7 +67,7 @@ const createRegion = async () => {
         if (nameInput.value) {
             nameInput.value.blur(); // Unfocus the input field
         }
-        await getRegions();
+        await getWarehouses();
     } catch (error) {
         toaster.error("Error creating region");
         console.log(error);
@@ -96,73 +100,34 @@ const getRegionalManagers = async () => {
     }
 };
 
-const regionalManagerForm = reactive({ region: '', staff: '' });
-const onRegManagerChange = (event) => {
-    let reg = staffMembers.value.find(regMan => regMan.user === event.value.id);
-    regionalManagerForm.staff = reg ? reg.id : ''; // Ensure reg is found
-};
 
-const submitRegionalManager = async () => {
-    console.log('API Error:gggg', regionalManagerForm);
-    if (!regionalManagerForm.region || !regionalManagerForm.staff) {
-        toaster.error("Please select both region and staff member");
-        return;
-    }
+
+const getWarehouses = async () => {
     try {
-        // Sending the `regionalManagerForm` object to the backend
-        await regionStore.addRegionalManager(regionalManagerForm);
-        toaster.success("Regional Manager added successfully");
-        regionalManagerForm.staff = ''; // Reset staff field
-        visible.value = false; // Hide modal
-        await getRegions(); // Refresh regions list
-    } catch (error) {
-        toaster.error("Error adding regional manager");
-        console.error('API Error:', error);
-    }
-};
-
-
-const getRegions = async () => {
-    try {
-        const response = await regionStore.getRegions();
-        regions.value = response.data.content;
+        const response = await warehouseStore.getWarehousesByRegionId(regionId.value);
+        warehouses.value = response.data;
     } catch (error) {
         toaster.error("Error fetching regions");
         console.log(error);
     }
 };
 
-const deleteRegion = async (region) => {
+const deleteWarehouse = async (warehouse) => {
     try {
-        await regionStore.deleteRegion(region.id);
-        toaster.success("Region deleted successfully");
-        await getRegions();
+        await warehouseStore.deleteWarehouse(warehouse.id);
+        toaster.success("Warehouse deleted successfully");
+        await getWarehouses();
     } catch (error) {
-        toaster.error("Error deleting region");
+        toaster.error("Error deleting warehouse");
         console.log(error);
     }
 };
 
-const editClient = (client) => {
-    clients.value.forEach(c => c.isEditing = false);
-    client.isEditing = true;
-};
 
-const update = async (client) => {
-    client.isEditing = false;
-    try {
-        await regionStore.update(client);
-        toaster.success("Region updated successfully");
-        await getRegions();
-    } catch (error) {
-        toaster.error("Error updating client");
-        console.log(error);
-    }
-};
 
-const deleteRecord = (region) => {
-        if(!window.confirm("Are you sure you want to delete this region?")){ return}
-        deleteRegion(region);
+const deleteRecord = (warehouse) => {
+        if(!window.confirm("Are you sure you want to delete this warehouse?")){ return}
+        deleteWarehouse(warehouse);
 };
 
 const vFocus = {
@@ -170,62 +135,38 @@ const vFocus = {
 };
 
 let regionName = ref('');
-const openModal = (pos, region) => {
-    if (region) {
-        regionName.value = region.name;
-        regionalManagerForm.region = region.id;
+const warehouseForm = reactive({
+    name: '',
+    zipCode: null,
+    streetAddress: null,
+    region: null
+});
+const warehouseRules = { 
+    name: { required },
+    streetAddress: { required },
+    zipCode: { required }
+};
+const warehouseV$ = useVuelidate(warehouseRules, warehouseForm);
+const clickedWarehouse = ref(null);
+const openModal = (pos, warehouese, isEdit=false) => {
+    console.log(warehouese,isEdit)
+    if (isEdit) {
+        isEdit = true;
+        clickedWarehouse.value = warehouese;
+        warehouseForm.name = warehouese.name;
+        warehouseForm.zipCode = warehouese.zipCode;
+        warehouseForm.streetAddress = warehouese.streetAddress;
+        warehouseForm.region = warehouese.region;
+        warehouseVisible.value = true;
+        return;
+    }
+    if (warehouese) {
+        regionName.value = warehouese.name;
+        regionalManagerForm.region = warehouese.id;
     }
     position.value = pos;
     visible.value = true;
 };
-
-const warehouseVisible = ref(false);
-const warehouseForm = reactive({
-    name: '',
-    zipCode: null,
-    region: null
-
-});
-
-const warehouseRules = { 
-    name: { required },
-    streetAddress: { required },
-    zipCode: { required },
-    // region: { required },
-};
-const warehouseV$ = useVuelidate(warehouseRules, warehouseForm);
-
-const openWarehouseModal = (region) => {
-    if (region) {
-        regionName.value = region.name;
-        warehouseForm.region = region.id;
-    }
-    warehouseVisible.value = true;
-};
-
-
-const onInput = () => {
-  if (searchInput.value) {
-    const searchTerm = searchInput.value.toLowerCase();
-    regions.value = regions.value.filter((region) => {
-     
-      const name = region.name?.toLowerCase() || '';
-      const firstName = region.firstName?.toLowerCase() || '';
-      const lastName = region.lastName?.toLowerCase() || '';
-
-     
-      return (
-        name.includes(searchTerm) ||
-        firstName.includes(searchTerm) ||
-        lastName.includes(searchTerm)
-      );
-    });
-  } else {
-    getRegions(); 
-  }
-};
-
-
 
 const onWarehouseSubmit = async () => {
     try {
@@ -234,44 +175,117 @@ const onWarehouseSubmit = async () => {
         loading.value = false; 
         return;
     }
- 
-        await warehouseStore.submit(warehouseForm);
-        toaster.success("Warehouse added successfully");
+    loading.value = true;
+        await warehouseStore.update(clickedWarehouse.value.id,warehouseForm);
+        toaster.success("Warehouse updated successfully");
+        clickedWarehouse.value = null;
+        warehouseForm.name = '';
+        warehouseForm.streetAddress = null;
+        warehouseForm.zipCode = null;
+        warehouseV$.value.$errors = [];
+        warehouseV$.value.$reset();
         warehouseVisible.value = false;
-        await getRegions();
+        loading.value = false;
+        await getWarehouses();
     } catch (error) {
+        loading.value = false;
         toaster.error("Error adding warehouse");
         console.log(error);
     }
 };
 
-const items = (region) => [
+const unitVisible = ref(false);
+const warehouseVisible = ref(false);
+
+const unitForm = reactive({
+    name: '',
+    capacity: null,
+    warehouse: null
+
+});
+
+const unitRules = { 
+    name: { required },
+    capacity: { required },
+    warehouse: { required },
+};
+const unitV$ = useVuelidate(unitRules, unitForm);
+const warehouseQueryName = ref(null);
+const openWarehouseModal = (warehouse) => {
+    if (warehouse) {
+        warehouseQueryName.value = warehouse.name;
+        unitForm.warehouse = warehouse.id;
+    }
+    unitVisible.value = true;
+};
+
+
+const onInput = () => {
+  if (searchInput.value) {
+    const searchTerm = searchInput.value.toLowerCase();
+    warehouses.value = warehouses.value.filter((warehouse) => {
+     
+      const name = warehouse.name?.toLowerCase() || '';
+      const address = warehouse.streetAddress?.toLowerCase() || '';
+      const zipCode = warehouse.zipCode?.toLowerCase() || '';
+
+     
+      return (
+        name.includes(searchTerm) ||
+        address.includes(searchTerm) ||
+        zipCode.includes(searchTerm)
+      );
+    });
+  } else {
+    getWarehouses(); 
+  }
+};
+
+
+
+const onSubmitUnit = async () => {
+    try {
+        const isFormValid = await unitV$.value.$validate();
+    if (!isFormValid) {
+        loading.value = false; 
+        return;
+    }
+ 
+        await unitStore.addUnit(unitForm);
+        toaster.success("Unit added successfully");
+        unitForm.name = '';
+        unitForm.capacity = null;
+        unitForm.warehouse = null;
+        unitV$.value.$errors = [];
+        unitV$.value.$reset();
+        unitVisible.value = false;
+        await getWarehouses();
+    } catch (error) {
+        toaster.error("Error adding unit");
+        console.log(error);
+    }
+};
+
+const items = (warehouse) => [
     {
         label: 'Edit',
-        icon: 'bx bx-bullseye fs-4 text-white',
+        icon: 'bx bx-edit fs-4 text-white',
         command: () => {
-            openModal('top', region)
-        }
-    },
-	{
-        label: 'Assign Regional Manager',
-        icon: 'bx bx-user fs-4 text-white',
-        command: () => {
-            openModal('top', region)
+            openModal('top', warehouse, true)
         }
     },
     {
-        label: 'Add Warehouse',
+        label: 'Add Unit',
         icon: 'bx bx-building-house fs-4 text-white',
         command: () => {
-            openWarehouseModal(region)
+            openWarehouseModal(warehouse)
         }
     },
     {
         label: 'Delete',
         icon: 'bx bx-trash text-danger fs-4 ',
         command: () => {
-            deleteRecord(region)
+            deleteRecord(warehouse)
         }
     }
 ];
@@ -311,37 +325,31 @@ const items = (region) => [
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Warehouse</th>
-                                                        <th>Regional Manager</th>
                                                         <th>Units</th>
+                                                        <th>Address</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-if="regions.length > 0" v-for="(region, index) in regions" :key="region.id">
+                                                    <tr v-if="warehouses.length > 0" v-for="(region, index) in warehouses" :key="region.id">
                                                         <td>{{ index + 1 }}</td>
-                                                        <td v-if="!region.isEditing">{{ region.name }}</td>
-                                                        <td v-else>
-                                                            <input v-focus type="text" v-model="region.name" @blur="update(region)" @keyup.enter="update(region)" class="no-border-input"/>
-                                                        </td>
+                                                        <td>{{ region.name }}</td>
                                                         <td>
-                                                            {{ region.firstName ? region.firstName + ' ' + region.lastName : '' }}
-                                                        </td>
-                                                        <td>
-                                                            <router-link :to="`/admin-warehouse${region.id}`" type="button" class="btn maz-gradient-btn position-relative me-lg-5"> 
+                                                            <button type="button" v-tooltip.bottom="region.unitsList?.length + ' units'"
+                                                              class="btn maz-gradient-btn position-relative me-lg-5"> 
                                                                 <i class='bx bx-building-house align-middle' ></i> 
-                                                                View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">24 
+                                                                View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
+                                                                    {{ region.unitsList?.length }} 
                                                                     <span class="visually-hidden">warehouses</span></span>
-                                                            </router-link>
+                                                            </button>
                                                         </td>
+                                                        <td>{{ region.streetAddress + ', ' + region.zipCode }}</td>
                                                         <td>
 
-                                                            <SplitButton v-if="!region.isEditing" @click="editClient(region)" class="text-white" label="Edit" 
-													icon="bx bx-cog fs-4" 
-													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
-													:model="items(region)"/>
-                                                    <button v-else @click="update(region)" class="btn btn-sm maz-gradient-btn" type="button">
-                                                        <i class='bx bx-check text-success'></i>
-                                                    </button>                                                            
+                                                            <SplitButton  class="text-white" label="Action" 
+                                                            icon="bx bx-cog fs-4" 
+                                                            dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+                                                            :model="items(region)"/>                                                         
                                                         </td>
                                                     </tr>
                                                     <tr v-else>
@@ -383,24 +391,7 @@ const items = (region) => [
                 </div>
             </div>
         </div>
-        <Dialog v-model:visible="visible" position="top" modal :header="`Add ${regionName} Regional Manager`" :style="{ width: '25rem' }">
-            <form @submit.prevent="submitRegionalManager" class="row g-3">
-                <div class="col-md-12">
-                    <div class="card my-card flex justify-center">
-                        <label for="input1" class="form-label">Regional Manager</label>
-                        <Select v-model="regionalManager" @change="onRegManagerChange($event)" :options="regionalManagers" showClear  optionLabel="name" placeholder="Select Regional Manager" class="w-full md:w-56" />
-                          
-                </div>                        
-                </div>
-                <div class="col-12 mt-4 d-flex justify-content-end">
-                    <button @click="submitRegionalManager" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                        <i class="bx bxs-plus-square"></i>  Add Regional Manager
-                    </button>
-                </div>
-          
-            </form>
-        </Dialog>
-        <Dialog v-model:visible="warehouseVisible" position="top" modal header="Add Warehouse" style="width: 26rem">
+        <Dialog v-model:visible="warehouseVisible" position="top" modal header="Edit Warehouse" style="width: 26rem">
                
             <form @submit.prevent="onWarehouseSubmit" class="row">
                 
@@ -431,6 +422,42 @@ const items = (region) => [
                            <InputText type="text" v-model="warehouseForm.zipCode" />
                            <div class="input-errors" v-for="error of warehouseV$.zipCode.$errors" :key="error.$uid">
                            <div class="text-danger">Zip Code is required</div>
+                        </div>
+                </div>                        
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn maz-gradient-btn w-100 d-flex justify-content-center align-items-center" :disabled="loading">
+                        <div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                        </div>
+                        {{ loading ?  '' : 'Submit' }}
+                    </button>
+                </div>
+                
+            </form>
+        </Dialog>
+        
+        <Dialog v-model:visible="unitVisible" position="top" modal :header="`Add Unit to ${warehouseQueryName}`" style="width: 26rem">
+               
+            <form @submit.prevent="onSubmitUnit" class="row">
+                
+                <div class="col-md-12">
+                    <div class="card my-card flex justify-center">
+                        <label for="input1" class="form-label">Unit Name</label>
+                           <InputText type="text" v-model="unitForm.name" />
+                           <div class="input-errors" v-for="error of unitV$.name.$errors" :key="error.$uid">
+                           <div class="text-danger">Warehouse name is required</div>
+                    </div>
+                </div>                        
+                </div>
+
+
+                <div class="col-md-12">
+                    <div class="card my-card flex justify-center">
+                        <label for="input1" class="d-flex form-label">Capacity <i 
+                            v-tooltip.top="'Estimate the percentage capacity of the unit. e.g 100. For 100% capacity, enter 100'" class='bx bx-info-circle cursor-pointer ms-1 bx bx-info-circle  fs-6' ></i></label>
+                           <InputNumber inputId="minmax" :min="0" :max="100" v-model="unitForm.capacity" />
+                           <div class="input-errors" v-for="error of unitV$.capacity.$errors" :key="error.$uid">
+                           <div class="text-danger">Capacity estimate is required</div>
                         </div>
                 </div>                        
                 </div>

@@ -6,7 +6,6 @@ export const useNavStore = defineStore('navStore', () => {
 
   function setIsNavVisible () {
     isNavVisible.value = !isNavVisible.value;
-    console.log('Store',isNavVisible.value);
   }
 
   return { isNavVisible, setIsNavVisible }

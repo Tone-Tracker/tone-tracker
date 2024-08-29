@@ -233,6 +233,11 @@ const onWarehouseSubmit = async () => {
  
         await warehouseStore.submit(warehouseForm);
         toaster.success("Warehouse added successfully");
+        warehouseForm.name = '';
+        warehouseForm.streetAddress = null;
+        warehouseForm.zipCode = null;
+        warehouseV$.value.$errors = [];
+        warehouseV$.value.$reset();
         warehouseVisible.value = false;
         await getRegions();
     } catch (error) {
