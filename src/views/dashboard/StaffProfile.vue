@@ -127,7 +127,7 @@ Date: 04/06/2024
 
                        
                     </div>
-                    <div class="col-lg-5">
+                    <div class="col-lg-4">
                         <div class="card">
                             <div class="card-body p-4">
 									<div class="row mb-3">
@@ -188,6 +188,56 @@ Date: 04/06/2024
                         </div>
                        <!-- fgfgfg -->
                     </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body p-4">
+									<div class="row mb-3">
+										<label for="password" class="col-sm-3 col-form-label">New Password</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="passwordForm.password">
+												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+											</div>
+                                            <div
+                                            class="input-errors"
+                                            v-for="error of v$.password.$errors"
+                                            :key="error.$uid">
+                                            <div class="text-danger">Password is required</div>
+                                            </div>
+										</div>
+									</div>
+                                    <div class="row mb-3">
+										<label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="passwordForm.confirmPassword">
+												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+											</div>
+                                            <div
+                                            class="input-errors"
+                                            v-for="error of v$.confirmPassword.$errors"
+                                            :key="error.$uid">
+                                            <div class="text-danger">Please confirm your password</div>
+                                            </div>
+										</div>
+									</div>
+									<div class="row" v-if="isMyProfile">
+										<label class="col-sm-3 col-form-label"></label>
+										<div class="col-sm-9">
+											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
+												<button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
+                                                    <div v-if="showPasswordLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                                    </div>
+                                                    {{ showPasswordLoading ?  '' : 'Update Password' }}
+                                                </button>
+											</div>
+										</div>
+									</div>
+								</div>
+                        </div>
+                       <!-- fgfgfg -->
+                    </div>
                     
                 </div>
 
@@ -204,8 +254,9 @@ import useToaster from '@/composables/useToaster';
 import { useRoute } from 'vue-router';
 import { useAuth } from '@/stores/auth';
 import Image from 'primevue/image';
+import { useVuelidate } from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
-import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
@@ -226,6 +277,7 @@ const totalSizePercent = ref(0);
 
 const totalSize = ref(0);
 const showLoading = ref(false);
+const showPasswordLoading = ref(false);
 
 const user = JSON.parse(authStore.user)
 const profilePicName = ref('');
@@ -233,7 +285,36 @@ const profilePicPreview = ref(null);
 const profilePic = ref(null);
 const showTools = ref(false);
 
+const passwordForm = ref({
+    password: '',
+    confirmPassword: ''
+});
 
+const rules = {
+      password: { required },
+      confirmPassword: { required },
+    };
+    const v$ = useVuelidate(rules, passwordForm);
+
+
+const updatePassword = async () => {
+    const isFormCorrect = await v$.value.$validate();
+      if (!isFormCorrect) {
+        showPasswordLoading.value = false;
+        return;
+      }
+    showPasswordLoading.value = true;
+    userStore.updateProfile(user.id,passwordForm.value).then(function (response) {
+        showPasswordLoading.value = false;
+        toaster.success('Password updated successfully')
+    }).catch(function (error) {
+        showPasswordLoading.value = false;
+        toaster.error('Something went wrong')
+        console.log(error)
+    }).finally(() => {
+        showPasswordLoading.value = false
+    })
+}
 const updateProfile = () => {
     showLoading.value = true;
     userStore.updateProfile(user.id,form.value).then(function (response) {
@@ -297,14 +378,14 @@ const onProfilePicSelect = (event) => {
 };
 
 const onfileDropped = (dropedFile) => {
-    // console.log('files', dropedFile)
+   console.log('dropedFile', dropedFile)
       // Reset last selection and results
       pic.value = ''
       result.dataURL = ''
       result.blobURL = ''
 
       // Get selected files
-      const { files } = dropedFile;
+      const files = dropedFile;
       console.log('filesDrop', files)
       if (!files || !files.length) return
 
@@ -354,10 +435,12 @@ async function getResult() {
         useMultipartFormData: true // Add this flag to the request config
         };
         promoterStore.uploadSingleImage(user.id,formData, config).then(function (response) {
+            console.log('response', response);
             toaster.success('Profile picture updated successfully');
+            getUser();
             showModal.value = false;
             document.querySelector('.modal-backdrop').remove();
-            getUser();
+            
         }).catch(function (error) {
             toaster.error('Ooops! Something went wrong');
             console.log(error)

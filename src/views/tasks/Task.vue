@@ -109,11 +109,9 @@ watch(suggestions, (newSuggestions) => {
         const results =  await geocodeByAddress(event.value.name);
         const byPlacesId = await geocodeByPlaceId(event.value.place_id)
         // const { lat, lng } =  getLatLng(results);
-        form.address = results[0].formatted_address;
-        form.longitude = results[0].geometry.viewport.Hh.lo;
-        form.latitude = results[0].geometry.viewport.ci.lo;
-
-        
+        form.address = results[0]?.formatted_address;
+        form.longitude = results[0]?.geometry.viewport.Hh.lo;
+        form.latitude = results[0]?.geometry.viewport.ci.lo;        
 
     }
 

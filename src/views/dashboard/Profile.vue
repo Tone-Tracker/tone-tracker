@@ -10,14 +10,25 @@ Date: 04/06/2024
             <div class="page-content">
 
                 <!-- <BreadCrumb title="Profile" icon="bx bx-user-circle" /> -->
-                <div class="main-dashboard-head">
-                    <span class="font-welcome">Profile</span>
-                </div>
-                <p class="text-white">Promoter</p>
+                <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="ps-3">
+                        <div class="main-dashboard-head">
+                            <span class="font-welcome">Profile</span>
+                        </div>
+                        <p class="text-white">Promoter</p>
+					</div>
+					<div class="ms-auto">
+						<div class="btn-group">
+							
+						</div>
+					</div>
+				</div>
+                
+              
 
 
                 <div class="row justify-content-space-between gap-5">
-                    <div class="col-lg-5">
+                    <div class="col-lg-4">
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
                                 <div class="image-container">
@@ -50,33 +61,26 @@ Date: 04/06/2024
                                 </div>
 
                                 <div class="profile-imgs mb-4">
-                                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
-                                        <div v-if="images?.length > 0" v-for="image in images" :key="image.id">
-                                        <div class="col-img">
-                                            <div class="gallery ms-0">
-                                                <div class="card flex justify-center">
-                                                    <Image alt="Image" preview>
-                                                        <template #previewicon>
-                                                          <i class='bx bx-search-alt-2' ></i>
-                                                        </template>
-                                                        <template #image>
-                                                            <img 
-                                                            :src="envPath + image.path" 
-                                                            alt="image" width="250" />
-                                                        </template>
-                                                        <template #preview="slotProps">
-                                                            <img 
-                                                            :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                                                        </template>
-                                                    </Image>
-                                                    </div>
-
-                                            </div>
-                                        </div>
-                                        </div>
-                                     
-                                    </div>
-                                </div>
+    <div class="image-gallery">
+      <div v-if="images?.length > 0" class="image-grid">
+        <div v-for="image in images" :key="image.id" class="image-item">
+          <div class="card flex justify-center">
+            <Image alt="Image" preview>
+              <template #previewicon>
+                <i class='bx bx-search-alt-2'></i>
+              </template>
+              <template #image>
+                <img :src="envPath + image.path" alt="image" />
+              </template>
+              <template #preview="slotProps">
+                <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+              </template>
+            </Image>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
                                 <div class="mb-4">
                                     <button v-if="isMyProfile()"
                                         class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center"
@@ -336,84 +340,198 @@ Date: 04/06/2024
 
                        
                     </div>
-                    <div class="col-lg-5">
+                    <div class="col-lg-4">
                         <div class="card">
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Age: {{ promoterData ? promoterData.dob : '' }}</h6>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Height: {{ promoterData ? promoterData.height : '' }}</h6>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Location: Capetown</h6>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Top size: {{ promoterData ? promoterData.topSize : '' }}</h6>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Pants Size: {{ promoterData ? promoterData.pantsSize : '' }}</h6>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Dress Size: {{ promoterData ? promoterData.dressSize : '' }}</h6>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <h6 class="mb-0">Experience</h6>
-                                        <i v-if="isMyProfile"  @click="showExperienceModal=true" v-tooltip="'Add experience'"  
-                                        class='bx bx-plus-circle fs-3 cursor-pointer' style="margin-top: -1rem;"></i>
-                                    </div>
-                                </div>
-                                <div v-for="experience in promoterData?.experiences "  :key="experience?.id" class="row mb-3">
-                                    <div>
-                                        <h6 class="mb-0">{{ experience?.name}}</h6>
-                                        <p>{{ experience?.duration}}</p>
-                                            <p>{{ experience?.description }}</p>
-                                    </div>
-                                </div>
-                                
-
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="card">
-                                    <div class="card-body row">
+                            <div class="card-body p-4">
+									<div class="row mb-3">
+										<label for="first-name" class="col-sm-3 col-form-label">First Name</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="text" class="form-control" id="first-name" v-model="profileForm.firstName">
+												<span class="position-absolute top-50 translate-middle-y"><i class="bx bx-user"></i></span>
+											</div>
+										</div>
+									</div>
+                                    <div class="row mb-3">
+										<label for="last-name" class="col-sm-3 col-form-label">Last Name</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="text" class="form-control" id="last-name" v-model="profileForm.lastName">
+												<span class="position-absolute top-50 translate-middle-y"><i class="bx bx-user"></i></span>
+											</div>
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label for="phone" class="col-sm-3 col-form-label">Phone Number</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="tel" class="form-control" id="phone" v-model="profileForm.phone">
+												<span class="position-absolute top-50 translate-middle-y"><i class="bx bx-phone"></i></span>
+											</div>
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label for="email" class="col-sm-3 col-form-label">Email Address</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="email" class="form-control" id="email" v-model="profileForm.email">
+												<span class="position-absolute top-50 translate-middle-y"><i class="bx bx-envelope"></i></span>
+											</div>
+										</div>
+									</div>
+                                    <div class="row mb-3">
+										<label for="description" class="col-sm-3 col-form-label">Bio</label>
+										<div class="col-sm-9">
+											<textarea class="form-control" id="description" rows="3" v-model="profileForm.description" 
+                                            placeholder="Your Bio"></textarea>
+										</div>
+									</div>
+                                    <div class="row mb-3">
+										<label for="first-name" class="col-sm-3 col-form-label">Height</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="text" class="form-control form-control2" id="first-name" v-model="profileForm.height">
+												
+											</div>
+										</div>
+									</div>
+                                    <!-- <div class="row mb-3">
                                         
-                                            <div class="col-11">
-                                                <h5 class="d-flex align-items-center mb-3">Bio</h5>
-                                            <p v-if="!showBioTextarea">
-                                                {{ promoterData ? promoterData.bio : '' }}
-                                            </p>
-                                                <div v-if="showBioTextarea" class="card flex justify-center">
-                                                    <Textarea v-model="myBio" autoResize rows="5" cols="30" />
-                                                    <button type="button" class="btn btn maz-gradient-btn mt-2">Save</button>
-                                                </div>
-                                            
+										<label for="first-name" class="col-sm-3 col-form-label">DOB</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="text" class="form-control form-control2" id="first-name" v-model="profileForm.dob">
+												
+											</div>
+										</div>
+									</div> -->
+                                    <div class="row mb-3">
+										<label for="first-name" class="col-sm-3 col-form-label">Gender</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<select v-model="profileForm.gender" class="form-control form-control2" id="dress_size">
+                                                    <option :value="''" disabled :selected="true" >Choose gender...</option>
+                                                    <option value="MALE">MALE</option>
+                                                    <option value="FEMALE">FEMALE</option>
+                                                  </select>
+												
+											</div>
+										</div>
+									</div>
+                                    <div class="row mb-3">
+										<label for="first-name" class="col-sm-3 col-form-label">Dress Size</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<select v-model="profileForm.dressSize" class="form-control form-control2" id="dress_size">
+                                                    <option :value="''" disabled :selected="true" >Choose Dress Size...</option>
+                                                    <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+                                                  </select>
+												
+											</div>
+										</div>
+									</div>
+                                    <div class="row mb-3">
+										<label for="first-name" class="col-sm-3 col-form-label">Top size</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+                                                <select v-model="profileForm.topSize" class="form-control form-control2" id="top-size">
+                                                    <option :value="''" disabled :selected="true">Choose Top Size...</option>
+                                                    <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+                                                  </select>
+												
+											</div>
+										</div>
+									</div>
+                                    <div class="row mb-3">
+										<label for="first-name" class="col-sm-3 col-form-label">Pants Size</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="text" class="form-control form-control2" id="first-name" v-model="profileForm.pantsSize">
+												
+											</div>
+										</div>
+									</div>
+									<div class="row" v-if="isMyProfile()">
+										<label class="col-sm-3 col-form-label"></label>
+										<div class="col-sm-9">
+											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
+												<button @click="updateProfile" type="button" class="btn maz-gradient-btn w-100 px-4">
+                                                    <div v-if="showProfileLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                                    </div>
+                                                    {{ showProfileLoading ?  '' : 'Update' }}
+                                                </button>
+											</div>
+										</div>
+									</div>
+								</div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="card mb-3">
+                            <div class="card-body p-4">
+                                <h4 class="mb-2 text-center mt-2">Experience</h4>
+									<div class="row mb-3">
+										<div v-for="experience in promoterData?.experiences "  :key="experience?.id" class="row mb-3">
+                                            <div>
+                                                <h6 class="mb-0">{{ experience?.name}}</h6>
+                                                <p>{{ experience?.duration}}</p>
+                                                    <p>{{ experience?.description }}</p>
                                             </div>
-                                            <div class="col-1">
-                                                <i @click="editBio" v-if="!showBioTextarea && isMyProfile"  v-tooltip="'Edit Bio'"
-                                                class="bx bx-edit-alt fs-2 cursor-pointer"></i>
-                                                <i @click="closeBioTextarea" v-if="showBioTextarea" v-tooltip="'Close'"
-                                                class='bx bx-x fs-2 cursor-pointer text-danger'></i>
+                                        </div>
+									</div>
+									<div class="row col-9 float-end" v-if="isMyProfile">
+										<button v-if="isMyProfile"  @click="showExperienceModal=true"type="button" class="btn maz-gradient-btn">Add Experience</button>
+									</div>
+								</div>
+                        </div>
+
+                        <div class="card maz-gradient-border-top mt-4">
+                            <div class="card-body p-4">
+                                <h4 class="mb-2 text-center mt-2">Change Password</h4>
+									<div class="row mb-3">
+										<label for="password" class="col-sm-3 col-form-label">New Password</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="passwordForm.password">
+												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+											</div>
+                                            <div
+                                            class="input-errors"
+                                            v-for="error of vv$.password.$errors"
+                                            :key="error.$uid">
+                                            <div class="text-danger">Password is required</div>
                                             </div>
-                                    
-                                    </div>
-                                </div>
-                            </div>
+										</div>
+									</div>
+                                    <div class="row mb-3">
+										<label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
+										<div class="col-sm-9">
+											<div class="position-relative input-icon">
+												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="passwordForm.confirmPassword">
+												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+											</div>
+                                            <div
+                                            class="input-errors"
+                                            v-for="error of vv$.confirmPassword.$errors"
+                                            :key="error.$uid">
+                                            <div class="text-danger">Please confirm your password</div>
+                                            </div>
+										</div>
+									</div>
+									<div class="row" v-if="isMyProfile">
+										<label class="col-sm-3 col-form-label"></label>
+										<div class="col-sm-9">
+											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
+												<button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
+                                                    <div v-if="showPasswordLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                                    </div>
+                                                    {{ showPasswordLoading ?  '' : 'Update Password' }}
+                                                </button>
+											</div>
+										</div>
+									</div>
+								</div>
                         </div>
                     </div>
                 </div>
@@ -483,11 +601,12 @@ import AccordionContent from 'primevue/accordioncontent';
 import Textarea from 'primevue/textarea';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
-import useVuelidate from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
+import { useVuelidate } from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+const sizes = ref(["X_SMALL", "SMALL", "MEDIUM", "LARGE", "X_LARGE", "XX_LARGE"]);
 
 onMounted(() => {
     getUser();
@@ -514,6 +633,8 @@ const totalSizePercent = ref(0);
 const $primevue = usePrimeVue();
 const totalSize = ref(0);
 const showLoading = ref(false);
+const showProfileLoading = ref(false);
+const showPasswordLoading = ref(false);
 
 const user = JSON.parse(authStore.user)
 const promoterData = ref({});
@@ -523,6 +644,37 @@ const profilePicPreview = ref(null);
 const profilePic = ref(null);
 const showTools = ref(false);
 const showBioTextarea = ref(false);
+
+const passwordForm = ref({
+    password: '',
+    confirmPassword: ''
+});
+
+const paswordRules = {
+      password: { required },
+      confirmPassword: { required },
+    };
+    const vv$ = useVuelidate(paswordRules, passwordForm);
+
+
+const updatePassword = async () => {
+    const isFormCorrect = await vv$.value.$validate();
+      if (!isFormCorrect) {
+        showPasswordLoading.value = false;
+        return;
+      }
+    showPasswordLoading.value = true;
+    userStore.updateProfile(user.id,passwordForm.value).then(function (response) {
+        showPasswordLoading.value = false;
+        toaster.success('Password updated successfully')
+    }).catch(function (error) {
+        showPasswordLoading.value = false;
+        toaster.error('Something went wrong')
+        console.log(error)
+    }).finally(() => {
+        showPasswordLoading.value = false
+    })
+}
 
 const experienceForm = reactive({
     promoter: promoterId.value,
@@ -565,6 +717,22 @@ const editBio = () => {
     showBioTextarea.value = !showBioTextarea.value
 }
 
+const updateProfile = () => {
+    showProfileLoading.value = true;
+    userStore.updateProfile(user.id,profileForm.value).then(function (response) {
+        getUser();
+        getPromoterDetails();
+        showProfileLoading.value = false;
+        toaster.success('Profile updated successfully')
+    }).catch(function (error) {
+        showProfileLoading.value = false;
+        toaster.error('Something went wrong')
+        console.log(error)
+    }).finally(() => {
+        showProfileLoading.value = false
+    })
+}
+
 const closeBioTextarea = () => {
     showBioTextarea.value = false
 }
@@ -599,6 +767,7 @@ const uploadInput = ref(null)
         
         // Push the new comment object to the ratings array
         promoterData.value.ratings.push(newComment);
+          
             toaster.success("Comment submitted successfully");
         }).catch(function (error) {
             toaster.error("Error submitting comment");
@@ -708,11 +877,33 @@ async function getResult() {
     }
 
 const userInfo = ref(null);
+const profileForm = ref({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+    role: '',
+    topSize: '',
+    pantsSize: '',
+    dob: '',
+    dressSize: '',
+    height: '',
+    gender: '',
+    bio: ''
+
+});
 const getUser = () => {
     userStore.getUser(userIdParam.value).then(function (response) {
         console.log('userInfo',response);
         userInfo.value = response.data;
         myBio.value = response.data.bio;
+        Object.assign(profileForm.value, {
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            phone: response.data.phone,
+            email: response.data.email,
+            role: response.data.role,
+        })
   }).catch(function (error) {
     toaster.error("Error fetching profile");
     console.log(error);
@@ -723,6 +914,14 @@ const getPromoterDetails = () => {
     promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
         console.log('Fuck',response.data);
         promoterData.value = response.data;
+        Object.assign(profileForm.value, {
+            topSize: response.data.topSize,
+            pantsSize: response.data.pantsSize,
+            dob: response.data.dob,
+            dressSize: response.data.dressSize,
+            height: response.data.height,
+            gender: response.data.gender
+        })
         myBio.value = response.data.bio;
   }).catch(function (error) {
     toaster.error("Error fetching profile");
@@ -1027,5 +1226,46 @@ div.desc {
 .edit-icon i {
     font-size: 20px; 
     color: #fff;
+}
+.form-control2 {
+    padding-left: 1rem !important;
+}
+
+/* //////profile image///// */
+.image-gallery {
+  width: 100%;
+  /* padding: 20px; */
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  justify-content: center;
+}
+
+.image-item {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.image-item:hover {
+  transform: scale(1.05);
+}
+
+.image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .image-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }
 </style>

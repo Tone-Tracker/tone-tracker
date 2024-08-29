@@ -2,17 +2,7 @@
   <header>
     <div class="topbar d-flex align-items-center">
       <nav class="navbar navbar-expand-lg flex justify-content-between flex-direction-row w-100">
-        <button
-          class="navbar-toggler d-lg-none"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <DarkThemeNavbarToggle @toggle="handleToggle"/>
 
         <div class="logo-container">
           <img class="logo" src="/src/assets/images/logo/white-logo.png" alt="Logo">
@@ -54,6 +44,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import DarkThemeNavbarToggle from './DarkThemeNavbarToggle.vue';
 import axios from 'axios';
 
 const query = ref('');
@@ -92,7 +83,6 @@ onMounted(() => {
 
 
 <style scoped>
-
 /* Add your styles here */
 .suggestions-list {
   list-style-type: none;

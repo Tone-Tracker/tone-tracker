@@ -62,6 +62,17 @@ const onFileChange = (uploadedFile) => {
     selectedFile.value = uploadedFile;
 }
 
+const onfileDropped = (dropedFile) => {
+   console.log('dropedFile', dropedFile);
+      selectedFile.value = null
+
+      // Get selected files
+      const files = dropedFile;
+      if (!files) return
+      const file = files[0];
+      selectedFile.value = file;
+};
+
 const createCampaign = async () => {
 	const isFormValid = await v$.value.$validate();
 	if (!isFormValid) {
@@ -297,6 +308,7 @@ const onInput = () => {
                                                             accept="image/*" 
                                                             fileType="image" 
                                                             @fileUploaded="onFileChange"
+                                                             @fileDropped="onfileDropped"
                                                             />
                                                             <p v-if="fileName" class="text-center text-success">{{ fileName }}({{ fileSize }}Kb)</p>
                                                         </div>
