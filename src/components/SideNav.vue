@@ -54,7 +54,7 @@ const visible = ref(false);
       style="background-color: black; width: 300px"
     >
       <Drawer
-        v-model:visible="visible"
+       
         style="background-color: black; width: 285px; border: none; margin-top: 153px"
       >
         <template #container="{ closeCallback }">
@@ -62,12 +62,13 @@ const visible = ref(false);
             <div class="flex items-center justify-between shrink-0">
               <span>
                 <Button
-                  type="button"
-                  @click="closeCallback"
-                  icon="pi pi-times"
-                  rounded
-                  outlined
-                ></Button>
+                type="button"
+                @click="closeCallback"
+                icon="pi pi-times" 
+                class="close-button"
+                rounded
+                outlined
+              ></Button>
               </span>
             </div>
 
@@ -143,9 +144,42 @@ const visible = ref(false);
 </template>
 
 <style scoped>
-  /* @media (min-width: 768px) and (max-width: 991.98px) {
+  @media (min-width: 768px) and (max-width: 991.98px) {
     .mazisi.simplebar-wrapper {
       width: 50px !important;
     }
-  } */
+  }
+
+ 
+  .bx-menu {
+    font-size: 2rem; /* Make the icon large */
+    color: #fff; /* White color for better visibility */
+    /* padding: 10px; */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: transform 0.3s ease; /* Add a smooth transition effect */
+  }
+
+  .bx-menu:hover {
+    transform: scale(1.1); /* Slightly enlarge the icon on hover */
+    color: #ffff; /* Change color on hover for visual feedback */
+  }
+
+  .x-button {
+    position: relative; /* For positioning */
+    width: 40px; /* Button width */
+    height: 40px; /* Button height */
+    background-color: transparent; /* Transparent background */
+    border: 2px solid #ffff; /* Border color */
+    border-radius: 50%; /* Rounded button */
+    display: flex; /* Flexbox for centering */
+    align-items: center; /* Center align */
+    justify-content: center; /* Center align */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+  }
+
+  
 </style>
+
+
+
