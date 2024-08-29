@@ -207,7 +207,7 @@ Date: 04/06/2024
                                 <div class="file-info">
                                   <!-- <p class="m-0 text-white">Brief.pdf</p> -->
                                 </div>
-                                <div class="ms-auto">
+                                <div class="ms-auto" v-if="isMyProfile() || isAdmin()">
                                     <i @click="download('nda')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download NDA'" ></i>
                                  
                                 </div>
@@ -226,7 +226,7 @@ Date: 04/06/2024
                                 <div class="file-info">
                                   <!-- <p class="m-0 text-white">Brief.pdf</p> -->
                                 </div>
-                                <div class="ms-auto">
+                                <div class="ms-auto" v-if="isMyProfile() || isAdmin()">
                                     <i @click="download('sla')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download SLA'" ></i>
                                  
                                 </div>
@@ -239,7 +239,7 @@ Date: 04/06/2024
 
 
                     
-                        <div class="card mt-3 maz-gradient-border-top">
+                        <div class="card mt-3 maz-gradient-border-top" v-if="isMyProfile()">
                             <div class="card-body p-4">
                                 <h4 class="mb-2 ml-2 mt-2">Change Password</h4>
 									<div class="row mb-3">
@@ -292,7 +292,7 @@ Date: 04/06/2024
                     </div>
                 </div>
                 <div class="card flex justify-center">
-                    <Drawer v-model:visible="showPreviewSheet" position="right" :header="`Preview ${fileType} File`" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+                    <Drawer v-model:visible="showPreviewSheet" position="right" :header="`Preview Signed ${fileType} File`" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
                         <PDF :src="previewFile" />
                     </Drawer>
                 </div>
@@ -332,6 +332,7 @@ const route = useRoute();
 const toaster = useToaster();
 const userStore = useUserStore();
 const promoterId = ref(route.params.id);
+const userId = ref(route.params.userId);
 const userIdParam = ref(route.params.userId);
 const activeUserId = ref(route.params.id);
 const totalSizePercent = ref(0);
@@ -381,6 +382,12 @@ const updatePassword = async () => {
         showPasswordLoading.value = false
     })
 }
+
+        const isAdmin = () => {
+			return user.role == 'TTG_SUPER_ADMIN' 
+			|| user.role == 'TTG_HEAD_ADMIN' 
+			|| user.role == 'TTG_REGIONAL_MANAGER';
+		}
 
 const getSignedNDADocuments = (type) => {
     supplierStore.getSignedDocuments(activeUserId.value, type).then(function (response) {
@@ -548,8 +555,8 @@ const getUser = () => {
 
 
 const isMyProfile = () => {
-    // console.log(promoterId.value, user.activeUserId)
-    return promoterId.value == user.activeUserId;
+    console.log(promoterId.value, user.activeUserId)
+    return userId.value == user.activeUserId;
 }
 const uploadEvent = (callback) => {
     totalSizePercent.value = totalSize.value / 10;

@@ -235,21 +235,21 @@ const onInput = () => {
 const items = (activation) => [
     {
         label: 'View Activation',
-        icon: 'bx bx-bullseye fs-4 text-success',
+        icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
         command: () => {
             URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${activation.campaignDTO.name}&name=${activation.name}`);
         }
     },
 	{
         label: 'Tasks',
-        icon: 'bx bx-task fs-4 text-success',
+        icon: 'bx bx-task fs-4 maz-gradient-txt',
         command: () => {
             URLrouter.push(`/tasks?activation=${activation.id}&name=${activation.name}`);
         }
     },
 	{
         label: 'Edit',
-        icon: 'bx bx-edit-alt fs-4 text-success',
+        icon: 'bx bx-edit-alt fs-4 maz-gradient-txt',
         command: () => {
             URLrouter.push(`/create-activation?activation=${activation.id}&campaign=${campaignId.value}&manager=${getUserName(activation)}&name=${activation.campaign.name}`);
         }
@@ -257,7 +257,7 @@ const items = (activation) => [
     
 	{
         label: 'Add Activation Manager',
-        icon: 'bx bx-user-plus text-success fs-3',
+        icon: 'bx bx-user-plus maz-gradient-txt fs-3',
         command: () => {
             // unitForm.warehouse = warehouse.id
             openModal('top',activation);
@@ -265,7 +265,7 @@ const items = (activation) => [
     },
 	{
         label: 'Delete',
-        icon: 'bx bxs-trash fs-4 text-danger text-success',
+        icon: 'bx bxs-trash fs-4 text-danger maz-gradient-txt',
         command: () => {
             deleteActivation(activation);
         }
@@ -274,14 +274,14 @@ const items = (activation) => [
 const activationItems = (activation) => [
     {
         label: 'View Activation',
-        icon: 'bx bx-bullseye fs-4 text-success',
+        icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
         command: () => {
             URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${activation.campaign.name}&name=${activation.name}`);
         }
     },
 	{
         label: 'Tasks',
-        icon: 'bx bx-task fs-4 text-success',
+        icon: 'bx bx-task fs-4 maz-gradient-txt',
         command: () => {
             URLrouter.push(`/tasks?activation=${activation.id}&name=${activation.name}`);
         }
