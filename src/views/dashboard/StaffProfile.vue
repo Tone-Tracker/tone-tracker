@@ -66,6 +66,7 @@ Date: 04/06/2024
                                             accept="image/*" 
                                             fileType="image" 
                                             @fileUploaded="onProfilePicSelect"
+                                            @fileDropped="onfileDropped"
                                          />
                                           
                                           <VuePictureCropper
@@ -162,15 +163,6 @@ Date: 04/06/2024
 											<div class="position-relative input-icon">
 												<input type="email" class="form-control" id="email" v-model="form.email">
 												<span class="position-absolute top-50 translate-middle-y"><i class="bx bx-envelope"></i></span>
-											</div>
-										</div>
-									</div>
-									<div class="row mb-3">
-										<label for="email" class="col-sm-3 col-form-label">Name</label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="email" v-model="form.name" placeholder="Business Name">
-												<span class="position-absolute top-50 translate-middle-y"><i class='bx bxs-business'></i></span>
 											</div>
 										</div>
 									</div>
@@ -279,7 +271,8 @@ const onProfilePicSelect = (event) => {
       if (!files || !files.length) return
 
       // Convert to dataURL and pass to the cropper component
-      const file = files[0]
+      const file = files[0];
+      console.log('filesSelect', files)
       const reader = new FileReader()
       reader.readAsDataURL(file)
       reader.onload = () => {
@@ -295,6 +288,42 @@ const onProfilePicSelect = (event) => {
       }
 
     //const file = event.target.files[0];
+    
+    if (file) {
+        profilePicName.value = file.name;
+        profilePicPreview.value = URL.createObjectURL(file);
+    }
+    profilePic.value = file;
+};
+
+const onfileDropped = (dropedFile) => {
+    // console.log('files', dropedFile)
+      // Reset last selection and results
+      pic.value = ''
+      result.dataURL = ''
+      result.blobURL = ''
+
+      // Get selected files
+      const { files } = dropedFile;
+      console.log('filesDrop', files)
+      if (!files || !files.length) return
+
+      // Convert to dataURL and pass to the cropper component
+      const file = files[0]
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        // Update the picture source of the `img` prop
+        pic.value = String(reader.result)
+
+        // Show the modal
+        showTools.value = true
+
+        // Clear selected files of input element
+        if (!uploadInput.value) return
+        uploadInput.value.value = ''
+      }
+
     
     if (file) {
         profilePicName.value = file.name;

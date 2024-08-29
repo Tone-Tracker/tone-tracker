@@ -25,12 +25,13 @@ Date: 04/06/2024
                                             </template>
                                             <template #image>
                                                 <img 
-                                                src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" 
+                                                :src="userInfo?.path ? envPath + userInfo?.path 
+                                                : `https://ui-avatars.com/api/?name=${ getFullName() }&background=4263C5`" 
                                                 alt="image" width="350" />
                                             </template>
                                             <template #preview="slotProps">
                                                 <img 
-                                                src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                :src="userInfo?.path ? envPath + userInfo?.path : `https://ui-avatars.com/api/?name=${ getFullName() }&background=4263C5`" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                                             </template>
                                         </Image>
                                         </div>
@@ -58,8 +59,14 @@ Date: 04/06/2024
                                                 
                                         </div>
                                         <div class="modal-body">
-                                            <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
-                                           <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label>
+                                            <!-- <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
+                                           <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label> -->
+                                           <FileUploadForCropper
+                                           :showFilePreview="showFilePreview" 
+                                            accept="image/*" 
+                                            fileType="image" 
+                                            @fileUploaded="onProfilePicSelect"
+                                         />
                                           
                                           <VuePictureCropper
                                           :boxStyle="{
@@ -253,6 +260,7 @@ import { useUserStore } from '@/stores/userStore';
 import { useSupplier } from '@/stores/supplier';
 import PDF from 'pdf-vue3';
 import Drawer from 'primevue/drawer';
+import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
@@ -284,6 +292,7 @@ const showTools = ref(false);
 
 const ndaFile = ref(null);
 const slaFile = ref(null);
+const showFilePreview = ref(true);
 
 const getSignedNDADocuments = (type) => {
     supplierStore.getSignedDocuments(activeUserId.value, type).then(function (response) {

@@ -13,7 +13,7 @@ const props = defineProps({
   showFilePreview: Boolean
 })
 
-const emit = defineEmits(['fileUploaded']);
+const emit = defineEmits(['fileUploaded','fileDropped']);
 const toaster = useToaster();
 const uploadStore = useDocUpload();
 
@@ -29,17 +29,21 @@ function onFileChange(event) {
   }
 }
 
-function onDrop(event) {
-  const droppedFile = event.dataTransfer;
-  if (!droppedFile.name.includes(".pdf")) {
+function onDrop(event) {  
+  const droppedFiles = event.dataTransfer.files;
+  console.log(event);
+  if (droppedFiles.length === 0) {
+    return;
+  }
+  const droppedFile = droppedFiles[0];
+  //if its not image 
+  if (!droppedFile.type.includes("image")) {
     file.value = null;
-    toaster.error("Only pdf files are allowed");
-    return
+    toaster.error("Only image files are allowed");
+    return;
   }
-  if (droppedFile) {
-    file.value = droppedFile;
-    emit('fileUploaded', event);
-  }
+  file.value = droppedFile;
+  emit('fileDropped', event.dataTransfer.files);
   isDragging.value = false;
 }
 
