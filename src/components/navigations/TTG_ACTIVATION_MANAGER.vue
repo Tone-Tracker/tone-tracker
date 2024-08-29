@@ -56,16 +56,20 @@ const getRoleName = () => {
                         <div class="accordion-body p-0">
                             <ul class="nav-list">
                                 <li :class="{ 'active': currentRoute.path === '/activations' }"><router-link to="/activations"><i class='bx bx-chat ps-3 pe-3'></i> All</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/admin-activations' }"><router-link to="/admin-activations"><i class='bx bx-calendar-event ps-3 pe-3'></i> Activations</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/admin-activations' }"><router-link to="/admin-activations">
+                                    <i class='bx bx-calendar-event ps-3 pe-3'></i> Activations</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/promoters' }"><router-link to="/promoters"><i class='bx bx-group ps-3 pe-3'></i> Promoters</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><i class='bx bx-file ps-3 pe-3'></i> Briefs</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/admin-warehouse' }"><router-link to="/admin-warehouse"><i class='bx bx-store ps-3 pe-3'></i> Warehouse & Units</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pe-3'></i> Learning & Teaching</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/jobs' }"><router-link to="/jobs"><i class='bx bx-briefcase ps-3 pe-3'></i> Jobs</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/upload' }"><router-link to="/upload"><i class='bx bx-upload ps-3 pe-3'></i> Upload contract</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/message-center' }"><a href="#"><i class='bx bx-envelope ps-3 pe-3'></i> Message center</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><i class='bx bx-send ps-3 pe-3'></i> Sent</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><i class='bx bx-envelope-open ps-3 pe-3'></i> Unread</a></li>
+                                <li :class="{ 'active': currentRoute.path === `/staff-profile/${user?.activeUserId}/${user?.id}` }">
+                                    <router-link  :to="{ path: `/staff-profile/${user?.activeUserId}/${user?.id}` }">
+                                        <span class="icon ps-3"><i class='bx bx-user-pin'></i></span> Profile </router-link>
+                                </li>
+                                <!-- <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><i class='bx bx-send ps-3 pe-3'></i> Sent</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><i class='bx bx-envelope-open ps-3 pe-3'></i> Unread</a></li> -->
                             </ul>
 
                         </div>

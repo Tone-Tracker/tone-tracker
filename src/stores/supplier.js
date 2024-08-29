@@ -24,11 +24,14 @@ export const useSupplier = defineStore('supplier', () => {
       return axiosInstance.post(`api/documents/signed`,formData, config);
     }
 
+    const getSignedDocuments = (supplierId, type) => {
+      return axiosInstance.get(`api/documents/signed/${supplierId}/${type}`);
+    }
 
     const submitBid = (data, bidId) => {
       return axiosInstance.post(`/api/bids/${bidId}/costs`,data);
     }
 
-    return { submit, getThirdParties,getThirdPartyTasks,submitBid,getThirdPartyAwardedTasks,uploadSignedDocuments }
+    return { submit, getSignedDocuments, getThirdParties,getThirdPartyTasks,submitBid,getThirdPartyAwardedTasks,uploadSignedDocuments }
   
   })  
