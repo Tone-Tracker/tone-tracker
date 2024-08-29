@@ -469,21 +469,23 @@ Date: 04/06/2024
 
                     <div class="col-lg-3">
                         <div class="card mb-3">
-                            <div class="card-body p-4">
-                                <h4 class="mb-2 text-center mt-2">Experience</h4>
-									<div class="row mb-3">
-										<div v-for="experience in promoterData?.experiences "  :key="experience?.id" class="row mb-3">
-                                            <div>
-                                                <h6 class="mb-0">{{ experience?.name}}</h6>
-                                                <p>{{ experience?.duration}}</p>
-                                                    <p>{{ experience?.description }}</p>
-                                            </div>
-                                        </div>
-									</div>
-									<div class="row col-9 float-end" v-if="isMyProfile">
-										<button v-if="isMyProfile"  @click="showExperienceModal=true"type="button" class="btn maz-gradient-btn">Add Experience</button>
-									</div>
-								</div>
+        <div class="card-body p-4">
+            <h4 class="mb-2 text-center mt-2">Experience</h4>
+            <div class="row mb-3">
+                <div v-for="experience in promoterData?.experiences" :key="experience?.id" class="row mb-3">
+                    <div>
+                        <h6 class="mb-0">{{ experience?.name }}</h6>
+                        <p>{{ experience?.duration }}</p>
+                        <p>{{ experience?.description }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row" v-if="isMyProfile()">
+                <div class="col-12 text-end">
+                    <button @click="showExperienceModal=true" type="button" class="btn maz-gradient-btn">Add Experience</button>
+                </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="card maz-gradient-border-top mt-4">
@@ -889,7 +891,8 @@ const profileForm = ref({
     dressSize: '',
     height: '',
     gender: '',
-    bio: ''
+    bio: '',
+    promoter: promoterId.value
 
 });
 const getUser = () => {
