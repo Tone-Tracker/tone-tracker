@@ -12,24 +12,39 @@
   </button>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
+import { useNavStore } from '@/stores/ToggleNav';
 
-export default {
-  name: 'DarkThemeNavbarToggle',
-  setup() {
-    const isSideNavVisible = ref(true);
+    const navStore = useNavStore();
+    console.log('IsNavVisible',navStore.isNavVisible);
 
-    const toggleSideNav = () => {
-      isSideNavVisible.value = !isSideNavVisible.value;
-    };
+      const toggleSideNav = () => {
+        navStore.setIsNavVisible();  // Toggle the navigation visibility
+      };
 
-    return {
-      isSideNavVisible,
-      toggleSideNav
-    };
-  }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 <style scoped>

@@ -10,6 +10,9 @@ import TTG_PROMOTERS from "./navigations/TTG_PROMOTERS.vue";
 import { useAuth } from "@/stores/auth";
 import TTG_SUPPLIERS from "./navigations/TTG_SUPPLIERS.vue";
 import Drawer from "primevue/drawer";
+import { useNavStore } from '@/stores/ToggleNav';
+
+const navStore = useNavStore();
 
 import { ref } from "vue";
 
@@ -20,7 +23,8 @@ const getUserRole = (role) => {
   return user.role == role;
 };
 
-const visible = ref(false);
+const visible = navStore.isNavVisible;
+console.log('visibleqqqq',visible);
 </script>
 
 <template>
@@ -37,6 +41,7 @@ const visible = ref(false);
           <div class="simplebar-content-wrapper" style="height: 100%">
             <div class="simplebar-content mm-active" style="padding: 0px">
               <!--navigation-->
+              {{ navStore.isNavVisible }}
               <CLIENT />
               <!--end navigation-->
             </div>
@@ -54,7 +59,7 @@ const visible = ref(false);
       style="background-color: black; width: 300px"
     >
       <Drawer
-       
+       v-model:visible="navStore.isNavVisible"
         style="background-color: black; width: 285px; border: none; margin-top: 153px"
       >
         <template #container="{ closeCallback }">

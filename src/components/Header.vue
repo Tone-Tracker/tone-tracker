@@ -47,6 +47,7 @@ import { ref, onMounted } from 'vue';
 import DarkThemeNavbarToggle from './DarkThemeNavbarToggle.vue';
 import axios from 'axios';
 
+
 const query = ref('');
 const allActivations = ref([]);
 const filteredSuggestions = ref([]);
