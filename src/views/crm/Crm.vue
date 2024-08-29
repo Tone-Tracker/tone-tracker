@@ -1,14 +1,67 @@
 <script setup>
-import { onClickOutside } from '@vueuse/core'
-import { ref } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
+import { useLeadStore } from '@/stores/leadStore';
+import useToaster from '@/composables/useToaster';
+import { useAuth } from '@/stores/auth';
 
 let showDropdown = ref(null);
-onClickOutside(showDropdown, event => showDropdown.value.classList.remove('show'));
+let showModal = ref(false);
+const leadStore = useLeadStore();
 
-const toggleDropdown = () => {
-    showDropdown.value.classList.toggle('show');
+onMounted(() => {
+    
+    getAllLeads();
+
+});
+
+let newUser = ref({
+    name: '',
+    surname: '',
+    email: '',
+    cell: '',
+    optin: false,
+    area: '',
+    region: ''
+});
+
+const getAllLeads = async () => {
+	showLoading.value = true;
+	leadStore.getLeds().then(function (response) { console.log("tst", response);
+		showLoading.value = false;
+		users.value = response.data.content
+	}).catch(function (error) {
+		toaster.error("Error fetching users");
+		console.log(error);
+	}).finally(function () {
+		showLoading.value = false;
+	})
+  }
+
+
+
+const openModal = () => {
+    showModal.value = true;
+};
+
+const closeModal = () => {
+    showModal.value = false;
+    newUser.value = {
+        name: '',
+        surname: '',
+        email: '',
+        cell: '',
+        optin: false,
+        area: '',
+        region: ''
+    };
+};
+
+const submitUserDetails = () => {
+    console.log("User Details Submitted:", newUser.value);
+    // Here you can handle form submission, e.g., send the data to a server
+    closeModal();
 };
 
 </script>
@@ -19,23 +72,11 @@ const toggleDropdown = () => {
             <div class="page-content">
                 <BreadCrumb title="CRM" icon="bx bxs-calculator" />
 
-                <!-- Code here -->
-                <div class="">
+                <div>
                     <div class="table-container-colour p-5">
                         <div class="d-flex justify-content-between">
                             <h5>Database</h5>
-                            <div class="filter-dropdown">
-                                <h5 style="display: inline;">Filter</h5>
-                                <img src="https://img.icons8.com/ios-filled/20/ffffff/filter.png" alt="Filter Icon"
-                                    class="filter-icon" @click="toggleDropdown" />
-                                <div ref="showDropdown" class="filter-dropdown-content">
-                                    <a href="#">Gauteng Central</a>
-                                    <a href="#">Eastern Region</a>
-                                    <a href="#">Western Region</a>
-                                    <a href="#">Clear Filter</a>
-                                </div>
-                            </div>
-
+                            <button class="btn btn-primary" @click="openModal">Add New User</button>
                         </div>
                         <table class="table table-dark table-bordered">
                             <thead>
@@ -50,60 +91,7 @@ const toggleDropdown = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="table-dark-black">
-                                    <td>Brandley</td>
-                                    <td>Thomas</td>
-                                    <td>brandleythomas17@gmail.com</td>
-                                    <td>062 248 9892</td>
-                                    <td>Yes</td>
-                                    <td>Johannesburg</td>
-                                    <td>Gauteng Central</td>
-                                </tr>
-                                <tr class="table-dark-light">
-                                    <td>Michael</td>
-                                    <td>Harper</td>
-                                    <td>michaelharper12@gmail.com</td>
-                                    <td>071 293 2789</td>
-                                    <td>No</td>
-                                    <td>Durban</td>
-                                    <td>Eastern Region</td>
-                                </tr>
-                                <tr class="table-dark-black">
-                                    <td>John</td>
-                                    <td>Ndlovu</td>
-                                    <td>johnndlovu@gmail.com</td>
-                                    <td>082 492 2345</td>
-                                    <td>No</td>
-                                    <td>Cape Town</td>
-                                    <td>Western Region</td>
-                                </tr>
-                                <tr class="table-dark-light">
-                                    <td>Thomas</td>
-                                    <td>Ngwenya</td>
-                                    <td>thomasngwenya@gmail.com</td>
-                                    <td>063 374 4987</td>
-                                    <td>Yes</td>
-                                    <td>Durban</td>
-                                    <td>Eastern Region</td>
-                                </tr>
-                                <tr class="table-dark-black">
-                                    <td>Mark</td>
-                                    <td>Matsila</td>
-                                    <td>markmatsila@gmail.com</td>
-                                    <td>062 298 1298</td>
-                                    <td>Yes</td>
-                                    <td>Cape Town</td>
-                                    <td>Western Region</td>
-                                </tr>
-                                <tr class="table-dark-light">
-                                    <td>Sid</td>
-                                    <td>Abrahams</td>
-                                    <td>sidabrahams@gmail.com</td>
-                                    <td>063 341 3482</td>
-                                    <td>Yes</td>
-                                    <td>Johannesburg</td>
-                                    <td>Gauteng Central</td>
-                                </tr>
+                                <!-- Existing user rows here -->
                             </tbody>
                         </table>
                         <div class="text-end">
@@ -112,10 +100,74 @@ const toggleDropdown = () => {
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal -->
+                <div v-if="showModal" class="modal-overlay">
+                    <div class="modal-content">
+                        <h5>Add New User</h5>
+                        <div class="form-group">
+                            <label>Name:</label>
+                            <input v-model="newUser.name" type="text" class="form-control" placeholder="Enter name" />
+                        </div>
+                        <div class="form-group">
+                            <label>Surname:</label>
+                            <input v-model="newUser.surname" type="text" class="form-control" placeholder="Enter surname" />
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input v-model="newUser.email" type="email" class="form-control" placeholder="Enter email" />
+                        </div>
+                        <div class="form-group">
+                            <label>Cell Number:</label>
+                            <input v-model="newUser.cell" type="text" class="form-control" placeholder="Enter cell number" />
+                        </div>
+                        <div class="form-group">
+                            <label>Opt-in:</label>
+                            <input v-model="newUser.optin" type="checkbox" />
+                        </div>
+                        <div class="form-group">
+                            <label>Activation Area:</label>
+                            <input v-model="newUser.area" type="text" class="form-control" placeholder="Enter activation area" />
+                        </div>
+                        <div class="form-group">
+                            <label>Region:</label>
+                            <input v-model="newUser.region" type="text" class="form-control" placeholder="Enter region" />
+                        </div>
+                        <div class="form-group text-end">
+                            <button class="btn btn-secondary" @click="closeModal">Cancel</button>
+                            <button class="btn btn-primary" @click="submitUserDetails">Submit</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </Layout>
 </template>
+
+<style>
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+}
+</style>
+
 
 <style scoped>
 body {
