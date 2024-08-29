@@ -56,7 +56,8 @@ const getRoleName = () => {
                         <div class="accordion-body p-0">
                             <ul class="nav-list">
                                 <li :class="{ 'active': currentRoute.path === '/activations' }"><router-link to="/activations"><i class='bx bx-chat ps-3 pe-3'></i> All</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/admin-activations' }"><router-link to="/admin-activations"><i class='bx bx-calendar-event ps-3 pe-3'></i> Activations</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/admin-activations' }"><router-link to="/admin-activations">
+                                    <i class='bx bx-calendar-event ps-3 pe-3'></i> Activations</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/promoters' }"><router-link to="/promoters"><i class='bx bx-group ps-3 pe-3'></i> Promoters</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><i class='bx bx-file ps-3 pe-3'></i> Briefs</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/admin-warehouse' }"><router-link to="/admin-warehouse"><i class='bx bx-store ps-3 pe-3'></i> Warehouse & Units</router-link></li>
