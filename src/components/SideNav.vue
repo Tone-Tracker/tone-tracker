@@ -6,9 +6,11 @@ import TTG_HEAD_ADMIN from './navigations/TTG_HEAD_ADMIN.vue';
 import TTG_ACTIVATION_MANAGER from './navigations/TTG_ACTIVATION_MANAGER.vue';
 import TTG_CLIENT from './navigations/TTG_CLIENT.vue';
 import TTG_PROMOTERS from './navigations/TTG_PROMOTERS.vue';
+import TTG_SUPPLIERS from './navigations/TTG_SUPPLIERS.vue';
+import DarkThemeNavbarToggle from './DarkThemeNavbarToggle.vue';
 
 import { useAuth } from '@/stores/auth';
-import TTG_SUPPLIERS from './navigations/TTG_SUPPLIERS.vue';
+import { ref, watch } from 'vue';
 
 const auth = useAuth();
 const user = JSON.parse(auth.user);
@@ -17,12 +19,21 @@ const getUserRole = (role) => {
     return user.role == role
 };
 
-</script>
-<template>
+const isSideNavVisible = ref(true);
 
-    <div class="sidebar-wrapper  toggled d-flex" data-simplebar="init">
-        <div class="simplebar-wrapper" style="margin: 0px; width: 75%;background: #1C1C1C;">
-          <div class="simplebar-height-auto-observer-wrapper">
+const toggleSideNav = () => {
+  isSideNavVisible.value = !isSideNavVisible.value;
+};
+</script>
+
+<template>
+  <DarkThemeNavbarToggle @click="toggleSideNav" />
+  
+  <div v-show="isSideNavVisible" class="sidebar-wrapper toggled d-flex" data-simplebar="init">
+    <!-- Rest of your sidebar content -->
+    <div class="simplebar-wrapper" style="margin: 0px; width: 75%;background: #1C1C1C;">
+      <!-- ... (rest of the content remains the same) ... -->
+      <div class="simplebar-height-auto-observer-wrapper">
             <div class="simplebar-height-auto-observer"></div>
           </div>
           <div class="simplebar-mask">
@@ -63,46 +74,16 @@ const getUserRole = (role) => {
             </div>
           </div>
           <div class="simplebar-placeholder" style="width: auto; height: 1905px;"></div>
-        </div>
 
+    </div>
 
-        <div class="mazisi  simplebar-wrapper " style="background-color: black; width: 300px;">
-            <!-- <div class="simplebar-height-auto-observer-wrapper">
-              <div class="simplebar-height-auto-observer"></div>
-            </div> -->
-                   <!-- <AdminNav/> -->
-                     <!-- <CLIENT v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user" style="z-index: 9999"/> -->
-                     <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
-                     <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/> 
-                     <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/> 
-                    
-                     <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/> 
-                     <TTG_PROMOTERS v-if="getUserRole('TTG_TALENT')" :user="user"/> 
-                     <TTG_SUPPLIERS v-if="getUserRole('SUPPLIER')" :user="user"/> 
-
-
-            <!-- <div class="simplebar-place" style="width: 100%; height: 1905px;"></div> -->
-          </div>
-        <!-- <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-          <div class="simplebar-scrollbar" style="width: 0px; display: none; transform: translate3d(0px, 0px, 0px);"></div>
-        </div>
-        <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
-          <div class="simplebar-scrollbar" style="height: 569px; transform: translate3d(0px, 0px, 0px); display: block;"></div>
-        </div> -->
-        
-      </div>
-
-     
-
-
-    <!--navigation-->
-
-
-    <!--end navigation-->
+    <div class="mazisi simplebar-wrapper" style="background-color: black; width: 300px;">
+      <TTG_SUPER_ADMIN v-if="getUserRole('TTG_SUPER_ADMIN')" :user="user"/>
+      <TTG_REGIONAL_MANAGER v-if="getUserRole('TTG_REGIONAL_MANAGER')" :user="user"/> 
+      <TTG_HEAD_ADMIN v-if="getUserRole('TTG_HEAD_ADMIN')" :user="user"/> 
+      <TTG_ACTIVATION_MANAGER v-if="getUserRole('TTG_ACTIVATION_MANAGER')" :user="user"/> 
+      <TTG_PROMOTERS v-if="getUserRole('TTG_TALENT')" :user="user"/> 
+      <TTG_SUPPLIERS v-if="getUserRole('SUPPLIER')" :user="user"/> 
+    </div>
+  </div>
 </template>
-
-<style scoped>
-.simplebar-place {
-  /* background-color: # !important; */
-}
-</style>
