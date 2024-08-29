@@ -319,7 +319,6 @@ const updateProfile = () => {
     showLoading.value = true;
     userStore.updateProfile(user.id,form.value).then(function (response) {
         getUser();
-        localStorage.setItem('user', JSON.stringify(userInfo.value))
         showLoading.value = false;
         toaster.success('Profile updated successfully')
     }).catch(function (error) {
@@ -473,6 +472,7 @@ async function getResult() {
 
 const userInfo = ref(null);
 const form = ref({
+    staff: user.activeUserId,
     firstName: null,
     lastName: null,
 	phone: null,
