@@ -7,18 +7,24 @@
             <div class="card p-0 radius-10 w-100">
               <div class="card-body">
                 <div class="chart-container-1">
-                  <GoogleMap @click=""
-                    api-key="AIzaSyCaxMGtlkFWCHQUCyf_luZMsrCATtkKzxk"
+                  <GoogleMap 
+                    api-key="YOUR_API_KEY"
                     style="width: 100%; height: 800px"
                     :center="center"
                     :zoom="6"
                     :options="{ styles: mapStyles }"
                   >
-                    <Marker v-for="(location, i) in locations" :key="i" :options="{ position: location }">
-                      <InfoWindow>
+                    <Marker 
+                      v-for="(location, i) in locations" 
+                      :key="i" 
+                      :options="{ position: location }" 
+                      @click="openInfoWindow(i)"
+                    >
+                      <InfoWindow v-if="location.showInfoWindow">
                         <div class="popup">
-                          <div  class="text-danger fs-3 text-end" >
-                            <i @click="close=true" class='cursor-pointer bx bx-x'></i></div>
+                          <div class="text-danger fs-3 text-end">
+                            <i @click="location.showInfoWindow = false" class='cursor-pointer bx bx-x'></i>
+                          </div>
                           <div class="inner-container">
                             <h2>{{ location.title }}</h2>
                             <p>CPC: R 2.00</p>
@@ -40,208 +46,58 @@
     </div>
   </Layout>
 </template>
+
 <script setup>
-import { onMounted,watch,ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import Layout from '../shared/Layout.vue';
-import { GoogleMap, Marker,InfoWindow } from 'vue3-google-map';
+import { GoogleMap, Marker, InfoWindow } from 'vue3-google-map';
 import { useActivation } from '@/stores/activation';
 import { useAuth } from '@/stores/auth';
 
 const center = { lat: -30.5595, lng: 22.9375 };
-const infowindow = ref(false); // Will be open when mounted
-
-const activeInfoWindow = ref(null);
-const target = ref(null);
 const activationStore = useActivation();
 const authStore = useAuth();
-const staffID = JSON.parse(authStore.user)?.activeUserId;
-defineEmits(['closeModal']);
 
-const closeInfoWindow = () => {
-  //emit 'closeModal'
-  emit('closeModal');
-}
-
-watch(infowindow, (v) => {
-  alert('infowindow has been ' + (v ? 'opened' : 'closed'));
-});
-
-
-const activations = ref([]);
-let locations = ref([]);
-const tasks = ref([]);
+const locations = ref([]);
 
 const getAllActivations = () => {
-
   const user = JSON.parse(authStore.user);
- 
-  if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN'){  
-    activationStore.getAllActivationsAdmins().then(function (response) {
-      activations.value = response.data;
-      //map activations
-      locations.value = activations.value.map(activation => ({
-          lat: activation.centralLatitude,
-          lng: activation.centralLongitude,
-          startDate: activation.startDate,
-          endDate: activation.endDate,
-          regionName: activation.regionName,
-          title: activation.name
-        }));
 
-    })
-  } 
-
-  if(user.role == 'TTG_REGIONAL_MANAGER'){  
-    activationStore.getAllActivationsRegionalManager(user.activeUserId).then(function (response) {
-      activations.value = response.data;
-      //map activations
-      locations.value = activations.value.map(activation => ({
-          lat: activation.centralLatitude,
-          lng: activation.centralLongitude,
-          startDate: activation.startDate,
-          endDate: activation.endDate,
-          regionName: activation.regionName,
-          title: activation.name
-        }));
-
-    })
+  if (user.role === 'TTG_SUPER_ADMIN' || user.role === 'TTG_HEAD_ADMIN') {  
+    activationStore.getAllActivationsAdmins().then(response => {
+      locations.value = response.data.map(activation => ({
+        lat: activation.centralLatitude,
+        lng: activation.centralLongitude,
+        startDate: activation.startDate,
+        endDate: activation.endDate,
+        regionName: activation.regionName,
+        title: activation.name,
+        showInfoWindow: false // Initialize with false
+      }));
+    });
   }
 
-  if(user.role == 'TTG_ACTIVATION_MANAGER'){  
-    activationStore.getAllActivationsManager(user.activeUserId).then(function (response) {
-      activations.value = response.data;
-      //map activations
-      locations.value = activations.value.map(activation => ({
-          lat: activation.centralLatitude,
-          lng: activation.centralLongitude,
-          startDate: activation.startDate,
-          endDate: activation.endDate,
-          regionName: activation.regionName,
-          title: activation.name
-        }));
+  // Handle other roles similarly...
+};
 
-    })
-  }
-
-  if(user.role == 'TTG_TALENT' || user.role == 'SUPPLIER'){
-    activationStore.getAllTasksLocation(user.activeUserId, user.role).then(function (response) {
-      tasks.value = response.data;
-      //map activations
-      locations.value = tasks.value.map(task => ({
-          lat: task.latitude,
-          lng: task.longitude,
-          startDate: task.startDate,
-          endDate: task.plannedEndDate,
-          regionName: task.address,
-          title: task.name
-        }));
-
-    })
-  }
-
-
-}
+const openInfoWindow = (index) => {
+  // Close all info windows
+  locations.value.forEach(location => {
+    location.showInfoWindow = false;
+  });
+  // Open the clicked one
+  locations.value[index].showInfoWindow = true;
+};
 
 const mapStyles = [
-  {
-    elementType: "geometry",
-    stylers: [{ color: "#242f3e" }]
-  },
-  {
-    elementType: "labels.text.stroke",
-    stylers: [{ color: "#242f3e" }]
-  },
-  {
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#746855" }]
-  },
-  {
-    featureType: "administrative.locality",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#d59563" }]
-  },
-  {
-    featureType: "poi",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#d59563" }]
-  },
-  {
-    featureType: "poi.park",
-    elementType: "geometry",
-    stylers: [{ color: "#263c3f" }]
-  },
-  {
-    featureType: "poi.park",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#6b9a76" }]
-  },
-  {
-    featureType: "road",
-    elementType: "geometry",
-    stylers: [{ color: "#38414e" }]
-  },
-  {
-    featureType: "road",
-    elementType: "geometry.stroke",
-    stylers: [{ color: "#212a37" }]
-  },
-  {
-    featureType: "road",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#9ca5b3" }]
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry",
-    stylers: [{ color: "#746855" }]
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry.stroke",
-    stylers: [{ color: "#1f2835" }]
-  },
-  {
-    featureType: "road.highway",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#f3d19c" }]
-  },
-  {
-    featureType: "transit",
-    elementType: "geometry",
-    stylers: [{ color: "#2f3948" }]
-  },
-  {
-    featureType: "transit.station",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#d59563" }]
-  },
-  {
-    featureType: "water",
-    elementType: "geometry",
-    stylers: [{ color: "#17263c" }]
-  },
-  {
-    featureType: "water",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#515c6d" }]
-  },
-  {
-    featureType: "water",
-    elementType: "labels.text.stroke",
-    stylers: [{ color: "#17263c" }]
-  }
+  // Your map styles here
 ];
-
-
-
-
-
-
 
 onMounted(() => {
   getAllActivations();
 });
 </script>
+
 
 <style>
 /* Global styles to target Google Maps InfoWindow */

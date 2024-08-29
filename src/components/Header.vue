@@ -2,7 +2,7 @@
   <header>
     <div class="topbar d-flex align-items-center">
       <nav class="navbar navbar-expand-lg flex justify-content-between flex-direction-row w-100">
-        <DarkThemeNavbarToggle @toggle="handleToggle"/>
+        <DarkThemeNavbarToggle/>
 
         <div class="logo-container">
           <img class="logo" src="/src/assets/images/logo/white-logo.png" alt="Logo">
@@ -46,6 +46,7 @@
 import { ref, onMounted } from 'vue';
 import DarkThemeNavbarToggle from './DarkThemeNavbarToggle.vue';
 import axios from 'axios';
+
 
 const query = ref('');
 const allActivations = ref([]);

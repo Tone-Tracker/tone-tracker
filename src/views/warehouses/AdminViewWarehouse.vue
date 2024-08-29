@@ -1,4 +1,5 @@
 <script setup>
+import { useRoute } from "vue-router";
 import { onMounted, ref, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
@@ -14,6 +15,7 @@ import { useWarehouse } from '@/stores/warehouse';
 import { useStaff } from '@/stores/staff';
 import SplitButton from 'primevue/splitbutton';
 import InputText from 'primevue/inputtext';
+const route = useRoute();
 
 const toaster = useToaster();
 const regionStore = useRegion();
@@ -21,6 +23,8 @@ const warehouseStore = useWarehouse();
 const confirm = useConfirm();
 const userStore = useUserStore();
 const staff = useStaff();
+
+const regionQueryName = ref(route.query.name);
 
 let clients = ref([]);
 let regions = ref([]);
@@ -277,7 +281,7 @@ const items = (region) => [
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <BreadCrumb title="Regions" icon="bx bx-map" />
+                <BreadCrumb :title="regionQueryName + ' Warehouses'" icon="bx bx-building-house" />
                 <div class="card">
                     <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
 
@@ -306,9 +310,9 @@ const items = (region) => [
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>Region Name</th>
+                                                        <th>Warehouse</th>
                                                         <th>Regional Manager</th>
-                                                        <th>Warehouses</th>
+                                                        <th>Units</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -323,7 +327,7 @@ const items = (region) => [
                                                             {{ region.firstName ? region.firstName + ' ' + region.lastName : '' }}
                                                         </td>
                                                         <td>
-                                                            <router-link :to="`/admin-view-warehouse/${region.id}?name=${region.name}`" type="button" class="btn maz-gradient-btn position-relative me-lg-5"> 
+                                                            <router-link :to="`/admin-warehouse${region.id}`" type="button" class="btn maz-gradient-btn position-relative me-lg-5"> 
                                                                 <i class='bx bx-building-house align-middle' ></i> 
                                                                 View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">24 
                                                                     <span class="visually-hidden">warehouses</span></span>

@@ -172,7 +172,7 @@ Date: 04/06/2024
 											<textarea class="form-control" id="bio" rows="3" v-model="form.bio" placeholder="Your Bio"></textarea>
 										</div>
 									</div>
-									<div class="row" v-if="isMyProfile">
+									<div class="row" v-if="isMyProfile()">
 										<label class="col-sm-3 col-form-label"></label>
 										<div class="col-sm-9">
 											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -222,7 +222,7 @@ Date: 04/06/2024
                                             </div>
 										</div>
 									</div>
-									<div class="row" v-if="isMyProfile">
+									<div class="row" v-if="isMyProfile()">
 										<label class="col-sm-3 col-form-label"></label>
 										<div class="col-sm-9">
 											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -279,7 +279,8 @@ const totalSize = ref(0);
 const showLoading = ref(false);
 const showPasswordLoading = ref(false);
 
-const user = JSON.parse(authStore.user)
+const user = JSON.parse(authStore.user);
+console.log('User',user)
 const profilePicName = ref('');
 const profilePicPreview = ref(null);
 const profilePic = ref(null);

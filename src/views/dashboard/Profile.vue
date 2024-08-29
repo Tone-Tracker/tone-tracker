@@ -521,7 +521,7 @@ Date: 04/06/2024
                                             </div>
 										</div>
 									</div>
-									<div class="row" v-if="isMyProfile">
+									<div class="row" v-if="isMyProfile()">
 										<label class="col-sm-3 col-form-label"></label>
 										<div class="col-sm-9">
 											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -573,7 +573,7 @@ Date: 04/06/2024
                   </div>
           
                 </div> 
-            <div class="flex justify-end gap-2">
+            <div class="flex justify-end gap-2" v-if="isMyProfile()">
                 <button type="submit" class="btn btn maz-gradient-btn mt-2 w-100">Save</button>
             </div>
             </form>
