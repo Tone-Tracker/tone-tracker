@@ -61,33 +61,26 @@ Date: 04/06/2024
                                 </div>
 
                                 <div class="profile-imgs mb-4">
-                                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
-                                        <div v-if="images?.length > 0" v-for="image in images" :key="image.id">
-                                        <div class="col-img">
-                                            <div class="gallery ms-2 mx-4">
-                                                <div class="card flex justify-center">
-                                                    <Image alt="Image" preview>
-                                                        <template #previewicon>
-                                                          <i class='bx bx-search-alt-2' ></i>
-                                                        </template>
-                                                        <template #image>
-                                                            <img 
-                                                            :src="envPath + image.path" 
-                                                            alt="image" width="250" />
-                                                        </template>
-                                                        <template #preview="slotProps">
-                                                            <img 
-                                                            :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                                                        </template>
-                                                    </Image>
-                                                    </div>
-
-                                            </div>
-                                        </div>
-                                        </div>
-                                     
-                                    </div>
-                                </div>
+    <div class="image-gallery">
+      <div v-if="images?.length > 0" class="image-grid">
+        <div v-for="image in images" :key="image.id" class="image-item">
+          <div class="card flex justify-center">
+            <Image alt="Image" preview>
+              <template #previewicon>
+                <i class='bx bx-search-alt-2'></i>
+              </template>
+              <template #image>
+                <img :src="envPath + image.path" alt="image" />
+              </template>
+              <template #preview="slotProps">
+                <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+              </template>
+            </Image>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
                                 <div class="mb-4">
                                     <button v-if="isMyProfile()"
                                         class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center"
@@ -476,21 +469,23 @@ Date: 04/06/2024
 
                     <div class="col-lg-3">
                         <div class="card mb-3">
-                            <div class="card-body p-4">
-                                <h4 class="mb-2 text-center mt-2">Experience</h4>
-									<div class="row mb-3">
-										<div v-for="experience in promoterData?.experiences "  :key="experience?.id" class="row mb-3">
-                                            <div>
-                                                <h6 class="mb-0">{{ experience?.name}}</h6>
-                                                <p>{{ experience?.duration}}</p>
-                                                    <p>{{ experience?.description }}</p>
-                                            </div>
-                                        </div>
-									</div>
-									<div class="row col-9 float-end" v-if="isMyProfile">
-										<button v-if="isMyProfile"  @click="showExperienceModal=true"type="button" class="btn maz-gradient-btn">Add Experience</button>
-									</div>
-								</div>
+        <div class="card-body p-4">
+            <h4 class="mb-2 text-center mt-2">Experience</h4>
+            <div class="row mb-3">
+                <div v-for="experience in promoterData?.experiences" :key="experience?.id" class="row mb-3">
+                    <div>
+                        <h6 class="mb-0">{{ experience?.name }}</h6>
+                        <p>{{ experience?.duration }}</p>
+                        <p>{{ experience?.description }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row" v-if="isMyProfile()">
+                <div class="col-12 text-end">
+                    <button @click="showExperienceModal=true" type="button" class="btn maz-gradient-btn">Add Experience</button>
+                </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="card maz-gradient-border-top mt-4">
@@ -774,6 +769,7 @@ const uploadInput = ref(null)
         
         // Push the new comment object to the ratings array
         promoterData.value.ratings.push(newComment);
+          
             toaster.success("Comment submitted successfully");
         }).catch(function (error) {
             toaster.error("Error submitting comment");
@@ -1236,5 +1232,43 @@ div.desc {
 }
 .form-control2 {
     padding-left: 1rem !important;
+}
+
+/* //////profile image///// */
+.image-gallery {
+  width: 100%;
+  /* padding: 20px; */
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  justify-content: center;
+}
+
+.image-item {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.image-item:hover {
+  transform: scale(1.05);
+}
+
+.image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .image-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }
 </style>
