@@ -10,8 +10,10 @@ import TTG_PROMOTERS from "./navigations/TTG_PROMOTERS.vue";
 import { useAuth } from "@/stores/auth";
 import TTG_SUPPLIERS from "./navigations/TTG_SUPPLIERS.vue";
 import Drawer from "primevue/drawer";
-
 import { ref } from "vue";
+import { useNavStore } from '@/stores/ToggleNav';
+
+const navStore = useNavStore();
 
 const auth = useAuth();
 const user = JSON.parse(auth.user);
@@ -20,7 +22,7 @@ const getUserRole = (role) => {
   return user.role == role;
 };
 
-const visible = ref(false);
+const visible = navStore.isNavVisible;
 </script>
 
 <template>
@@ -54,7 +56,7 @@ const visible = ref(false);
       style="background-color: black; width: 300px"
     >
       <Drawer
-        v-model:visible="visible"
+      v-model:visible="navStore.isNavVisible"
         style="background-color: black; width: 285px; border: none; margin-top: 153px"
       >
         <template #container="{ closeCallback }">
