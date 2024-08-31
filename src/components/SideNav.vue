@@ -10,9 +10,6 @@ import TTG_PROMOTERS from "./navigations/TTG_PROMOTERS.vue";
 import { useAuth } from "@/stores/auth";
 import TTG_SUPPLIERS from "./navigations/TTG_SUPPLIERS.vue";
 import Drawer from "primevue/drawer";
-import { useNavStore } from '@/stores/ToggleNav';
-
-const navStore = useNavStore();
 
 import { ref } from "vue";
 
@@ -23,15 +20,14 @@ const getUserRole = (role) => {
   return user.role == role;
 };
 
-const visible = navStore.isNavVisible;
-console.log('visibleqqqq',visible);
+const visible = ref(false);
 </script>
 
 <template>
   <div class="sidebar-wrapper toggled d-flex" data-simplebar="init">
     <div
       class="simplebar-wrapper"
-      style="margin: 0px; width: 75%; background: #1c1c1c"
+      style="margin: 0px; width: auto; background: #1c1c1c"
     >
       <div class="simplebar-height-auto-observer-wrapper">
         <div class="simplebar-height-auto-observer"></div>
@@ -41,7 +37,6 @@ console.log('visibleqqqq',visible);
           <div class="simplebar-content-wrapper" style="height: 100%">
             <div class="simplebar-content mm-active" style="padding: 0px">
               <!--navigation-->
-              {{ navStore.isNavVisible }}
               <CLIENT />
               <!--end navigation-->
             </div>
@@ -59,13 +54,13 @@ console.log('visibleqqqq',visible);
       style="background-color: black; width: 300px"
     >
       <Drawer
-       v-model:visible="navStore.isNavVisible"
+        v-model:visible="visible"
         style="background-color: black; width: 285px; border: none; margin-top: 153px"
       >
         <template #container="{ closeCallback }">
           <div class="flex flex-col h-full">
             <div class="flex items-center justify-between shrink-0">
-              <span>
+              <!-- <span>
                 <Button
                 type="button"
                 @click="closeCallback"
@@ -74,7 +69,7 @@ console.log('visibleqqqq',visible);
                 rounded
                 outlined
               ></Button>
-              </span>
+              </span> -->
             </div>
 
             <div class="d-flex justify-content-start">
@@ -112,7 +107,7 @@ console.log('visibleqqqq',visible);
         </template>
       </Drawer>
 
-      <i class="bx bx-menu" @click="visible = true"></i>
+      <!-- <i class="bx bx-menu" @click="visible = true"></i> -->
 
       <TTG_SUPER_ADMIN
         v-if="getUserRole('TTG_SUPER_ADMIN')"
@@ -149,9 +144,12 @@ console.log('visibleqqqq',visible);
 </template>
 
 <style scoped>
-  @media (min-width: 768px) and (max-width: 991.98px) {
-    .mazisi.simplebar-wrapper {
-      width: 50px !important;
+  @media (min-width: 768px) and (max-width:1199px) {
+    .simplebar-wrapper {
+      width: 0px !important;
+    }
+    .sidebar-wrapper {
+      width: 0px !important;
     }
   }
 

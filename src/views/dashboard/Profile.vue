@@ -28,7 +28,7 @@ Date: 04/06/2024
 
 
                 <div class="row justify-content-space-between gap-5">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
                                 <div class="image-container">
@@ -340,7 +340,7 @@ Date: 04/06/2024
 
                        
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-5">
                         <div class="card">
                             <div class="card-body p-4">
 									<div class="row mb-3">
@@ -466,7 +466,6 @@ Date: 04/06/2024
 								</div>
                         </div>
                     </div>
-
                     <div class="col-lg-3">
                         <div class="card mb-3">
         <div class="card-body p-4">

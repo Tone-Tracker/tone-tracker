@@ -96,7 +96,7 @@ body {
 }
 
 .p-button {
-    background: linear-gradient(to right, #9A3AB1, #117AD1) !important;
+	background: linear-gradient(to right, #9A3AB1, #117AD1) !important;
 	border: none !important;
 	color: #fff !important;
 }
@@ -117,12 +117,12 @@ body {
 
 .maz-gradient-border-top {
 	border-top-width: 4px;
-  border-style: solid;
-  border-image: linear-gradient(to right, #9A3AB1, #117AD1) 1;
-  }
-  
+	border-style: solid;
+	border-image: linear-gradient(to right, #9A3AB1, #117AD1) 1;
+}
 
-  
+
+
 
 
 
@@ -5115,4 +5115,12 @@ form select.error:focus {
 		display: none
 	}
 
+}
+
+
+@media only screen and (max-width: 1024px) {
+	.page-content {
+		margin-left: 10%;
+		padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+	}
 }
