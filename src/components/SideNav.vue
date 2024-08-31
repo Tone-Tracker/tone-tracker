@@ -10,7 +10,7 @@ import TTG_PROMOTERS from "./navigations/TTG_PROMOTERS.vue";
 import { useAuth } from "@/stores/auth";
 import TTG_SUPPLIERS from "./navigations/TTG_SUPPLIERS.vue";
 import Drawer from "primevue/drawer";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useNavStore } from '@/stores/ToggleNav';
 
 const navStore = useNavStore();
@@ -21,6 +21,10 @@ const user = JSON.parse(auth.user);
 const getUserRole = (role) => {
   return user.role == role;
 };
+
+onMounted(() => {
+  // navStore.isNavVisible = false;
+})
 
 const visible = navStore.isNavVisible;
 </script>
