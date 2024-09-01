@@ -62,7 +62,7 @@ const toggle = (event) => {
         </div>
       </li>
 
-      <li v-tooltip="'Status'" class="side-nav__item" >
+      <li v-tooltip="'Status'" class="side-nav__item"  >
         <router-link to="/status">
           <div class="side-nav__link">
             <Status />
@@ -70,7 +70,7 @@ const toggle = (event) => {
         </router-link>
       </li>
 
-      <li @click="toggle" v-tooltip="'Report'" class="side-nav__item cursor-pointer" >
+      <li @click="toggle" v-tooltip="'Report'" class="side-nav__item cursor-pointer" :class="{ 'active': $route.path === '/report' }">
           <div class="side-nav__link">
             <Report />
           </div>
