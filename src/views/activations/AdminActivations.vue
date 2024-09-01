@@ -10,7 +10,6 @@ import { useRegion } from '@/stores/useRegion';
 import SplitButton from 'primevue/splitbutton';
 import Dialog from 'primevue/dialog';
 import { useCampaignStore } from '@/stores/useCampaign';
-import { useConfirm } from "primevue/useconfirm";
 import { useRoute } from 'vue-router';
 import URLrouter from '@/router';
 import { useStaff } from '@/stores/staff';

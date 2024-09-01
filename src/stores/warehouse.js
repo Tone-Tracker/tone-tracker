@@ -23,6 +23,9 @@ export const useWarehouse = defineStore('warehouse', () => {
       return axiosInstance.delete(`/api/warehouses/${id}`);
     }
 
+    const viewWarehouse = (id) => {
+      return axiosInstance.get(`/api/warehouses/${id}`);
+    }
   
-    return { submit,getWarehouses,update,deleteWarehouse,getWarehousesByRegionId }
+    return { submit,getWarehouses,update,deleteWarehouse,getWarehousesByRegionId,viewWarehouse }
   })
