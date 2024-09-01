@@ -15,6 +15,11 @@ import useToaster from '@/composables/useToaster';
 import { useStock } from '@/stores/stock';
 import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 import Dialog from 'primevue/dialog';
+import Avatar from 'primevue/avatar';
+import Drawer from 'primevue/drawer';
+import Image from 'primevue/image';
+
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const route = useRoute();
 const warehouseStore = useWarehouse();
@@ -134,6 +139,16 @@ const onfileDropped = (dropedFile) => {
       const file = files[0];
       selectedFile.value = file;
 };
+const showStockImage = ref(false);
+const stockImagePreview = ref(null);
+const viewStockImagePreview = (model) => {
+	if(!model?.stockImage) {
+		showStockImage.value = false;
+		return;
+	}
+	showStockImage.value = true;
+	stockImagePreview.value = envPath + model?.stockImage ;
+}
 
 </script>
 
@@ -238,6 +253,7 @@ const onfileDropped = (dropedFile) => {
 								<table class="table align-middle mb-0">
 								 <thead class="table-light">
 								  <tr style="background:#1D2126">
+									<th>#</th>
 									<th>Description</th>
 									<th>Number</th>
 									<th>Action</th>
@@ -245,6 +261,10 @@ const onfileDropped = (dropedFile) => {
 								  </thead>
 								  <tbody>
 									<tr v-if="brandings?.length > 0" v-for="branding in brandings" class="maz-table-row-height">
+										<td>
+										  <Avatar @click="viewStockImagePreview(branding)" :image="envPath + branding.stockImage" class="mr-2 cursor-pointer" size="large" shape="circle" />
+										
+										</td>
 								   <td>{{branding.description}}</td>
 								   <td>{{branding.quantity}}</td>
 								  </tr>
@@ -257,6 +277,9 @@ const onfileDropped = (dropedFile) => {
 								<table class="table align-middle mb-0">
 								 <thead class="table-light">
 								  <tr style="background:#1D2126">
+									<th>
+										#
+									</th>
 									<th>Description</th>
 									<th>Number</th>
 									<th>Action</th>
@@ -264,6 +287,11 @@ const onfileDropped = (dropedFile) => {
 								  </thead>
 								  <tbody>
 									<tr v-if="merchendiseList?.length > 0" v-for="merch in merchendiseList" class="maz-table-row-height">
+								   <td>
+									<div class="card flex justify-center">
+										<Avatar image="/images/avatar/amyelsner.png" class="mr-2" size="xlarge" shape="circle" />
+									</div>
+								   </td>
 								   <td>{{merch.description}}</td>
 								   <td>{{merch.quantity}}</td>
 								   <td></td>
@@ -342,7 +370,12 @@ const onfileDropped = (dropedFile) => {
 				
 			</form>
         </Dialog>
-	
+		<div class="card flex justify-center">
+			<Drawer v-model:visible="showStockImage" position="right" :header="`View Stock Image`" class="w-100 md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
+				<!-- <img :src="stockImagePreview" style="width: 26rem!important;" /> -->
+				<Image :src="stockImagePreview" alt="Image" width="450" preview />
+			</Drawer>
+		</div>
 </Layout>
 </template>
 
@@ -438,5 +471,10 @@ const onfileDropped = (dropedFile) => {
 
   .my-card {
     margin-top: -12px !important;
+}
+.stock-image{
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
 }
 </style>
