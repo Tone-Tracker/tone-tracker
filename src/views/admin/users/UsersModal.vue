@@ -10,7 +10,8 @@ import SizeAndHeightForm from '../../../components/SizeAndHeightForm.vue';
 const emit = defineEmits(['closeModal']);
 const props = defineProps({
   showModal: Boolean,
-  modalData: Object
+  modalData: Object,
+  isEdit: Boolean
 });
 
 const userStore = useUserStore();
@@ -126,7 +127,7 @@ const onSubmit = async () => {
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Create User</h5>
+          <h5 class="modal-title">{{ isEdit ? 'Edit' : 'Create'}} User</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

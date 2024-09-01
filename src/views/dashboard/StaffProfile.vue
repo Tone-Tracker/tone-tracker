@@ -189,14 +189,14 @@ Date: 04/06/2024
                        <!-- fgfgfg -->
                     </div>
 
-                    <div class="col-lg-4">
+                    <div class="col-lg-4" v-if="isMyProfile">
                         <div class="card">
                             <div class="card-body p-4">
 									<div class="row mb-3">
 										<label for="password" class="col-sm-3 col-form-label">New Password</label>
 										<div class="col-sm-9">
 											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="passwordForm.password">
+												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
 												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
 											</div>
                                             <div
@@ -211,7 +211,7 @@ Date: 04/06/2024
 										<label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
 										<div class="col-sm-9">
 											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="passwordForm.confirmPassword">
+												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
 												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
 											</div>
                                             <div
@@ -255,7 +255,7 @@ import { useRoute } from 'vue-router';
 import { useAuth } from '@/stores/auth';
 import Image from 'primevue/image';
 import { useVuelidate } from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, sameAs } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
 import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
 
@@ -286,16 +286,14 @@ const profilePicPreview = ref(null);
 const profilePic = ref(null);
 const showTools = ref(false);
 
-const passwordForm = ref({
-    password: '',
-    confirmPassword: ''
-});
+const password = ref('');
+const confirmPassword = ref('');
 
 const rules = {
-      password: { required },
-      confirmPassword: { required },
-    };
-    const v$ = useVuelidate(rules, passwordForm);
+  password: { required },
+  confirmPassword: { sameAs: sameAs(password) }
+}
+    const v$ = useVuelidate(rules, { password, confirmPassword })
 
 
 const updatePassword = async () => {
@@ -305,9 +303,13 @@ const updatePassword = async () => {
         return;
       }
     showPasswordLoading.value = true;
-    userStore.updateProfile(user.id,passwordForm.value).then(function (response) {
+    userStore.updatePassword(user.id,password.value).then(function (response) {
         showPasswordLoading.value = false;
-        toaster.success('Password updated successfully')
+        toaster.success('Password updated successfully');
+        password.value = '';
+        confirmPassword.value = '';
+        v$.value.$reset();
+        v$.$errors = [];
     }).catch(function (error) {
         showPasswordLoading.value = false;
         toaster.error('Something went wrong')
@@ -521,44 +523,6 @@ const getFullName = () => {
 }
 
 
-
-const showPreviewSheet = ref(false);
-const fileType = ref('');
-const previewFile = ref(null);
-const previewDocs = (type) => {
-    
-    let myNDA = ndaFile.value ? ndaFile.value[0].path : [];
-    let mySLA = slaFile.value ? slaFile.value[0].path : [];
-     if(type == 'nda' && !myNDA){return}
-     if(type == 'sla' && !mySLA){return}
-     if(type == 'nda'){
-    fileType.value = 'NDA';
-    previewFile.value = envPath + myNDA;
-   }else{console.log('fucaaaaaak',ndaFile.value[0])
-    fileType.value = 'SLA';
-    previewFile.value = envPath + mySLA;
-   }
-console.log('previewFile',previewFile.value)
-   showPreviewSheet.value = true;
-}
-
-
-const download = (type) => {
-     try {
-        const link = document.createElement('a');
-        if(type == 'nda'){
-            link.href = import.meta.env.VITE_AWS_S3_BUCKET + ndaFile.value[0].path;
-        }else{
-            link.href = import.meta.env.VITE_AWS_S3_BUCKET + slaFile.value[0].path;
-        }
-        link.setAttribute('download', '');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    } catch (error) {
-        console.error('Error downloading document:', error);
-    }
-};
 
 </script>
 <style>

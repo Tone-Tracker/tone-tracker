@@ -239,14 +239,14 @@ Date: 04/06/2024
 
 
                     
-                        <div class="card mt-3 maz-gradient-border-top" v-if="isMyProfile()">
+                        <div class="card mt-3 maz-gradient-border-top" v-if="isMyProfile">
                             <div class="card-body p-4">
                                 <h4 class="mb-2 ml-2 mt-2">Change Password</h4>
 									<div class="row mb-3">
 										<label for="password" class="col-sm-3 col-form-label">New Password</label>
 										<div class="col-sm-9">
 											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="passwordForm.password">
+												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
 												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
 											</div>
                                             <div
@@ -261,7 +261,7 @@ Date: 04/06/2024
 										<label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
 										<div class="col-sm-9">
 											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="passwordForm.confirmPassword">
+												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
 												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
 											</div>
                                             <div
@@ -315,7 +315,7 @@ import { useSupplier } from '@/stores/supplier';
 import PDF from 'pdf-vue3';
 import Drawer from 'primevue/drawer';
 import { useVuelidate } from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, sameAs } from "@vuelidate/validators";
 import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
 import { useNavStore } from '@/stores/ToggleNav';
 
@@ -357,16 +357,14 @@ const ndaFile = ref(null);
 const slaFile = ref(null);
 const showFilePreview = ref(true);
 
-const passwordForm = ref({
-    password: '',
-    confirmPassword: ''
-});
+const password = ref('');
+const confirmPassword = ref('');
 
-const rules = {
-      password: { required },
-      confirmPassword: { required },
-    };
-    const v$ = useVuelidate(rules, passwordForm);
+const paswordRules = {
+  password: { required },
+  confirmPassword: { sameAs: sameAs(password) }
+}
+    const v$ = useVuelidate(paswordRules, { password, confirmPassword })
 
 
 const updatePassword = async () => {
@@ -376,9 +374,13 @@ const updatePassword = async () => {
         return;
       }
     showPasswordLoading.value = true;
-    userStore.updateProfile(user.id,passwordForm.value).then(function (response) {
+    userStore.updatePassword(user.id,password.value).then(function (response) {
         showPasswordLoading.value = false;
-        toaster.success('Password updated successfully')
+        toaster.success('Password updated successfully');
+        password.value = '';
+        confirmPassword.value = '';
+        v$.value.$reset();
+        v$.$errors = [];
     }).catch(function (error) {
         showPasswordLoading.value = false;
         toaster.error('Something went wrong')
@@ -560,7 +562,6 @@ const getUser = () => {
 
 
 const isMyProfile = () => {
-    console.log(promoterId.value, user.activeUserId)
     return userId.value == user.activeUserId;
 }
 const uploadEvent = (callback) => {

@@ -2,7 +2,7 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
@@ -23,6 +23,16 @@ const warehouse = ref(null);
 const op = ref();
 const unitId = ref();
 const loading = ref(false);
+const stockList = ref([]);
+const searchInput = ref('');
+const merchendiseList = ref([]);
+const brandings = ref([]);
+
+
+watch(searchInput, () => {
+	merchendiseList.value = stockList.value?.filter((stock) => stock.type === 'MERCH' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
+	brandings.value = stockList.value?.filter((stock) => stock.type === 'BRANDING' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
+})
 
 
 onMounted(() => {
@@ -39,6 +49,17 @@ const onUnitChange = (event) => {
 	unitId.value = null;     // reset the unit
 	unitId.value = event.target.value;
 	stockForm.unit = event.target.value;
+	getStock();
+}
+
+const getStock = () => {
+	stock.getStockByUnit(unitId.value).then((response) => {
+		console.log(response.data);
+		stockList.value = response.data;
+		merchendiseList.value = response.data?.filter((stock) => stock.type === 'MERCH');
+		brandings.value = response.data?.filter((stock) => stock.type === 'BRANDING');
+		console.log(brandings.value, merchendiseList.value);
+	});
 }
 
 const toggle = (event) => {
@@ -48,7 +69,7 @@ const toggle = (event) => {
 const stockForm = reactive({
     description: '',
     quantity: null,
-    type: null,
+    type: '',
 	unit: null
 });
 
@@ -130,7 +151,7 @@ const submitStock = async () => {
 					  <div class="col-lg-3 col-md-6">
 						<div class="container ">
 							<div class="search-container">
-							  <input type="text" class="form-control search-input" placeholder="Search for item">
+							  <input v-model="searchInput" type="text" class="form-control search-input" placeholder="Search for item">
 							  <i class="bx bx-search search-icon"></i>
 							</div>
 						  </div>
@@ -204,8 +225,9 @@ const submitStock = async () => {
 														<div class="card my-card flex justify-center">
 															<label for="input1" class="d-flex form-label">Stock type</label>
 															   <select v-model="stockForm.type" class="form-control">
+																   <option :value="''" disabled :selected="true" >Choose stock type</option>
 																   <option value="BRANDING">Branding</option>
-																   <option value="MERCH">Merch</option>
+																   <option value="MERCH">Merchandising</option>
 															   </select>
 															   <div class="input-errors" v-for="error of stockV$.type.$errors" :key="error.$uid">
 															   <div class="text-danger">Stock type is required</div>
@@ -236,32 +258,16 @@ const submitStock = async () => {
 								  <tr style="background:#1D2126">
 									<th>Description</th>
 									<th>Number</th>
+									<th>Action</th>
 								  </tr>
 								  </thead>
 								  <tbody>
-									<tr class="maz-table-row-height">
-								   <td>Green T-shirts</td>
-								   <td>58</td>
+									<tr v-if="brandings?.length > 0" v-for="branding in brandings" class="maz-table-row-height">
+								   <td>{{branding.description}}</td>
+								   <td>{{branding.quantity}}</td>
 								  </tr>
+								  <tr v-else ><td colspan="7" class="text-center text-danger">No results found.</td></tr>
 			   
-								  <tr class="maz-table-row-height">
-								   <td>Green Golfer</td>
-								   <td>20</td>
-								  </tr>
-			   
-								  <tr class="maz-table-row-height">
-								   <td>Black Cardigans</td>
-								   <td>68</td>
-								  </tr>
-			   
-								  <tr class="maz-table-row-height">
-								   <td>Project 4</td>
-								   <td>37</td>
-								  </tr>
-								  <tr class="maz-table-row-height">
-								   <td>Green Cardigans</td>
-								   <td>92</td>
-								  </tr>
 								 </tbody>
 							   </table>
 							 </div>
@@ -271,40 +277,17 @@ const submitStock = async () => {
 								  <tr style="background:#1D2126">
 									<th>Description</th>
 									<th>Number</th>
+									<th>Action</th>
 								  </tr>
 								  </thead>
 								  <tbody>
-									<tr class="maz-table-row-height">
-								   <td>Bottles</td>
-								   <td>52</td>
+									<tr v-if="merchendiseList?.length > 0" v-for="merch in merchendiseList" class="maz-table-row-height">
+								   <td>{{merch.description}}</td>
+								   <td>{{merch.quantity}}</td>
+								   <td></td>
 								  </tr>
 			   
-								  <tr class="maz-table-row-height">
-								   <td>Ice Buckets</td>
-								   <td>20</td>
-								  </tr>
-			   
-								  <tr class="maz-table-row-height">
-								   <td>Wall Banners</td>
-								   <td>68</td>
-								  </tr>
-			   
-								  <tr class="maz-table-row-height">
-								   <td>Cushions</td>
-								   <td>72</td>
-								  </tr>
-								  <tr class="maz-table-row-height">
-								   <td>Flute</td>
-								   <td>24</td>
-								  </tr>
-								  <tr class="maz-table-row-height">
-									<td>Uniforms</td>
-									<td>39</td>
-								   </tr>
-								   <tr class="maz-table-row-height">
-									<td>Ring Lights</td>
-									<td>54</td>
-								   </tr>
+								  <tr v-else ><td colspan="7" class="text-center text-danger">No results found.</td></tr>
 								 </tbody>
 							   </table>
 							 </div>
