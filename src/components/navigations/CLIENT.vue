@@ -9,6 +9,11 @@ import Warehouse from '../svgs/Warehouse.vue';
 import Popover from 'primevue/popover';
 import { useActivation } from '@/stores/activation';
 
+onMounted(() => {
+  getAllActivations();
+  
+})
+
 const props = defineProps({
   user: Object
 });
@@ -31,11 +36,6 @@ const onSearch = () => {
   })
   }
 }
-
-
-onMounted(() => {
-  getAllActivations();
-})
 
 const getAllActivations = () => {
   activationStore.getAllActivations(props.user.role,2).then((res) => {
@@ -70,7 +70,7 @@ const toggle = (event) => {
         </router-link>
       </li>
 
-      <li @click="toggle" v-tooltip="'Report'" class="side-nav__item" >
+      <li @click="toggle" v-tooltip="'Report'" class="side-nav__item cursor-pointer" >
           <div class="side-nav__link">
             <Report />
           </div>
@@ -82,7 +82,7 @@ const toggle = (event) => {
               <div>
                 <span class="fw-medium d-block mb-2">Search Activation</span>
                 <div class="input-group">
-                  <input v-model="searchInput" @input="onSearch" type="text" class="form-control" style="width: 13rem;" >
+                  <input autofocus v-model="searchInput" @input="onSearch" type="text" class="form-control" style="width: 13rem;" />
                 </div>
               </div>
               <div>
