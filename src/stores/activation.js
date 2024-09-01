@@ -112,10 +112,13 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.delete(`/api/approaches/${materialId}`);
     }
     
+    const getActivationReport = (activationId) => {
+      return axiosInstance.get(`/api/activations/${activationId}/report`);
+    }
   
     return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,
              uploadImages , getAllActivations, getActivationImages, getAllActivationsAdmins, getAllActivationsRegionalManager, 
              getAllActivationsManager, getAllTasksLocation, getAllTrainingMaterial,recordUserOpenedFile, submitTrainingMaterial,
-             deleteTrainingMaterial, getAllActivationsPromoter, getAllActivationsSupplier, getAllActivationByRegionId
+             deleteTrainingMaterial, getAllActivationsPromoter, getAllActivationsSupplier, getAllActivationByRegionId,getActivationReport
             }
   })

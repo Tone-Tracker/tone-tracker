@@ -1,23 +1,56 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import Activation from '../svgs/Activation.vue';
 import Budget from '../svgs/Budget.vue';
 import CRM from '../svgs/CRM.vue';
 import Report from '../svgs/Report.vue';
 import Status from '../svgs/Status.vue';
 import Warehouse from '../svgs/Warehouse.vue';
+import Popover from 'primevue/popover';
+import { useActivation } from '@/stores/activation';
 
-const activeItem = ref('');
+const props = defineProps({
+  user: Object
+});
 
-const setActiveItem = (item) => {
-  activeItem.value = item;
-};
+const activationStore = useActivation();
+const pop = ref();
+const searchInput = ref('');
+const activations = ref([]);
+
+
+
+
+const onSearch = () => {
+  if (searchInput.value === '') {
+    getAllActivations();
+  }else{
+    
+  activations.value = activations.value.filter((activation) => {
+    return activation.name.toLowerCase().includes(searchInput.value.toLowerCase())
+  })
+  }
+}
+
+
+onMounted(() => {
+  getAllActivations();
+})
+
+const getAllActivations = () => {
+  activationStore.getAllActivations(props.user.role,2).then((res) => {
+    activations.value = res.data.content
+  });
+}
+const toggle = (event) => {
+    pop.value.toggle(event);
+}
 </script>
 
 <template>
   <div class="accordion" id="accordionPanelsStayOpenExample">
     <ul class="side-nav list-unstyled ps-0">
-      <li v-tooltip="'Activation'" class="side-nav__item activation" :class="{ 'active': activeItem === 'activation' }" @click="setActiveItem('activation')">
+      <li v-tooltip="'Activation'" class="side-nav__item activation" >
         <a href="javascript:;" data-bs-toggle="collapse" data-bs-target="#activationMenu" aria-expanded="false" aria-controls="activationMenu">
           <div class="side-nav__link">
             <Activation />
@@ -29,7 +62,7 @@ const setActiveItem = (item) => {
         </div>
       </li>
 
-      <li v-tooltip="'Status'" class="side-nav__item" :class="{ 'active': activeItem === 'status' }" @click="setActiveItem('status')">
+      <li v-tooltip="'Status'" class="side-nav__item" >
         <router-link to="/status">
           <div class="side-nav__link">
             <Status />
@@ -37,15 +70,47 @@ const setActiveItem = (item) => {
         </router-link>
       </li>
 
-      <li v-tooltip="'Report'" class="side-nav__item" :class="{ 'active': activeItem === 'report' }" @click="setActiveItem('report')">
-        <router-link to="/report">
+      <li @click="toggle" v-tooltip="'Report'" class="side-nav__item" >
           <div class="side-nav__link">
             <Report />
           </div>
-        </router-link>
       </li>
+      <Popover ref="pop">
+        <div class="popover">
+          <div class="popover-body">
+            <div class="d-flex flex-column gap-2">
+              <div>
+                <span class="fw-medium d-block mb-2">Search Activation</span>
+                <div class="input-group">
+                  <input v-model="searchInput" @input="onSearch" type="text" class="form-control" style="width: 13rem;" >
+                </div>
+              </div>
+              <div>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-4">
+                  <li v-if="activations?.length > 0" v-for="activation in activations" class="d-flex align-items-center gap-2">
+                    <!-- <img src="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" class="rounded-circle" style="width: 32px;"> -->
+                     <router-link :to="`/report?activation=${activation.id}`">
+                    <div class="w-100 cursor-pointer">
+                      <span class="fw-medium">{{activation.name}}</span>
+                      <!-- <div class="text-muted small">Dell Campaign</div> -->
+                    </div>
+                  </router-link>
+                    <!-- <div class="d-flex align-items-center gap-2 text-muted ms-auto small">
+                      <span>Owner</span>
+                      <i class="pi pi-angle-down"></i>
+                    </div> -->
+                  </li>
+                 
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </Popover>
+     
 
-      <li v-tooltip="'Budget'" class="side-nav__item" :class="{ 'active': activeItem === 'budget' }" @click="setActiveItem('budget')">
+      <li v-tooltip="'Budget'" class="side-nav__item">
         <router-link to="/budget">
           <div class="side-nav__link">
             <Budget />
@@ -53,7 +118,7 @@ const setActiveItem = (item) => {
         </router-link>
       </li>
 
-      <li v-tooltip="'CRM'" class="side-nav__item" :class="{ 'active': activeItem === 'crm' }" @click="setActiveItem('crm')">
+      <li v-tooltip="'CRM'" class="side-nav__item">
         <a href="javascript:;">
           <div class="side-nav__link">
             <CRM />
@@ -61,7 +126,7 @@ const setActiveItem = (item) => {
         </a>
       </li>
 
-      <li v-tooltip="'Warehouse'" class="side-nav__item" :class="{ 'active': activeItem === 'warehouse' }" @click="setActiveItem('warehouse')">
+      <li v-tooltip="'Warehouse'" class="side-nav__item">
         <router-link to="/warehouse">
           <div class="side-nav__link">
             <Warehouse />
@@ -69,7 +134,7 @@ const setActiveItem = (item) => {
         </router-link>
       </li>
 
-      <li v-tooltip="'Chat'" class="side-nav__item" :class="{ 'active': activeItem === 'chat' }" @click="setActiveItem('chat')">
+      <li v-tooltip="'Chat'" class="side-nav__item">
         <router-link to="/chat">
           <div class="side-nav__link">
             <i class='bx bxs-chat fs-3'></i>
@@ -163,5 +228,11 @@ svg {
 .nav-link-inside {
   color: #fff;
   text-decoration: none;
+}
+.popover {
+  --bs-popover-bg: inherit !important;
+}
+.p-component{
+  left: 8px !important;
 }
 </style>

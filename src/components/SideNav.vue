@@ -43,7 +43,7 @@ const visible = navStore.isNavVisible;
           <div class="simplebar-content-wrapper" style="height: 100%">
             <div class="simplebar-content mm-active" style="padding: 0px">
               <!--navigation-->
-              <CLIENT />
+              <CLIENT :user="user" />
               <!--end navigation-->
             </div>
           </div>
@@ -80,7 +80,7 @@ const visible = navStore.isNavVisible;
 
             <div class="d-flex justify-content-start">
               <!-- Include the Client Component -->
-              <CLIENT />
+              <!-- <CLIENT /> -->
               <div>
                 <TTG_SUPER_ADMIN
                 v-if="getUserRole('TTG_SUPER_ADMIN')"
