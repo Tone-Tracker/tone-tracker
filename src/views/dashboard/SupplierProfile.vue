@@ -36,7 +36,7 @@ Date: 04/06/2024
                                         </Image>
                                         </div>
                                     <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
-                                    <div v-if="isMyProfile()" @click="showModal = true"
+                                    <div v-if="isMyProfile" @click="showModal = true"
                                         class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
                                         <i class='bx bx-edit-alt fs-2'></i>
                                     </div>

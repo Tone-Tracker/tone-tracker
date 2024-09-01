@@ -7,6 +7,7 @@ import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
 import useToaster from '@/composables/useToaster';
+import { useRegion } from '@/stores/useRegion';
 import { useUserStore } from '@/stores/userStore';
 import { useWarehouse } from '@/stores/warehouse';
 import { useStaff } from '@/stores/staff';
@@ -15,7 +16,6 @@ import InputText from 'primevue/inputtext';
 import InputNumber from "primevue/inputnumber";
 import { useUnit } from "@/stores/unit";
 import Drawer from "primevue/drawer";
-import FileUploadGeneric from "../upload/FileUploadGeneric.vue";
 
 
 
@@ -24,6 +24,7 @@ const route = useRoute();
 const unitStore = useUnit();
 
 const toaster = useToaster();
+const regionStore = useRegion();
 const warehouseStore = useWarehouse();
 const userStore = useUserStore();
 const staff = useStaff();
@@ -37,13 +38,42 @@ const position = ref('top');
 const regionalManagers = ref([]);
 const loading = ref(false);
 let searchInput = ref('');
-const showFilePreview = ref(true);
+const form = reactive({ name: '' });
+const nameInput = ref(null); // Reference for the input field
 
 onMounted(() => {
   getWarehouses();
   getRegionalManagers();
   getStaff();
 });
+
+const rules = { 
+    name: { required }
+};
+const v$ = useVuelidate(rules, form);
+
+const createRegion = async () => {
+    const isFormValid = await v$.value.$validate();
+    if (!isFormValid) {
+        return;
+    }
+    loading.value = true;
+    try {
+        await regionStore.submit(form);
+        toaster.success("Region created successfully");
+        form.name = ''; // Reset the form input
+        v$.value.$reset(); // Reset the validation
+        if (nameInput.value) {
+            nameInput.value.blur(); // Unfocus the input field
+        }
+        await getWarehouses();
+    } catch (error) {
+        toaster.error("Error creating region");
+        console.log(error);
+    } finally {
+        loading.value = false;
+    }
+};
 
 const getStaff = async () => {
     try {
@@ -99,6 +129,9 @@ const deleteRecord = (warehouse) => {
         deleteWarehouse(warehouse);
 };
 
+const vFocus = {
+    mounted: (el) => el.focus()
+};
 
 let regionName = ref('');
 const warehouseForm = reactive({
@@ -229,12 +262,6 @@ const onSubmitUnit = async () => {
         loading.value = false; 
         return;
     }
-        // const formData = new FormData();
-        // formData.append('name', unitForm.name);
-        // formData.append('capacity', unitForm.capacity);
-        // formData.append('warehouse', unitForm.warehouse);
-        // formData.append('warehouse', unitForm.warehouse);
-
  
         await unitStore.addUnit(unitForm);
         toaster.success("Unit added successfully");
@@ -277,21 +304,16 @@ const items = (warehouse) => [
 
 const showUnitDrawer = ref(false);
 const allUnits = ref([]);
-const onFileChange = (uploadedFile) => {
-    console.log('event', uploadedFile);
-    selectedFile.value = uploadedFile;
+const viewUnits = async (warehouse) => {
+    // unitStore.getUnitsByWarehouseId(warehouse.id).then(function (response) {
+    //     console.log(response.data);
+    //     allUnits.value = response.data.content;
+    // }).catch(function (error) {
+    //     toaster.error("Error deleting warehouse");
+    //     console.log(error);
+    // });
+    showUnitDrawer.value = true;
 }
-
-const onfileDropped = (dropedFile) => {
-   console.log('dropedFile', dropedFile);
-      selectedFile.value = null
-
-      // Get selected files
-      const files = dropedFile;
-      if (!files) return
-      const file = files[0];
-      selectedFile.value = file;
-};
 </script>
 
 <template>
@@ -399,15 +421,6 @@ const onfileDropped = (dropedFile) => {
                                                            <div class="text-danger">Zip Code is required</div>
                                                         </div>
                                                 </div>                        
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <FileUploadGeneric 
-                                                    :showFilePreview="showFilePreview" 
-                                                    accept="image/*" 
-                                                    fileType="image" 
-                                                    @fileUploaded="onFileChange"
-                                                    @fileDropped="onfileDropped"
-                                                     />                       
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="submit" class="btn maz-gradient-btn w-100 d-flex justify-content-center align-items-center" :disabled="loading">
@@ -553,13 +566,13 @@ const onfileDropped = (dropedFile) => {
                         </div>
                 </div>                        
                 </div>
-                <div class="modal-footer mt-3">
+                <div class="modal-footer">
                     <button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
-                    <div v-if="loading" class="spinner-border text-white" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    Submit
-                </button>
+        <div v-if="loading" class="spinner-border text-white" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        Submit
+    </button>
                 </div>
                 
             </form>
@@ -572,7 +585,4 @@ const onfileDropped = (dropedFile) => {
     vertical-align: middle;
 }
 
-.my-card{
-    margin-bottom: 3px !important;
-}
 </style>

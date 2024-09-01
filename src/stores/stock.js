@@ -3,8 +3,8 @@ import axiosInstance from '@/axiosInstance';
 
 export const useStock = defineStore('stock', () => {
 
-    function addStock(form) {
-      return axiosInstance.post(`/api/stocks`,form);
+    function addStock(form, config) {
+      return axiosInstance.post(`/api/stocks`,form, config);
     }   
 
     const getStockByUnit = (unitId) => {

@@ -14,7 +14,6 @@ import InputNumber from 'primevue/inputnumber';
 import useToaster from '@/composables/useToaster';
 import { useStock } from '@/stores/stock';
 import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
-import Dialog from 'primevue/dialog';
 
 const route = useRoute();
 const warehouseStore = useWarehouse();
@@ -29,8 +28,6 @@ const stockList = ref([]);
 const searchInput = ref('');
 const merchendiseList = ref([]);
 const brandings = ref([]);
-const visible = ref(false);
-const showFilePreview = ref(true);
 
 
 watch(searchInput, () => {
@@ -48,13 +45,11 @@ const getWarehouse = () => {
 		warehouse.value = response.data;
 	});
 }
-const unitName = ref(null);
+
 const onUnitChange = (event) => {
 	unitId.value = null;     // reset the unit
 	unitId.value = event.target.value;
 	stockForm.unit = event.target.value;
-	unitName.value = warehouse.value?.unitsList?.filter((unit) => unit.id == event.target.value)[0]?.name;
-	console.log(unitName.value);
 	getStock();
 }
 
@@ -64,6 +59,7 @@ const getStock = () => {
 		stockList.value = response.data;
 		merchendiseList.value = response.data?.filter((stock) => stock.type === 'MERCH');
 		brandings.value = response.data?.filter((stock) => stock.type === 'BRANDING');
+		console.log(brandings.value, merchendiseList.value);
 	});
 }
 
@@ -84,26 +80,13 @@ const stockRules = {
     type: { required },
 };
 const stockV$ = useVuelidate(stockRules, stockForm);
-const selectedFile = ref(null);
+
 const submitStock = async () => {
 	const isFormValid = await stockV$.value.$validate();
     if (!isFormValid) {return;}
 	loading.value = true;
     try {
-		const formData = new FormData();
-		formData.append('stockImage', selectedFile.value);
-		formData.append('description', stockForm.description);
-		formData.append('quantity', stockForm.quantity);
-		formData.append('type', stockForm.type);
-		formData.append('unit', stockForm.unit);
-
-		const config = {
-      useMultipartFormData: true // Add this flag to the request config
-    };
-
-        await stock.addStock(formData, config);
-		visible.value = false;
-		getStock();
+        await stock.addStock(stockForm);
         toaster.success("Region created successfully");
         stockForm.description = ''; // Reset the form input
 		stockForm.quantity = '';
@@ -117,23 +100,6 @@ const submitStock = async () => {
         loading.value = false;
     }
 }
-
-
-const onFileChange = (uploadedFile) => {
-    console.log('event', uploadedFile);
-    selectedFile.value = uploadedFile;
-}
-
-const onfileDropped = (dropedFile) => {
-   console.log('dropedFile', dropedFile);
-      selectedFile.value = null
-
-      // Get selected files
-      const files = dropedFile;
-      if (!files) return
-      const file = files[0];
-      selectedFile.value = file;
-};
 
 </script>
 
@@ -227,9 +193,67 @@ const onfileDropped = (dropedFile) => {
 									  <h6 class="mb-0">In Stock</h6>
 								  </div>
 								  <div class="dropdown ms-auto">
-									 <button @click="visible=true" 
+									 <button @click="toggle" 
 									 :disabled="!unitId"
 									 type="button" class="btn maz-gradient-btn">Add Stock</button>
+									 <Popover ref="op">
+										<div class="popover">
+											<div class="d-flex flex-column">
+												<form @submit.prevent="submitStock" class="row">
+                
+													<div class="col-md-12">
+														<div class="card my-card flex justify-center">
+															<label for="input1" class="form-label">Description</label>
+															   <InputText type="text" v-model="stockForm.description" />
+															   <div class="input-errors" v-for="error of stockV$.description.$errors" :key="error.$uid">
+															   <div class="text-danger">Description is required</div>
+														</div>
+													</div>                        
+													</div>
+									
+									
+													<div class="col-md-12">
+														<div class="card my-card flex justify-center">
+															<label for="input1" class="d-flex form-label">Quantity
+															</label>
+															   <InputNumber inputId="minmax" :min="0" v-model="stockForm.quantity" />
+															   <div class="input-errors" v-for="error of stockV$.quantity.$errors" :key="error.$uid">
+															   <div class="text-danger">Quantity is required</div>
+															</div>
+													</div>                        
+													</div>
+													<div class="col-md-12">
+														<div class="card my-card flex justify-center">
+															<label for="input1" class="d-flex form-label">Stock type</label>
+															   <select v-model="stockForm.type" class="form-control">
+																   <option :value="''" disabled :selected="true" >Choose stock type</option>
+																   <option value="BRANDING">Branding</option>
+																   <option value="MERCH">Merchandising</option>
+															   </select>
+															   <div class="input-errors" v-for="error of stockV$.type.$errors" :key="error.$uid">
+															   <div class="text-danger">Stock type is required</div>
+															</div>
+													</div>                        
+													</div>
+													<div class="col-md-12">
+														<div class="card my-card flex justify-center">
+															<FileUploadGeneric/>
+													</div>                        
+													</div>
+													<div class="modal-footer">
+														<button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
+														<div v-if="loading" class="spinner-border text-white" role="status">
+															<span class="visually-hidden">Loading...</span>
+														</div>
+														Submit
+													</button>
+													</div>
+													
+												</form>
+												
+											</div>
+										</div>
+									</Popover>
 								  </div>
 							  </div>
 						  </div>
@@ -282,66 +306,7 @@ const onfileDropped = (dropedFile) => {
 
 			</div>
 		</div>
-		<Dialog v-model:visible="visible" position="top" modal :header="`Add Stock to ${unitName}`" style="width: 30rem">
-               
-			<form @submit.prevent="submitStock" class="row mt-3">
-                
-				<div class="col-md-12">
-					<div class="card my-card flex justify-center">
-						<label for="input1" class="form-label">Description</label>
-						   <InputText type="text" v-model="stockForm.description" />
-						   <div class="input-errors" v-for="error of stockV$.description.$errors" :key="error.$uid">
-						   <div class="text-danger">Description is required</div>
-					</div>
-				</div>                        
-				</div>
-
-
-				<div class="col-md-12">
-					<div class="card my-card flex justify-center">
-						<label for="input1" class="d-flex form-label">Quantity
-						</label>
-						   <InputNumber inputId="minmax" :min="0" v-model="stockForm.quantity" />
-						   <div class="input-errors" v-for="error of stockV$.quantity.$errors" :key="error.$uid">
-						   <div class="text-danger">Quantity is required</div>
-						</div>
-				</div>                        
-				</div>
-				<div class="col-md-12">
-					<div class="card my-card flex justify-center">
-						<label for="input1" class="d-flex form-label">Stock type</label>
-						   <select v-model="stockForm.type" class="form-control">
-							   <option :value="''" disabled :selected="true" >Choose stock type</option>
-							   <option value="BRANDING">Branding</option>
-							   <option value="MERCH">Merchandising</option>
-						   </select>
-						   <div class="input-errors" v-for="error of stockV$.type.$errors" :key="error.$uid">
-						   <div class="text-danger">Stock type is required</div>
-						</div>
-				</div>                        
-				</div>
-				<div class="col-md-12">
-					<div class="card my-card flex justify-center">
-						<FileUploadGeneric 
-						:showFilePreview="showFilePreview" 
-						accept="image/*" 
-						fileType="image" 
-						@fileUploaded="onFileChange"
-							@fileDropped="onfileDropped"
-							/>
-				</div>                        
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
-					<div v-if="loading" class="spinner-border text-white" role="status">
-						<span class="visually-hidden">Loading...</span>
-					</div>
-					Submit
-				</button>
-				</div>
-				
-			</form>
-        </Dialog>
+	<!--start switcher-->
 	
 </Layout>
 </template>
