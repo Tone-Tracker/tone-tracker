@@ -317,13 +317,18 @@ import Drawer from 'primevue/drawer';
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
+import { useNavStore } from '@/stores/ToggleNav';
+
+
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+const navStore = useNavStore();
 
 onMounted(() => {
     getUser();
     getSignedNDADocuments('NDA');
     getSignedSLADocuments('SLA');
+    
 })
 const promoterStore = usePromoter();
 const supplierStore = useSupplier();

@@ -328,7 +328,7 @@ const items = (region) => [
                                                             {{ region.firstName ? region.firstName + ' ' + region.lastName : '' }}
                                                         </td>
                                                         <td>
-                                                            <router-link :to="`/admin-view-warehouse/${region.id}?name=${region.name}`" type="button" class="btn maz-gradient-btn position-relative me-lg-5"> 
+                                                            <router-link :to="`/admin-view-warehouses-by-region/${region.id}?name=${region.name}`" type="button" class="btn maz-gradient-btn position-relative me-lg-5"> 
                                                                 <i class='bx bx-building-house align-middle' ></i> 
                                                                 View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">24 
                                                                     <span class="visually-hidden">warehouses</span></span>
