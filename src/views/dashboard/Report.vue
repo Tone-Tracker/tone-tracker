@@ -170,11 +170,14 @@ const mountDoghunrt = () => {
 
         <h4 class="ml-2 mt-6">Promoters on job</h4>
         <div class="row row-cols-auto g-3 ">
-          <div class="col" v-if="activation?.team?.length > 0" v-for="team in activation?.team" :key="team.id">
+          <div class="col" v-if="activation?.promoters?.length > 0" v-for="prom in activation?.promoters" :key="prom.id">
             <div class="gallery">
               <router-link to="/profile">
-                <img src="../../assets/images/avatars/avatar-1.png" alt="Cinque Terre" class="img-fluid">
+                <img :src="prom.userDetails?.path ? envPath + prom.userDetails?.path : `https://ui-avatars.com/api/?name=${ prom.userDetails?.firstName + ' ' + prom.userDetails?.lastName }&background=random`" alt="Cinque Terre" class="img-fluid">
               </router-link>
+              <div>
+                <div class="desc">{{ prom.userDetails?.firstName + ' ' + prom.userDetails?.lastName }}</div>
+              </div>
             </div>
           </div>
         </div>
