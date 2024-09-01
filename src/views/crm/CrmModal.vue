@@ -4,61 +4,77 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import useToaster from '@/composables/useToaster';
 import { useCrmStore } from '@/stores/crm';
+import { useActivation } from '@/stores/activation';
 
 const emit = defineEmits(['closeModal']);
 const props = defineProps({
   showModal: Boolean,
-  modalData: Object
+  modalData: Object,
+  regions: Array
 });
 
 const crmStore = useCrmStore();
 const toaster = useToaster();
 let showLoading = ref(false);
+let activations = ref([]);
+const activationStore = useActivation();
 let form = reactive({
-  firstName : '',
-  lastName: '',
+  name : '',
+  surname: '',
   email: '',
   phone: '',
-  optin: '',
-  activationArea: '',
+  optIn: '',
+  activation: '',
   region: ''
 });
 
-watch(() => props.modalData, (newVal) => {
+watch(() => props.modalData, (newVal) => { console.log("regions", newVal.region);
   Object.assign(form, {
-    firstName: newVal.firstName || '',
-    lastName: newVal.lastName || '',
+    name: newVal.name || '',
+    surname: newVal.surname || '',
     email: newVal.email || '',
     phone: newVal.phone || '',
-    optin: newVal.optin || '',
-    activationArea: newVal.activationArea || '',
+    optIn: newVal.optIn || '',
+    activation: newVal.activation || 4,
     region: newVal.region || ''
   });
 }, { deep: true });
 
 const rules = {
-  firstName: { required },
-  email: { required, email },
-  lastName: { required },
+  name: { required },
+  surname: { required },
+  email: { required , email},
   phone: { required },
-  role: { required },
+  activation: {  },
+  region: { required }
 };
 
 const v$ = useVuelidate(rules, form);
 
-const onSubmit = async () => {
+const getAllActivationsByRegion = async () => {
+  showLoading.value = true;
+  try {
+    const response = await activationStore.getAllActivationByRegionId(form.region);
+    activations.value = response.data.content;
+  } catch (error) {
+    toaster.error("Error fetching Activation Area");
+    console.error(error);
+  } finally {
+    showLoading.value = false;
+  }
+};
+
+const onSubmit = async () => { 
   const isFormValid = await v$.value.$validate();
   if (!isFormValid) return;
 
   showLoading.value = true;
   try {
-    if (props.modalData.id) {
-      await crmStore.updateUser(props.modalData.id, form);
-      toaster.success("User updated successfully");
-    } else {
-      await crmStore.submitUser(form);
+    
+      console.log(form);
+      await crmStore.createCrm(form);
       toaster.success("User created successfully");
-    }
+    
     emit('closeModal');
   } catch (error) {
     toaster.error("Error saving user");
@@ -81,14 +97,14 @@ const onSubmit = async () => {
           <!-- Form Fields -->
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="firstName" class="form-label">First Name</label>
-              <input v-model="form.firstName" type="text" class="form-control" id="firstName">
-              <div class="text-danger" v-if="v$.firstName.$error">First Name is required</div>
+              <label for="name" class="form-label">Name</label>
+              <input v-model="form.name" type="text" class="form-control" id="name">
+              <div class="text-danger" v-if="v$.name.$error">Name is required</div>
             </div>
             <div class="col-md-6">
-              <label for="lastName" class="form-label">Last Name</label>
-              <input v-model="form.lastName" type="text" class="form-control" id="lastName">
-              <div class="text-danger" v-if="v$.lastName.$error">Last Name is required</div>
+              <label for="surname" class="form-label">Surname</label>
+              <input v-model="form.surname" type="text" class="form-control" id="surname">
+              <div class="text-danger" v-if="v$.surname.$error">Surname is required</div>
             </div>
             <div class="col-md-6">
               <label for="email" class="form-label">Email</label>
@@ -100,24 +116,33 @@ const onSubmit = async () => {
               <input v-model="form.phone" type="text" class="form-control" id="cell">
               <div class="text-danger" v-if="v$.phone.$error">Cell Number is required</div>
             </div>
-            <div class="col-md-6">
-              <label for="cell" class="form-label">Optin</label>
-              <input v-model="form.phone" type="checkbox" class="form-control" id="optin">
-              <div class="text-danger" v-if="v$.phone.$error">Optin</div>
-            </div>
-            <div class="col-md-6">
-              <label for="cell" class="form-label">Activation Area</label>
-              <input v-model="form.phone" type="text" class="form-control" id="activationArea">
-              <div class="text-danger" v-if="v$.phone.$error">Activation Area is required</div>
-            </div>
+            
             <div class="col-md-6">
               <label for="cell" class="form-label">Region</label>
-              <input v-model="form.phone" type="text" class="form-control" id="region">
-              <div class="text-danger" v-if="v$.phone.$error">Region is required</div>
+              <select @change="getAllActivationsByRegion" v-model="form.region" class="form-select" id="region">
+                <option value="" selected disabled>Select Region</option>
+                <option v-for="region in regions" :key="region" :value="region.id">
+                  {{ region.name }}
+                </option>
+              </select>
+              <div class="text-danger" v-if="v$.region.$error">Region is required</div>
             </div>
+            <div class="col-md-6" v-if="form.region != ''">
+              <label for="Activation" class="form-label">Activation Area</label>
+              <select v-model="form.activation" class="form-select" id="activation">
+                <option value="" selected disabled>Select Activation Area</option>
+                <option v-for="activation in activations" :key="activation" :value="activation.id">
+                  {{ activation.name }}
+                </option>
+              </select>
+              <div class="text-danger" v-if="v$.activation.$error">Activation Area is required</div>
+            </div>
+            <div class="col-md-6">
+              <input v-model="form.optIn" type="checkbox" class="" id="optin">
+              <label for="optin" class="form-label ms-2">Opt In</label>
+            </div>            
           </div>
-          <!-- Additional form fields can be added here -->
-
+          
           <div class="mt-4">
             <button @click="onSubmit" class="btn btn-primary">
               <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
