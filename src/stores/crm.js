@@ -8,6 +8,7 @@ export const useCrmStore = defineStore('useCrm', () => {
     }
 
     const createCrm = (form) => {
+        console.log(form);
         return axiosInstance.post(`/api/leads`,form);
     }
 
