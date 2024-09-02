@@ -196,6 +196,37 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
+import { useReports } from '@/stores/reports';
+import useToaster from '@/composables/useToaster';
+import { onMounted, ref, reactive } from 'vue';
+
+
+const reportStore = useReports();
+let report = ref([]);
+let showLoading = ref(false);
+const toaster = useToaster();
+
+
+onMounted(() => {
+  getCampaignReport();
+});
+
+
+
+const getCampaignReport = async () => {
+      showLoading.value = true;
+      try {
+        const response = await reportStore.getCampaignReport(2);
+        console.log('response', response);
+        report.value = response.data;
+      } catch (error) {
+        toaster.error('Error fetching report');
+        console.error(error);
+      } finally {
+        showLoading.value = false;
+      }
+    };
+
 </script>
 <style scoped>
 .status-icon {
