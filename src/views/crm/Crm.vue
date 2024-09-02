@@ -6,25 +6,29 @@ import useToaster from '@/composables/useToaster';
 import { useCrmStore } from '@/stores/crm';
 import CrmModal from './CrmModal.vue';
 
+import { useRegion } from '@/stores/useRegion';
+
 let showModal = ref(false);
 let showLoading = ref(false);
 let modalData = reactive({});
 let users = ref([]);
+let regions = ref([]);
 const crmStore = useCrmStore();
+const regionStore = useRegion();
 const toaster = useToaster();
 
 onMounted(() => {
   getAllUsers();
+  getAllRegions();
 });
 
 let newUser = reactive({
   name: '',
   surname: '',
   email: '',
-  cell: '',
-  optin: false,
-  area: '',
-  region: ''
+  phone: '',
+  optIn: false,
+  activation : ''
 });
 
 const getAllUsers = async () => {
@@ -34,6 +38,20 @@ const getAllUsers = async () => {
     users.value = response.data.content;
   } catch (error) {
     toaster.error("Error fetching users");
+    console.error(error);
+  } finally {
+    showLoading.value = false;
+  }
+};
+
+
+const getAllRegions = async () => {
+  showLoading.value = true;
+  try {
+    const response = await regionStore.getRegions(); console.log("response", response);
+    regions.value = response.data.content;
+  } catch (error) {
+    toaster.error("Error fetching regions");
     console.error(error);
   } finally {
     showLoading.value = false;
@@ -50,11 +68,6 @@ const hideModal = () => {
   getAllUsers();
 };
 
-const submitUserDetails = () => {
-  console.log("User Details Submitted:", newUser);
-  // Handle form submission logic
-  hideModal();
-};
 </script>
 
 <template>
@@ -82,13 +95,22 @@ const submitUserDetails = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- User rows will be rendered here -->
+                  <tr v-if="users.length > 0" v-for="user in users" :key="user.id">
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.surname }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone }}</td>
+                    
+                    <td>{{ user.optIn }}</td>
+                    <td>{{ user.activationName }}</td>
+                    <td>{{ user.regionName }}</td>
+                  </tr>
                 </tbody>
               </table>
-              <div class="text-end">
+              <!-- <div class="text-end">
                 <button class="btn btn-secondary btn-export rounded-0 mb-0 mx-2">Export</button>
                 <button class="btn btn-primary btn-download rounded-0 mb-0">Download</button>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -100,6 +122,7 @@ const submitUserDetails = () => {
       v-if="showModal" 
       :showModal="showModal" 
       :modalData="modalData" 
+      :regions="regions" 
       @closeModal="hideModal" 
     />
   </template>

@@ -7,6 +7,8 @@ import { useUserStore } from '@/stores/userStore';
 import useToaster from '@/composables/useToaster';
 import { useAuth } from '@/stores/auth';
 import { useConfirm } from "primevue/useconfirm";
+import router from '@/router';
+import Paginator from 'primevue/paginator';
 
 const userStore = useUserStore();
 const toaster = useToaster();
@@ -14,8 +16,15 @@ const auth = useAuth();
 const confirm = useConfirm();
 const currentUser = JSON.parse(auth.user);
 
-let users = ref([]);
+
+let paginatedUsers = ref([]); // This will store the users to be displayed on the current page
 let showLoading = ref(false);
+
+const rowsPerPage = ref(10); // Rows per page
+const totalRecords = ref(0); // Total number of records
+const currentPage = ref(1); // Current page
+
+let users = ref([]);
 let modalData = reactive({});
 
 onMounted(() => {
@@ -24,6 +33,7 @@ onMounted(() => {
 
 let showModal = ref(true);
 const toggleModal = () => {
+	isEdit.value = false;
 	showModal.value = true,
 	modalData.value = {}
 }
@@ -38,7 +48,7 @@ const hideModal = () => {
 
 const onInput = () => {
 	 if(searchInput.value){ {
-		users.value = users.value.filter((user) => {
+		paginatedUsers.value = paginatedUsers.value.filter((user) => {
 			return user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
 			|| user.lastName.toLowerCase().includes(searchInput.value.toLowerCase())
 			|| user.email.toLowerCase().includes(searchInput.value.toLowerCase())
@@ -52,21 +62,23 @@ const onInput = () => {
 	 }
   };
 
-  const getAllUsers = async () => {
-	showLoading.value = true;
-	userStore.getUsers().then(function (response) {
-		showLoading.value = false;
-		users.value = response.data.content
-	}).catch(function (error) {
-		toaster.error("Error fetching users");
-		console.log(error);
-	}).finally(function () {
-		showLoading.value = false;
-	})
-  }
+//   const getAllUsers = async () => {
+// 	showLoading.value = true;
+// 	userStore.getUsers().then(function (response) {
+// 		showLoading.value = false;
+// 		users.value = response.data.content
+// 	}).catch(function (error) {
+// 		toaster.error("Error fetching users");
+// 		console.log(error);
+// 	}).finally(function () {
+// 		showLoading.value = false;
+// 	})
+//   }
 
+  const isEdit = ref(false);
   const showDetails = (user) => {
 	modalData.value = user;
+	isEdit.value = true;
   }
 
   const deleteUser = (user) => {
@@ -83,6 +95,26 @@ const onInput = () => {
 
 const isMyProfile = (user) => {
 	return user.id === currentUser.id
+}
+
+const showProfile = (user) => {console.log(user)
+	if(!user.activeUserId){return alert('kkk')}
+	if(user.role == 'TTG_ADMIN' || user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_ACTIVATION_MANAGER' || user.role == 'TTG_REGIONAL_MANAGER') {
+		return router.push({ name: 'staff-profile', params: { id: user.id } })
+	}else if(user.role == 'TTG_TALENT') {
+		router.push({ 
+      name: 'staff-profile', 
+      params: { 
+        user: user.id, 
+        userId: user.activeUserId
+		// ${user.activeUserId}/${user.id}  path: '/staff-profile/:id/:userId',
+      } 
+	})
+	}else if(user.role == 'SUPPLIER') {
+		return router.push({ name: 'supplier-profile', params: { id: user.id } })
+	}else {
+		return;
+	}
 }
 
 const deleteRecord = (event, user) => {
@@ -108,6 +140,33 @@ const deleteRecord = (event, user) => {
         }
     });
 };
+
+const onPageChange = (event) => {
+  currentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
+  rowsPerPage.value = event.rows;
+  updatePaginatedUsers();
+};
+
+const updatePaginatedUsers = () => {
+  const start = (currentPage.value - 1) * rowsPerPage.value;
+  const end = start + rowsPerPage.value;
+  paginatedUsers.value = users.value.slice(start, end);
+};
+const getAllUsers = async () => {
+  showLoading.value = true;
+  try {
+    const response = await userStore.getUsers();
+    users.value = response.data.content;
+    totalRecords.value = users.value.length;
+    updatePaginatedUsers();
+  } catch (error) {
+    toaster.error("Error fetching users");
+    console.log(error);
+  } finally {
+    showLoading.value = false;
+  }
+};
+
 </script>
 <template>
     <Layout>
@@ -139,7 +198,7 @@ const deleteRecord = (event, user) => {
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-if="users?.length > 0" v-for="user in users" :key="user.id">
+									<tr v-if="paginatedUsers.length > 0" v-for="user in paginatedUsers" :key="user.id">
 										<td>{{user.firstName}}</td>
 										<td>{{user.lastName}}</td>
 										<td>{{user.email}}</td>
@@ -149,9 +208,11 @@ const deleteRecord = (event, user) => {
 										</td>
 										<td>
 											<div class="d-flex order-actions">
-												<a @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
+												<a v-tooltip.bottom="'Edit'" @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
 													<i class='bx bxs-edit'></i></a>
-												<a @click="deleteRecord($event,user)" href="javascript:;" class="ms-3">
+													<!-- <a v-tooltip.bottom="'View Profile'" @click="showProfile(user)" href="javascript:;" class="ms-3">
+														<i class='bx bx-bullseye'></i></a> -->
+												<a v-tooltip.bottom="'Delete'" @click="deleteRecord($event,user)" href="javascript:;" class="ms-3">
 													<i v-if="!isMyProfile(user)" class='bx bxs-trash text-danger'></i>
 													<i v-if="isMyProfile(user)" class='bx bx-stop-circle text-danger cursor-no-drop'></i>
 												</a>
@@ -167,16 +228,24 @@ const deleteRecord = (event, user) => {
 											<!-- <CustomSpinner v-if="showLoading"/> -->
 										</td>
 									</tr>
-									
-								
 								</tbody>
 							</table>
+						</div>
+						<div class="card">
+							<Paginator 
+                :first="(currentPage - 1) * rowsPerPage"
+                :rows="rowsPerPage"
+                :totalRecords="totalRecords"
+                :rowsPerPageOptions="[10, 20, 30]"
+                @page="onPageChange"
+              ></Paginator>
 						</div>
 					</div>
 				</div>
 
 				<UsersModal v-if="showModal"
 				:showModal="showModal"
+				:isEdit="isEdit"
 				:modalData="modalData"
 				@closeModal="hideModal()"
 				/>

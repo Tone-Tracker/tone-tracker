@@ -90,6 +90,10 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.get(`/api/tasks/location/${userId}/role/${role}`);
     }
 
+    const getAllActivationByRegionId = (regionId) => {
+      return axiosInstance.get(`/api/activations/region/${regionId}`);
+    }
+
     const getAllTrainingMaterial = (activationId) => {
       return axiosInstance.get(`/api/approaches/activation/${activationId}`);
     }
@@ -108,10 +112,13 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.delete(`/api/approaches/${materialId}`);
     }
     
+    const getActivationReport = (activationId) => {
+      return axiosInstance.get(`/api/activations/${activationId}/report`);
+    }
   
     return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,
              uploadImages , getAllActivations, getActivationImages, getAllActivationsAdmins, getAllActivationsRegionalManager, 
              getAllActivationsManager, getAllTasksLocation, getAllTrainingMaterial,recordUserOpenedFile, submitTrainingMaterial,
-             deleteTrainingMaterial, getAllActivationsPromoter, getAllActivationsSupplier
+             deleteTrainingMaterial, getAllActivationsPromoter, getAllActivationsSupplier, getAllActivationByRegionId,getActivationReport
             }
   })

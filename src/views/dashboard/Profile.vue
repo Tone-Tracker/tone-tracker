@@ -487,14 +487,14 @@ Date: 04/06/2024
                             </div>
                         </div>
 
-                        <div class="card maz-gradient-border-top mt-4">
+                        <div class="card maz-gradient-border-top mt-4" v-if="isMyProfile">
                             <div class="card-body p-4">
                                 <h4 class="mb-2 text-center mt-2">Change Password</h4>
 									<div class="row mb-3">
 										<label for="password" class="col-sm-3 col-form-label">New Password</label>
 										<div class="col-sm-9">
 											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="passwordForm.password">
+												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
 												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
 											</div>
                                             <div
@@ -509,7 +509,7 @@ Date: 04/06/2024
 										<label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
 										<div class="col-sm-9">
 											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="passwordForm.confirmPassword">
+												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
 												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
 											</div>
                                             <div
@@ -603,7 +603,7 @@ import Textarea from 'primevue/textarea';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import { useVuelidate } from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, sameAs } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
@@ -646,17 +646,16 @@ const profilePic = ref(null);
 const showTools = ref(false);
 const showBioTextarea = ref(false);
 
-const passwordForm = ref({
-    password: '',
-    confirmPassword: ''
-});
+
+
+const password = ref('');
+const confirmPassword = ref('');
 
 const paswordRules = {
-      password: { required },
-      confirmPassword: { required },
-    };
-    const vv$ = useVuelidate(paswordRules, passwordForm);
-
+  password: { required },
+  confirmPassword: { sameAs: sameAs(password) }
+}
+    const vv$ = useVuelidate(paswordRules, { password, confirmPassword })
 
 const updatePassword = async () => {
     const isFormCorrect = await vv$.value.$validate();
@@ -665,9 +664,13 @@ const updatePassword = async () => {
         return;
       }
     showPasswordLoading.value = true;
-    userStore.updateProfile(user.id,passwordForm.value).then(function (response) {
+    userStore.updatePassword(user.id,password.value).then(function (response) {
         showPasswordLoading.value = false;
-        toaster.success('Password updated successfully')
+        toaster.success('Password updated successfully');
+        password.value = '';
+        confirmPassword.value = '';
+        vv$.value.$reset();
+        vv$.$errors = [];
     }).catch(function (error) {
         showPasswordLoading.value = false;
         toaster.error('Something went wrong')

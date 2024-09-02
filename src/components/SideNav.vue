@@ -10,8 +10,10 @@ import TTG_PROMOTERS from "./navigations/TTG_PROMOTERS.vue";
 import { useAuth } from "@/stores/auth";
 import TTG_SUPPLIERS from "./navigations/TTG_SUPPLIERS.vue";
 import Drawer from "primevue/drawer";
+import { onMounted, ref } from "vue";
+import { useNavStore } from '@/stores/ToggleNav';
 
-import { ref } from "vue";
+const navStore = useNavStore();
 
 const auth = useAuth();
 const user = JSON.parse(auth.user);
@@ -20,7 +22,11 @@ const getUserRole = (role) => {
   return user.role == role;
 };
 
-const visible = ref(false);
+onMounted(() => {
+  // navStore.isNavVisible = false;
+})
+
+const visible = navStore.isNavVisible;
 </script>
 
 <template>
@@ -37,7 +43,7 @@ const visible = ref(false);
           <div class="simplebar-content-wrapper" style="height: 100%">
             <div class="simplebar-content mm-active" style="padding: 0px">
               <!--navigation-->
-              <CLIENT />
+              <CLIENT :user="user" />
               <!--end navigation-->
             </div>
           </div>
@@ -54,7 +60,7 @@ const visible = ref(false);
       style="background-color: black; width: 300px"
     >
       <Drawer
-        v-model:visible="visible"
+      v-model:visible="navStore.isNavVisible"
         style="background-color: black; width: 285px; border: none; margin-top: 153px"
       >
         <template #container="{ closeCallback }">
@@ -74,7 +80,7 @@ const visible = ref(false);
 
             <div class="d-flex justify-content-start">
               <!-- Include the Client Component -->
-              <CLIENT />
+              <!-- <CLIENT /> -->
               <div>
                 <TTG_SUPER_ADMIN
                 v-if="getUserRole('TTG_SUPER_ADMIN')"

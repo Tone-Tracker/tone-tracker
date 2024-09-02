@@ -6,7 +6,6 @@ import { required } from '@vuelidate/validators';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Dialog from 'primevue/dialog';
-import Select from 'primevue/select';
 import useToaster from '@/composables/useToaster';
 import { useRegion } from '@/stores/useRegion';
 import { useUserStore } from '@/stores/userStore';
@@ -14,7 +13,6 @@ import { useWarehouse } from '@/stores/warehouse';
 import { useStaff } from '@/stores/staff';
 import SplitButton from 'primevue/splitbutton';
 import InputText from 'primevue/inputtext';
-import Badge from "primevue/badge";
 import InputNumber from "primevue/inputnumber";
 import { useUnit } from "@/stores/unit";
 import Drawer from "primevue/drawer";
@@ -362,13 +360,13 @@ const viewUnits = async (warehouse) => {
                                                         <td>{{ index + 1 }}</td>
                                                         <td>{{ region.name }}</td>
                                                         <td>
-                                                            <button @click="viewUnits(region)" type="button" v-tooltip.bottom="region.unitsList?.length + ' units'"
+                                                            <router-link :to="`/view-warehouse/${region.id}?name=${region.name}`" v-tooltip.bottom="region.unitsList?.length + ' units'"
                                                               class="btn maz-gradient-btn position-relative me-lg-5"> 
                                                                 <i class='bx bx-building-house align-middle' ></i> 
                                                                 View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
                                                                     {{ region.unitsList?.length }} 
                                                                     <span class="visually-hidden">warehouses</span></span>
-                                                            </button>
+                                                            </router-link>
                                                         </td>
                                                         <td>{{ region.streetAddress + ', ' + region.zipCode }}</td>
                                                         <td>
@@ -586,4 +584,5 @@ const viewUnits = async (warehouse) => {
 .table td {
     vertical-align: middle;
 }
+
 </style>
