@@ -160,7 +160,6 @@ const toggle = (event) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
   height: 60px;
 }
 
