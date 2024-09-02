@@ -27,7 +27,7 @@ Date: 04/06/2024
               
 
 
-                <div class="row justify-content-space-between gap-5">
+                <div class="row gap-5">
                     <div class="col-lg-3">
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
