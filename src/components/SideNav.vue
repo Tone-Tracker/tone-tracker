@@ -61,7 +61,9 @@ const visible = navStore.isNavVisible;
     >
       <Drawer
       v-model:visible="navStore.isNavVisible"
-        style="background-color: black; width: 285px; border: none; margin-top: 153px"
+      :modal="false"
+      :showCloseIcon="false"
+      style="background-color: black; width: 285px; border: none; margin-top: 153px"
       >
         <template #container="{ closeCallback }">
           <div class="flex flex-col h-full">
@@ -185,6 +187,16 @@ const visible = navStore.isNavVisible;
     justify-content: center; /* Center align */
     cursor: pointer; /* Pointer cursor on hover */
     transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+  }
+
+   /* ... Drawers ... */
+
+   :deep(.p-drawer-mask) {
+    background-color: transparent !important;
+  }
+
+  :deep(.p-drawer) {
+    box-shadow: none !important;
   }
 
   
