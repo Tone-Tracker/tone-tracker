@@ -26,7 +26,7 @@ const getRoleName = () => {
 
 </script>
 <template>
-    <div class="accordion" id="accordionPanelsStayOpenExample">
+    <div class="accordion " id="accordionPanelsStayOpenExample">
 
         <div class="side-nav side-nav--remove">
             <div class="accordion-item">

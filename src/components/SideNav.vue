@@ -63,7 +63,7 @@ const visible = navStore.isNavVisible;
       v-model:visible="navStore.isNavVisible"
       :modal="false"
       :showCloseIcon="false"
-      style="background-color: black; width: 285px; border: none; margin-top: 153px"
+      style="background-color: black; width: 241px; border: none; margin-top: 153px; margin-left: 45px"
       >
         <template #container="{ closeCallback }">
           <div class="flex flex-col h-full">
@@ -109,7 +109,8 @@ const visible = navStore.isNavVisible;
                 :user="user"
               />
               </div>
-              
+                            <!-- <CLIENT /> -->
+
             </div>
           </div>
         </template>
@@ -197,7 +198,14 @@ const visible = navStore.isNavVisible;
 
   :deep(.p-drawer) {
     box-shadow: none !important;
+  
   }
+  .p-drawer {
+    /* left: 45px !important; */
+    /* width: 29px !important; */
+  }
+
+ 
 
   
 </style>
