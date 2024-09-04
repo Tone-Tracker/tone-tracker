@@ -262,7 +262,9 @@ const viewStockImagePreview = (model) => {
 								  <tbody>
 									<tr v-if="brandings?.length > 0" v-for="branding in brandings" class="maz-table-row-height">
 										<td>
-										  <Avatar @click="viewStockImagePreview(branding)" :image="envPath + branding.stockImage" class="mr-2 cursor-pointer" size="large" shape="circle" />
+										  <Avatar @click="viewStockImagePreview(branding)" 
+										  :image="branding.stockImage ? envPath + branding.stockImage : `https://ui-avatars.com/api/?name=${ branding.description }&background=4263C5`" 
+										   class="mr-2 cursor-pointer" size="large" shape="circle" />
 										
 										</td>
 								   <td>{{branding.description}}</td>
