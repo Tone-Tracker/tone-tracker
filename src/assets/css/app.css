@@ -14,6 +14,13 @@ File: app.css
 	scrollbar-width: thin;
 }
 
+.no-border-input {
+    border: none;
+	color: #000;
+    outline: none;
+	background: #fff
+}
+
 .accordion-button {
 	padding: 8px !important;
 }
