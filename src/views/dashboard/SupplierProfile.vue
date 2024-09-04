@@ -13,284 +13,291 @@ Date: 04/06/2024
                 <div class="main-dashboard-head">
                     <span class="font-welcome">Profile</span>
                 </div>
-                <div class="row justify-content-space-between gap-5">
-                    <div class="col-lg-3">
-                        <div class="card-c">
-                            <div class="d-flex flex-column card-header-c">
-                                <div class="image-container">
-                                    <div class="card flex justify-center">
-                                        <Image alt="Image" preview>
-                                            <template #previewicon>
-                                              <i class='bx bx-search-alt-2' ></i>
-                                            </template>
-                                            <template #image>
-                                                <img 
-                                                :src="userInfo?.path ? envPath + userInfo?.path 
-                                                : `https://ui-avatars.com/api/?name=${ getFullName() }&background=4263C5`" 
-                                                alt="image" width="350" />
-                                            </template>
-                                            <template #preview="slotProps">
-                                                <img 
-                                                :src="userInfo?.path ? envPath + userInfo?.path : `https://ui-avatars.com/api/?name=${ getFullName() }&background=4263C5`" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                                            </template>
-                                        </Image>
+                <div class="container-fluid">
+                    <div class="row g-5">
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                            <div class="card-c">
+                                <div class="d-flex flex-column card-header-c">
+                                    <div class="image-container">
+                                        <div class="card flex justify-center">
+                                            <Image alt="Image" preview>
+                                                <template #previewicon>
+                                                <i class='bx bx-search-alt-2' ></i>
+                                                </template>
+                                                <template #image>
+                                                    <img 
+                                                    :src="userInfo?.path ? envPath + userInfo?.path 
+                                                    : `https://ui-avatars.com/api/?name=${ getFullName() }&background=4263C5`" 
+                                                    alt="image" width="350" />
+                                                </template>
+                                                <template #preview="slotProps">
+                                                    <img 
+                                                    :src="userInfo?.path ? envPath + userInfo?.path : `https://ui-avatars.com/api/?name=${ getFullName() }&background=4263C5`" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                </template>
+                                            </Image>
+                                            </div>
+                                        <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
+                                        <div v-if="isMyProfile" @click="showModal = true"
+                                            class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
+                                            <i class='bx bx-edit-alt fs-2'></i>
                                         </div>
-                                    <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
-                                    <div v-if="isMyProfile" @click="showModal = true"
-                                        class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
-                                        <i class='bx bx-edit-alt fs-2'></i>
                                     </div>
-                                </div>
 
-                                <div class="mt-3 mb-4">
-                                    <h4 class="text- ">{{ getFullName() }} </h4>
-                                </div>
+                                    <div class="mt-3 mb-4">
+                                        <h4 class="text- ">{{ getFullName() }} </h4>
+                                    </div>
 
-                             
-                                <!-- Add Profile picture modal -->
-                                <div v-if="showModal" class="modal fade" id="addProfilePicModal" tabindex="-1" aria-labelledby="addModalLabel"
-                                aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addModalLabel">Update Profile Picture</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                                
-                                        </div>
-                                        <div class="modal-body">
-                                            <!-- <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
-                                           <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label> -->
-                                           <FileUploadForCropper
-                                           :showFilePreview="showFilePreview" 
-                                            accept="image/*" 
-                                            fileType="image" 
-                                            @fileUploaded="onProfilePicSelect"
-                                         />
-                                          
-                                          <VuePictureCropper
-                                          :boxStyle="{
-                                            width: '100%',
-                                            height: '100%',
-                                            backgroundColor: '#f8f8f8',
-                                            margin: 'auto',
-                                          }"
-                                          :img="pic"
-                                          :options="{
-                                            viewMode: 1,
-                                            dragMode: 'move',
-                                            aspectRatio: 1,
-                                            cropBoxResizable: false,
-                                          }"
-                                          :presetMode="{
-                                            mode: 'fixedSize',
-                                            width: 300,
-                                            height: 400,
-                                          }"
-                                          @ready="ready"
-                                          class="mt-3"
-                                        />
-                                          
-                                        <div class="tools" v-if="showTools">
-                                            <button class="btn" data-bs-dismiss="modal">
-                                              Cancel
-                                            </button>
-                                            <!-- <button class="btn" @click="clear">
-                                              Clear
-                                            </button> -->
-                                            <button class="btn" @click="reset">
-                                              Reset
-                                            </button>
-                                          </div>
-                                        </div>
+                                
+                                    <!-- Add Profile picture modal -->
+                                    <div v-if="showModal" class="modal fade" id="addProfilePicModal" tabindex="-1" aria-labelledby="addModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="addModalLabel">Update Profile Picture</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                                    
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
+                                            <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label> -->
+                                            <FileUploadForCropper
+                                            :showFilePreview="showFilePreview" 
+                                                accept="image/*" 
+                                                fileType="image" 
+                                                @fileUploaded="onProfilePicSelect"
+                                            />
+                                            
+                                            <VuePictureCropper
+                                            :boxStyle="{
+                                                width: '100%',
+                                                height: '100%',
+                                                backgroundColor: '#f8f8f8',
+                                                margin: 'auto',
+                                            }"
+                                            :img="pic"
+                                            :options="{
+                                                viewMode: 1,
+                                                dragMode: 'move',
+                                                aspectRatio: 1,
+                                                cropBoxResizable: false,
+                                            }"
+                                            :presetMode="{
+                                                mode: 'fixedSize',
+                                                width: 300,
+                                                height: 400,
+                                            }"
+                                            @ready="ready"
+                                            class="mt-3"
+                                            />
+                                            
+                                            <div class="tools" v-if="showTools">
+                                                <button class="btn" data-bs-dismiss="modal">
+                                                Cancel
+                                                </button>
+                                                <!-- <button class="btn" @click="clear">
+                                                Clear
+                                                </button> -->
+                                                <button class="btn" @click="reset">
+                                                Reset
+                                                </button>
+                                            </div>
+                                            </div>
 
-                                        <div class="modal-footer">
-                                            <div class="col-12 mt-4">
-                                                <div class="d-grid">
-                                                    <button @click="getResult" class="btn maz-gradient-btn"
-                                                        type="button">
-                                                        Save
-                                                    </button>
+                                            <div class="modal-footer">
+                                                <div class="col-12 mt-4">
+                                                    <div class="d-grid">
+                                                        <button @click="getResult" class="btn maz-gradient-btn"
+                                                            type="button">
+                                                            Save
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                </div>
+                            
+
                             </div>
 
+
+                        
+                        </div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body p-4">
+                                        <div class="row mb-3">
+                                            <label for="first-name" class="col-sm-3 col-form-label">First Name</label>
+                                            <div class="col-sm-9">
+                                                <div class="position-relative input-icon">
+                                                    <input type="text" class="form-control" id="first-name" v-model="form.firstName">
+                                                    <span class="position-absolute top-50 translate-middle-y"><i class="bx bx-user"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="last-name" class="col-sm-3 col-form-label">Last Name</label>
+                                            <div class="col-sm-9">
+                                                <div class="position-relative input-icon">
+                                                    <input type="text" class="form-control" id="last-name" v-model="form.lastName">
+                                                    <span class="position-absolute top-50 translate-middle-y"><i class="bx bx-user"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="phone" class="col-sm-3 col-form-label">Phone Number</label>
+                                            <div class="col-sm-9">
+                                                <div class="position-relative input-icon">
+                                                    <input type="tel" class="form-control" id="phone" v-model="form.phone">
+                                                    <span class="position-absolute top-50 translate-middle-y"><i class="bx bx-phone"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="email" class="col-sm-3 col-form-label">Email Address</label>
+                                            <div class="col-sm-9">
+                                                <div class="position-relative input-icon">
+                                                    <input type="email" class="form-control" id="email" v-model="form.email">
+                                                    <span class="position-absolute top-50 translate-middle-y"><i class="bx bx-envelope"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="email" class="col-sm-3 col-form-label ">Name <i v-tooltip.top="'Update your business name if you are a business.'" class='bx bx-info-circle' ></i></label>
+                                            <div class="col-sm-9">
+                                                <div class="position-relative input-icon">
+                                                    <input type="text" class="form-control" id="email" v-model="form.name" placeholder="Business Name">
+                                                    <span class="position-absolute top-50 translate-middle-y"><i class='bx bxs-business'></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="description" class="col-sm-3 col-form-label">Description <i v-tooltip.top="'Describe your business if you are a business.'" class='bx bx-info-circle' ></i></label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" id="description" rows="3" v-model="form.description" placeholder="Business Description"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row" v-if="isMyProfile()">
+                                            <label class="col-sm-3 col-form-label"></label>
+                                            <div class="col-sm-9">
+                                                <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
+                                                    <button @click="updateProfile" type="button" class="btn maz-gradient-btn w-100 px-4">
+                                                        <div v-if="showLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                                        </div>
+                                                        {{ showLoading ?  '' : 'Update' }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
-                           
-
+                        <!-- fgfgfg -->
+                        </div>
+                        <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                        <div>
+                            <h4 class="mb-2 ml-2">Signed NDA Document</h4>
+                            <div  class="d-flex w-100"> 
+                                <div v-if="ndaFile"  class="file-details mt-2 w-100 p-1 border rounded d-flex align-items-center">
+                                    <div class="file-icon me-3" v-tooltip.bottom="'View NDA File'">
+                                    <img @click="previewDocs('nda')"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
+                                    </div>
+                                    <div class="file-info">
+                                    <!-- <p class="m-0 text-white">Brief.pdf</p> -->
+                                    </div>
+                                    <div class="ms-auto" v-if="isMyProfile() || isAdmin()">
+                                        <i @click="download('nda')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download NDA'" ></i>
+                                    
+                                    </div>
+                                </div>
+                                <!-- <div v-else class="text-danger">No signed NDA document.</div> -->
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="mb-2 ml-2 mt-2">Signed SLA Document</h4>
+                            <div  class="d-flex w-100"> 
+                                <div v-if="slaFile"  class="file-details mt-2 w-100 p-1 border rounded d-flex align-items-center">
+                                    <div class="file-icon me-3" v-tooltip.bottom="'View SLA File'">
+                                    <img @click="previewDocs('sla')"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
+                                    </div>
+                                    <div class="file-info">
+                                    <!-- <p class="m-0 text-white">Brief.pdf</p> -->
+                                    </div>
+                                    <div class="ms-auto" v-if="isMyProfile() || isAdmin()">
+                                        <i @click="download('sla')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download SLA'" ></i>
+                                    
+                                    </div>
+                                </div>
+                                <!-- <div v-else class="text-danger">No signed NDA document.</div> -->
+                                
+                            </div>
                         </div>
 
 
-                       
-                    </div>
-                    <div class="col-lg-5">
-                        <div class="card">
-                            <div class="card-body p-4">
-									<div class="row mb-3">
-										<label for="first-name" class="col-sm-3 col-form-label">First Name</label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="first-name" v-model="form.firstName">
-												<span class="position-absolute top-50 translate-middle-y"><i class="bx bx-user"></i></span>
-											</div>
-										</div>
-									</div>
-                                    <div class="row mb-3">
-										<label for="last-name" class="col-sm-3 col-form-label">Last Name</label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="last-name" v-model="form.lastName">
-												<span class="position-absolute top-50 translate-middle-y"><i class="bx bx-user"></i></span>
-											</div>
-										</div>
-									</div>
-									<div class="row mb-3">
-										<label for="phone" class="col-sm-3 col-form-label">Phone Number</label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="tel" class="form-control" id="phone" v-model="form.phone">
-												<span class="position-absolute top-50 translate-middle-y"><i class="bx bx-phone"></i></span>
-											</div>
-										</div>
-									</div>
-									<div class="row mb-3">
-										<label for="email" class="col-sm-3 col-form-label">Email Address</label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="email" class="form-control" id="email" v-model="form.email">
-												<span class="position-absolute top-50 translate-middle-y"><i class="bx bx-envelope"></i></span>
-											</div>
-										</div>
-									</div>
-									<div class="row mb-3">
-										<label for="email" class="col-sm-3 col-form-label ">Name <i v-tooltip.top="'Update your business name if you are a business.'" class='bx bx-info-circle' ></i></label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="email" v-model="form.name" placeholder="Business Name">
-												<span class="position-absolute top-50 translate-middle-y"><i class='bx bxs-business'></i></span>
-											</div>
-										</div>
-									</div>
-                                    <div class="row mb-3">
-										<label for="description" class="col-sm-3 col-form-label">Description <i v-tooltip.top="'Describe your business if you are a business.'" class='bx bx-info-circle' ></i></label>
-										<div class="col-sm-9">
-											<textarea class="form-control" id="description" rows="3" v-model="form.description" placeholder="Business Description"></textarea>
-										</div>
-									</div>
-									<div class="row" v-if="isMyProfile()">
-										<label class="col-sm-3 col-form-label"></label>
-										<div class="col-sm-9">
-											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
-												<button @click="updateProfile" type="button" class="btn maz-gradient-btn w-100 px-4">
-                                                    <div v-if="showLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
-                                                    </div>
-                                                    {{ showLoading ?  '' : 'Update' }}
-                                                </button>
-											</div>
-										</div>
-									</div>
-								</div>
-                        </div>
-                       <!-- fgfgfg -->
-                    </div>
-                    <div class="col-lg-3">
-                       <div>
-                        <h4 class="mb-2 ml-2">Signed NDA Document</h4>
-						<div  class="d-flex w-100"> 
-							<div v-if="ndaFile"  class="file-details mt-2 w-100 p-1 border rounded d-flex align-items-center">
-                                <div class="file-icon me-3" v-tooltip.bottom="'View NDA File'">
-                                  <img @click="previewDocs('nda')"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
-                                </div>
-                                <div class="file-info">
-                                  <!-- <p class="m-0 text-white">Brief.pdf</p> -->
-                                </div>
-                                <div class="ms-auto" v-if="isMyProfile() || isAdmin()">
-                                    <i @click="download('nda')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download NDA'" ></i>
-                                 
-                                </div>
-                              </div>
-							<!-- <div v-else class="text-danger">No signed NDA document.</div> -->
-							
-						</div>
-                       </div>
-                       <div>
-                        <h4 class="mb-2 ml-2 mt-2">Signed SLA Document</h4>
-						<div  class="d-flex w-100"> 
-							<div v-if="slaFile"  class="file-details mt-2 w-100 p-1 border rounded d-flex align-items-center">
-                                <div class="file-icon me-3" v-tooltip.bottom="'View SLA File'">
-                                  <img @click="previewDocs('sla')"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
-                                </div>
-                                <div class="file-info">
-                                  <!-- <p class="m-0 text-white">Brief.pdf</p> -->
-                                </div>
-                                <div class="ms-auto" v-if="isMyProfile() || isAdmin()">
-                                    <i @click="download('sla')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download SLA'" ></i>
-                                 
-                                </div>
-                              </div>
-							<!-- <div v-else class="text-danger">No signed NDA document.</div> -->
-							
-						</div>
-                       </div>
 
-
-
-                    
-                        <div class="card mt-3 maz-gradient-border-top" v-if="isMyProfile">
-                            <div class="card-body p-4">
-                                <h4 class="mb-2 ml-2 mt-2">Change Password</h4>
-									<div class="row mb-3">
-										<label for="password" class="col-sm-3 col-form-label">New Password</label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
-												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-											</div>
-                                            <div
-                                            class="input-errors"
-                                            v-for="error of v$.password.$errors"
-                                            :key="error.$uid">
-                                            <div class="text-danger">Password is required</div>
+                        
+                            <div class="card mt-3 maz-gradient-border-top" v-if="isMyProfile">
+                                <div class="card-body p-4">
+                                    <h4 class="mb-2 ml-2 mt-2">Change Password</h4>
+                                        <div class="row mb-3">
+                                            <label for="password" class="col-sm-3 col-form-label">New Password</label>
+                                            <div class="col-sm-9">
+                                                <div class="position-relative input-icon">
+                                                    <input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
+                                                    <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+                                                </div>
+                                                <div
+                                                class="input-errors"
+                                                v-for="error of v$.password.$errors"
+                                                :key="error.$uid">
+                                                <div class="text-danger">Password is required</div>
+                                                </div>
                                             </div>
-										</div>
-									</div>
-                                    <div class="row mb-3">
-										<label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
-										<div class="col-sm-9">
-											<div class="position-relative input-icon">
-												<input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
-												<span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-											</div>
-                                            <div
-                                            class="input-errors"
-                                            v-for="error of v$.confirmPassword.$errors"
-                                            :key="error.$uid">
-                                            <div class="text-danger">Please confirm your password</div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
+                                            <div class="col-sm-9">
+                                                <div class="position-relative input-icon">
+                                                    <input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
+                                                    <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+                                                </div>
+                                                <div
+                                                class="input-errors"
+                                                v-for="error of v$.confirmPassword.$errors"
+                                                :key="error.$uid">
+                                                <div class="text-danger">Please confirm your password</div>
+                                                </div>
                                             </div>
-										</div>
-									</div>
-									<div class="row" v-if="isMyProfile">
-										<label class="col-sm-3 col-form-label"></label>
-										<div class="col-sm-9">
-											<div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
-												<button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
-                                                    <div v-if="showPasswordLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
-                                                    </div>
-                                                    {{ showPasswordLoading ?  '' : 'Update Password' }}
-                                                </button>
-											</div>
-										</div>
-									</div>
-								</div>
+                                        </div>
+                                        <div class="row" v-if="isMyProfile">
+                                            <label class="col-sm-3 col-form-label"></label>
+                                            <div class="col-sm-9">
+                                                <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
+                                                    <button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
+                                                        <div v-if="showPasswordLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                                        </div>
+                                                        {{ showPasswordLoading ?  '' : 'Update Password' }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
                         </div>
-
-
-
                     </div>
+                </div>    
+                
+                <div class="grid-container">
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
                 </div>
+                    
+                
                 <div class="card flex justify-center">
                     <Drawer v-model:visible="showPreviewSheet" position="right" :header="`Preview Signed ${fileType} File`" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
                         <PDF :src="previewFile" />
@@ -802,4 +809,5 @@ div.desc {
     font-size: 20px; 
     color: #fff;
 }
+
 </style>
