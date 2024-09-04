@@ -339,12 +339,7 @@ const onInput = () => {
 .mt-4 {
     margin-top: 1rem;
 }
-.no-border-input {
-    border: none;
-	color: #000;
-    outline: none;
-	background: #fff
-}
+
 
 .card {
     padding-top: 10px !important;

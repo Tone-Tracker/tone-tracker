@@ -18,6 +18,7 @@ import Dialog from 'primevue/dialog';
 import Avatar from 'primevue/avatar';
 import Drawer from 'primevue/drawer';
 import Image from 'primevue/image';
+import SplitButton from 'primevue/splitbutton';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
@@ -150,6 +151,42 @@ const viewStockImagePreview = (model) => {
 	stockImagePreview.value = envPath + model?.stockImage ;
 }
 
+const items = (region) => [
+    {
+        label: 'Edit',
+        icon: 'bx bx-bullseye fs-4 text-white',
+        command: () => {
+            openModal('top', region)
+        }
+    },
+	{
+        label: 'Assign Regional Manager',
+        icon: 'bx bx-user fs-4 text-white',
+        command: () => {
+            openModal('top', region)
+        }
+    },
+    {
+        label: 'Add Warehouse',
+        icon: 'bx bx-building-house fs-4 text-white',
+        command: () => {
+            openWarehouseModal(region)
+        }
+    },
+    {
+        label: 'Delete',
+        icon: 'bx bx-trash text-danger fs-4 ',
+        command: () => {
+            deleteRecord(region)
+        }
+    }
+];
+
+const editBranding = (branding) => {
+    brandings.value.forEach(c => c.isEditing = false);
+    branding.isEditing = true;
+};
+
 </script>
 
 <template>
@@ -262,17 +299,33 @@ const viewStockImagePreview = (model) => {
 								  <tbody>
 									<tr v-if="brandings?.length > 0" v-for="branding in brandings" class="maz-table-row-height">
 										<td>
-										  <Avatar @click="viewStockImagePreview(branding)" :image="envPath + branding.stockImage" class="mr-2 cursor-pointer" size="large" shape="circle" />
+										  <Avatar  @click="viewStockImagePreview(branding)" 
+										  :image="branding.stockImage ? envPath + branding.stockImage : `https://ui-avatars.com/api/?name=${ branding.description }&background=4263C5`" 
+										   class="mr-2 cursor-pointer" size="large" shape="circle" />
 										
 										</td>
-								   <td>{{branding.description}}</td>
+								   <td v-if="!branding.isEditing">{{branding.description}}</td>
+								   <td v-else>
+									<input style="width: 60%" v-focus type="text" v-model="branding.description" @blur="update(branding)" @keyup.enter="update(branding)" class="no-border-input"/>
+								</td>
 								   <td>{{branding.quantity}}</td>
+								   <td>
+									<SplitButton v-if="!branding.isEditing" @click="editBranding(branding)" class="text-white" label="" 
+													icon="bx bx-edit fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="items(branding)"/>
+									<button v-else @click="update(branding)" class="btn btn-sm maz-gradient-btn" type="button">
+										<i class='bx bx-check text-success'></i>
+									</button>  
+								   </td>
 								  </tr>
 								  <tr v-else ><td colspan="7" class="text-center text-danger">No results found.</td></tr>
 			   
 								 </tbody>
 							   </table>
 							 </div>
+
+							 
 							 <div class="table-responsive table table-dark table-striped w-50">
 								<table class="table align-middle mb-0">
 								 <thead class="table-light">
