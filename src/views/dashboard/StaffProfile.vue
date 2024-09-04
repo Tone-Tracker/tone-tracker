@@ -13,8 +13,8 @@ Date: 04/06/2024
                 <div class="main-dashboard-head">
                     <span class="font-welcome">Profile</span>
                 </div>
-                <div class="row justify-content-space-between gap-5">
-                    <div class="col-lg-3">
+                <div class="row g-5">
+                    <div class="ol-xl-4 col-lg-6 col-md-6 col-sm-12">
                         <div class="card-c">
                             <div class="d-flex flex-column card-header-c">
                                 <div class="image-container">
@@ -127,7 +127,7 @@ Date: 04/06/2024
 
                        
                     </div>
-                    <div class="col-lg-4">
+                    <div class="ol-xl-4 col-lg-6 col-md-6 col-sm-12">
                         <div class="card">
                             <div class="card-body p-4">
 									<div class="row mb-3">
@@ -189,7 +189,7 @@ Date: 04/06/2024
                        <!-- fgfgfg -->
                     </div>
 
-                    <div class="col-lg-4" v-if="isMyProfile">
+                    <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12" v-if="isMyProfile">
                         <div class="card">
                             <div class="card-body p-4">
 									<div class="row mb-3">

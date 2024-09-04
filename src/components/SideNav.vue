@@ -153,7 +153,7 @@ const visible = navStore.isNavVisible;
 </template>
 
 <style scoped>
-  @media (min-width: 768px) and (max-width:1199px) {
+  @media (min-width: 300px) and (max-width:1199px) {
     .simplebar-wrapper {
       width: 0px !important;
     }
