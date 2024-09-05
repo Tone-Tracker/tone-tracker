@@ -11,7 +11,7 @@ Date: 04/06/2024
 
                 <!-- <BreadCrumb title="Profile" icon="bx bx-user-circle" /> -->
                 <div class="main-dashboard-head">
-                    <span class="font-welcome">Profile</span>
+                    <BreadCrumb title="Profile" icon="bx bxs-user"/>
                 </div>
                 <div class="container-fluid">
                     <div class="row g-5">
@@ -325,6 +325,8 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, sameAs } from "@vuelidate/validators";
 import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
 import { useNavStore } from '@/stores/ToggleNav';
+import BreadCrumb from '../../components/BreadCrumb.vue';
+
 
 
 

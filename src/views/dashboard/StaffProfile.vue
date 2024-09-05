@@ -11,7 +11,7 @@ Date: 04/06/2024
 
                 <!-- <BreadCrumb title="Profile" icon="bx bx-user-circle" /> -->
                 <div class="main-dashboard-head">
-                    <span class="font-welcome">Profile</span>
+                    <BreadCrumb title="Profile" icon="bx bxs-user"/>
                 </div>
                 <div class="row g-5">
                     <div class="ol-xl-4 col-lg-6 col-md-6 col-sm-12">
@@ -258,6 +258,8 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, sameAs } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
 import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
+import BreadCrumb from '../../components/BreadCrumb.vue';
+
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
