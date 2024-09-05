@@ -13,7 +13,7 @@ Date: 04/06/2024
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
 					<div class="ps-3">
                         <div class="main-dashboard-head">
-                            <span class="font-welcome">Profile</span>
+                            <BreadCrumb title="Profile" icon="bx bxs-user"/>
                         </div>
                         <p class="text-white">Promoter</p>
 					</div>
@@ -606,6 +606,7 @@ import InputText from 'primevue/inputtext';
 import { useVuelidate } from "@vuelidate/core";
 import { required, sameAs } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
+import BreadCrumb from '../../components/BreadCrumb.vue';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const sizes = ref(["X_SMALL", "SMALL", "MEDIUM", "LARGE", "X_LARGE", "XX_LARGE"]);
@@ -1215,7 +1216,7 @@ div.desc {
 
 
 .image-container {
-    width: 200px;
+    width: 370px;
     position: relative;
     display: inline-block;
 }
@@ -1291,7 +1292,7 @@ div.desc {
 
 .image-item {
     flex: 0 0 auto;
-    width: 100px; /* Adjust this value as needed */
+    width: 150px; /* Adjust this value as needed */
     aspect-ratio: 1 / 1;
     overflow: hidden;
     flex-wrap: wrap;
