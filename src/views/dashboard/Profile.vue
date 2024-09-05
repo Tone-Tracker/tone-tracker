@@ -61,26 +61,26 @@ Date: 04/06/2024
                                     </div>
 
                                     <div class="profile-imgs mb-4">
-        <div class="image-gallery">
-        <div v-if="images?.length > 0" class="image-grid">
+    <div class="image-gallery">
+        <div v-if="images?.length > 0" class="image-flex-container">
             <div v-for="image in images" :key="image.id" class="image-item">
-            <div class="card flex justify-center">
-                <Image alt="Image" preview>
-                <template #previewicon>
-                    <i class='bx bx-search-alt-2'></i>
-                </template>
-                <template #image>
-                    <img :src="envPath + image.path" alt="image" />
-                </template>
-                <template #preview="slotProps">
-                    <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                </template>
-                </Image>
+                <div class="card flex justify-center">
+                    <Image alt="Image" preview>
+                        <template #previewicon>
+                            <i class='bx bx-search-alt-2'></i>
+                        </template>
+                        <template #image>
+                            <img :src="envPath + image.path" alt="image" />
+                        </template>
+                        <template #preview="slotProps">
+                            <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                        </template>
+                    </Image>
+                </div>
             </div>
-            </div>
-        </div>
         </div>
     </div>
+</div>
                                     <div class="mb-4">
                                         <button v-if="isMyProfile()"
                                             class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center"
@@ -1215,7 +1215,7 @@ div.desc {
 
 
 .image-container {
-    width: 370px;
+    width: 200px;
     position: relative;
     display: inline-block;
 }
@@ -1273,5 +1273,46 @@ div.desc {
   .image-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
+}
+
+/* //////////images/////////// */
+.image-gallery {
+    width: 100%;
+    overflow-x: auto; /* Allows horizontal scrolling if needed */
+}
+
+.image-flex-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.image-item {
+    flex: 0 0 auto;
+    width: 100px; /* Adjust this value as needed */
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    flex-wrap: wrap;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.image-item:hover {
+    transform: scale(1.05);
+}
+
+.image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .image-item {
+        width: 150px; /* Smaller size for mobile devices */
+    }
 }
 </style>
