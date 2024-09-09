@@ -160,8 +160,8 @@ const items = (region) => [
         }
     },
 	{
-        label: 'Assign Regional Manager',
-        icon: 'bx bx-user fs-4 text-white',
+        label: 'Take/Use Stock',
+        icon: 'bx bx-minus-circle fs-4 text-white',
         command: () => {
             openModal('top', region)
         }
