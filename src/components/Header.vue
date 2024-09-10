@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="topbar d-flex align-items-center">
+    <div class="topbar d-flex align-items-center justify-content-between">
       <nav class="navbar navbar-expand-lg flex justify-content-between flex-direction-row w-100">
         <DarkThemeNavbarToggle/>
 
@@ -126,6 +126,7 @@ onMounted(() => {
 .search-bar-container {
   cursor: pointer;
   position: relative;
+  max-width: 1100px;
 }
 
 .custom-width-70 {
@@ -155,7 +156,7 @@ html.dark-theme .input-group-text {
 }
 
 .logo-container {
-  flex-grow: 1;
+  /* flex-grow: 1; */
   display: flex;
   justify-content: center;
 }
