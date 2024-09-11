@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { useWarehouse } from '@/stores/warehouse';
-import Popover from 'primevue/popover';
+import { useAuth } from '@/stores/auth';
 import InputText from 'primevue/inputtext';
 import { reactive } from 'vue';
 import InputNumber from 'primevue/inputnumber';
@@ -19,8 +19,11 @@ import Avatar from 'primevue/avatar';
 import Drawer from 'primevue/drawer';
 import Image from 'primevue/image';
 import SplitButton from 'primevue/splitbutton';
+import CustomApex from './CustomApex.vue';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+const authStore = useAuth();
+const user = JSON.parse(authStore.user);
 
 const route = useRoute();
 const warehouseStore = useWarehouse();
@@ -36,6 +39,8 @@ const searchInput = ref('');
 const merchendiseList = ref([]);
 const brandings = ref([]);
 const visible = ref(false);
+const editVisible = ref(false);
+const stockMovementVisible = ref(false);
 const showFilePreview = ref(true);
 
 
@@ -66,16 +71,12 @@ const onUnitChange = (event) => {
 
 const getStock = () => {
 	stock.getStockByUnit(unitId.value).then((response) => {
-		console.log(response.data);
 		stockList.value = response.data;
 		merchendiseList.value = response.data?.filter((stock) => stock.type === 'MERCH');
 		brandings.value = response.data?.filter((stock) => stock.type === 'BRANDING');
 	});
 }
 
-const toggle = (event) => {
-    op.value.toggle(event);
-}
 
 const stockForm = reactive({
     description: '',
@@ -91,6 +92,9 @@ const stockRules = {
 };
 const stockV$ = useVuelidate(stockRules, stockForm);
 const selectedFile = ref(null);
+const config = {
+      useMultipartFormData: true // Add this flag to the request config
+    };
 const submitStock = async () => {
 	const isFormValid = await stockV$.value.$validate();
     if (!isFormValid) {return;}
@@ -102,10 +106,7 @@ const submitStock = async () => {
 		formData.append('quantity', stockForm.quantity);
 		formData.append('type', stockForm.type);
 		formData.append('unit', stockForm.unit);
-
-		const config = {
-      useMultipartFormData: true // Add this flag to the request config
-    };
+		
 
         await stock.addStock(formData, config);
 		visible.value = false;
@@ -151,26 +152,50 @@ const viewStockImagePreview = (model) => {
 	stockImagePreview.value = envPath + model?.stockImage ;
 }
 
-const items = (region) => [
+const editedStock = ref(null);
+const editForm = reactive({
+    description: '',
+    quantity: null,
+    type: '',
+	unit: null
+});
+const editStockRules = { 
+    description: { required },
+    quantity: { required },
+    type: { required },
+};
+const editStockV$ = useVuelidate(editStockRules, editForm);
+const openEditModal = (stock) => {
+	editedStock.value = null;//resetting the value just in case
+	editedStock.value = stock;
+	editForm.id = stock.id;
+	editForm.description = stock.description;
+	editForm.quantity = stock.quantity;
+	editForm.type = stock.type;
+	editForm.unit = stock.unit;
+	editVisible.value = true
+}
+
+
+
+
+const toggle = (event) => {
+    op.value.toggle(event);
+}
+
+const items = (stock) => [
     {
         label: 'Edit',
-        icon: 'bx bx-bullseye fs-4 text-white',
+        icon: 'bx bx-edit fs-4 text-white',
         command: () => {
-            openModal('top', region)
+			openEditModal( stock)
         }
     },
 	{
         label: 'Take/Use Stock',
         icon: 'bx bx-minus-circle fs-4 text-white',
         command: () => {
-            openModal('top', region)
-        }
-    },
-    {
-        label: 'Add Warehouse',
-        icon: 'bx bx-building-house fs-4 text-white',
-        command: () => {
-            openWarehouseModal(region)
+            openStockMovementModal(stock);
         }
     },
     {
@@ -186,6 +211,57 @@ const editBranding = (branding) => {
     brandings.value.forEach(c => c.isEditing = false);
     branding.isEditing = true;
 };
+
+
+const stockMovement = ref(null);
+const stockMovementForm = reactive({
+    movementType: '',
+	stock: stockMovement?.id,
+	staff: user?.activeUserId,
+	quantity: 0,
+});
+const stockMovementRules = { 
+    movementType: { required },
+    quantity: { required },
+};
+const stockMvV$ = useVuelidate(stockMovementRules, stockMovementForm);
+const openStockMovementModal = (stock) => {
+	stockMovement.value = stock
+	stockMovementForm.stock = stock.id;
+	stockMovementVisible.value = true
+}
+
+const submitStockMovement = async () => {	
+	const isFormValid = await stockMvV$.value.$validate();
+    if (!isFormValid) {return;}
+	stock.stockMovement(stockMovementForm).then(response => {
+		toaster.success("Stock updated successfully");
+		getStock();
+		stockMovementVisible.value = false;
+	}).catch(error => {
+		toaster.error("Error updating stock");
+		console.log(error);
+	})
+};
+const updateStock = () => {
+	const formData = new FormData();
+	formData.append('stockImage', selectedFile.value);
+	formData.append('description', editForm.description);
+	formData.append('quantity', editForm.quantity);
+	formData.append('type', editForm.type);
+	formData.append('unit', editForm.unit);
+
+	
+	stock.updateStock(editForm.id,formData, config).then(response => {
+		toaster.success("Stock updated successfully");
+		getStock();
+		editVisible.value = false;
+	}).catch(error => {
+		toaster.error("Error updating stock");
+		console.log(error);
+	})
+};
+
 
 </script>
 
@@ -249,7 +325,7 @@ const editBranding = (branding) => {
 				
 
 				 <div class="row mt-4 ">
-					<div class="col-lg-1"></div>
+					<!-- <div class="col-lg-1"></div> -->
 					<div class="col-12 col-lg-3">
 						<div class="card radius-10">
 							 <div class="card-body">
@@ -259,11 +335,11 @@ const editBranding = (branding) => {
 									<p class="text-light"><strong>Days since last check:</strong> 15 Days</p>
 									<p class="text-light"><strong>Checked by:</strong> Tumelo Moloka</p>
 								  </div>
-							
-								  <div class="card card-custom">
+								  
+								  <div class=" card-custom">
 									<h5>Inventory accuracy</h5>
 									<div class="chart-container">
-									  <canvas id="inventoryAccuracyChart"></canvas>
+										<CustomApex />
 									</div>
 								  </div>
 							 </div>
@@ -271,7 +347,7 @@ const editBranding = (branding) => {
 					</div>
 
 
-					<div class="col-12 col-lg-6 d-flex">
+					<div class="col-12 col-lg-9 d-flex">
 						<div class="card radius-10 w-100">
 						  <div class="card-header">
 							  <div class="d-flex align-items-center">
@@ -301,23 +377,19 @@ const editBranding = (branding) => {
 										<td>
 										  <Avatar  @click="viewStockImagePreview(branding)" 
 										  :image="branding.stockImage ? envPath + branding.stockImage : `https://ui-avatars.com/api/?name=${ branding.description }&background=4263C5`" 
-										   class="mr-2 cursor-pointer" size="large" shape="circle" />
+										   class="mr-2 cursor-pointer"  shape="circle" />
 										
 										</td>
-								   <td v-if="!branding.isEditing">{{branding.description}}</td>
-								   <td v-else>
-									<input style="width: 60%" v-focus type="text" v-model="branding.description" @blur="update(branding)" @keyup.enter="update(branding)" class="no-border-input"/>
-								</td>
+								   <td >{{branding.description}}</td>
+								
 								   <td>{{branding.quantity}}</td>
 								   <td>
-									<SplitButton v-if="!branding.isEditing" @click="editBranding(branding)" class="text-white" label="" 
-													icon="bx bx-edit fs-4" 
+									<SplitButton  @click="editBranding(branding)" class="text-white" label="" 
+													icon="bx bx-cog fs-4" 
 													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
 													:model="items(branding)"/>
-									<button v-else @click="update(branding)" class="btn btn-sm maz-gradient-btn" type="button">
-										<i class='bx bx-check text-success'></i>
-									</button>  
 								   </td>
+								 
 								  </tr>
 								  <tr v-else ><td colspan="7" class="text-center text-danger">No results found.</td></tr>
 			   
@@ -340,14 +412,20 @@ const editBranding = (branding) => {
 								  </thead>
 								  <tbody>
 									<tr v-if="merchendiseList?.length > 0" v-for="merch in merchendiseList" class="maz-table-row-height">
-								   <td>
-									<div class="card flex justify-center">
-										<Avatar image="/images/avatar/amyelsner.png" class="mr-2" size="xlarge" shape="circle" />
-									</div>
-								   </td>
+										<td>
+											<Avatar  @click="viewStockImagePreview(merch)" 
+											:image="merch.stockImage ? envPath + merch.stockImage : `https://ui-avatars.com/api/?name=${ merch.description }&background=4263C5`" 
+											 class="mr-2 cursor-pointer"  shape="circle" />
+										  
+										  </td>
 								   <td>{{merch.description}}</td>
 								   <td>{{merch.quantity}}</td>
-								   <td></td>
+								   <td>
+									<SplitButton  @click="editBranding(merch)" class="text-white" label="" 
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="items(merch)"/>
+								   </td>
 								  </tr>
 			   
 								  <tr v-else ><td colspan="7" class="text-center text-danger">No results found.</td></tr>
@@ -363,6 +441,106 @@ const editBranding = (branding) => {
 
 			</div>
 		</div>
+
+		<Dialog v-model:visible="stockMovementVisible" position="top" modal header="Move Stock" style="width: 30rem">
+               
+			<form @submit.prevent="submitStockMovement" class="row mt-3">
+				<div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<label for="input1" class="d-flex form-label">Stock type</label>
+						   <select v-model="stockMovementForm.movementType" class="form-control">
+							   <option :value="''" disabled :selected="true" >Choose stock type</option>
+							   <option value="IN">IN</option>
+							   <option value="OUT">OUT</option>
+						   </select>
+						   <div class="input-errors" v-for="error of stockMvV$.movementType.$errors" :key="error.$uid">
+						   <div class="text-danger">Stock type is required</div>
+						</div>
+				</div>                        
+				</div>
+
+
+				<div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<label for="input1" class="d-flex form-label">Quantity
+						</label>
+						   <InputNumber inputId="minmax" :min="0" v-model="stockMovementForm.quantity" />
+						   <div class="input-errors" v-for="error of stockMvV$.quantity.$errors" :key="error.$uid">
+						   <div class="text-danger">Quantity is required</div>
+						</div>
+				</div>                        
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
+					<div v-if="loading" class="spinner-border text-white" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+					Update
+				</button>
+				</div>
+				
+			</form>
+        </Dialog>
+
+		<Dialog v-model:visible="editVisible" position="top" modal header="Update Stock" style="width: 30rem">
+               
+			<form @submit.prevent="updateStock" class="row mt-3">
+				<div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<label for="input1" class="form-label">Description</label>
+						   <InputText type="text" v-model="editForm.description" />
+						   <div class="input-errors" v-for="error of editStockV$.description.$errors" :key="error.$uid">
+						   <div class="text-danger">Description is required</div>
+					</div>
+				</div>                        
+				</div>
+
+
+				<div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<label for="input1" class="d-flex form-label">Quantity
+						</label>
+						   <InputNumber inputId="minmax" :min="0" v-model="editForm.quantity" />
+						   <div class="input-errors" v-for="error of editStockV$.quantity.$errors" :key="error.$uid">
+						   <div class="text-danger">Quantity is required</div>
+						</div>
+				</div>                        
+				</div>
+				<div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<label for="input1" class="d-flex form-label">Stock type</label>
+						   <select v-model="editForm.type" class="form-control">
+							   <option :value="''" disabled :selected="true" >Choose stock type</option>
+							   <option value="BRANDING">Branding</option>
+							   <option value="MERCH">Merchandising</option>
+						   </select>
+						   <div class="input-errors" v-for="error of editStockV$.type.$errors" :key="error.$uid">
+						   <div class="text-danger">Stock type is required</div>
+						</div>
+				</div>                        
+				</div>
+				 <div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<FileUploadGeneric 
+						:showFilePreview="showFilePreview" 
+						accept="image/*" 
+						fileType="image" 
+						@fileUploaded="onFileChange"
+							@fileDropped="onfileDropped"
+						/>
+				</div>                        
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
+					<div v-if="loading" class="spinner-border text-white" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+					Update
+				</button>
+				</div>
+				
+			</form>
+        </Dialog>
 		<Dialog v-model:visible="visible" position="top" modal :header="`Add Stock to ${unitName}`" style="width: 30rem">
                
 			<form @submit.prevent="submitStock" class="row mt-3">
