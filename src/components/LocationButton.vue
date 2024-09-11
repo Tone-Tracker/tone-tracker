@@ -1,5 +1,5 @@
 <template>
-    <button @click="getLocation" :disabled="isLoading" class="rounded btn p-0  btn-sm rounded-5"> 
+    <button @click="getLocation" :disabled="isLoading" class="rounded btn p-0  btn-sm rounded-5 maz-gradient-btn"> 
       {{ isLoading ? 'Loading...' : 'Check in' }}
     </button>
     

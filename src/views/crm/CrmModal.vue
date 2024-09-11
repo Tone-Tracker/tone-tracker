@@ -91,7 +91,7 @@ const onSubmit = async () => {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{ modalData.id ? 'Update User' : 'Create User' }}</h5>
-          <button type="button" class="btn-close" @click="emit('closeModal')" aria-label="Close"></button>
+          <button type="button" class="btn-close maz-gradient-btn" @click="emit('closeModal')" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <!-- Form Fields -->
@@ -144,7 +144,7 @@ const onSubmit = async () => {
           </div>
           
           <div class="mt-4">
-            <button @click="onSubmit" class="btn btn-primary">
+            <button @click="onSubmit" class="btn btn-primary maz-gradient-btn">
               <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               {{ modalData.id ? 'Update' : 'Submit' }}
             </button>

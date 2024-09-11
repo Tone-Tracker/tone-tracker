@@ -125,7 +125,7 @@ const formatSize = (bytes) => {
                 <span>&#x2713;</span>
               </div> -->
               <div>
-                <div><button class="btn btn-danger rounded-0 w-100"><i class='bx bx-trash'></i><span class="mt-2">Remove</span></button></div>
+                <div><button class="btn btn-danger rounded-0 w-100 maz-gradient-btn"><i class='bx bx-trash'></i><span class="mt-2">Remove</span></button></div>
               </div>
             </div>
           </div>
@@ -138,8 +138,8 @@ const formatSize = (bytes) => {
                 <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
                     <div class="d-flex flex-wrap justify-content-between align-items-center flex-grow-1 gap-4">
                         <div class="d-flex gap-2">
-                            <Button @click="chooseCallback()" icon="bx bx-images" class="btn btn-outline-secondary text-white rounded"></Button>
-                            <Button @click="clearCallback()" icon="bx bx-x" class="btn btn-outline-danger rounded" :disabled="!files || files.length === 0"></Button>
+                            <Button @click="chooseCallback()" icon="bx bx-images" class="btn btn-outline-secondary text-white rounded maz-gradient-btn"></Button>
+                            <Button @click="clearCallback()" icon="bx bx-x" class="btn btn-outline-danger rounded maz-gradient-btn" :disabled="!files || files.length === 0"></Button>
                         </div>
                     </div>
                 </template>
@@ -153,7 +153,7 @@ const formatSize = (bytes) => {
                                     </div>
                                     <span class="font-weight-bold text-truncate w-75">{{ file.name }}</span>
                                     <div>{{ formatSize(file.size) }}</div>
-                                    <Button icon="bx bx-x" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" class="btn btn-outline-danger rounded" />
+                                    <Button icon="bx bx-x" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" class="btn btn-outline-danger rounded maz-gradient-btn" />
                                 </div>
                             </div>
                         </div>
@@ -167,7 +167,7 @@ const formatSize = (bytes) => {
                                     <span class="font-weight-bold text-truncate w-75">{{ file.name }}</span>
                                     <div>{{ formatSize(file.size) }}</div>
                                     <Badge value="Completed" class="mt-4 badge bg-success" />
-                                    <Button icon="bx bx-x" @click="removeUploadedFileCallback(index)" class="btn btn-outline-danger rounded" />
+                                    <Button icon="bx bx-x" @click="removeUploadedFileCallback(index)" class="btn btn-outline-danger rounded maz-gradient-btn" />
                                 </div>
                             </div>
                         </div>

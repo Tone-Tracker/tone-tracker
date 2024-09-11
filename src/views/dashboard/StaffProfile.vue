@@ -188,7 +188,6 @@ Date: 04/06/2024
                         </div>
                        <!-- fgfgfg -->
                     </div>
-
                     <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12" v-if="isMyProfile">
                         <div class="card">
                             <div class="card-body p-4">
@@ -237,8 +236,7 @@ Date: 04/06/2024
 								</div>
                         </div>
                        <!-- fgfgfg -->
-                    </div>
-                    
+                    </div>               
                 </div>
 
             </div>
