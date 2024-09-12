@@ -80,12 +80,12 @@ const { textarea, input } = useTextareaAutosize()
                                     <div class="tab-pane fade show active" id="pills-Chats">
                                         <div class="p-3">
                                             <div class="meeting-button d-flex justify-content-between">
-                                                <div class="dropdown"> <a href="#" class="btn btn-white btn-sm radius-30 dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown"><i class='bx bx-video me-2'></i>Meet Now<i class='bx bxs-chevron-down ms-2'></i></a>
+                                                <div class="dropdown"> <a href="#" class="btn btn-white btn-sm radius-30 dropdown-toggle dropdown-toggle-nocaret maz-gradient-btn" data-bs-toggle="dropdown"><i class='bx bx-video me-2'></i>Meet Now<i class='bx bxs-chevron-down ms-2'></i></a>
                                                     <div class="dropdown-menu"> <a class="dropdown-item" href="#">Host a meeting</a>
                                                         <a class="dropdown-item" href="#">Join a meeting</a>
                                                     </div>
                                                 </div>
-                                                <div class="dropdown"> <a href="#" class="btn btn-white btn-sm radius-30 dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" data-display="static"><i class='bx bxs-edit me-2'></i>New Chat<i class='bx bxs-chevron-down ms-2'></i></a>
+                                                <div class="dropdown"> <a href="#" class="btn btn-white btn-sm radius-30 dropdown-toggle dropdown-toggle-nocaret maz-gradient-btn" data-bs-toggle="dropdown" data-display="static"><i class='bx bxs-edit me-2'></i>New Chat<i class='bx bxs-chevron-down ms-2'></i></a>
                                                     <div class="dropdown-menu dropdown-menu-right">	<a class="dropdown-item" href="#">New Group Chat</a>
                                                         <a class="dropdown-item" href="#">New Moderated Group</a>
                                                         <a class="dropdown-item" href="#">New Chat</a>

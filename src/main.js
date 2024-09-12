@@ -9,6 +9,8 @@ import $ from 'jquery';
 
 import './assets/css/app.css';
 
+import VueApexCharts from "vue3-apexcharts";
+
 
 // import './assets/plugins/simplebar/css/simplebar.css';
 // import './assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css'
@@ -46,6 +48,7 @@ app.use(VueFire, {
   })
 app.use(createPinia())
 app.use(router)
+app.use(VueApexCharts)
 app.use(PrimeVue, {
   theme: {
       preset: Aura,

@@ -30,7 +30,7 @@ const visible = navStore.isNavVisible;
 </script>
 
 <template>
-  <div class="sidebar-wrapper toggled d-flex" data-simplebar="init">
+  <div class="sidebar-wrapper toggled d-flex container" data-simplebar="init">
     <div
       class="simplebar-wrapper"
       style="margin: 0px; width: auto; background: #1c1c1c"

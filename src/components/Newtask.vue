@@ -7,7 +7,7 @@
       <div class="table-container-colour p-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h5>Main tasks to set up</h5>
-          <button class="btn btn-primary" @click="showModal = true">Add New Task</button>
+          <button class="btn btn-primary maz-gradient-btn" @click="showModal = true">Add New Task</button>
         </div>
         <table class="table table-dark table-bordered">
           <thead>

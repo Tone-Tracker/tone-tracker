@@ -77,7 +77,7 @@ export default {
                     <form @submit.prevent="onSubmit" class="row g-3">
                       <div class="mb-3 col-12">
                         <label for="inputEmailAddress" class="form-label">Email Address</label>
-                        <input v-model="form.email" type="email" class="form-control custom-input" id="inputEmailAddress">
+                        <input v-model="form.email" type="email" class="form-control custom-input" id="inputEmailAddress" autofocus>
                         <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
                           <div class="text-danger">{{ error.$message }}</div>
                         </div>

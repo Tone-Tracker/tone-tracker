@@ -80,7 +80,7 @@ const hideModal = () => {
             <div class="table-container-colour p-5">
               <div class="d-flex justify-content-between">
                 <h5>Database</h5>
-                <button class="btn btn-primary" @click="toggleModal">Add New User</button>
+                <button class="btn btn-primary maz-gradient-btn" @click="toggleModal">Add New User</button>
               </div>
               <table class="table table-dark table-bordered">
                 <thead>
