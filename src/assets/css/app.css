@@ -15,9 +15,9 @@ File: app.css
 }
 
 .no-border-input {
-    border: none;
+	border: none;
 	color: #000;
-    outline: none;
+	outline: none;
 	background: #fff
 }
 
@@ -127,10 +127,6 @@ body {
 	border-style: solid;
 	border-image: linear-gradient(to right, #9A3AB1, #117AD1) 1;
 }
-
-
-
-
 
 
 .maz-gradient-btn {
@@ -5129,5 +5125,12 @@ form select.error:focus {
 	.page-content {
 		margin-left: 10%;
 		padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+	}
+}
+
+@media only screen and (max-width: 1440px) {
+	.page-content {
+		margin-left: 10%;
+		padding: 1.5rem 1.5rem 1.5rem 10.5rem !important; 
 	}
 }
