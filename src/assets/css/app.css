@@ -4670,6 +4670,11 @@ form select.error:focus {
 }
 
 
+.accordion-body {
+    padding: 0px;
+}
+
+
 
 
 
