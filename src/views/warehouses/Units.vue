@@ -159,22 +159,23 @@ const viewStockImagePreview = (model) => {
 const editedStock = ref(null);
 const editForm = reactive({
     description: '',
-    quantity: null,
+    quantityInUnit: null,
     type: '',
 	unit: null
 });
 const editStockRules = { 
     description: { required },
-    quantity: { required },
+    quantityInUnit: { required },
     type: { required },
 };
 const editStockV$ = useVuelidate(editStockRules, editForm);
 const openEditModal = (stock) => {
+	console.log(stock);
 	editedStock.value = null;//resetting the value just in case
 	editedStock.value = stock;
 	editForm.id = stock.id;
 	editForm.description = stock.description;
-	editForm.quantity = stock.quantity;
+	editForm.quantityInUnit = stock.quantityInUnit;
 	editForm.type = stock.type;
 	editForm.unit = stock.unit;
 	editVisible.value = true
@@ -251,18 +252,22 @@ const updateStock = () => {
 	const formData = new FormData();
 	formData.append('stockImage', selectedFile.value);
 	formData.append('description', editForm.description);
-	formData.append('quantity', editForm.quantity);
+	formData.append('quantityInUnit', editForm.quantityInUnit);
 	formData.append('type', editForm.type);
 	formData.append('unit', editForm.unit);
-
+loading.value = true;
 	
 	stock.updateStock(editForm.id,formData, config).then(response => {
 		toaster.success("Stock updated successfully");
 		getStock();
 		editVisible.value = false;
+		loading.value = false;
 	}).catch(error => {
+		loading.value = false;
 		toaster.error("Error updating stock");
 		console.log(error);
+	}).finally(() => {
+		loading.value = false;
 	})
 };
 
@@ -292,8 +297,8 @@ const updateStock = () => {
 						  <div class="content">
 							<strong>Region:</strong> Gauteng Central<br>
 							<strong>Number of storage units:</strong> {{ warehouse?.numberOfUnits }} unit(s)<br>
-							<strong>Capacity:</strong> 50%<br>
-							<strong>Number of items:</strong> 1500
+							<strong>Capacity:</strong> {{ warehouse?.capacity }}%<br>
+							<strong>Number of items:</strong> {{ warehouse?.numberOfItems }}
 						  </div>
 						</div>
 					  </div>
@@ -386,7 +391,7 @@ const updateStock = () => {
 										</td>
 								   <td >{{branding.description}}</td>
 								
-								   <td>{{branding.quantity}}</td>
+								   <td>{{branding.quantityInUnit}}</td>
 								   <td>
 									<SplitButton  @click="editBranding(branding)" class="text-white" label="" 
 													icon="bx bx-cog fs-4" 
@@ -423,7 +428,7 @@ const updateStock = () => {
 										  
 										  </td>
 								   <td>{{merch.description}}</td>
-								   <td>{{merch.quantity}}</td>
+								   <td>{{merch.quantityInUnit}}</td>
 								   <td>
 									<SplitButton  @click="editBranding(merch)" class="text-white" label="" 
 													icon="bx bx-cog fs-4" 
@@ -500,16 +505,6 @@ const updateStock = () => {
 				</div>
 
 
-				<div class="col-md-12">
-					<div class="card my-card flex justify-center">
-						<label for="input1" class="d-flex form-label">Quantity
-						</label>
-						   <InputNumber inputId="minmax" :min="0" v-model="editForm.quantity" />
-						   <div class="input-errors" v-for="error of editStockV$.quantity.$errors" :key="error.$uid">
-						   <div class="text-danger">Quantity is required</div>
-						</div>
-				</div>                        
-				</div>
 				<div class="col-md-12">
 					<div class="card my-card flex justify-center">
 						<label for="input1" class="d-flex form-label">Stock type</label>
