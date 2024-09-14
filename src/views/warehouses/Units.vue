@@ -203,13 +203,13 @@ const items = (stock) => [
             openStockMovementModal(stock);
         }
     },
-    {
-        label: 'Delete',
-        icon: 'bx bx-trash text-danger fs-4 ',
-        command: () => {
-            deleteRecord(region)
-        }
-    }
+    // {
+    //     label: 'Delete',
+    //     icon: 'bx bx-trash text-danger fs-4 ',
+    //     command: () => {
+    //         deleteRecord(region)
+    //     }
+    // }
 ];
 
 const editBranding = (branding) => {
@@ -250,7 +250,7 @@ const submitStockMovement = async () => {
 };
 const updateStock = () => {
 	const formData = new FormData();
-	formData.append('stockImage', selectedFile.value);
+	formData.append('file', selectedFile.value);
 	formData.append('description', editForm.description);
 	formData.append('quantityInUnit', editForm.quantityInUnit);
 	formData.append('type', editForm.type);
