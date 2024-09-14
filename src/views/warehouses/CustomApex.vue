@@ -1,14 +1,26 @@
 <template>
-    <div>
-        <apexchart type="radialBar" :options="chartOptions" :series="series" height="350" ></apexchart> 
-    </div>
+  <div>
+    <apexchart type="radialBar" :options="chartOptions" :series="series" height="350" ></apexchart> 
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+const capacity = ref(null);
+const series = ref([0]);
 
-// Chart Data and Options
-const series = ref([70]); // The percentage value (70%)
+
+const props = defineProps({
+  viewedUnit: Object
+})
+watch(() => props.viewedUnit, (newVal) => {
+  capacity.value = newVal?.capacity;
+  // Chart Data and Options
+  series.value = [capacity.value];
+}, { immediate: true });
+
+
+
 const chartOptions = ref({
   chart: {
     type: 'radialBar',
@@ -48,24 +60,24 @@ const chartOptions = ref({
           show: true,
         },
       },
+      stroke: {
+        lineCap: 'round', // This makes the ends of the chart rounded
+      },
     },
   },
-  labels: ['Cricket'],
+  labels: [''],
 });
 </script>
+
 <style scoped>
-.chart-container {
-  min-height: 350px; /* Ensure the container has height */
-  min-width: 100%;   /* Adjust width as needed */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* You can adjust the styles as needed */
+.apexcharts-svg svg {
+  display: block !important;
+  max-width: 21.8rem !important;
+  width: 427px !important;
 }
-.apexcharts-svg {
-    display: block !important;
-  }
-  
-  .apexcharts-inner {
-    display: flex !important;
-  }
+
+.apexcharts-inner {
+  display: flex !important;
+}
 </style>

@@ -60,14 +60,18 @@ const getWarehouse = () => {
 	});
 }
 const unitName = ref(null);
+const viewedUnit = ref(null);
 const onUnitChange = (event) => {
 	unitId.value = null;     // reset the unit
 	unitId.value = event.target.value;
 	stockForm.unit = event.target.value;
 	unitName.value = warehouse.value?.unitsList?.filter((unit) => unit.id == event.target.value)[0]?.name;
-	console.log(unitName.value);
+	viewedUnit.value= null;
+	viewedUnit.value = warehouse.value?.unitsList?.filter((unit) => unit.id == event.target.value)[0];
+	console.log(viewedUnit.value);
 	getStock();
 }
+
 
 const getStock = () => {
 	stock.getStockByUnit(unitId.value).then((response) => {
@@ -331,7 +335,7 @@ const updateStock = () => {
 							 <div class="card-body">
 								<div class="card card-custom">
 									<h5>Stock check</h5>
-									<p class="text-light"><strong>Storage Capacity:</strong> 50%</p>
+									<p class="text-light"><strong>Storage Capacity:</strong> {{ viewedUnit?.capacity }}%</p>
 									<!-- <p class="text-light"><strong>Days since last check:</strong> 15 Days</p>
 									<p class="text-light"><strong>Checked by:</strong> Tumelo Moloka</p> -->
 								  </div>
@@ -339,7 +343,7 @@ const updateStock = () => {
 								  <div class=" card-custom">
 									<h5>Inventory accuracy</h5>
 									<div class="chart-container">
-										<CustomApex />
+										<CustomApex v-show="unitId" :viewedUnit="viewedUnit" />
 									</div>
 								  </div>
 							 </div>
