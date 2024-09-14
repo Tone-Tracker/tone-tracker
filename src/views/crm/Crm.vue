@@ -100,7 +100,7 @@ const toggleDropdown = () => {
                         </div>
 
                     </div>
-                    <table class="table table-dark table-bordered table-hover">
+                    <table class="table table-striped table-bordered ">
                       <thead>
                         <tr class="table-dark-color">
                           <th>Contact Name</th>
