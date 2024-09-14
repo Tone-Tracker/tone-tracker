@@ -94,6 +94,8 @@ const toggleDropdown = () => {
                                 class="filter-icon" @click="toggleDropdown" />
                             <div ref="showDropdown" class="filter-dropdown-content">
                                 <a v-for="region in regions" :key="region.id" href="#">{{ region.name }}</a>
+                                <hr/>
+                                <a href="#">Clear Filter</a>
                             </div>
                         </div>
 
