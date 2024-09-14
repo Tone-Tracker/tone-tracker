@@ -332,8 +332,8 @@ const updateStock = () => {
 								<div class="card card-custom">
 									<h5>Stock check</h5>
 									<p class="text-light"><strong>Storage Capacity:</strong> 50%</p>
-									<p class="text-light"><strong>Days since last check:</strong> 15 Days</p>
-									<p class="text-light"><strong>Checked by:</strong> Tumelo Moloka</p>
+									<!-- <p class="text-light"><strong>Days since last check:</strong> 15 Days</p>
+									<p class="text-light"><strong>Checked by:</strong> Tumelo Moloka</p> -->
 								  </div>
 								  
 								  <div class=" card-custom">
