@@ -2,10 +2,10 @@
   <header>
     <div class="topbar d-flex align-items-center justify-content-between">
       <nav class="navbar navbar-expand-lg flex justify-content-between flex-direction-row w-100">
-        <DarkThemeNavbarToggle/>
+        <DarkThemeNavbarToggle />
 
         <div class="logo-container">
-          <img class="logo" src="/src/assets/images/logo/white-logo.png" alt="Logo">
+          <img class="logo" src="/src/assets/images/logo/white-logo.png" alt="Logo" />
         </div>
 
         <div class="search-bar-container d-none text-center d-lg-flex w-100 justify-content-center">
@@ -15,18 +15,22 @@
               type="text"
               class="form-control"
               aria-label="Text input with dropdown suggestions"
-              placeholder="Search For Projects..." 
+              placeholder="Search For Activation..."
               v-model="query"
               @input="onInput"
+              @keydown.enter="selectFirstSuggestion"
             />
-            <button class="btn btn-outline-secondary w-20 maz-gradient-btn">Search</button>
+            <button class="btn btn-outline-secondary w-20 maz-gradient-btn" @click="search">Search</button>
+
             <ul v-if="filteredSuggestions.length" class="suggestions-list">
               <li
                 v-for="(suggestion, index) in filteredSuggestions"
                 :key="index"
                 @click="selectSuggestion(suggestion)"
               >
-                {{ suggestion }}
+              <router-link :to="`/report?activation=${suggestion.id}`">
+                {{ suggestion.name }} 
+              </router-link>
               </li>
             </ul>
           </div>
@@ -34,7 +38,7 @@
 
         <div class="user-box dropdown px-3">
           <a class="d-flex align-items-center nav-link gap-3" href="#" role="button">
-            <img src="/src/assets/images/logo/Ellipse.png" class="user-img" alt="user avatar">
+            <img src="/src/assets/images/logo/Ellipse.png" class="user-img" alt="user avatar" />
           </a>
         </div>
       </nav>
@@ -47,39 +51,63 @@ import { ref, onMounted } from 'vue';
 import DarkThemeNavbarToggle from './DarkThemeNavbarToggle.vue';
 import axios from 'axios';
 
-
 const query = ref('');
 const allActivations = ref([]);
 const filteredSuggestions = ref([]);
 
+let debounceTimeout = null; // To hold the debounce timer
+
+// Fetch all activations from the API
 const fetchAllActivations = async () => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/activations`);
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/activations/admins`);
     allActivations.value = response.data;
   } catch (error) {
     console.error('Error fetching all activations:', error);
   }
 };
 
+// Debounced search function
 const onInput = () => {
-  if (query.value.length > 0) {
-    filteredSuggestions.value = allActivations.value.filter(activation =>
-      activation.toLowerCase().includes(query.value.toLowerCase())
-    );
-  } else {
-    filteredSuggestions.value = [];
-  }
+  clearTimeout(debounceTimeout); // Clear the previous debounce timer
+  debounceTimeout = setTimeout(() => {
+    if (query.value.length > 0) {
+      // Filter based on the activation 'name' property
+      filteredSuggestions.value = allActivations.value.filter(activation =>
+        activation.name?.toLowerCase().includes(query.value.toLowerCase())
+      );
+    } else {
+      filteredSuggestions.value = [];
+    }
+  }, 300); // 300ms debounce delay
 };
 
+// Select a suggestion when clicked
 const selectSuggestion = (suggestion) => {
-  query.value = suggestion;
+  query.value = suggestion.name; // Assuming 'name' is the desired field
   filteredSuggestions.value = [];
 };
 
+// Select the first suggestion when the user presses "Enter"
+const selectFirstSuggestion = () => {
+  if (filteredSuggestions.value.length > 0) {
+    selectSuggestion(filteredSuggestions.value[0]);
+  }
+};
+
+// Perform the search (e.g., handle form submission or API call)
+const search = () => {
+  // Implement the logic to handle the actual search
+  console.log('Search initiated with query:', query.value);
+};
+
+// Fetch activations when the component is mounted
 onMounted(() => {
-  //fetchAllActivations();
+  fetchAllActivations();
 });
 </script>
+
+
 
 
 

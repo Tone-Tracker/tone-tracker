@@ -359,7 +359,7 @@ const toggle = (event, promoter) => {
 }
 
 function getRandomColor() {
-  // Generates a random color
+ 
   const colors = ['#FF5733', '#33C1FF', '#FF33A1', '#33FF57', '#FFC133', '#B833FF'];
   return colors[Math.floor(Math.random() * colors.length)];
 }
@@ -405,7 +405,8 @@ function getRandomColor() {
   <div v-for="promoter in promoters" :key="promoter.id" class="col-md-3">
     <div class="gallery card w-100">
       <!-- Promoter Name -->
-      <div class="asc py-3">{{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
+      <div class="asc py-3">
+        {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
 
       <!-- Promoter Image or Placeholder -->
       <a :href="'/profile/' + promoter.id" class="">
