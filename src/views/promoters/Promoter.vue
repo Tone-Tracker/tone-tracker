@@ -103,18 +103,23 @@ const onSubmit = async () => {
   }
 };
 
-const onUnitChange = (event) => {
-  const selectedGender = event.target.value.toLowerCase(); // Get the selected gender and convert to lowercase
-  
+
+const onGenderChange = (event) => {
+
+  let  selectedGender = null; 
+   selectedGender = event.target.value.toLowerCase();
+
   if (selectedGender === 'all') {
-    getAllPromoters(); // Reset to all promoters if 'all' is selected
+    getAllPromoters(); 
   } else {
+    
     promoters.value = promoters.value.filter((promoter) => {
-      const userGender = promoter.userDetails.gender?.toLowerCase(); // Assuming you have a gender field in userDetails
-      return userGender === selectedGender;
+    
+      return promoter.gender?.toLowerCase() === selectedGender.toLowerCase();
     });
   }
 };
+
 
 const onInput = () => {
   if (searchInput.value) {
@@ -386,11 +391,11 @@ function getRandomColor() {
             </div>
             <div class="row">
               <div class="col-lg-3 col-md-6">
-						<select @change="onUnitChange" class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
+						<select @change="onGenderChange" class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
 							<option  selected="selected" disabled>Filter by sex</option>
 							<option>all</option>
-              <option>Male</option>
-              <option>Female</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
 							
 						
 						</select>
