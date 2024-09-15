@@ -48,45 +48,17 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-2">Gauteng Central(GC)</td>
-												<td style="background-color: #A639B6;" class="text-center">To Be
-													Activated</td>
-												<td class="text-center table-dark-custom-2">45%</td>
-											</tr>
-
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-1">North Eastern Region (NER)</td>
-												<td style="background-color: #1E90D9;" class="text-center">Activated
+											<tr v-if="campaignData?.activations?.length > 0" v-for="activation in campaignData?.activations" :key="activation.id" class="maz-table-row-height">
+												<td class="table-dark-custom-2">{{activation?.name}}</td>
+												<td style="background-color: #A639B6;" class="text-center" 
+												:class="{ 'bg-activated': activation?.status === 'To Be Activated', 
+												 'bg-to-be-activated': activation?.status === 'Activated' }">
+													{{ activation?.status }}
 												</td>
-												<td class="text-center table-dark-custom-1">80%</td>
+												<td class="text-center table-dark-custom-2">{{ activation?.progress }}%</td>
 											</tr>
 
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-2">Eastern Region (ER)</td>
-												<td style="background-color: #A639B6;" class="text-center">To Be
-													Activated</td>
-												<td class="text-center table-dark-custom-2">22%</td>
-											</tr>
-
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-1">Southern Eastern Region (SR)</td>
-												<td style="background-color: #1E90D9; " class="text-center">Activated
-												</td>
-												<td class="text-center table-dark-custom-1">22%</td>
-											</tr>
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-2">Southern Western Region (WR)</td>
-												<td style="background-color: #A639B6;" class="text-center">To Be
-													Activated</td>
-												<td class="text-center table-dark-custom-2">12%</td>
-											</tr>
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-1">Southern Central Region (CR)</td>
-												<td style="background-color: #A639B6;" class="text-center">To Be
-													Activated</td>
-												<td class="text-center table-dark-custom-1">12%</td>
-											</tr>
+											
 										</tbody>
 									</table>
 								</div>
@@ -103,83 +75,16 @@
 				</div>
 
 				<div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
-					<div class="col">
+					<div class="col" v-if="campaignData?.activations?.length > 0" v-for="activation in campaignData?.activations" :key="activation.id">
 						<div class="card card-radius radius-10 maz-gradient-btn">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
 									<div>
-										<h4 class="my-1 text-white text-center">Report For Gauteng Central (GC)</h4>
+										<router-link :to="`/report?activation=${activation?.id}`">
+											<h4 class="my-1 text-white text-center">Report For {{activation?.name}}</h4>
+										</router-link>
 									</div>
 									<div class="text-white ms-auto font-35">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 class="my-1 text-white text-center">Report For North Eastern Region (NER)
-										</h4>
-									</div>
-									<div class="text-white ms-auto font-35">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 style="width: 80%" class="my-1 text-white text-center">Report For Eastern
-											Region (ER)</h4>
-									</div>
-									<div class="text-dark ms-auto font-35">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 class="my-1 text-center text-white">Report For Southern Eastern Region (SR)
-										</h4>
-									</div>
-									<div class="text-white ms-auto font-35">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 class="my-1 text-white text-center">Report For Southern Western Region (WR)
-										</h4>
-									</div>
-									<div class=" bg-white text-success ms-auto">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 class="my-1 text-white">Report For Southern Central Region (CR)</h4>
-									</div>
-									<div class=" bg-white text-white ms-auto">
 									</div>
 								</div>
 							</div>
@@ -196,6 +101,25 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
+import { onMounted, ref } from 'vue';
+import { useCampaignStore } from '@/stores/useCampaign';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const campaignId = ref(route.query.campaign);
+const campaign = useCampaignStore();
+
+const campaignData = ref(null);
+
+onMounted(() => {
+	getReport();
+})
+
+const getReport = () => {
+	campaign.getStatusReport(campaignId.value).then(function (response) {
+		campaignData.value = response.data;
+	})
+}
 </script>
 <style scoped>
 .status-icon {
@@ -277,5 +201,13 @@ html.dark-theme .widgets-icons {
 .table td {
 	border: none;
 	border-color: transparent;
+}
+
+.bg-activated{
+	background-color: #1E90D9 !important;
+}
+
+.bg-to-be-activated{
+	background-color: #A639B6 !important;
 }
 </style>
