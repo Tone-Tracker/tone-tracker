@@ -6,6 +6,7 @@ import useToaster from '@/composables/useToaster';
 import { useCrmStore } from '@/stores/crm';
 import CrmModal from './CrmModal.vue';
 import CRMChart from './CRMChart.vue';
+import { debounce } from '@/helpers/helpers';
 
 import { useRegion } from '@/stores/useRegion';
 import { onClickOutside } from '@vueuse/core';
@@ -18,6 +19,7 @@ let regions = ref([]);
 const crmStore = useCrmStore();
 const regionStore = useRegion();
 const toaster = useToaster();
+const uniqueActivations = ref([]);//for dropdown filter
 
 onMounted(() => {
   getAllUsers();
@@ -38,6 +40,14 @@ const getAllUsers = async () => {
   try {
     const response = await crmStore.getCrm();
     users.value = response.data.content;
+    console.log("users", users.value);
+    uniqueActivations.value = [
+  ...new Map(
+    users.value.map((user) => [user.activationName, { id: user.activation, activationName: user.activationName }])
+      ).values(),
+    ];
+
+    console.log("uniqueActivations", uniqueActivations.value);
   } catch (error) {
     toaster.error("Error fetching users");
     console.error(error);
@@ -76,6 +86,38 @@ onClickOutside(showDropdown, event => showDropdown.value.classList.remove('show'
 const toggleDropdown = () => {
     showDropdown.value.classList.toggle('show');
 };
+
+
+const searchInput = ref('');
+const filterByActivation = async (activation) => {
+  try {
+    if (searchInput.value === '' && activation === '') {
+      return getAllUsers(); // Function to get all users when search input is empty
+    } else {
+      showLoading.value = true;
+      
+      // Call the server to filter users based on activation status and search input
+      const response = await crmStore.crmFilterByActivation(searchInput.value, activation);
+      users.value = response.data.content;
+    }
+  } catch (error) {
+    toaster.error("Error fetching users");
+    console.error(error);
+  } finally {
+    showLoading.value = false;
+  }
+  toggleDropdown(); 
+};
+const debouncedFilterByActivation = debounce(filterByActivation, 500);
+const onSearchInput = (activation) => {
+  debouncedFilterByActivation(activation ? activation : ''); 
+};
+
+const clearFilter = () => {
+  searchInput.value = '';
+  getAllUsers();
+  toggleDropdown();
+}
 </script>
 
 <template>
@@ -85,7 +127,10 @@ const toggleDropdown = () => {
           <BreadCrumb title="CRM" icon="bx bxs-calculator" />
             <!-- Code here -->
             <div class="">
-                <div class="table-container-colour pl-5 mx-5">
+                <div class="table-container-colour pl-5 mx-5" style="margin-right: 5rem !important;">
+                  <div class="mx-4">
+                    <input type="text" class="form-control" placeholder="Search" v-model="searchInput" @input="onSearchInput" style="width: 12rem;">
+                  </div>
                     <div class="d-flex justify-content-between">
                         <h5>Database</h5>
                         <div class="filter-dropdown">
@@ -93,9 +138,10 @@ const toggleDropdown = () => {
                             <img src="https://img.icons8.com/ios-filled/20/ffffff/filter.png" alt="Filter Icon"
                                 class="filter-icon" @click="toggleDropdown" />
                             <div ref="showDropdown" class="filter-dropdown-content">
-                                <a v-for="region in regions" :key="region.id" href="#">{{ region.name }}</a>
+                                <a class="cursor-pointer" v-for="activation in uniqueActivations" :key="activation.id" 
+                                 @click="filterByActivation(activation?.id)">{{ activation.activationName }}</a>
                                 <hr/>
-                                <a href="#">Clear Filter</a>
+                                <a class="cursor-pointer" @click="clearFilter">Clear Filter</a>
                             </div>
                         </div>
 
@@ -113,7 +159,7 @@ const toggleDropdown = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-if="users.length > 0" v-for="user in users" :key="user.id">
+                        <tr v-if="users?.length > 0" v-for="user in users" :key="user.id">
                           <td>{{ user.name }}</td>
                           <td>{{ user.surname }}</td>
                           <td>{{ user.email }}</td>

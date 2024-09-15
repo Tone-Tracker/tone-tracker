@@ -8,10 +8,11 @@ import Status from '../svgs/Status.vue';
 import Warehouse from '../svgs/Warehouse.vue';
 import Popover from 'primevue/popover';
 import { useActivation } from '@/stores/activation';
+import { useCampaignStore } from '@/stores/useCampaign';
 
 onMounted(() => {
   getAllActivations();
-  
+  getAllCampaigns();
 })
 
 const props = defineProps({
@@ -19,10 +20,13 @@ const props = defineProps({
 });
 
 const activationStore = useActivation();
+const campaignStore = useCampaignStore();
 const pop = ref();
+const campaignPop = ref();
 const searchInput = ref('');
+const searchCampaignInput = ref('');
 const activations = ref([]);
-
+const campaigns = ref([]);
 
 
 
@@ -36,6 +40,22 @@ const onSearch = () => {
   })
   }
 }
+const onCampaignSearch = () => {
+  if (searchCampaignInput.value === '') {
+    getAllCampaigns();
+  }else{
+    
+  campaigns.value = campaigns.value.filter((camp) => {
+    return camp.name.toLowerCase().includes(searchCampaignInput.value.toLowerCase())
+  })
+  }
+}
+
+const getAllCampaigns = () => {
+  campaignStore.getCampaigns().then((res) => {
+    campaigns.value = res.data
+  });
+}
 
 const getAllActivations = () => {
   activationStore.getAllActivations(props.user.role,2).then((res) => {
@@ -44,6 +64,10 @@ const getAllActivations = () => {
 }
 const toggle = (event) => {
     pop.value.toggle(event);
+}
+
+const toggleCampaignSearch = (event) => {
+  campaignPop.value.toggle(event);
 }
 </script>
 
@@ -62,13 +86,39 @@ const toggle = (event) => {
         </div>
       </li>
 
-      <li v-tooltip="'Status'" class="side-nav__item"  >
-        <router-link to="/status">
+      <li @click="toggleCampaignSearch" v-tooltip="'Status'" class="side-nav__item">
           <div class="side-nav__link">
             <Status />
           </div>
-        </router-link>
       </li>
+
+      <Popover ref="campaignPop">
+        <div class="popover">
+          <div class="popover-body">
+            <div class="d-flex flex-column gap-2">
+              <div>
+                <span class="fw-medium d-block mb-2">Search Campaign</span>
+                <div class="input-group">
+                  <input v-model="searchCampaignInput" @input="onCampaignSearch" type="text" class="form-control" style="width: 13rem;" />
+                </div>
+              </div>
+              <div>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-4">
+                  <li v-if="campaigns?.length > 0" v-for="campaign in campaigns" class="d-flex align-items-center gap-2">
+                     <router-link :to="`/status?campaign=${campaign.id}`">
+                    <div class="w-100 cursor-pointer">
+                      <span class="fw-medium">{{campaign.name}}</span>
+                    </div>
+                  </router-link>
+                  </li>
+                 
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </Popover>
 
       <li @click="toggle" v-tooltip="'Report'" class="side-nav__item cursor-pointer" :class="{ 'active': $route.path === '/report' }">
           <div class="side-nav__link">

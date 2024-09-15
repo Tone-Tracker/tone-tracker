@@ -28,7 +28,9 @@ export const useCampaignStore = defineStore('useCampaign', () => {
     }
 
     
-    
+    const  getStatusReport = (id) => {
+      return axiosInstance.get(`/api/campaigns/${id}/report`);
+    }
   
-    return { getCampaignName,submitCampaign,getCampaigns,updateCampaign,deleteCampaign,getCampaignsByClientId }
+    return { getCampaignName,submitCampaign,getStatusReport, getCampaigns,updateCampaign,deleteCampaign,getCampaignsByClientId }
   })
