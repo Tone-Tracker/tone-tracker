@@ -32,7 +32,7 @@ let sizes = ref([]);
 let promoters = ref([]);
 let showLoading = ref(false);
 let searchInput = ref('');
-
+const filteredPromoters = ref([]);
 
 const form = reactive({
   user: null,
@@ -50,7 +50,6 @@ onMounted(() => {
   getAllUsers();
   getAllSizes();
 });
-
 
 const rules = {
   user: { required },
@@ -104,13 +103,16 @@ const onSubmit = async () => {
 };
 
 
-const onInput = () => {
-  if (searchInput.value) {
-    const searchTerm = searchInput.value.toLowerCase();
+const onInput = (  ) => {
+  const searchTerm = searchInput.value.toLowerCase();
 
-    promoters.value = promoters.value.filter((promoter) => {
+  if (searchTerm) {
+    filteredPromoters.value = promoters.value.filter((promoter) => {
       const userDetails = promoter.userDetails;
-      const experiences = promoter.experiences.map(exp => `${exp.name} ${exp.description} ${exp.duration}`).join(" ");
+      const experiences = promoter.experiences
+        .map((exp) => `${exp.name} ${exp.description} ${exp.duration}`)
+        .join(' ');
+        console.log(filteredPromoters.value);
 
       return (
         promoter.height?.toString().includes(searchTerm) ||
@@ -126,7 +128,7 @@ const onInput = () => {
       );
     });
   } else {
-    getAllPromoters();
+    filteredPromoters.value = promoters.value; 
   }
 };
 
@@ -145,15 +147,16 @@ const getAllSizes = async () => {
 };
 const getAllPromoters = async () => {
   showLoading.value = true;
-  promoterStore.getPromoters().then(response => {
-    showLoading.value = false;
-    promoters.value = response.data.content;
-  }).catch(error => {
+  try {
+    const response = await promoterStore.getPromoters();
+    promoters.value = response.data.content;    // Store the full list
+    filteredPromoters.value = promoters.value;  // Initially display all promoters
+  } catch (error) {
     toaster.error("Error fetching users");
     console.log(error);
-  }).finally(() => {
+  } finally {
     showLoading.value = false;
-  });
+  }
 };
 const getAllUsers = async () => {
   showLoading.value = true;
@@ -357,12 +360,11 @@ function getRandomColor() {
           <div class="card-body">
             <div class="d-lg-flex align-items-center mb-4 gap-3">
               <div class="position-relative">
-                <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5"
-                  placeholder="Search">
-                <span class="position-absolute top-50 product-show translate-middle-y">
-                  <i class="bx bx-search"></i>
-                </span>
-              </div>
+    <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5" placeholder="Search" />
+    <span class="position-absolute top-50 product-show translate-middle-y">
+      <i class="bx bx-search"></i>
+    </span>
+  </div>
               <div class="ms-auto">
                 <!-- <a  @click="openPosition('top')" class="btn mr-2 maz-gradient-btn radius-30 mt-2 mt-lg-0">
                   <i class="bx bxs-plus-square"></i>Add Promoter</a> -->
@@ -384,7 +386,7 @@ function getRandomColor() {
 					  </div>
             </div>
             <div class="row  g-2">
-  <div v-for="promoter in promoters" :key="promoter.id" class="col-md-3">
+  <div v-for="promoter in filteredPromoters" :key="promoter.id" class="col-md-3">
     <div class="gallery card w-100">
       <!-- Promoter Name -->
       <div class="asc py-3">{{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
