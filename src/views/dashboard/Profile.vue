@@ -520,7 +520,7 @@ Date: 04/06/2024
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row" v-if="isMyProfile()">
+                                                        <div class="row" v-if="isMyProfile">
                                                             <label class="col-sm-3 col-form-label"></label>
                                                             <div class="col-sm-9">
                                                                 <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">

@@ -58,8 +58,8 @@ const getAllCampaigns = () => {
 }
 
 const getAllActivations = () => {
-  activationStore.getAllActivations(props.user.role,2).then((res) => {
-    activations.value = res.data.content
+  activationStore.getAllActivationsForTemporal().then((res) => {
+    activations.value = res.data
   });
 }
 const toggle = (event) => {
@@ -169,11 +169,11 @@ const toggleCampaignSearch = (event) => {
       </li>
 
       <li v-tooltip="'CRM'" class="side-nav__item">
-        <a href="javascript:;">
+        <router-link to="/crm">
           <div class="side-nav__link">
             <CRM />
           </div>
-        </a>
+        </router-link>
       </li>
 
       <li v-tooltip="'Warehouse'" class="side-nav__item">
@@ -184,7 +184,7 @@ const toggleCampaignSearch = (event) => {
         </router-link>
       </li>
 
-      <li v-tooltip="'Chat'" class="side-nav__item">
+      <li v-tooltip="'Chat'" class="side-nav__item d-none">
         <router-link to="/chat">
           <div class="side-nav__link">
             <i class='bx bxs-chat fs-3'></i>

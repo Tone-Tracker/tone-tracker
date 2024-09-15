@@ -26,6 +26,7 @@ const toaster = useToaster();
 const userStore = useUserStore();
 const confirm = useConfirm();
 const sizeStore = useSizes();
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 let users = ref([]);
 let sizes = ref([]);
@@ -402,26 +403,22 @@ function getRandomColor() {
 					  </div>
             </div>
             <div class="row  g-2">
-  <div v-for="promoter in promoters" :key="promoter.id" class="col-md-3">
+  <div v-for="promoter in promoters" :key="promoter.id" class="col-md-2">
     <div class="gallery card w-100">
       <!-- Promoter Name -->
       <div class="asc py-3">
         {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
 
       <!-- Promoter Image or Placeholder -->
-      <a :href="'/profile/' + promoter.id" class="">
+      <router-link  :to="{ path: `/profile/${promoter.userDetails?.id}/${promoter?.id}` }">
         <div style="height: 200px; overflow: hidden;">
           <img v-if="promoter.userDetails.path"
-            :src="`https://tonetracker-bucket.s3.af-south-1.amazonaws.com/${promoter.userDetails.path}`"
+            :src="`${envPath}${promoter.userDetails.path}`"
             alt="Promoter Image" class="img-fluid w-100 h-100" style="object-fit: cover;" />
+            <img src="../../assets/images/placeholder.jpg" v-else icon="pi pi-user" size="xlarge" />
 
-          <!-- Display First Letters as Placeholder if no image -->
-          <div v-else class="placeholder text-center w-100"
-            :style="{ backgroundColor: getRandomColor(), height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '36px', color: '#fff' }">
-            {{ promoter.userDetails.firstName.charAt(0) }}{{ promoter.userDetails.lastName.charAt(0) }}
-          </div>
         </div>
-      </a>
+      </router-link>
 
  
       <div class="card-body">
