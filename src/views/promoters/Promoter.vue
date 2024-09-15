@@ -338,10 +338,7 @@ const genderChange = (event) => {
                   <i class="bx bx-search"></i>
                 </span>
               </div>
-              <div class="ms-auto"></div>
-            </div>
-            
-            <div class="row">
+              <div class="row">
               <div class="col-lg-3 col-md-6">
                 <select @change="onGenderChange" class="form-select form-select-sm bg-maz-light">
                   <option selected disabled>Filter by sex</option>
@@ -351,6 +348,10 @@ const genderChange = (event) => {
                 </select>
               </div>
             </div>
+              <div class="ms-auto"></div>
+            </div>
+            
+            
             
             <!-- Promoters list -->
             <div class="row g-2">
