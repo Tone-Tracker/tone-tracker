@@ -6,6 +6,7 @@ import useToaster from '@/composables/useToaster';
 import { useCrmStore } from '@/stores/crm';
 import CrmModal from './CrmModal.vue';
 import CRMChart from './CRMChart.vue';
+import html2pdf from "html2pdf.js";
 import { debounce } from '@/helpers/helpers';
 
 import { useRegion } from '@/stores/useRegion';
@@ -118,6 +119,41 @@ const clearFilter = () => {
   getAllUsers();
   toggleDropdown();
 }
+
+
+const exportToPDF = () => {
+      html2pdf(document.getElementById("my-invoice"), {
+        margin: 1,
+        filename: "crm.pdf",
+      });
+    }
+
+    function fnExcelReport() {
+  var table = document.getElementById('my-invoice'); // id of table
+  var tableHTML = table.outerHTML;
+  var fileName = 'download.xls';
+
+  var msie = window.navigator.userAgent.indexOf("MSIE ");
+
+  // If Internet Explorer
+  if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+    dummyFrame.document.open('txt/html', 'replace');
+    dummyFrame.document.write(tableHTML);
+    dummyFrame.document.close();
+    dummyFrame.focus();
+    return dummyFrame.document.execCommand('SaveAs', true, fileName);
+  }
+  //other browsers
+  else {
+    var a = document.createElement('a');
+    tableHTML = tableHTML.replace(/  /g, '').replace(/ /g, '%20'); // replaces spaces
+    a.href = 'data:application/vnd.ms-excel,' + tableHTML;
+    a.setAttribute('download', fileName);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+}
 </script>
 
 <template>
@@ -146,7 +182,7 @@ const clearFilter = () => {
                         </div>
 
                     </div>
-                    <table class="table table-striped table-bordered ">
+                    <table class="table table-striped table-bordered " id="my-invoice">
                       <thead>
                         <tr class="table-dark-color">
                           <th>Contact Name</th>
@@ -172,9 +208,10 @@ const clearFilter = () => {
                       </tbody>
                     </table>
                     <div class="text-end">
-                        <button class="btn btn-secondary btn-export rounded-0 mb-0 mx-2">Export</button>
-                        <button class="btn btn-primary btn-download rounded-0 mb-0">Download</button>
+                        <button class="btn btn-secondary btn-export rounded-0 mb-0 mx-2" @click="fnExcelReport" type="button">Export</button>
+                        <button class="btn btn-primary btn-download rounded-0 mb-0"  @click="exportToPDF" type="button">Download</button>
                     </div>
+                    <iframe id="dummyFrame" style="display:none"></iframe>
                 </div>
             </div>
             <CRMChart/>

@@ -100,9 +100,12 @@ const onGenderChange = (event) => {
   if (selectedGender === 'all') {
     getAllPromoters();
   } else {
+    
     promoters.value = promoters.value.filter((promoter) => {
+      // console.log('promoter',promoter);
       return promoter.gender?.toLowerCase() === selectedGender.toLowerCase();
     });
+     console.log('promoters',promoters.value);
     updatePaginatedPromoters(); // Ensure the list is paginated after filtering
   }
 };
@@ -246,58 +249,11 @@ const openPosition = (pos, promoter) => {
   visible.value = true;
 };
 
-const deleteRecord = (event, promoter) => {
-  confirm.require({
-    target: event.currentTarget,
-    message: 'Do you want to delete this promoter?',
-    icon: '',
-    rejectProps: {
-      label: 'Cancel',
-      severity: '',
-      outlined: true
-    },
-    acceptProps: {
-      label: 'Delete',
-      severity: 'danger'
-    },
-    accept: () => {
-      deletePromoter(promoter);
-    },
-    reject: () => {
-      // do nothing
-    }
-  });
-};
 
 const $primevue = usePrimeVue();
 
-const totalSize = ref(0);
-const totalSizePercent = ref(0);
 const files = ref([]);
 
-const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
-  removeFileCallback(index);
-  totalSize.value -= parseInt(formatSize(file.size));
-  totalSizePercent.value = totalSize.value / 10;
-};
-
-const onClearTemplatingUpload = (clear) => {
-  clear();
-  totalSize.value = 0;
-  totalSizePercent.value = 0;
-};
-
-const onSelectedFiles = (event) => {
-  files.value = event.files;
-  files.value.forEach((file) => {
-    totalSize.value += parseInt(formatSize(file.size));
-  });
-};
-
-const uploadEvent = (callback) => {
-  totalSizePercent.value = totalSize.value / 10;
-  callback();
-};
 
 const formatSize = (bytes) => {
   const k = 1024;
