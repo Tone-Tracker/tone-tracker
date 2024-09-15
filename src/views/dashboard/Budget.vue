@@ -56,61 +56,7 @@
 
 
 
-                 <div class="row">
-                    <div class="col-12 col-lg-5">
-                        <div class="card radius-10">
-                            <div class="card-header">
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex">
-                                        <h6 class="mb-0">Time Sheet Summary <span class="font-14 mt-2 d-block">Promoters:</span></h6>
-                                        <h6 class="mb-0 mx-4">Total Time vs actual hours spent</h6>
-                                    </div>
-                                    <div class="dropdown ms-auto"></div>
-                                </div>
-                            </div>
-                            <div class="card-body row">
-                                <div class="col-6">
-                                <div class="chart-container0 ">
-                                    <canvas id="pieChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 300px; width: 1200px;">kkkkkkk</canvas>                                    
-                                </div>
-                                <div class="mt-2 d-flex justify-content-center">
-                                    <div class="legend">
-                                        <div class="legend-item">
-                                          <div class="legend-color non-billable"></div>
-                                          <span>Non billable</span>
-                                        </div>
-                                        <div class="legend-item">
-                                          <div class="legend-color billable"></div>
-                                          <span>Billable</span>
-                                        </div>
-                                      </div>
-                                </div>
-                            </div>
-                                <div class="col-6">
-                                    <canvas id="horizontalChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-7">
-                        <div class="card radius-10">
-                            <div class="card-header">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <h6 class="mb-0">ROI</h6>
-                                    </div>
-                                    <div class="dropdown ms-auto"></div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container1">
-									<canvas id="itemsSold" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
-								</div>
-                            </div>
-                         </div>
-                    </div>
-                    
-                </div>
+                
 			</div>
 		</div>
 	<!--start switcher-->
@@ -287,54 +233,7 @@ const barChart = () => {
 }
 
 
-const pieChart = () => {
-    var ctx = document.getElementById("pieChart").getContext('2d');
 
-  var gradientStroke1 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke1.addColorStop(0, '#ee0979');
-      gradientStroke1.addColorStop(1, '#ff6a00');
-    
-  var gradientStroke2 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke2.addColorStop(0, '#283c86');
-      gradientStroke2.addColorStop(1, '#39bd3c');
-
-  var gradientStroke3 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke3.addColorStop(0, '#1E90D9');
-      gradientStroke3.addColorStop(1, '#e100ff');
-
-        new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ["Completed", "Pending", "Process"],
-          datasets: [{
-            backgroundColor: [
-              gradientStroke1,
-              gradientStroke2,
-              gradientStroke3
-            ],
-
-             hoverBackgroundColor: [
-              gradientStroke1,
-              gradientStroke2,
-              gradientStroke3
-            ],
-
-            data: [50, 50, 50],
-            borderWidth: [1, 1, 1]
-          }]
-        },
-        options: {
-          maintainAspectRatio: false,
-          cutout: 95,
-          plugins: {
-            legend: {
-                display: false,
-             }
-          }
-          
-       }
-      });
-}
 </script>
 <style>
 .maz-height{
