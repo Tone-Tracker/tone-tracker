@@ -128,7 +128,7 @@ const clearFilter = () => {
             <!-- Code here -->
             <div class="">
                 <div class="table-container-colour pl-5 mx-5" style="margin-right: 5rem !important;">
-                  <div class="mx-4">
+                  <div class="mb-2">
                     <input type="text" class="form-control" placeholder="Search" v-model="searchInput" @input="onSearchInput" style="width: 12rem;">
                   </div>
                     <div class="d-flex justify-content-between">
