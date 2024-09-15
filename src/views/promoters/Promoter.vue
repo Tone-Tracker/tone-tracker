@@ -32,13 +32,13 @@ let sizes = ref([]);
 let promoters = ref([]);
 let showLoading = ref(false);
 let searchInput = ref('');
-
+const filteredPromoters = ref([]);
 
 const form = reactive({
   user: null,
-	dressSize: null,
-	pantsSize: null,
-	client: null,
+  dressSize: null,
+  pantsSize: null,
+  client: null,
   topSize: null,
   height: null,
   bio: null,
@@ -52,12 +52,12 @@ onMounted(() => {
 });
 
 
-const rules = { 
+const rules = {
   user: { required },
-	dressSize: { required },
-	pantsSize: { required },
-	height: { required },
-	topSize: { required },
+  dressSize: { required },
+  pantsSize: { required },
+  height: { required },
+  topSize: { required },
   bio: { required },
   gender: { required },
 
@@ -66,8 +66,8 @@ const v$ = useVuelidate(rules, form);
 
 
 const onSubmit = async () => {
-	const isFormValid = await v$.value.$validate();
-	if (!isFormValid) {return;}
+  const isFormValid = await v$.value.$validate();
+  if (!isFormValid) { return; }
   // let formData = new FormData();
   // formData.append('user', form.user);
   // formData.append('dressSize', form.dressSize);
@@ -80,42 +80,55 @@ const onSubmit = async () => {
   // for (let i = 0; i < files.value.length; i++) {
   //   formData.append('files', files.value[i]);
   // }
-  
-  
-  if(isEdit.value){
-    promoterStore.updatePromoter(promoterId.value,form).then(function (response) {
-        toaster.success("Promoter updated successfully");
-        visible.value = false;
-        getAllPromoters();
+
+
+  if (isEdit.value) {
+    promoterStore.updatePromoter(promoterId.value, form).then(function (response) {
+      toaster.success("Promoter updated successfully");
+      visible.value = false;
+      getAllPromoters();
     }).catch(function (error) {
-        toaster.error("Error updating promoter");
-        console.log(error);
+      toaster.error("Error updating promoter");
+      console.log(error);
     });
-  } else {  
+  } else {
     promoterStore.submitPromoter(form).then(function (response) {
-        toaster.success("Promoter created successfully");
-        visible.value = false;
-        getAllPromoters();
+      toaster.success("Promoter created successfully");
+      visible.value = false;
+      getAllPromoters();
     }).catch(function (error) {
-        toaster.error("Error creating promoter");
-        console.log(error);
+      toaster.error("Error creating promoter");
+      console.log(error);
     });
   }
 };
 
+const onUnitChange = (event) => {
+  const selectedGender = event.target.value.toLowerCase(); // Get the selected gender and convert to lowercase
+  
+  if (selectedGender === 'all') {
+    getAllPromoters(); // Reset to all promoters if 'all' is selected
+  } else {
+    promoters.value = promoters.value.filter((promoter) => {
+      const userGender = promoter.userDetails.gender?.toLowerCase(); // Assuming you have a gender field in userDetails
+      return userGender === selectedGender;
+    });
+  }
+};
 
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
 
     promoters.value = promoters.value.filter((promoter) => {
+      console.log(promoter);
       const userDetails = promoter.userDetails;
       const experiences = promoter.experiences.map(exp => `${exp.name} ${exp.description} ${exp.duration}`).join(" ");
 
       return (
         promoter.height?.toString().includes(searchTerm) ||
         promoter.topSize?.toLowerCase().includes(searchTerm) ||
-        promoter.pantsSize?.toLowerCase().includes(searchTerm) ||
+        promoter.pantsSize == searchInput.value ||
         promoter.dressSize?.toLowerCase().includes(searchTerm) ||
         promoter.bio?.toLowerCase().includes(searchTerm) ||
         userDetails.firstName?.toLowerCase().includes(searchTerm) ||
@@ -126,7 +139,7 @@ const onInput = () => {
       );
     });
   } else {
-    getAllPromoters(); 
+    getAllPromoters();
   }
 };
 
@@ -191,22 +204,22 @@ const position = ref('top');
 const dropdownItems = ref([]);
 
 const search = (event) => {
-    const query = event.query.toLowerCase();
-	  let myObj = users.value.filter(user => user.firstName.toLowerCase().includes(query));
-    dropdownItems.value = myObj.map(user => user.firstName + ' ' + user.lastName);
+  const query = event.query.toLowerCase();
+  let myObj = users.value.filter(user => user.firstName.toLowerCase().includes(query));
+  dropdownItems.value = myObj.map(user => user.firstName + ' ' + user.lastName);
 };
 
 const onUserChange = (event) => {
-	form.user = users.value.find(user => user.firstName + ' ' + user.lastName === event.value).id;
+  form.user = users.value.find(user => user.firstName + ' ' + user.lastName === event.value).id;
 };
 
 
 
-const openPosition = (pos,promoter) => {
-  if(promoter) {//edit
+const openPosition = (pos, promoter) => {
+  if (promoter) {//edit
     isEdit.value = true;
-    promoterId.value=promoter.id;
-    form.user=promoter.user
+    promoterId.value = promoter.id;
+    form.user = promoter.user
     user_id.value = users.value.find(user => user.id === promoter.user).firstName + ' ' + users.value.find(user => user.id === promoter.user).lastName
     Object.assign(form, {
       dressSize: promoter.dressSize,
@@ -217,7 +230,7 @@ const openPosition = (pos,promoter) => {
       gender: promoter.gender
     });
     myGender.value = form.gender
-  }else{
+  } else {
     isEdit.value = false
     Object.assign(form, {
       user: null,
@@ -230,8 +243,8 @@ const openPosition = (pos,promoter) => {
       gender: null
     })
   }
-    position.value = pos;
-    visible.value = true;
+  position.value = pos;
+  visible.value = true;
 }
 
 const deleteRecord = (event, promoter) => {
@@ -264,80 +277,86 @@ const totalSizePercent = ref(0);
 const files = ref([]);
 
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
-    removeFileCallback(index);
-    totalSize.value -= parseInt(formatSize(file.size));
-    totalSizePercent.value = totalSize.value / 10;
+  removeFileCallback(index);
+  totalSize.value -= parseInt(formatSize(file.size));
+  totalSizePercent.value = totalSize.value / 10;
 };
 
 const onClearTemplatingUpload = (clear) => {
-    clear();
-    totalSize.value = 0;
-    totalSizePercent.value = 0;
+  clear();
+  totalSize.value = 0;
+  totalSizePercent.value = 0;
 };
 
 const onSelectedFiles = (event) => {
-    files.value = event.files;
-    files.value.forEach((file) => {
-        totalSize.value += parseInt(formatSize(file.size));
-    });
+  files.value = event.files;
+  files.value.forEach((file) => {
+    totalSize.value += parseInt(formatSize(file.size));
+  });
 };
 
 const uploadEvent = (callback) => {
-    totalSizePercent.value = totalSize.value / 10;
-    callback();
+  totalSizePercent.value = totalSize.value / 10;
+  callback();
 };
 
 const onTemplatedUpload = () => {
-    // toast.add({ severity: "info", summary: "Success", detail: "File Uploaded", life: 3000 });
+  // toast.add({ severity: "info", summary: "Success", detail: "File Uploaded", life: 3000 });
 };
 
 const formatSize = (bytes) => {
-    const k = 1024;
-    const dm = 3;
-    const sizes = $primevue.config.locale.fileSizeTypes;
+  const k = 1024;
+  const dm = 3;
+  const sizes = $primevue.config.locale.fileSizeTypes;
 
-    if (bytes === 0) {
-        return `0 ${sizes[0]}`;
-    }
+  if (bytes === 0) {
+    return `0 ${sizes[0]}`;
+  }
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
 
-    return `${formattedSize} ${sizes[i]}`;
+  return `${formattedSize} ${sizes[i]}`;
 };
 
 const genders = ref([
-    { name: 'MALE', code: 'MALE' },
-    { name: 'FEMALE', code: 'FEMALE' },
+  { name: 'MALE', code: 'MALE' },
+  { name: 'FEMALE', code: 'FEMALE' },
 ]);
 const myGender = ref();
 const genderChange = (event) => {
-    //  myGender.value = event.value.code;
-     form.gender = myGender.value.code
+  //  myGender.value = event.value.code;
+  form.gender = myGender.value.code
 }
 const getDressSize = (size) => {
-    if (!size) {return ""}
-    if (size === "SMALL") {
-      return "S"      
-    } else if (size === "MEDIUM") {
-      return "M"
-    } else if (size === "LARGE") {
-      return "L"
-    } else if (size === "X_LARGE") {
-      return "XL"
-    } else if (size === "XX_LARGE") {
-      return "XXL"
-    } else if (size === "XXX_LARGE") {
-      return "XXXL"
-    }else if (size === "X_SMALL") {
-      return "XS"
-    }
+  if (!size) { return "" }
+  if (size === "SMALL") {
+    return "S"
+  } else if (size === "MEDIUM") {
+    return "M"
+  } else if (size === "LARGE") {
+    return "L"
+  } else if (size === "X_LARGE") {
+    return "XL"
+  } else if (size === "XX_LARGE") {
+    return "XXL"
+  } else if (size === "XXX_LARGE") {
+    return "XXXL"
+  } else if (size === "X_SMALL") {
+    return "XS"
+  }
 }
 const op = ref();
 const selectedPromoter = ref(null);
 const toggle = (event, promoter) => {
   selectedPromoter.value = promoter;
-    op.value.toggle(event);
+  op.value.toggle(event);
+}
+
+function getRandomColor() {
+  // Generates a random color
+  const colors = ['#FF5733', '#33C1FF', '#FF33A1', '#33FF57', '#FFC133', '#B833FF'];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
 </script>
@@ -351,8 +370,8 @@ const toggle = (event, promoter) => {
           <div class="card-body">
             <div class="d-lg-flex align-items-center mb-4 gap-3">
               <div class="position-relative">
-                <input v-model="searchInput" @input="onInput"
-                  type="text" class="form-control ps-5" placeholder="Search">
+                <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5"
+                  placeholder="Search">
                 <span class="position-absolute top-50 product-show translate-middle-y">
                   <i class="bx bx-search"></i>
                 </span>
@@ -360,131 +379,135 @@ const toggle = (event, promoter) => {
               <div class="ms-auto">
                 <!-- <a  @click="openPosition('top')" class="btn mr-2 maz-gradient-btn radius-30 mt-2 mt-lg-0">
                   <i class="bx bxs-plus-square"></i>Add Promoter</a> -->
-                  <!-- <label for="csv-file" class="mx-2 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
+                <!-- <label for="csv-file" class="mx-2 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
                     <i class="bx bx-import"></i>Upload CSV</label>
                     <input type="file" id="csv-file" ref="file" hidden /> -->
               </div>
             </div>
-            <div class="table-responsive">
-              <table class="table mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Full Name</th>
-                    <th>Height</th>
-                    <th>Gender</th>
-                    <th>Dress Size</th>
-                    <th>Pants Size</th>
-                    <th>Top Size</th>
-                    <th>Bio</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-if="promoters.length > 0" v-for="promoter in promoters" :key="promoter.id">
-                    <td>{{ promoter.userDetails.firstName }}{{ promoter.userDetails.lastName }}</td>
-                    <td> <Badge :value="`${promoter.height} cm`" severity="success"></Badge></td>
-                    <td>{{ promoter.gender }}</td>
-                    <td><Badge :value="getDressSize(promoter.dressSize)" severity="info"></Badge></td>
-                    <td><Badge :value="promoter.pantsSize" severity="warn"></Badge></td>
-                    <td><Badge :value="getDressSize(promoter.topSize)" severity="danger"></Badge></td>
-                    <td>{{ truncateText(promoter.bio,60) }} 
-                      <span @click="toggle($event, promoter)" class="cursor-pointer text-primary">See More</span>
-                     
-                    </td>
-                    <td>
-                      <div class="d-flex order-actions">
-                        <a @click="openPosition('top',promoter)" href="javascript:;" >
-                          <i class='bx bxs-edit'></i>
-                        </a>
-                        <!-- <a @click="deleteRecord($event, promoter)" href="javascript:;" class="ms-3">
-                          <i class='bx bxs-trash text-danger'></i>
-                        </a> -->
-                        <ConfirmPopup></ConfirmPopup>
-                      </div>
-					  
-                    </td>
-                  </tr>
-                  <tr v-else>
-                    <td colspan="7" class="text-center text-danger">No promoters found.</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="row">
+              <div class="col-lg-3 col-md-6">
+						<select @change="onUnitChange" class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
+							<option  selected="selected" disabled>Filter by sex</option>
+							<option>all</option>
+              <option>Male</option>
+              <option>Female</option>
+							
+						
+						</select>
+					  </div>
             </div>
+            <div class="row  g-2">
+  <div v-for="promoter in promoters" :key="promoter.id" class="col-md-3">
+    <div class="gallery card w-100">
+      <!-- Promoter Name -->
+      <div class="asc py-3">{{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
+
+      <!-- Promoter Image or Placeholder -->
+      <a :href="'/profile/' + promoter.id" class="">
+        <div style="height: 200px; overflow: hidden;">
+          <img v-if="promoter.userDetails.path"
+            :src="`https://tonetracker-bucket.s3.af-south-1.amazonaws.com/${promoter.userDetails.path}`"
+            alt="Promoter Image" class="img-fluid w-100 h-100" style="object-fit: cover;" />
+
+          <!-- Display First Letters as Placeholder if no image -->
+          <div v-else class="placeholder text-center w-100"
+            :style="{ backgroundColor: getRandomColor(), height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '36px', color: '#fff' }">
+            {{ promoter.userDetails.firstName.charAt(0) }}{{ promoter.userDetails.lastName.charAt(0) }}
+          </div>
+        </div>
+      </a>
+
+ 
+      <div class="card-body">
+       
+        <div class="d-flex justify-content-end order-actions cursor-pointer">
+          <a @click="openPosition('top', promoter)" class="cursor-pointer">
+            <i class="bx bxs-edit"></i> 
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
           </div>
         </div>
         <Popover ref="op" appendTo="body">
           <p>{{ selectedPromoter.bio }}</p>
-      </Popover>
+        </Popover>
       </div>
     </div>
 
 
-	<Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter' " :style="{ width: '50rem' }">
-    <div class="card flex justify-center">
-      <label for="input1" class="form-label">Gender </label>
-      <Select v-model="myGender" :options="genders"  @change="genderChange"
-      optionLabel="name" placeholder="Select gender" 
-      checkmark :highlightOnSelect="false" class="w-full md:w-56" />
-      <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
-        <div class="text-danger">Gender is required</div>
+    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter'"
+      :style="{ width: '50rem' }">
+      <div class="card flex justify-center">
+        <label for="input1" class="form-label">Gender </label>
+        <Select v-model="myGender" :options="genders" @change="genderChange" optionLabel="name"
+          placeholder="Select gender" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
+        <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
+          <div class="text-danger">Gender is required</div>
         </div>
-     </div>
-     <div class="row g-3">
-      <div class="col-md-3">
-        <label for="dress_size" class="form-label">Dress Size</label>
-        <select v-model="form.dressSize" class="form-control" id="dress_size" >
-          <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
-        </select>
-        <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
-          <div class="text-danger">Dress Size is required</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-        <label for="pantsSize" class="form-label">Pants Size</label>
-        
-        <input  v-model="form.pantsSize" class="form-control" id="pantsSize"   />
-        
-        <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
-          <div class="text-danger">Pants Size is required</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-        <label for="height" class="form-label">Height</label>
-        <input v-model="form.height" type="number" class="form-control" id="height" >
-        <div class="input-errors" v-for="error of v$.height.$errors" :key="error.$uid">
-          <div class="text-danger">Height is required</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-        <label for="top-size" class="form-label">Top Size</label>
-        <select v-model="form.topSize" class="form-control" id="top-size" >
-          <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
-        </select>
-        <div class="input-errors" v-for="error of v$.topSize.$errors" :key="error.$uid">
-          <div class="text-danger">Top Size is required</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-        <label for="bio" class="form-label">Bio</label>
-        <Textarea v-model="form.bio" autoResize rows="5" cols="100" />
-        <div class="input-errors" v-for="error of v$.bio.$errors" :key="error.$uid">
-          <div class="text-danger">Bio is required</div>
-          </div>
-        </div>
-
-      </div> 
-
-    
-    
-    
-    <div class="col-12 mt-4">
-      <div class="d-grid">
-      <button @click="onSubmit" class="btn maz-gradient-btn" type="button"> 
-        {{ isEdit ? 'Update' : 'Submit' }}
-      </button>
       </div>
-    </div>
-	</Dialog>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label for="dress_size" class="form-label">Dress Size</label>
+          <select v-model="form.dressSize" class="form-control" id="dress_size">
+            <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
+          </select>
+          <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
+            <div class="text-danger">Dress Size is required</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="pantsSize" class="form-label">Pants Size</label>
+
+          <input v-model="form.pantsSize" class="form-control" id="pantsSize" />
+
+          <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
+            <div class="text-danger">Pants Size is required</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="height" class="form-label">Height</label>
+          <input v-model="form.height" type="number" class="form-control" id="height">
+          <div class="input-errors" v-for="error of v$.height.$errors" :key="error.$uid">
+            <div class="text-danger">Height is required</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="top-size" class="form-label">Top Size</label>
+          <select v-model="form.topSize" class="form-control" id="top-size">
+            <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
+          </select>
+          <div class="input-errors" v-for="error of v$.topSize.$errors" :key="error.$uid">
+            <div class="text-danger">Top Size is required</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="bio" class="form-label">Bio</label>
+          <Textarea v-model="form.bio" autoResize rows="5" cols="100" />
+          <div class="input-errors" v-for="error of v$.bio.$errors" :key="error.$uid">
+            <div class="text-danger">Bio is required</div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+      <div class="col-12 mt-4">
+        <div class="d-grid">
+          <button @click="onSubmit" class="btn maz-gradient-btn" type="button">
+            {{ isEdit ? 'Update' : 'Submit' }}
+          </button>
+        </div>
+      </div>
+    </Dialog>
 
   </Layout>
 </template>
@@ -495,8 +518,9 @@ const toggle = (event, promoter) => {
 }
 
 .p-dialog-mask {
-  align-items:start !important;
+  align-items: start !important;
 }
+
 .btn-outline-secondary {
   height: 2rem !important;
 }
@@ -505,10 +529,12 @@ const toggle = (event, promoter) => {
   background: transparent;
   border: 0;
 }
+
 .p-button {
   background: transparent;
   border: 0;
 }
+
 .p-popover.p-component {
   left: 50rem !important;
 }
