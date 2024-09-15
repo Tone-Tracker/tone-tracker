@@ -321,6 +321,7 @@ const viewUnits = async (warehouse) => {
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb :title="regionQueryName + ' Region'" icon="bx bx-building-house" />
+            
                 <div class="card">
                     <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
 
@@ -341,7 +342,7 @@ const viewUnits = async (warehouse) => {
               </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-8 col-lg-8 col-xl-8 d-flex">
+                            <div class="col-lg-12 col-xl-8 d-flex">
                                 <div class="card radius-10 w-100">
                                     <div class="card-body">
                                         <div class="table-responsive">
@@ -386,7 +387,7 @@ const viewUnits = async (warehouse) => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4 col-lg-4 col-xl-4 d-flex">
+                            <div class="col-lg-12 col-xl-4 d-flex">
                                 <div class="card w-100 radius-10">
                                     <div class="card-body">
                                         <div class="table-responsive">

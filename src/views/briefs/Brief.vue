@@ -166,7 +166,7 @@ function startShare(file) {
                     class="d-flex justify-content-between align-items-center"
                   >
                     <button
-                      class="btn bg-black text-white w-100 rounded-0 btn-outline-light"
+                      class="btn bg-black text-white w-100 rounded-0 btn-outline-light maz-gradient-btn"
                       @click="downloadDocument(briefItem)"
                     >
                       Read
@@ -174,7 +174,7 @@ function startShare(file) {
                     <button
                       @click="startShare(briefItem)"
                       type="button"
-                      class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light"
+                      class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light maz-gradient-btn"
                     >
                       Share
                     </button>

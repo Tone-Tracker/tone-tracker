@@ -48,138 +48,80 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-2">Gauteng Central(GC)</td>
-												<td style="background-color: #A639B6;" class="text-center">To Be
-													Activated</td>
-												<td class="text-center table-dark-custom-2">45%</td>
-											</tr>
-
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-1">North Eastern Region (NER)</td>
-												<td style="background-color: #1E90D9;" class="text-center">Activated
+											<tr v-if="campaignData?.activations?.length > 0" v-for="activation in campaignData?.activations" :key="activation.id" class="maz-table-row-height">
+												<td class="table-dark-custom-2">{{activation?.name}}</td>
+												<td style="background-color: #A639B6;" class="text-center" 
+												:class="{ 'bg-activated': activation?.status === 'To Be Activated', 
+												 'bg-to-be-activated': activation?.status === 'Activated' }">
+													{{ activation?.status }}
 												</td>
-												<td class="text-center table-dark-custom-1">80%</td>
+												<td class="text-center table-dark-custom-2">{{ activation?.progress }}%</td>
 											</tr>
 
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-2">Eastern Region (ER)</td>
-												<td style="background-color: #A639B6;" class="text-center">To Be
-													Activated</td>
-												<td class="text-center table-dark-custom-2">22%</td>
-											</tr>
-
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-1">Southern Eastern Region (SR)</td>
-												<td style="background-color: #1E90D9; " class="text-center">Activated
-												</td>
-												<td class="text-center table-dark-custom-1">22%</td>
-											</tr>
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-2">Southern Western Region (WR)</td>
-												<td style="background-color: #A639B6;" class="text-center">To Be
-													Activated</td>
-												<td class="text-center table-dark-custom-2">12%</td>
-											</tr>
-											<tr class="maz-table-row-height">
-												<td class="table-dark-custom-1">Southern Central Region (CR)</td>
-												<td style="background-color: #A639B6;" class="text-center">To Be
-													Activated</td>
-												<td class="text-center table-dark-custom-1">12%</td>
-											</tr>
+											
 										</tbody>
 									</table>
 								</div>
 							</div>
 						</div>
 					</div>
-
-
-
-
 				</div>
+
+				<div class="row">
+                    <div class="col-12 col-lg-9">
+                        <div class="card radius-10">
+                            <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-8">
+											<h6 class="mb-0">Time Sheet Summary <span class="font-14 mt-2 d-block">Promoters:</span></h6>
+										</div>
+										<div class="col-4">
+											<h6 class="mb-0 mx-4">Total Time vs actual hours spent</h6>
+										</div>
+                                        
+                                    </div>
+                            </div>
+                            <div class="card-body row">
+                                <div class="col-6">
+                                <div class="chart-container0 ">
+                                    <canvas id="pieChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 300px; width: 1200px;">kkkkkkk</canvas>                                    
+                                </div>
+                                <div class="mt-2 d-flex justify-content-center">
+                                    <div class="legend">
+                                        <div class="legend-item">
+                                          <div class="legend-color non-billable"></div>
+                                          <span>Non billable</span>
+                                        </div>
+                                        <div class="legend-item">
+                                          <div class="legend-color billable"></div>
+                                          <span>Billable</span>
+                                        </div>
+                                      </div>
+                                </div>
+                            </div>
+                                <div class="col-6">
+                                    <canvas id="horizontalChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
 				<div>
 					<h5 class="mb-3">Campaign report</h5>
 				</div>
 
 				<div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
-					<div class="col">
+					<div class="col" v-if="campaignData?.activations?.length > 0" v-for="activation in campaignData?.activations" :key="activation.id">
 						<div class="card card-radius radius-10 maz-gradient-btn">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
 									<div>
-										<h4 class="my-1 text-white text-center">Report For Gauteng Central (GC)</h4>
+										<router-link :to="`/report?activation=${activation?.id}`">
+											<h4 class="my-1 text-white text-center">Report For {{activation?.name}}</h4>
+										</router-link>
 									</div>
 									<div class="text-white ms-auto font-35">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 class="my-1 text-white text-center">Report For North Eastern Region (NER)
-										</h4>
-									</div>
-									<div class="text-white ms-auto font-35">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 style="width: 80%" class="my-1 text-white text-center">Report For Eastern
-											Region (ER)</h4>
-									</div>
-									<div class="text-dark ms-auto font-35">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 class="my-1 text-center text-white">Report For Southern Eastern Region (SR)
-										</h4>
-									</div>
-									<div class="text-white ms-auto font-35">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 class="my-1 text-white text-center">Report For Southern Western Region (WR)
-										</h4>
-									</div>
-									<div class=" bg-white text-success ms-auto">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card card-radius radius-10 maz-gradient-btn">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<div>
-										<h4 class="my-1 text-white">Report For Southern Central Region (CR)</h4>
-									</div>
-									<div class=" bg-white text-white ms-auto">
 									</div>
 								</div>
 							</div>
@@ -196,37 +138,120 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
-import { useReports } from '@/stores/reports';
-import useToaster from '@/composables/useToaster';
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useCampaignStore } from '@/stores/useCampaign';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
+const campaignId = ref(route.query.campaign);
+const campaign = useCampaignStore();
 
-const reportStore = useReports();
-let report = ref([]);
-let showLoading = ref(false);
-const toaster = useToaster();
-
+const campaignData = ref(null);
 
 onMounted(() => {
-  getCampaignReport();
+	getReport();
+	horizontalChart();
+	pieChart();
+})
+
+const getReport = () => {
+	campaign.getStatusReport(campaignId.value).then(function (response) {
+		campaignData.value = response.data;
+	})
+}
+
+const pieChart = () => {
+    var ctx = document.getElementById("pieChart").getContext('2d');
+
+  var gradientStroke1 = ctx.createLinearGradient(0, 0, 0, 300);
+      gradientStroke1.addColorStop(0, '#ee0979');
+      gradientStroke1.addColorStop(1, '#ff6a00');
+    
+  var gradientStroke2 = ctx.createLinearGradient(0, 0, 0, 300);
+      gradientStroke2.addColorStop(0, '#283c86');
+      gradientStroke2.addColorStop(1, '#39bd3c');
+
+  var gradientStroke3 = ctx.createLinearGradient(0, 0, 0, 300);
+      gradientStroke3.addColorStop(0, '#1E90D9');
+      gradientStroke3.addColorStop(1, '#e100ff');
+
+        new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ["Completed", "Pending", "Process"],
+          datasets: [{
+            backgroundColor: [
+              gradientStroke1,
+              gradientStroke2,
+              gradientStroke3
+            ],
+
+             hoverBackgroundColor: [
+              gradientStroke1,
+              gradientStroke2,
+              gradientStroke3
+            ],
+
+            data: [50, 50, 50],
+            borderWidth: [1, 1, 1]
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          cutout: 95,
+          plugins: {
+            legend: {
+                display: false,
+             }
+          }
+          
+       }
+      });
+}
+const horizontalChart = () => {
+        var ctx = document.getElementById('horizontalChart').getContext('2d');
+    new Chart(ctx, {
+	type: 'bar',
+	data: {
+		labels: ['Activation 1', 'Activation 2', 'Activation 3', 'Activation 4', 'Activation 5', 'Activation 6', 'Activation 7'],
+		datasets: [{
+			label: 'Google',
+			data: [18, 25, 14, 12, 17, 8, 10],
+			backgroundColor: [
+				'#fd3550'
+			],
+			lineTension: 0,
+			borderColor: [
+				'#fd3550'
+			],
+			borderWidth: 0
+		}
+		]
+	},
+	options: {
+		maintainAspectRatio: false,
+		barPercentage: 0.5,
+		categoryPercentage: 0.7,
+		indexAxis: 'y',
+		plugins: {
+			legend: {
+				position:'bottom',
+				display: true,
+                labels: {
+                    filter: function(item) {
+                        return item.text !== 'Google';
+                    }
+                }
+			}
+		},
+		scales: {
+			y: {
+				beginAtZero: true
+			}
+		}
+	}
 });
-
-
-
-const getCampaignReport = async () => {
-      showLoading.value = true;
-      try {
-        const response = await reportStore.getCampaignReport(2);
-        console.log('response', response);
-        report.value = response.data;
-      } catch (error) {
-        toaster.error('Error fetching report');
-        console.error(error);
-      } finally {
-        showLoading.value = false;
-      }
-    };
-
+    }
 </script>
 <style scoped>
 .status-icon {
@@ -308,5 +333,13 @@ html.dark-theme .widgets-icons {
 .table td {
 	border: none;
 	border-color: transparent;
+}
+
+.bg-activated{
+	background-color: #1E90D9 !important;
+}
+
+.bg-to-be-activated{
+	background-color: #A639B6 !important;
 }
 </style>

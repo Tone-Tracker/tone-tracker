@@ -10,6 +10,13 @@ export const useStock = defineStore('stock', () => {
     const getStockByUnit = (unitId) => {
       return axiosInstance.get(`/api/stocks/unit/${unitId}`);
     }
+
+    const updateStock = (stockId,formData, config) => {
+      return axiosInstance.put(`/api/stocks/${stockId}`,formData, config);
+    }
+     const stockMovement = (formData) => {
+      return axiosInstance.post(`/api/stockMovements`,formData);
+    }
   
-    return { addStock, getStockByUnit }
+    return { addStock, getStockByUnit,updateStock,stockMovement }
   })

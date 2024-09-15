@@ -599,7 +599,7 @@ new Chart(
 
 	</Layout>
 </template>
-<style>
+<style scoped>
 .maz-height {
 	font-size: 3rem;
 }

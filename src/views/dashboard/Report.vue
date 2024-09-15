@@ -17,8 +17,10 @@ const activationId = ref(route.query.activation);
 const activation = ref(null);
 
 onMounted(() => {
+  console.log('activationId', activationId.value);
     getActivation();
     mountDoghunrt();
+    
 });
 
 const statuses = ref([

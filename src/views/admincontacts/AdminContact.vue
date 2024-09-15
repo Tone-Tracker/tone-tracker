@@ -87,9 +87,9 @@ const handleSubmit = async () => {
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Authoritative Contacts</h5>
 							<div class="btn-group">
-								<button class="btn btn-secondary rounded-0 btn-sm" data-bs-toggle="modal"
+								<button class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn" data-bs-toggle="modal"
 									data-bs-target="#addContactModal">Add</button>
-								<button class="btn btn-secondary rounded-0 btn-sm">Delete</button>
+								<button class="btn btn-secondary rounded-0 btn- maz-gradient-btn">Delete</button>
 							</div>
 						</div>
 						<div class="card-body">
@@ -120,9 +120,9 @@ const handleSubmit = async () => {
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Billing Contacts</h5>
 							<div class="btn-group">
-								<button @click="showModal=true" class="btn btn-secondary rounded-0 btn-sm" data-bs-toggle="modal"
+								<button @click="showModal=true" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn" data-bs-toggle="modal"
 									data-bs-target="#addContactModal">Add</button>
-								<button class="btn btn-secondary rounded-0 btn-sm">Delete</button>
+								<button class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn">Delete</button>
 							</div>
 						</div>
 						<div class="card-body">
@@ -156,7 +156,7 @@ const handleSubmit = async () => {
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="addContactModalLabel">Add New Contact</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							<button type="button" class="btn-close maz-gradient-btn" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 

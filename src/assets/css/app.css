@@ -14,6 +14,13 @@ File: app.css
 	scrollbar-width: thin;
 }
 
+.no-border-input {
+	border: none;
+	color: #000;
+	outline: none;
+	background: #fff
+}
+
 .accordion-button {
 	padding: 8px !important;
 }
@@ -120,10 +127,6 @@ body {
 	border-style: solid;
 	border-image: linear-gradient(to right, #9A3AB1, #117AD1) 1;
 }
-
-
-
-
 
 
 .maz-gradient-btn {
@@ -305,9 +308,9 @@ a {
 
 
 .page-content {
-	margin-left: 10%;
+	margin-left: 7%;
 	/* Added by Mazisi; */
-	padding: 1.5rem 1.5rem 0.7rem 7.5rem;
+	padding: 1.5rem 0.1rem 0.7rem 10.5rem;
 }
 
 
@@ -762,9 +765,9 @@ html.dark-theme .sidebar-wrapper {
 
 	border-radius: 10px;
 
-	bottom: 20px;
+	bottom: 50px;
 
-	right: 12px;
+	right: 20px;
 
 	background-color: #008cff;
 
@@ -4667,6 +4670,11 @@ form select.error:focus {
 }
 
 
+.accordion-body {
+    padding: 0px;
+}
+
+
 
 
 
@@ -5122,5 +5130,19 @@ form select.error:focus {
 	.page-content {
 		margin-left: 10%;
 		padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+	}
+}
+
+@media only screen and (max-width: 1440px) {
+	.page-content {
+		margin-left: 10%;
+		padding: 1.5rem 1.5rem 1.5rem 10.5rem !important; 
+	}
+}
+
+@media only screen and (max-width: 1024px) {
+	.page-content {
+		margin-left: 10%;
+		padding: 1.5rem 1.5rem 1.5rem 0rem !important; 
 	}
 }

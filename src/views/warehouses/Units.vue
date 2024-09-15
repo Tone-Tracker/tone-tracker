@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { useWarehouse } from '@/stores/warehouse';
-import Popover from 'primevue/popover';
+import { useAuth } from '@/stores/auth';
 import InputText from 'primevue/inputtext';
 import { reactive } from 'vue';
 import InputNumber from 'primevue/inputnumber';
@@ -18,8 +18,12 @@ import Dialog from 'primevue/dialog';
 import Avatar from 'primevue/avatar';
 import Drawer from 'primevue/drawer';
 import Image from 'primevue/image';
+import SplitButton from 'primevue/splitbutton';
+import CustomApex from './CustomApex.vue';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+const authStore = useAuth();
+const user = JSON.parse(authStore.user);
 
 const route = useRoute();
 const warehouseStore = useWarehouse();
@@ -35,6 +39,8 @@ const searchInput = ref('');
 const merchendiseList = ref([]);
 const brandings = ref([]);
 const visible = ref(false);
+const editVisible = ref(false);
+const stockMovementVisible = ref(false);
 const showFilePreview = ref(true);
 
 
@@ -54,27 +60,27 @@ const getWarehouse = () => {
 	});
 }
 const unitName = ref(null);
+const viewedUnit = ref(null);
 const onUnitChange = (event) => {
 	unitId.value = null;     // reset the unit
 	unitId.value = event.target.value;
 	stockForm.unit = event.target.value;
 	unitName.value = warehouse.value?.unitsList?.filter((unit) => unit.id == event.target.value)[0]?.name;
-	console.log(unitName.value);
+	viewedUnit.value= null;
+	viewedUnit.value = warehouse.value?.unitsList?.filter((unit) => unit.id == event.target.value)[0];
+	console.log(viewedUnit.value);
 	getStock();
 }
 
+
 const getStock = () => {
 	stock.getStockByUnit(unitId.value).then((response) => {
-		console.log(response.data);
 		stockList.value = response.data;
 		merchendiseList.value = response.data?.filter((stock) => stock.type === 'MERCH');
 		brandings.value = response.data?.filter((stock) => stock.type === 'BRANDING');
 	});
 }
 
-const toggle = (event) => {
-    op.value.toggle(event);
-}
 
 const stockForm = reactive({
     description: '',
@@ -90,6 +96,9 @@ const stockRules = {
 };
 const stockV$ = useVuelidate(stockRules, stockForm);
 const selectedFile = ref(null);
+const config = {
+      useMultipartFormData: true // Add this flag to the request config
+    };
 const submitStock = async () => {
 	const isFormValid = await stockV$.value.$validate();
     if (!isFormValid) {return;}
@@ -101,10 +110,7 @@ const submitStock = async () => {
 		formData.append('quantity', stockForm.quantity);
 		formData.append('type', stockForm.type);
 		formData.append('unit', stockForm.unit);
-
-		const config = {
-      useMultipartFormData: true // Add this flag to the request config
-    };
+		
 
         await stock.addStock(formData, config);
 		visible.value = false;
@@ -150,6 +156,122 @@ const viewStockImagePreview = (model) => {
 	stockImagePreview.value = envPath + model?.stockImage ;
 }
 
+const editedStock = ref(null);
+const editForm = reactive({
+    description: '',
+    quantityInUnit: null,
+    type: '',
+	unit: null
+});
+const editStockRules = { 
+    description: { required },
+    quantityInUnit: { required },
+    type: { required },
+};
+const editStockV$ = useVuelidate(editStockRules, editForm);
+const openEditModal = (stock) => {
+	console.log(stock);
+	editedStock.value = null;//resetting the value just in case
+	editedStock.value = stock;
+	editForm.id = stock.id;
+	editForm.description = stock.description;
+	editForm.quantityInUnit = stock.quantityInUnit;
+	editForm.type = stock.type;
+	editForm.unit = stock.unit;
+	editVisible.value = true
+}
+
+
+
+
+const toggle = (event) => {
+    op.value.toggle(event);
+}
+
+const items = (stock) => [
+    {
+        label: 'Edit',
+        icon: 'bx bx-edit fs-4 text-white',
+        command: () => {
+			openEditModal( stock)
+        }
+    },
+	{
+        label: 'Take/Use Stock',
+        icon: 'bx bx-minus-circle fs-4 text-white',
+        command: () => {
+            openStockMovementModal(stock);
+        }
+    },
+    // {
+    //     label: 'Delete',
+    //     icon: 'bx bx-trash text-danger fs-4 ',
+    //     command: () => {
+    //         deleteRecord(region)
+    //     }
+    // }
+];
+
+const editBranding = (branding) => {
+    brandings.value.forEach(c => c.isEditing = false);
+    branding.isEditing = true;
+};
+
+
+const stockMovement = ref(null);
+const stockMovementForm = reactive({
+    movementType: '',
+	stock: stockMovement?.id,
+	staff: user?.activeUserId,
+	quantity: 0,
+});
+const stockMovementRules = { 
+    movementType: { required },
+    quantity: { required },
+};
+const stockMvV$ = useVuelidate(stockMovementRules, stockMovementForm);
+const openStockMovementModal = (stock) => {
+	stockMovement.value = stock
+	stockMovementForm.stock = stock.id;
+	stockMovementVisible.value = true
+}
+
+const submitStockMovement = async () => {	
+	const isFormValid = await stockMvV$.value.$validate();
+    if (!isFormValid) {return;}
+	stock.stockMovement(stockMovementForm).then(response => {
+		toaster.success("Stock updated successfully");
+		getStock();
+		stockMovementVisible.value = false;
+	}).catch(error => {
+		toaster.error("Error updating stock");
+		console.log(error);
+	})
+};
+const updateStock = () => {
+	const formData = new FormData();
+	formData.append('file', selectedFile.value);
+	formData.append('description', editForm.description);
+	formData.append('quantityInUnit', editForm.quantityInUnit);
+	formData.append('type', editForm.type);
+	formData.append('unit', editForm.unit);
+loading.value = true;
+	
+	stock.updateStock(editForm.id,formData, config).then(response => {
+		toaster.success("Stock updated successfully");
+		getStock();
+		editVisible.value = false;
+		loading.value = false;
+	}).catch(error => {
+		loading.value = false;
+		toaster.error("Error updating stock");
+		console.log(error);
+	}).finally(() => {
+		loading.value = false;
+	})
+};
+
+
 </script>
 
 <template>
@@ -175,8 +297,8 @@ const viewStockImagePreview = (model) => {
 						  <div class="content">
 							<strong>Region:</strong> Gauteng Central<br>
 							<strong>Number of storage units:</strong> {{ warehouse?.numberOfUnits }} unit(s)<br>
-							<strong>Capacity:</strong> 50%<br>
-							<strong>Number of items:</strong> 1500
+							<strong>Capacity:</strong> {{ warehouse?.capacity }}%<br>
+							<strong>Number of items:</strong> {{ warehouse?.numberOfItems }}
 						  </div>
 						</div>
 					  </div>
@@ -212,21 +334,21 @@ const viewStockImagePreview = (model) => {
 				
 
 				 <div class="row mt-4 ">
-					<div class="col-lg-1"></div>
+					<!-- <div class="col-lg-1"></div> -->
 					<div class="col-12 col-lg-3">
 						<div class="card radius-10">
 							 <div class="card-body">
 								<div class="card card-custom">
 									<h5>Stock check</h5>
-									<p class="text-light"><strong>Storage Capacity:</strong> 50%</p>
-									<p class="text-light"><strong>Days since last check:</strong> 15 Days</p>
-									<p class="text-light"><strong>Checked by:</strong> Tumelo Moloka</p>
+									<p class="text-light"><strong>Storage Capacity:</strong> {{ viewedUnit?.capacity }}%</p>
+									<!-- <p class="text-light"><strong>Days since last check:</strong> 15 Days</p>
+									<p class="text-light"><strong>Checked by:</strong> Tumelo Moloka</p> -->
 								  </div>
-							
-								  <div class="card card-custom">
+								  
+								  <div class=" card-custom">
 									<h5>Inventory accuracy</h5>
 									<div class="chart-container">
-									  <canvas id="inventoryAccuracyChart"></canvas>
+										<CustomApex v-show="unitId" :viewedUnit="viewedUnit" />
 									</div>
 								  </div>
 							 </div>
@@ -234,7 +356,7 @@ const viewStockImagePreview = (model) => {
 					</div>
 
 
-					<div class="col-12 col-lg-6 d-flex">
+					<div class="col-12 col-lg-9 d-flex">
 						<div class="card radius-10 w-100">
 						  <div class="card-header">
 							  <div class="d-flex align-items-center">
@@ -262,17 +384,29 @@ const viewStockImagePreview = (model) => {
 								  <tbody>
 									<tr v-if="brandings?.length > 0" v-for="branding in brandings" class="maz-table-row-height">
 										<td>
-										  <Avatar @click="viewStockImagePreview(branding)" :image="envPath + branding.stockImage" class="mr-2 cursor-pointer" size="large" shape="circle" />
+										  <Avatar  @click="viewStockImagePreview(branding)" 
+										  :image="branding.stockImage ? envPath + branding.stockImage : `https://ui-avatars.com/api/?name=${ branding.description }&background=4263C5`" 
+										   class="mr-2 cursor-pointer"  shape="circle" />
 										
 										</td>
-								   <td>{{branding.description}}</td>
-								   <td>{{branding.quantity}}</td>
+								   <td >{{branding.description}}</td>
+								
+								   <td>{{branding.quantityInUnit}}</td>
+								   <td>
+									<SplitButton  @click="editBranding(branding)" class="text-white" label="" 
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="items(branding)"/>
+								   </td>
+								 
 								  </tr>
 								  <tr v-else ><td colspan="7" class="text-center text-danger">No results found.</td></tr>
 			   
 								 </tbody>
 							   </table>
 							 </div>
+
+							 
 							 <div class="table-responsive table table-dark table-striped w-50">
 								<table class="table align-middle mb-0">
 								 <thead class="table-light">
@@ -287,14 +421,20 @@ const viewStockImagePreview = (model) => {
 								  </thead>
 								  <tbody>
 									<tr v-if="merchendiseList?.length > 0" v-for="merch in merchendiseList" class="maz-table-row-height">
-								   <td>
-									<div class="card flex justify-center">
-										<Avatar image="/images/avatar/amyelsner.png" class="mr-2" size="xlarge" shape="circle" />
-									</div>
-								   </td>
+										<td>
+											<Avatar  @click="viewStockImagePreview(merch)" 
+											:image="merch.stockImage ? envPath + merch.stockImage : `https://ui-avatars.com/api/?name=${ merch.description }&background=4263C5`" 
+											 class="mr-2 cursor-pointer"  shape="circle" />
+										  
+										  </td>
 								   <td>{{merch.description}}</td>
-								   <td>{{merch.quantity}}</td>
-								   <td></td>
+								   <td>{{merch.quantityInUnit}}</td>
+								   <td>
+									<SplitButton  @click="editBranding(merch)" class="text-white" label="" 
+													icon="bx bx-cog fs-4" 
+													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													:model="items(merch)"/>
+								   </td>
 								  </tr>
 			   
 								  <tr v-else ><td colspan="7" class="text-center text-danger">No results found.</td></tr>
@@ -310,6 +450,96 @@ const viewStockImagePreview = (model) => {
 
 			</div>
 		</div>
+
+		<Dialog v-model:visible="stockMovementVisible" position="top" modal header="Move Stock" style="width: 30rem">
+               
+			<form @submit.prevent="submitStockMovement" class="row mt-3">
+				<div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<label for="input1" class="d-flex form-label">Stock type</label>
+						   <select v-model="stockMovementForm.movementType" class="form-control">
+							   <option :value="''" disabled :selected="true" >Choose stock type</option>
+							   <option value="IN">IN</option>
+							   <option value="OUT">OUT</option>
+						   </select>
+						   <div class="input-errors" v-for="error of stockMvV$.movementType.$errors" :key="error.$uid">
+						   <div class="text-danger">Stock type is required</div>
+						</div>
+				</div>                        
+				</div>
+
+
+				<div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<label for="input1" class="d-flex form-label">Quantity
+						</label>
+						   <InputNumber inputId="minmax" :min="0" v-model="stockMovementForm.quantity" />
+						   <div class="input-errors" v-for="error of stockMvV$.quantity.$errors" :key="error.$uid">
+						   <div class="text-danger">Quantity is required</div>
+						</div>
+				</div>                        
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
+					<div v-if="loading" class="spinner-border text-white" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+					Update
+				</button>
+				</div>
+				
+			</form>
+        </Dialog>
+
+		<Dialog v-model:visible="editVisible" position="top" modal header="Update Stock" style="width: 30rem">
+               
+			<form @submit.prevent="updateStock" class="row mt-3">
+				<div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<label for="input1" class="form-label">Description</label>
+						   <InputText type="text" v-model="editForm.description" />
+						   <div class="input-errors" v-for="error of editStockV$.description.$errors" :key="error.$uid">
+						   <div class="text-danger">Description is required</div>
+					</div>
+				</div>                        
+				</div>
+
+
+				<div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<label for="input1" class="d-flex form-label">Stock type</label>
+						   <select v-model="editForm.type" class="form-control">
+							   <option :value="''" disabled :selected="true" >Choose stock type</option>
+							   <option value="BRANDING">Branding</option>
+							   <option value="MERCH">Merchandising</option>
+						   </select>
+						   <div class="input-errors" v-for="error of editStockV$.type.$errors" :key="error.$uid">
+						   <div class="text-danger">Stock type is required</div>
+						</div>
+				</div>                        
+				</div>
+				 <div class="col-md-12">
+					<div class="card my-card flex justify-center">
+						<FileUploadGeneric 
+						:showFilePreview="showFilePreview" 
+						accept="image/*" 
+						fileType="image" 
+						@fileUploaded="onFileChange"
+							@fileDropped="onfileDropped"
+						/>
+				</div>                        
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
+					<div v-if="loading" class="spinner-border text-white" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+					Update
+				</button>
+				</div>
+				
+			</form>
+        </Dialog>
 		<Dialog v-model:visible="visible" position="top" modal :header="`Add Stock to ${unitName}`" style="width: 30rem">
                
 			<form @submit.prevent="submitStock" class="row mt-3">

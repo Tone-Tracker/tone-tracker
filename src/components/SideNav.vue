@@ -30,7 +30,7 @@ const visible = navStore.isNavVisible;
 </script>
 
 <template>
-  <div class="sidebar-wrapper toggled d-flex" data-simplebar="init">
+  <div class="sidebar-wrapper toggled d-flex container" data-simplebar="init">
     <div
       class="simplebar-wrapper"
       style="margin: 0px; width: auto; background: #1c1c1c"
@@ -61,7 +61,9 @@ const visible = navStore.isNavVisible;
     >
       <Drawer
       v-model:visible="navStore.isNavVisible"
-        style="background-color: black; width: 285px; border: none; margin-top: 153px"
+      :modal="false"
+      :showCloseIcon="false"
+      style="background-color: black; width: 241px; border: none; margin-top: 153px; margin-left: 45px"
       >
         <template #container="{ closeCallback }">
           <div class="flex flex-col h-full">
@@ -107,7 +109,8 @@ const visible = navStore.isNavVisible;
                 :user="user"
               />
               </div>
-              
+                            <!-- <CLIENT /> -->
+
             </div>
           </div>
         </template>
@@ -150,7 +153,7 @@ const visible = navStore.isNavVisible;
 </template>
 
 <style scoped>
-  @media (min-width: 768px) and (max-width:1199px) {
+  @media (min-width: 300px) and (max-width:1199px) {
     .simplebar-wrapper {
       width: 0px !important;
     }
@@ -186,6 +189,23 @@ const visible = navStore.isNavVisible;
     cursor: pointer; /* Pointer cursor on hover */
     transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
   }
+
+   /* ... Drawers ... */
+
+   :deep(.p-drawer-mask) {
+    background-color: transparent !important;
+  }
+
+  :deep(.p-drawer) {
+    box-shadow: none !important;
+  
+  }
+  .p-drawer {
+    /* left: 45px !important; */
+    /* width: 29px !important; */
+  }
+
+ 
 
   
 </style>
