@@ -35,12 +35,12 @@
 								 <div class="dropdown ms-auto">
                                     
                                  </div>
-								 <div class="dropdown ms-auto">
+								 <!-- <div class="dropdown ms-auto">
                                     <select class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
 										<option selected="selected">Daily</option>
 										<option value="1">Weekly</option>
 									</select>
-                                 </div>
+                                 </div> -->
                              </div>
                          </div>
                            <div class="card-body">
@@ -104,49 +104,13 @@
                             </div>
                             <div class="card-body">
                                 <div class="chart-container1">
-									<canvas id="lineChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
+									<canvas id="itemsSold" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
 								</div>
                             </div>
                          </div>
                     </div>
                     
                 </div>
-
-                <div class="row mt-4">
-                    <div class="col-12 col-lg-12 d-flex">
-                       <div class="card radius-10 w-50">                      
-                           <div class="card-body">
-                            <div class="chart-container1">
-                                <canvas id="itemsSold" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
-                            </div>
-                           </div>                           
-                       </div>
-                       <div class="card radius-10 w-50">  
-							<div class="card-body">
-								<div class="chart-container1">
-									<canvas id="costPerElement" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
-								</div>
-							</div>
-					                        
-                    </div>
-                    </div>
-                  
-                 </div>
-
-
-                 <div class="row mt-4">
-                    <div class="col-12 col-lg-12 d-flex">
-                       <div class="card radius-10">                      
-                           <div class="card-body">
-                            <div class="chart-container1">
-                                <canvas id="numberOfActivations" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
-                            </div>
-                           </div>                           
-                       </div>
-                    </div>
-                  
-                 </div>
-
 			</div>
 		</div>
 	<!--start switcher-->
@@ -161,88 +125,11 @@ import { onMounted } from 'vue';
     onMounted(() => {
         barChart();
         pieChart();
-        lineChart();
         horizontalChart();
-        costPerElement();
         itemsSold();
-        numberOfActivations();
     })
 
-    const numberOfActivations = () => {
-        var ctx = document.getElementById('numberOfActivations').getContext('2d');
-        new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['JHB/VALL', 'DBN', 'CPT'],
-            datasets: [{
-                label: 'Number Of Activations',
-                data: [23, 50, 87],
-                backgroundColor: [
-                'rgb(95, 193, 255)',
-                ],
-                borderColor: [
-                'rgb(95, 193, 255)',
-                ],
-                borderWidth: 1
-            },
-            {
-                label: 'Buy In',
-                data: [65, 59, 80, 81, 40],
-                backgroundColor: [
-                'rgb(1, 89, 144)',
-                ],
-                borderColor: [
-                'rgb(1, 89, 144)',
-                ],
-                borderWidth: 1
-            },
-            {
-                label: 'Sales Out',
-                data: [35, 49, 70, 71, 20],
-                backgroundColor: [
-                'rgb(165, 196, 216)',
-                ],
-                borderColor: [
-                'rgb(165, 196, 216)',
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-    responsive: true,
-    interaction: {
-      mode: 'index',
-      intersect: false,
-    },
-    stacked: false,
-    plugins: {
-      title: {
-        display: false,
-        text: 'Chart.js Line Chart - Multi Axis'
-      }
-    },
-    scales: {
-      y: {
-        type: 'linear',
-        display: true,
-        position: 'left',
-        text: 'Number Of Activations',
-      },
-      y1: {
-        type: 'linear',
-        display: true,
-        position: 'right',
-        text: 'Number Of Activations',
 
-        // grid line settings
-        grid: {
-          drawOnChartArea: false, // only want the grid lines for one axis to show up
-        },
-      },
-    }
-  },
-    });
-    }
         const itemsSold = () => {
         var ctx = document.getElementById('itemsSold').getContext('2d');
         new Chart(ctx, {
@@ -297,59 +184,7 @@ import { onMounted } from 'vue';
     });
     }
    
-    const costPerElement = () => {
-        var ctx = document.getElementById('costPerElement').getContext('2d');
-        new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Production', 'Influencers', 'Internal Launch', 'Storage', 'Concept and Ideation'],
-            datasets: [{
-                label: 'Cost Per Element',
-                data: [65, 59, 80, 81, 56, 55],
-                backgroundColor: [
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)'
-                ],
-                borderColor: [
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            barPercentage: 0.6,
-            categoryPercentage: 0.5,
-            plugins: {
-				legend: {
-					position:'bottom',
-					display: true,
-                    labels: {
-                    filter: function(item) {
-                        return item.text !== 'Cost Per Element';
-                    }
-                }
-				}
-			},
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-    }
+   
     const horizontalChart = () => {
         var ctx = document.getElementById('horizontalChart').getContext('2d');
     new Chart(ctx, {
@@ -451,68 +286,6 @@ const barChart = () => {
     });
 }
 
-const lineChart = () => {
-    var ctx = document.getElementById('lineChart').getContext('2d');
-        new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul','Aug','Sep','Oct','Nov','Dec'],
-            datasets: [{
-                label: 'Planned',
-                data: [18, 25, 14, 12, 17, 8, 10, 11, 9, 60, 5, 40],
-                backgroundColor: [
-                    '#FE9947'
-                ],
-                lineTension: 0,
-                borderColor: [
-                    '#FE9947'
-                ],
-                borderWidth: 3
-            },
-            {
-                label: 'Actual',
-                data: [12, 30, 16, 23, 8, 14, 11, 10, 19, 63, 50, 41],
-                backgroundColor: [
-                    '#A93ABA'
-                ],
-                tension: 0,
-                borderColor: [
-                    '#A93ABA'
-                ],
-                borderWidth: 3
-            },
-            {
-				type: 'line',
-                label: 'Billable Hours %',
-                data: [5, 30, 16, 23, 8, 14, 11, 10, 19, 63, 50, 41],
-                backgroundColor: [
-                    '#FE0040'
-                ],
-                tension: 0.4,
-                borderColor: [
-                    '#FE0040'
-                ],
-                borderWidth: 4
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            barPercentage: 0.6,
-            categoryPercentage: 0.5,
-            plugins: {
-				legend: {
-					position:'bottom',
-					display: true,
-				}
-			},
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
 
 const pieChart = () => {
     var ctx = document.getElementById("pieChart").getContext('2d');
