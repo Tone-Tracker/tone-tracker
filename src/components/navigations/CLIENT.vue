@@ -58,8 +58,8 @@ const getAllCampaigns = () => {
 }
 
 const getAllActivations = () => {
-  activationStore.getAllActivations(props.user.role,2).then((res) => {
-    activations.value = res.data.content
+  activationStore.getAllActivationsForTemporal().then((res) => {
+    activations.value = res.data
   });
 }
 const toggle = (event) => {

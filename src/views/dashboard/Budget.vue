@@ -70,7 +70,6 @@ import { onMounted } from 'vue';
 
     onMounted(() => {
         barChart();
-        pieChart();
         horizontalChart();
         itemsSold();
     })

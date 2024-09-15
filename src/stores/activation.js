@@ -43,6 +43,11 @@ export const useActivation = defineStore('activation', () => {
       }
       
     }
+
+    const getAllActivationsForTemporal = () => { //getting all activations for temporal, we need to re-visit this endpoint
+      return axiosInstance.get(`/api/activations/admins`);
+    }
+
     const getActivationsByCampaignId = (campaignId) => {
       return axiosInstance.get(`/api/activations/campaign/${campaignId}`);
     }
@@ -116,7 +121,7 @@ export const useActivation = defineStore('activation', () => {
       return axiosInstance.get(`/api/activations/${activationId}/report`);
     }
   
-    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,
+    return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,getAllActivationsForTemporal,
              uploadImages , getAllActivations, getActivationImages, getAllActivationsAdmins, getAllActivationsRegionalManager, 
              getAllActivationsManager, getAllTasksLocation, getAllTrainingMaterial,recordUserOpenedFile, submitTrainingMaterial,
              deleteTrainingMaterial, getAllActivationsPromoter, getAllActivationsSupplier, getAllActivationByRegionId,getActivationReport
