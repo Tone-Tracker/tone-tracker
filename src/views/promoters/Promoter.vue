@@ -51,6 +51,7 @@ onMounted(() => {
   getAllSizes();
 });
 
+
 const rules = {
   user: { required },
   dressSize: { required },
@@ -102,22 +103,32 @@ const onSubmit = async () => {
   }
 };
 
+const onUnitChange = (event) => {
+  const selectedGender = event.target.value.toLowerCase(); // Get the selected gender and convert to lowercase
+  
+  if (selectedGender === 'all') {
+    getAllPromoters(); // Reset to all promoters if 'all' is selected
+  } else {
+    promoters.value = promoters.value.filter((promoter) => {
+      const userGender = promoter.userDetails.gender?.toLowerCase(); // Assuming you have a gender field in userDetails
+      return userGender === selectedGender;
+    });
+  }
+};
 
-const onInput = (  ) => {
-  const searchTerm = searchInput.value.toLowerCase();
+const onInput = () => {
+  if (searchInput.value) {
+    const searchTerm = searchInput.value.toLowerCase();
 
-  if (searchTerm) {
-    filteredPromoters.value = promoters.value.filter((promoter) => {
+    promoters.value = promoters.value.filter((promoter) => {
+      console.log(promoter);
       const userDetails = promoter.userDetails;
-      const experiences = promoter.experiences
-        .map((exp) => `${exp.name} ${exp.description} ${exp.duration}`)
-        .join(' ');
-        console.log(filteredPromoters.value);
+      const experiences = promoter.experiences.map(exp => `${exp.name} ${exp.description} ${exp.duration}`).join(" ");
 
       return (
         promoter.height?.toString().includes(searchTerm) ||
         promoter.topSize?.toLowerCase().includes(searchTerm) ||
-        promoter.pantsSize?.toLowerCase().includes(searchTerm) ||
+        promoter.pantsSize == searchInput.value ||
         promoter.dressSize?.toLowerCase().includes(searchTerm) ||
         promoter.bio?.toLowerCase().includes(searchTerm) ||
         userDetails.firstName?.toLowerCase().includes(searchTerm) ||
@@ -128,7 +139,7 @@ const onInput = (  ) => {
       );
     });
   } else {
-    filteredPromoters.value = promoters.value; 
+    getAllPromoters();
   }
 };
 
@@ -147,16 +158,15 @@ const getAllSizes = async () => {
 };
 const getAllPromoters = async () => {
   showLoading.value = true;
-  try {
-    const response = await promoterStore.getPromoters();
-    promoters.value = response.data.content;    // Store the full list
-    filteredPromoters.value = promoters.value;  // Initially display all promoters
-  } catch (error) {
+  promoterStore.getPromoters().then(response => {
+    showLoading.value = false;
+    promoters.value = response.data.content;
+  }).catch(error => {
     toaster.error("Error fetching users");
     console.log(error);
-  } finally {
+  }).finally(() => {
     showLoading.value = false;
-  }
+  });
 };
 const getAllUsers = async () => {
   showLoading.value = true;
@@ -360,11 +370,12 @@ function getRandomColor() {
           <div class="card-body">
             <div class="d-lg-flex align-items-center mb-4 gap-3">
               <div class="position-relative">
-    <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5" placeholder="Search" />
-    <span class="position-absolute top-50 product-show translate-middle-y">
-      <i class="bx bx-search"></i>
-    </span>
-  </div>
+                <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5"
+                  placeholder="Search">
+                <span class="position-absolute top-50 product-show translate-middle-y">
+                  <i class="bx bx-search"></i>
+                </span>
+              </div>
               <div class="ms-auto">
                 <!-- <a  @click="openPosition('top')" class="btn mr-2 maz-gradient-btn radius-30 mt-2 mt-lg-0">
                   <i class="bx bxs-plus-square"></i>Add Promoter</a> -->
@@ -386,7 +397,7 @@ function getRandomColor() {
 					  </div>
             </div>
             <div class="row  g-2">
-  <div v-for="promoter in filteredPromoters" :key="promoter.id" class="col-md-3">
+  <div v-for="promoter in promoters" :key="promoter.id" class="col-md-3">
     <div class="gallery card w-100">
       <!-- Promoter Name -->
       <div class="asc py-3">{{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
