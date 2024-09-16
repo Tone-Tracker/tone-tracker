@@ -131,7 +131,7 @@ const exportToPDF = () => {
     function fnExcelReport() {
   var table = document.getElementById('my-invoice'); // id of table
   var tableHTML = table.outerHTML;
-  var fileName = 'download.xls';
+  var fileName = 'crm_data.xls';
 
   var msie = window.navigator.userAgent.indexOf("MSIE ");
 

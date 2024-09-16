@@ -130,6 +130,9 @@ const mountDoghunrt = () => {
                 </router-link>
               </div>
             </div>
+            <div class="col-12" v-else>
+              <div class="text-center text-danger" >No data found.</div>
+            </div>
           </div>
        
         </div>
@@ -138,7 +141,7 @@ const mountDoghunrt = () => {
           <div class="">
             <h4 class="mb-2 ml-2">Available Promoters</h4>
           </div>
-          <div v-for="user in promoters" :key="user.id" class="col-img ">
+          <div v-for="user in promoters" :key="user.id" class="col-img">
             <div  class="gallery">
             
                 <div class="card flex justify-center">

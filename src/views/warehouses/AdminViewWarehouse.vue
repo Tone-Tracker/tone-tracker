@@ -325,7 +325,7 @@ const viewUnits = async (warehouse) => {
                 <div class="card">
                     <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
 
-                <div class="position-relative">
+                <div class="position-relative mx-4">
                   <input
                     v-model="searchInput"
                     @input="onInput"
@@ -343,13 +343,12 @@ const viewUnits = async (warehouse) => {
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-12 col-xl-8 d-flex">
-                                <div class="card radius-10 w-100">
+                                <div class=" radius-10 w-100">
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <table class="table mb-0">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>#</th>
                                                         <th>Warehouse</th>
                                                         <th>Units</th>
                                                         <th>Address</th>
@@ -358,8 +357,7 @@ const viewUnits = async (warehouse) => {
                                                 </thead>
                                                 <tbody>
                                                     <tr v-if="warehouses.length > 0" v-for="(region, index) in warehouses" :key="region.id">
-                                                        <td>{{ index + 1 }}</td>
-                                                        <td>{{ region.name }}</td>
+                                                    <td>{{ region.name }}</td>
                                                         <td>
                                                             <router-link :to="`/view-warehouse/${region.id}?name=${region.name}`" v-tooltip.bottom="region.unitsList?.length + ' units'"
                                                               class="btn maz-gradient-btn position-relative me-lg-5"> 
@@ -388,7 +386,7 @@ const viewUnits = async (warehouse) => {
                                 </div>
                             </div>
                             <div class="col-lg-12 col-xl-4 d-flex">
-                                <div class="card w-100 radius-10">
+                                <div class=" w-100 radius-10">
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <form @submit.prevent="onWarehouseSubmit" class="row">
