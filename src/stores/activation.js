@@ -51,6 +51,10 @@ export const useActivation = defineStore('activation', () => {
     const getActivationsByCampaignId = (campaignId) => {
       return axiosInstance.get(`/api/activations/campaign/${campaignId}`);
     }
+    
+    const getTimeSheetReport = (activationId) => {
+      return axiosInstance.get(`/api/activations/${activationId}/timesheet`);
+    }
   
     const getActivationByStaffId = (staffId) => {
       return axiosInstance.get(`/api/activations/staff/${staffId}`);
@@ -122,7 +126,7 @@ export const useActivation = defineStore('activation', () => {
     }
   
     return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,getAllActivationsForTemporal,
-             uploadImages , getAllActivations, getActivationImages, getAllActivationsAdmins, getAllActivationsRegionalManager, 
+             uploadImages , getAllActivations, getActivationImages, getAllActivationsAdmins, getAllActivationsRegionalManager, getTimeSheetReport,
              getAllActivationsManager, getAllTasksLocation, getAllTrainingMaterial,recordUserOpenedFile, submitTrainingMaterial,
              deleteTrainingMaterial, getAllActivationsPromoter, getAllActivationsSupplier, getAllActivationByRegionId,getActivationReport
             }
