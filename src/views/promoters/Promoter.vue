@@ -20,6 +20,7 @@ import Badge from 'primevue/badge';
 import { useSizes } from '@/stores/sizes';
 import Popover from 'primevue/popover';
 import Select from 'primevue/select';
+import Paginator from 'primevue/paginator';
 
 const promoterStore = usePromoter();
 const toaster = useToaster();
@@ -31,9 +32,15 @@ const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 let users = ref([]);
 let sizes = ref([]);
 let promoters = ref([]);
+let paginatedPromoters = ref([]); // This will store the promoters to be displayed on the current page
 let showLoading = ref(false);
 let searchInput = ref('');
 const filteredPromoters = ref([]);
+
+// Pagination Variables
+const currentPage = ref(1); // Current page
+const rowsPerPage = ref(10); // Rows per page
+const totalRecords = ref(0); // Total number of records
 
 const form = reactive({
   user: null,
@@ -52,7 +59,6 @@ onMounted(() => {
   getAllSizes();
 });
 
-
 const rules = {
   user: { required },
   dressSize: { required },
@@ -61,28 +67,13 @@ const rules = {
   topSize: { required },
   bio: { required },
   gender: { required },
-
 };
 const v$ = useVuelidate(rules, form);
-
 
 const onSubmit = async () => {
   const isFormValid = await v$.value.$validate();
   if (!isFormValid) { return; }
-  // let formData = new FormData();
-  // formData.append('user', form.user);
-  // formData.append('dressSize', form.dressSize);
-  // formData.append('pantsSize', form.pantsSize);
-  // formData.append('client', form.client);
-  // formData.append('topSize', form.topSize);
-  // formData.append('height', form.height);
-  // formData.append('bio', form.bio);
-  // //loop files and append to form data
-  // for (let i = 0; i < files.value.length; i++) {
-  //   formData.append('files', files.value[i]);
-  // }
-
-
+  
   if (isEdit.value) {
     promoterStore.updatePromoter(promoterId.value, form).then(function (response) {
       toaster.success("Promoter updated successfully");
@@ -104,33 +95,27 @@ const onSubmit = async () => {
   }
 };
 
-
 const onGenderChange = (event) => {
-
-  let  selectedGender = null; 
-   selectedGender = event.target.value.toLowerCase();
-
+  let selectedGender = event.target.value.toLowerCase();
   if (selectedGender === 'all') {
-    getAllPromoters(); 
+    getAllPromoters();
   } else {
     
     promoters.value = promoters.value.filter((promoter) => {
-    
+      // console.log('promoter',promoter);
       return promoter.gender?.toLowerCase() === selectedGender.toLowerCase();
     });
+     console.log('promoters',promoters.value);
+    updatePaginatedPromoters(); // Ensure the list is paginated after filtering
   }
 };
-
 
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
-
     promoters.value = promoters.value.filter((promoter) => {
-      console.log(promoter);
       const userDetails = promoter.userDetails;
       const experiences = promoter.experiences.map(exp => `${exp.name} ${exp.description} ${exp.duration}`).join(" ");
-
       return (
         promoter.height?.toString().includes(searchTerm) ||
         promoter.topSize?.toLowerCase().includes(searchTerm) ||
@@ -144,12 +129,40 @@ const onInput = () => {
         experiences?.toLowerCase().includes(searchTerm)
       );
     });
+    updatePaginatedPromoters(); // Ensure the list is paginated after search
   } else {
     getAllPromoters();
   }
 };
 
+// Fetch all promoters and paginate the result
+const getAllPromoters = async () => {
+  showLoading.value = true;
+  promoterStore.getPromoters().then(response => {
+    showLoading.value = false;
+    promoters.value = response.data.content;
+    totalRecords.value = promoters.value.length;
+    updatePaginatedPromoters(); // Update paginated data after fetching promoters
+  }).catch(error => {
+    toaster.error("Error fetching users");
+    console.log(error);
+  }).finally(() => {
+    showLoading.value = false;
+  });
+};
 
+const updatePaginatedPromoters = () => {
+  const start = (currentPage.value - 1) * rowsPerPage.value;
+  const end = start + rowsPerPage.value;
+  paginatedPromoters.value = promoters.value.slice(start, end);
+};
+
+// Handle page change in pagination
+const onPageChange = (event) => {
+  currentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
+  rowsPerPage.value = event.rows;
+  updatePaginatedPromoters(); // Update paginated data when the page changes
+};
 
 const getAllSizes = async () => {
   showLoading.value = true;
@@ -162,18 +175,7 @@ const getAllSizes = async () => {
     showLoading.value = false;
   });
 };
-const getAllPromoters = async () => {
-  showLoading.value = true;
-  promoterStore.getPromoters().then(response => {
-    showLoading.value = false;
-    promoters.value = response.data.content;
-  }).catch(error => {
-    toaster.error("Error fetching users");
-    console.log(error);
-  }).finally(() => {
-    showLoading.value = false;
-  });
-};
+
 const getAllUsers = async () => {
   showLoading.value = true;
   userStore.getUserByRole('TTG_TALENT').then(response => {
@@ -187,7 +189,6 @@ const getAllUsers = async () => {
   });
 };
 
-
 const deletePromoter = (promoter) => {
   promoterStore.deletePromoter(promoter.id).then(response => {
     toaster.success("Promoter deleted successfully");
@@ -197,9 +198,6 @@ const deletePromoter = (promoter) => {
     console.log(error);
   });
 };
-
-
-
 
 let user_id = ref(null);
 const visible = ref(false);
@@ -219,14 +217,12 @@ const onUserChange = (event) => {
   form.user = users.value.find(user => user.firstName + ' ' + user.lastName === event.value).id;
 };
 
-
-
 const openPosition = (pos, promoter) => {
-  if (promoter) {//edit
+  if (promoter) {
     isEdit.value = true;
     promoterId.value = promoter.id;
-    form.user = promoter.user
-    user_id.value = users.value.find(user => user.id === promoter.user).firstName + ' ' + users.value.find(user => user.id === promoter.user).lastName
+    form.user = promoter.user;
+    user_id.value = users.value.find(user => user.id === promoter.user).firstName + ' ' + users.value.find(user => user.id === promoter.user).lastName;
     Object.assign(form, {
       dressSize: promoter.dressSize,
       pantsSize: promoter.pantsSize,
@@ -235,9 +231,9 @@ const openPosition = (pos, promoter) => {
       bio: promoter.bio,
       gender: promoter.gender
     });
-    myGender.value = form.gender
+    myGender.value = form.gender;
   } else {
-    isEdit.value = false
+    isEdit.value = false;
     Object.assign(form, {
       user: null,
       user_id: null,
@@ -247,68 +243,17 @@ const openPosition = (pos, promoter) => {
       height: null,
       bio: null,
       gender: null
-    })
+    });
   }
   position.value = pos;
   visible.value = true;
-}
-
-const deleteRecord = (event, promoter) => {
-  confirm.require({
-    target: event.currentTarget,
-    message: 'Do you want to delete this promoter?',
-    icon: '',
-    rejectProps: {
-      label: 'Cancel',
-      severity: '',
-      outlined: true
-    },
-    acceptProps: {
-      label: 'Delete',
-      severity: 'danger'
-    },
-    accept: () => {
-      deletePromoter(promoter);
-    },
-    reject: () => {
-      // do nothing
-    }
-  });
 };
+
 
 const $primevue = usePrimeVue();
 
-const totalSize = ref(0);
-const totalSizePercent = ref(0);
 const files = ref([]);
 
-const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
-  removeFileCallback(index);
-  totalSize.value -= parseInt(formatSize(file.size));
-  totalSizePercent.value = totalSize.value / 10;
-};
-
-const onClearTemplatingUpload = (clear) => {
-  clear();
-  totalSize.value = 0;
-  totalSizePercent.value = 0;
-};
-
-const onSelectedFiles = (event) => {
-  files.value = event.files;
-  files.value.forEach((file) => {
-    totalSize.value += parseInt(formatSize(file.size));
-  });
-};
-
-const uploadEvent = (callback) => {
-  totalSizePercent.value = totalSize.value / 10;
-  callback();
-};
-
-const onTemplatedUpload = () => {
-  // toast.add({ severity: "info", summary: "Success", detail: "File Uploaded", life: 3000 });
-};
 
 const formatSize = (bytes) => {
   const k = 1024;
@@ -331,40 +276,8 @@ const genders = ref([
 ]);
 const myGender = ref();
 const genderChange = (event) => {
-  //  myGender.value = event.value.code;
-  form.gender = myGender.value.code
-}
-const getDressSize = (size) => {
-  if (!size) { return "" }
-  if (size === "SMALL") {
-    return "S"
-  } else if (size === "MEDIUM") {
-    return "M"
-  } else if (size === "LARGE") {
-    return "L"
-  } else if (size === "X_LARGE") {
-    return "XL"
-  } else if (size === "XX_LARGE") {
-    return "XXL"
-  } else if (size === "XXX_LARGE") {
-    return "XXXL"
-  } else if (size === "X_SMALL") {
-    return "XS"
-  }
-}
-const op = ref();
-const selectedPromoter = ref(null);
-const toggle = (event, promoter) => {
-  selectedPromoter.value = promoter;
-  op.value.toggle(event);
-}
-
-function getRandomColor() {
-  // Generates a random color
-  const colors = ['#FF5733', '#33C1FF', '#FF33A1', '#33FF57', '#FFC133', '#B833FF'];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
-
+  form.gender = myGender.value.code;
+};
 </script>
 
 <template>
@@ -376,80 +289,67 @@ function getRandomColor() {
           <div class="card-body">
             <div class="d-lg-flex align-items-center mb-4 gap-3">
               <div class="position-relative">
-                <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5"
-                  placeholder="Search">
+                <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5" placeholder="Search">
                 <span class="position-absolute top-50 product-show translate-middle-y">
                   <i class="bx bx-search"></i>
                 </span>
               </div>
-              <div class="ms-auto">
-                <!-- <a  @click="openPosition('top')" class="btn mr-2 maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                  <i class="bx bxs-plus-square"></i>Add Promoter</a> -->
-                <!-- <label for="csv-file" class="mx-2 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                    <i class="bx bx-import"></i>Upload CSV</label>
-                    <input type="file" id="csv-file" ref="file" hidden /> -->
+              <div class="row">
+              <div class="col-lg-3 col-md-6">
+                <select @change="onGenderChange" class="form-select form-select-sm bg-maz-light">
+                  <option selected disabled>Filter by sex</option>
+                  <option value="all">All</option>
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                </select>
               </div>
             </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-6">
-						<select @change="onGenderChange" class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
-							<option  selected="selected" disabled>Filter by sex</option>
-							<option>all</option>
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-							
-						
-						</select>
-					  </div>
+              <div class="ms-auto"></div>
             </div>
-            <div class="row  g-2">
-  <div v-for="promoter in promoters" :key="promoter.id" class="col-md-2">
-    <div class="gallery card w-100">
-      <!-- Promoter Name -->
-      <div class="asc py-3">{{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</div>
+            
+            
+            
+            <!-- Promoters list -->
+            <div class="row g-2">
+              <div v-for="promoter in paginatedPromoters" :key="promoter.id" class="col-md-3">
+                <div class="gallery card w-100">
+                  <div class="asc py-3">
+                    {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}
+                  </div>
+                  <router-link :to="{ path: `/profile/${promoter.userDetails?.id}/${promoter?.id}` }">
+                    <div style="height: 200px; overflow: hidden;">
+                      <img v-if="promoter.userDetails.path" :src="`${envPath}${promoter.userDetails.path}`" alt="Promoter Image" class="img-fluid w-100 h-100" style="object-fit: cover;" />
+                      <img src="../../assets/images/placeholder.jpg" v-else icon="pi pi-user" size="xlarge" />
+                    </div>
+                  </router-link>
+                  <div class="card-body">
+                    <div class="d-flex justify-content-end order-actions cursor-pointer">
+                      <a @click="openPosition('top', promoter)" class="cursor-pointer">
+                        <i class="bx bxs-edit"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-      <!-- Promoter Image or Placeholder -->
-      <router-link  :to="{ path: `/profile/${promoter.userDetails?.id}/${promoter?.id}` }">
-        <div style="height: 200px; overflow: hidden;">
-          <img v-if="promoter.userDetails.path"
-            :src="`${envPath}${promoter.userDetails.path}`"
-            alt="Promoter Image" class="img-fluid w-100 h-100" style="object-fit: cover;" />
-            <img src="../../assets/images/placeholder.jpg" v-else icon="pi pi-user" size="xlarge" />
-
-        </div>
-      </router-link>
-
- 
-      <div class="card-body">
-       
-        <div class="d-flex justify-content-end order-actions cursor-pointer">
-          <a @click="openPosition('top', promoter)" class="cursor-pointer">
-            <i class="bx bxs-edit"></i> 
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
+            <!-- Pagination -->
+            <Paginator
+              :first="(currentPage - 1) * rowsPerPage"
+              :rows="rowsPerPage"
+              :totalRecords="totalRecords"
+              :rowsPerPageOptions="[5, 10, 20, 30]"
+              @page="onPageChange"
+            />
           </div>
         </div>
-        <Popover ref="op" appendTo="body">
-          <p>{{ selectedPromoter.bio }}</p>
-        </Popover>
       </div>
     </div>
 
-
-    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter'"
-      :style="{ width: '50rem' }">
+    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter'" :style="{ width: '50rem' }">
       <div class="card flex justify-center">
         <label for="input1" class="form-label">Gender </label>
-        <Select v-model="myGender" :options="genders" @change="genderChange" optionLabel="name"
-          placeholder="Select gender" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
+        <Select v-model="myGender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select gender" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
         <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
           <div class="text-danger">Gender is required</div>
         </div>
@@ -466,9 +366,7 @@ function getRandomColor() {
         </div>
         <div class="col-md-3">
           <label for="pantsSize" class="form-label">Pants Size</label>
-
           <input v-model="form.pantsSize" class="form-control" id="pantsSize" />
-
           <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
             <div class="text-danger">Pants Size is required</div>
           </div>
@@ -496,11 +394,7 @@ function getRandomColor() {
             <div class="text-danger">Bio is required</div>
           </div>
         </div>
-
       </div>
-
-
-
 
       <div class="col-12 mt-4">
         <div class="d-grid">
@@ -510,9 +404,9 @@ function getRandomColor() {
         </div>
       </div>
     </Dialog>
-
   </Layout>
 </template>
+
 
 <style scoped>
 .mt-4 {
