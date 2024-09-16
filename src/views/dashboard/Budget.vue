@@ -45,7 +45,7 @@
                          </div>
                            <div class="card-body">
                             <div class="chart-container1">
-                                <canvas id="maz-bar" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
+                                <canvas id="timesheet-graph" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
                             </div>
                            </div>
                            
@@ -101,42 +101,52 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useCampaignStore } from '@/stores/useCampaign';
+
+const campaignStore = useCampaignStore();
+const timeSheetData = ref(null);
 
     onMounted(() => {
-        barChart();
+        getTimeSheets();
     });
-const barChart = () => {
-    var ctx = document.getElementById('maz-bar').getContext('2d');
-        new Chart(ctx, {
+
+    const getTimeSheets = async () => {
+  campaignStore.getTimeSheetReport(2).then(response => {
+    timeSheetData.value = response.data;
+    budgetChart();    
+  }).catch(error => {
+    console.log(error);
+  }).finally(() => {
+    
+  });
+};
+
+const getMonthName = (monthNumber) => {
+  const monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+  return monthNames[monthNumber - 1];
+};
+
+
+const budgetChart = () => {
+    
+    const labels = timeSheetData.value?.map(item => getMonthName(item[0])); 
+    const budgetData = timeSheetData.value?.map(item => item[1]); 
+
+    var ctx = document.getElementById('timesheet-graph').getContext('2d');
+    new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['1', '6', '2', '5', '7', '12', '23','24','25','26','27','28','29','30','31'],
+            labels: labels,  
             datasets: [{
-                label: 'Google',
-                data: [18, 25, 14, 12, 17, 8, 10, 11, 9, 60, 5, 40, 30, 24, 15],
-                backgroundColor: [
-                    '#0d6efd'
-                ],
-                lineTension: 0,
-                borderColor: [
-                    '#0d6efd'
-                ],
+                label: 'Budget',
+                data: budgetData, 
+                backgroundColor: '#0d6efd',
+                borderColor: '#0d6efd',
                 borderWidth: 3,
                 backgroundColor: 'rgb(154,58,177)',
-            },
-            {
-                label: 'Facebook',
-                
-                data: [12, 30, 16, 23, 8, 14, 11, 10, 19, 63, 50, 41, 33, 22, 12],
-                backgroundColor: [
-                    '#15ca20'
-                ],
-                tension: 0,
-                borderColor: [
-                    '#15ca20'
-                ],
-                borderWidth: 3
             }]
         },
         options: {
@@ -144,16 +154,11 @@ const barChart = () => {
             barPercentage: 0.6,
             categoryPercentage: 0.5,
             plugins: {
-				legend: {
-					position:'bottom',
-					display: true,
-                    labels: {
-                    filter: function(item) {
-                        return item.text !== 'Facebook' && item.text !== 'Google';
-                    }
+                legend: {
+                    position: 'bottom',
+                    display: true,
                 }
-				}
-			},
+            },
             scales: {
                 y: {
                     beginAtZero: true
@@ -161,7 +166,7 @@ const barChart = () => {
             }
         }
     });
-}
+};
 
 
 </script>

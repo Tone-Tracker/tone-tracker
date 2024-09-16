@@ -246,7 +246,7 @@ const mountDoghunrt = () => {
             </div>
           </div>
           <div class="col-12" v-else>
-            <div class="text-center" :class="loading ? 'text-success' : 'text-danger'" >{{ loading ? 'Loading...' : 'No data found.'}}</div>
+            <div class="text-center" :class="loading ? 'text-success' : 'text-danger'" >{{ loading ? 'Loading...' : 'No promoters found.'}}</div>
           </div>
         </div>
 
@@ -276,7 +276,7 @@ const mountDoghunrt = () => {
               <div class="card-header">
                   <div class="d-flex align-items-center">
                       <div>
-                          <h6 class="mb-0">ROI</h6>
+                          <h6 class="mb-0">Total Time vs actual hours spent</h6>
                       </div>
                       <div class="dropdown ms-auto"></div>
                   </div>
