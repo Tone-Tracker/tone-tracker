@@ -95,25 +95,25 @@ const onSubmit = async () => {
   }
 };
 
+// Filter by gender
 const onGenderChange = (event) => {
   let selectedGender = event.target.value.toLowerCase();
+  
   if (selectedGender === 'all') {
-    getAllPromoters();
+    promoters.value = [...originalPromoters.value]; // Reset to original full list
   } else {
-    
-    promoters.value = promoters.value.filter((promoter) => {
-      // console.log('promoter',promoter);
+    promoters.value = originalPromoters.value.filter((promoter) => {
       return promoter.gender?.toLowerCase() === selectedGender.toLowerCase();
     });
-     console.log('promoters',promoters.value);
-    updatePaginatedPromoters(); // Ensure the list is paginated after filtering
   }
+  
+  updatePaginatedPromoters(); // Ensure the list is paginated after filtering
 };
 
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
-    promoters.value = promoters.value.filter((promoter) => {
+    promoters.value = originalPromoters.value.filter((promoter) => {
       const userDetails = promoter.userDetails;
       const experiences = promoter.experiences.map(exp => `${exp.name} ${exp.description} ${exp.duration}`).join(" ");
       return (
@@ -129,18 +129,22 @@ const onInput = () => {
         experiences?.toLowerCase().includes(searchTerm)
       );
     });
-    updatePaginatedPromoters(); // Ensure the list is paginated after search
   } else {
-    getAllPromoters();
+    promoters.value = [...originalPromoters.value]; // Reset to original full list if no search term
   }
+
+  updatePaginatedPromoters(); // Ensure the list is paginated after search
 };
 
-// Fetch all promoters and paginate the result
+let originalPromoters = ref([]); // Store the original unfiltered list
+
+// Fetch all promoters and store them in both originalPromoters and promoters.value
 const getAllPromoters = async () => {
   showLoading.value = true;
   promoterStore.getPromoters().then(response => {
     showLoading.value = false;
-    promoters.value = response.data.content;
+    originalPromoters.value = response.data.content; // Store original list
+    promoters.value = [...originalPromoters.value]; // Set the current promoters list
     totalRecords.value = promoters.value.length;
     updatePaginatedPromoters(); // Update paginated data after fetching promoters
   }).catch(error => {
