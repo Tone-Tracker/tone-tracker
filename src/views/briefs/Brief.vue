@@ -52,11 +52,13 @@ const onInput = () => {
     briefs.value = briefs.value.filter((brief) => {
       // Extract and normalize the data to be searchable
       const activationName = brief.activationName?.toLowerCase() || '';
+      const taskName = brief.taskName?.toLowerCase() || '';
       const path = brief.path?.toLowerCase() || '';
 
       // Filter based on searchTerm
       return (
         activationName.includes(searchTerm) ||
+        taskName.includes(searchTerm) ||
         path.includes(searchTerm)
       );
     });
@@ -153,9 +155,13 @@ function startShare(file) {
                 class="col-md-4 col-lg-3 mb-4"
               >
                 <div class="brief-card">
-                  <h5 class="py-1 px-4 mb-0 text-center bg-black">
+                  <h5 v-if="briefItem.type == 'ACTIVATION'" class="py-1 px-4 mb-0 text-center bg-black">
                     {{ briefItem.activationName }}
                   </h5>
+                  <h5 v-if="briefItem.type == 'TASK'" class="py-1 px-4 mb-0 text-center bg-black">
+                    {{ briefItem.taskName }}
+                  </h5>
+
                   <div class="text-center">
                     <img
                       src="https://www.iconpacks.net/icons/1/free-document-icon-901-thumb.png"
