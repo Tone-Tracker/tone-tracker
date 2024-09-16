@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue'
 import axiosInstance from '@/axiosInstance';
 import router from '@/router';
+import axios from 'axios';
 
 export const useAuth = defineStore('auth', () => {
    
@@ -33,7 +34,12 @@ export const useAuth = defineStore('auth', () => {
     }
 
     const sendEmailPassword = (email) => {
-      return axiosInstance.get(`/api/users/send/email?email=${email}`);
+      return axios.post(`${import.meta.env.VITE_SERVER_URL}/api/users/send/email?email=${email}`);
     }
-    return { attempt, logout, token, user, client, getRoles,sendEmailPassword }
+    const resetPassword = (data) => {
+      // form should include `token` and `password`
+      return axiosInstance.post(`/api/users/verify/update-password?token=${data.token}&password=${data.password}`
+     );
+  };
+    return { attempt, logout, token, user, client, getRoles,sendEmailPassword,resetPassword }
   })
