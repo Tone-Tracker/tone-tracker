@@ -152,7 +152,7 @@ const onInput = () => {
               <div class="col-8 col-lg-8 col-xl-8 pl-5 d-flex ">
                 <!-- <button class="btn rounded-0 btn-primary">+ New</button> -->
 
-                <div class="position-relative mx-4">
+                <div class="position-relative mb-3">
                   <input
                     v-model="searchInput"
                     @input="onInput"
