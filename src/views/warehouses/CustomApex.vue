@@ -56,7 +56,7 @@ const chartOptions = ref({
             return parseInt(val) + "%";
           },
           color: '#111',
-          fontSize: '36px',
+          fontSize: '30px',
           show: true,
         },
       },
