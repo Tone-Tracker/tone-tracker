@@ -144,7 +144,12 @@ const onInput = () => {
         <BreadCrumb title="Clients" icon="" />
         <div class="card">
 
-          <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
+         
+          <div class="card-body">
+            
+            <div class="row">
+             <div class="row p">
+              <div class="col-8 col-lg-8 col-xl-8 pl-5 d-flex ">
                 <!-- <button class="btn rounded-0 btn-primary">+ New</button> -->
 
                 <div class="position-relative mx-4">
@@ -152,7 +157,7 @@ const onInput = () => {
                     v-model="searchInput"
                     @input="onInput"
                     type="text"
-                    class="form-control ps-5"
+                    class="form-control ps-5 ml-4"
                     placeholder="Search"
                   />
                   <span
@@ -162,8 +167,7 @@ const onInput = () => {
                   </span>
                 </div>
               </div>
-          <div class="card-body">
-            <div class="row">
+             </div>
               <div class="col-8 col-lg-8 col-xl-8 d-flex">
                 <div class="radius-10 w-100">
                   <div class="card-body">

@@ -27,10 +27,10 @@
                           </div>
                           <div class="inner-container">
                             <h2>{{ location.title }}</h2>
-                            <p>CPC: R 2.00</p>
+                            <p>CPC: R{{ parseFloat(location.costPerContact).toFixed(2) }}</p>
                             <p>Start / End date: {{ location.startDate }} - {{ location.endDate }}</p>
-                            <p>Current Cost: R 25,000.00</p>
-                            <p>Leads generated: 100,000</p>
+                            <!-- <p>Current Cost: R 25,000.00</p> -->
+                            <p>Leads generated: {{location.leads}}</p>
                             <h3>{{ location.regionName }} Activation</h3>
                           </div>
                         </div>
@@ -70,8 +70,10 @@ const getAllActivations = () => {
         lng: activation.centralLongitude,
         startDate: activation.startDate,
         endDate: activation.endDate,
+        costPerContact: activation.costPerContact,
         regionName: activation.regionName,
         title: activation.name,
+        leads: activation.numberOfLeads,
         showInfoWindow: false // Initialize with false
       }));
     });
