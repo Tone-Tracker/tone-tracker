@@ -15,6 +15,7 @@ const promoters = ref([]);
 const activationStore = useActivation();
 const activationId = ref(route.query.activation);
 const activation = ref(null);
+const loading = ref(false);
 
 onMounted(() => {
   console.log('activationId', activationId.value);
@@ -33,29 +34,14 @@ const statuses = ref([
 const groupedTaskByStatus = ref([]);
 
 const getActivation = async () => {
+  loading.value = true;
   activationStore.getActivationReport(activationId.value).then(response => {
     activation.value = response.data;
-    // const groupedTasks = response.data?.tasks?.reduce((acc, task) => {
-    //   const status = task.status;
-    //   if (acc[status]) {
-    //     acc[status] += 1;
-    //   } else {
-    //     acc[status] = 1;
-    //   }
-    //   return acc;
-    // }, {});
-    // console.log(groupedTasks);
-    // //create an array of objects with status and count
-    // const statusCounts = Object.entries(groupedTasks).map(([status, count]) => ({
-    //   status,
-    //   count,
-    // }));
-    // groupedTaskByStatus.value = statusCounts;
-    // console.log(groupedTaskByStatus.value);
+    loading.value = false;
   }).catch(error => {
     console.log(error);
   }).finally(() => {
-    //
+    loading.value = false;
   });
 };
 
@@ -125,14 +111,16 @@ const mountDoghunrt = () => {
             <div class="col" v-if="activation?.team?.length > 0" v-for="team in activation?.team" :key="team.id">
               <div class="gallery">
                 <div class="asc py-3">{{ team.firstName }} {{ team.lastName }}</div>
-                <router-link to="/profile">
+                <router-link :to="`${ team.staff ? '/staff-profile/' + team.staff + '/' + team?.id : '#!' }`">
                   <img :src="team.path ? envPath + team.path : `https://ui-avatars.com/api/?name=${ team.firstName + ' ' + team.lastName }&background=random`" alt="Cinque Terre" class="img-fluid">
                 </router-link>
               </div>
             </div>
+            
             <div class="col-12" v-else>
-              <div class="text-center text-danger" >No data found.</div>
+              <div class="text-center" :class="loading ? 'text-success' : 'text-danger'" >{{ loading ? 'Loading...' : 'No data found.'}}</div>
             </div>
+           
           </div>
        
         </div>
@@ -163,9 +151,11 @@ const mountDoghunrt = () => {
                 <span>&#x2713;</span>
               </div>
               <div>
-                <div class="desc cursor-pointer" @click="redirectToProfile(user)">
+                <div class="desc cursor-pointer" >
                   {{ user.firstName }} {{ user.lastName }}</div>
-                <div><button class="btn btn-primary rounded-0 w-100">Add</button></div>
+                <div>
+                  <!-- <button class="btn btn-primary rounded-0 w-100">Add</button> -->
+                </div>
               </div>
             </div>
           </div>
