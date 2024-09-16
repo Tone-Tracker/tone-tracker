@@ -112,10 +112,14 @@ const options = ref({
 
 const { share, isSupported } = useShare(options);
 
-function startShare(file) {
+async function startShare(file) {
   console.log(file);
   shareFile.value = file;
-  return share().catch((err) => err);
+  try {
+    return await share();
+  } catch (err) {
+    return err;
+  }
 }
 </script>
 <template>
