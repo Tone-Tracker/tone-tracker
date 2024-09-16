@@ -38,7 +38,7 @@
 
         <div class="user-box dropdown px-3">
           <a class="d-flex align-items-center nav-link gap-3" href="#" role="button">
-            <img src="/src/assets/images/logo/Ellipse.png" class="user-img" alt="user avatar" />
+            <img :src="user?.path ? envPath + user?.path : '/src/assets/images/placeholder.jpg'" class="user-img" alt="user avatar" />
           </a>
         </div>
       </nav>
@@ -50,6 +50,12 @@
 import { ref, onMounted } from 'vue';
 import DarkThemeNavbarToggle from './DarkThemeNavbarToggle.vue';
 import axios from 'axios';
+import { useAuth } from '@/stores/auth';
+
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+
+const auth = useAuth();
+const user = JSON.parse(auth.user);
 
 const query = ref('');
 const allActivations = ref([]);
