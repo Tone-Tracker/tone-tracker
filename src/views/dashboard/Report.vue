@@ -18,11 +18,8 @@ const activation = ref(null);
 const loading = ref(false);
 
 onMounted(() => {
-  console.log('activationId', activationId.value);
     getActivation();
-    mountDoghunrt();
-    
-});
+  });
 
 const statuses = ref([
     { name: 'Finished', code: 'FINISHED' },
@@ -31,13 +28,15 @@ const statuses = ref([
     { name: 'Delayed', code: 'DELAYED' },
     { name: 'At Risk', code: 'ATRISK' }
 ]);
-const groupedTaskByStatus = ref([]);
 
 const getActivation = async () => {
   loading.value = true;
   activationStore.getActivationReport(activationId.value).then(response => {
     activation.value = response.data;
     loading.value = false;
+    
+      mountDoghunrt();
+    
   }).catch(error => {
     console.log(error);
   }).finally(() => {
@@ -46,10 +45,6 @@ const getActivation = async () => {
 };
 
 
-const redirectToProfile = (user) => {
-	let client = user.id;
-	router.push({ path: '/profile', query: { client } });
-}
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 const chartCanvas = ref(null);
 
@@ -62,7 +57,13 @@ const mountDoghunrt = () => {
           labels: ['Finished', 'Planned', 'On track', 'Delayed', 'At risk'],
           datasets: [
             {
-              data: [20, 15, 25, 10, 30],
+              data: [
+              activation.value?.taskStatusCounts.FINISHED,
+              activation.value?.taskStatusCounts.PLANNED,
+              activation.value?.taskStatusCounts.ONTRACK,
+              activation.value?.taskStatusCounts.DELAYED,
+              activation.value?.taskStatusCounts.ATRISK,
+            ],
               backgroundColor: ['#28a745', '#fd7e14', '#007bff', '#6f42c1', '#dc3545'],
             },
           ],
@@ -190,8 +191,8 @@ const mountDoghunrt = () => {
       <div class="row" style="margin-left: 300px;">
         <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
           <div class="card radius-10">
-            <div class="card-body">
-              <canvas ref="chartCanvas"></canvas>
+            <div class="card-body" >
+                <canvas ref="chartCanvas"></canvas>
             </div>
           </div>
         </div>
