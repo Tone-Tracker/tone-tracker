@@ -167,13 +167,16 @@ const mountDoghunrt = () => {
         <div class="row row-cols-auto g-3 ">
           <div class="col" v-if="activation?.promoters?.length > 0" v-for="prom in activation?.promoters" :key="prom.id">
             <div class="gallery">
-              <router-link to="/profile">
+              <router-link :to="`/profile/${ prom?.id }/${ prom.userDetails?.id }`">
                 <img :src="prom.userDetails?.path ? envPath + prom.userDetails?.path : `https://ui-avatars.com/api/?name=${ prom.userDetails?.firstName + ' ' + prom.userDetails?.lastName }&background=random`" alt="Cinque Terre" class="img-fluid">
               </router-link>
               <div>
                 <div class="desc">{{ prom.userDetails?.firstName + ' ' + prom.userDetails?.lastName }}</div>
               </div>
             </div>
+          </div>
+          <div class="col-12" v-else>
+            <div class="text-center" :class="loading ? 'text-success' : 'text-danger'" >{{ loading ? 'Loading...' : 'No data found.'}}</div>
           </div>
         </div>
 
