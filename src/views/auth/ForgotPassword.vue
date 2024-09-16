@@ -33,7 +33,7 @@ export default {
         loading.value = false;
         return;
       }
-      auth.forgotPassword(form.email)
+      auth.sendEmailPassword(form.email)
         .then(function (response) {
           toaster.success("Password reset instructions sent to your email");
           setTimeout(() => {

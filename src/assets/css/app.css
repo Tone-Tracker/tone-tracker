@@ -3956,6 +3956,10 @@ form select.error:focus {
 
 }
 
+.card-body {
+	padding: 0px !important;
+}
+
 
 
 
@@ -4671,7 +4675,7 @@ form select.error:focus {
 
 
 .accordion-body {
-    padding: 0px;
+	padding: 0px;
 }
 
 
@@ -5136,13 +5140,13 @@ form select.error:focus {
 @media only screen and (max-width: 1440px) {
 	.page-content {
 		margin-left: 10%;
-		padding: 1.5rem 1.5rem 1.5rem 10.5rem !important; 
+		padding: 1.5rem 1.5rem 1.5rem 10.5rem !important;
 	}
 }
 
 @media only screen and (max-width: 1024px) {
 	.page-content {
 		margin-left: 10%;
-		padding: 1.5rem 1.5rem 1.5rem 0rem !important; 
+		padding: 1.5rem 1.5rem 1.5rem 0rem !important;
 	}
 }

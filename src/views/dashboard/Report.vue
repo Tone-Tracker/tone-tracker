@@ -15,13 +15,11 @@ const promoters = ref([]);
 const activationStore = useActivation();
 const activationId = ref(route.query.activation);
 const activation = ref(null);
+const loading = ref(false);
 
 onMounted(() => {
-  console.log('activationId', activationId.value);
     getActivation();
-    mountDoghunrt();
-    
-});
+  });
 
 const statuses = ref([
     { name: 'Finished', code: 'FINISHED' },
@@ -30,40 +28,23 @@ const statuses = ref([
     { name: 'Delayed', code: 'DELAYED' },
     { name: 'At Risk', code: 'ATRISK' }
 ]);
-const groupedTaskByStatus = ref([]);
 
 const getActivation = async () => {
+  loading.value = true;
   activationStore.getActivationReport(activationId.value).then(response => {
     activation.value = response.data;
-    // const groupedTasks = response.data?.tasks?.reduce((acc, task) => {
-    //   const status = task.status;
-    //   if (acc[status]) {
-    //     acc[status] += 1;
-    //   } else {
-    //     acc[status] = 1;
-    //   }
-    //   return acc;
-    // }, {});
-    // console.log(groupedTasks);
-    // //create an array of objects with status and count
-    // const statusCounts = Object.entries(groupedTasks).map(([status, count]) => ({
-    //   status,
-    //   count,
-    // }));
-    // groupedTaskByStatus.value = statusCounts;
-    // console.log(groupedTaskByStatus.value);
+    loading.value = false;
+    
+      mountDoghunrt();
+    
   }).catch(error => {
     console.log(error);
   }).finally(() => {
-    //
+    loading.value = false;
   });
 };
 
 
-const redirectToProfile = (user) => {
-	let client = user.id;
-	router.push({ path: '/profile', query: { client } });
-}
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 const chartCanvas = ref(null);
 
@@ -76,7 +57,13 @@ const mountDoghunrt = () => {
           labels: ['Finished', 'Planned', 'On track', 'Delayed', 'At risk'],
           datasets: [
             {
-              data: [20, 15, 25, 10, 30],
+              data: [
+              activation.value?.taskStatusCounts.FINISHED,
+              activation.value?.taskStatusCounts.PLANNED,
+              activation.value?.taskStatusCounts.ONTRACK,
+              activation.value?.taskStatusCounts.DELAYED,
+              activation.value?.taskStatusCounts.ATRISK,
+            ],
               backgroundColor: ['#28a745', '#fd7e14', '#007bff', '#6f42c1', '#dc3545'],
             },
           ],
@@ -125,11 +112,16 @@ const mountDoghunrt = () => {
             <div class="col" v-if="activation?.team?.length > 0" v-for="team in activation?.team" :key="team.id">
               <div class="gallery">
                 <div class="asc py-3">{{ team.firstName }} {{ team.lastName }}</div>
-                <router-link to="/profile">
+                <router-link :to="`${ team.staff ? '/staff-profile/' + team.staff + '/' + team?.id : '#!' }`">
                   <img :src="team.path ? envPath + team.path : `https://ui-avatars.com/api/?name=${ team.firstName + ' ' + team.lastName }&background=random`" alt="Cinque Terre" class="img-fluid">
                 </router-link>
               </div>
             </div>
+            
+            <div class="col-12" v-else>
+              <div class="text-center" :class="loading ? 'text-success' : 'text-danger'" >{{ loading ? 'Loading...' : 'No data found.'}}</div>
+            </div>
+           
           </div>
        
         </div>
@@ -138,7 +130,7 @@ const mountDoghunrt = () => {
           <div class="">
             <h4 class="mb-2 ml-2">Available Promoters</h4>
           </div>
-          <div v-for="user in promoters" :key="user.id" class="col-img ">
+          <div v-for="user in promoters" :key="user.id" class="col-img">
             <div  class="gallery">
             
                 <div class="card flex justify-center">
@@ -160,9 +152,11 @@ const mountDoghunrt = () => {
                 <span>&#x2713;</span>
               </div>
               <div>
-                <div class="desc cursor-pointer" @click="redirectToProfile(user)">
+                <div class="desc cursor-pointer" >
                   {{ user.firstName }} {{ user.lastName }}</div>
-                <div><button class="btn btn-primary rounded-0 w-100">Add</button></div>
+                <div>
+                  <!-- <button class="btn btn-primary rounded-0 w-100">Add</button> -->
+                </div>
               </div>
             </div>
           </div>
@@ -174,13 +168,16 @@ const mountDoghunrt = () => {
         <div class="row row-cols-auto g-3 ">
           <div class="col" v-if="activation?.promoters?.length > 0" v-for="prom in activation?.promoters" :key="prom.id">
             <div class="gallery">
-              <router-link to="/profile">
+              <router-link :to="`/profile/${ prom?.id }/${ prom.userDetails?.id }`">
                 <img :src="prom.userDetails?.path ? envPath + prom.userDetails?.path : `https://ui-avatars.com/api/?name=${ prom.userDetails?.firstName + ' ' + prom.userDetails?.lastName }&background=random`" alt="Cinque Terre" class="img-fluid">
               </router-link>
               <div>
                 <div class="desc">{{ prom.userDetails?.firstName + ' ' + prom.userDetails?.lastName }}</div>
               </div>
             </div>
+          </div>
+          <div class="col-12" v-else>
+            <div class="text-center" :class="loading ? 'text-success' : 'text-danger'" >{{ loading ? 'Loading...' : 'No data found.'}}</div>
           </div>
         </div>
 
@@ -194,8 +191,8 @@ const mountDoghunrt = () => {
       <div class="row" style="margin-left: 300px;">
         <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
           <div class="card radius-10">
-            <div class="card-body">
-              <canvas ref="chartCanvas"></canvas>
+            <div class="card-body" >
+                <canvas ref="chartCanvas"></canvas>
             </div>
           </div>
         </div>

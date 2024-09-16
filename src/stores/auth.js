@@ -32,8 +32,8 @@ export const useAuth = defineStore('auth', () => {
         return axiosInstance.get(`/api/roles`);
     }
 
-    const sendEmailPassword = () => {
-      return axiosInstance.post(`/api/users/send/email`);
+    const sendEmailPassword = (email) => {
+      return axiosInstance.get(`/api/users/send/email?email=${email}`);
     }
     return { attempt, logout, token, user, client, getRoles,sendEmailPassword }
   })

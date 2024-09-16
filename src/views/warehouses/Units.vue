@@ -336,7 +336,7 @@ loading.value = true;
 				 <div class="row mt-4 ">
 					<!-- <div class="col-lg-1"></div> -->
 					<div class="col-12 col-lg-3">
-						<div class="card radius-10">
+						<div class=" radius-10">
 							 <div class="card-body">
 								<div class="card card-custom">
 									<h5>Stock check</h5>
@@ -357,20 +357,20 @@ loading.value = true;
 
 
 					<div class="col-12 col-lg-9 d-flex">
-						<div class="card radius-10 w-100">
+					<div class="radius-10 w-100">
 						  <div class="card-header">
 							  <div class="d-flex align-items-center">
 								  <div>
 									  <h6 class="mb-0">In Stock</h6>
 								  </div>
-								  <div class="dropdown ms-auto">
+								  <div class="dropdown ms-auto mb-2">
 									 <button @click="visible=true" 
 									 :disabled="!unitId"
 									 type="button" class="btn maz-gradient-btn">Add Stock</button>
 								  </div>
 							  </div>
 						  </div>
-						  <div class="card-body row  mx-2">
+						  <div class="card-body row mt-2 mx-2">
 							<div class="table-responsive table table-dark table-striped w-50">
 								<table class="table align-middle mb-0">
 								 <thead class="table-light">

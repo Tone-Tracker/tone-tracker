@@ -471,13 +471,14 @@ Date: 04/06/2024
                             <div class="card-body p-4">
                                 <h4 class="mb-2 text-center mt-2">Experience</h4>
                                 <div class="row mb-3">
-                                    <div v-for="experience in promoterData?.experiences" :key="experience?.id" class="row mb-3">
+                                    <div v-if="promoterData?.experiences?.length" v-for="experience in promoterData?.experiences" :key="experience?.id" class="row mb-3">
                                         <div>
                                             <h6 class="mb-0">{{ experience?.name }}</h6>
                                             <p>{{ experience?.duration }}</p>
                                             <p>{{ experience?.description }}</p>
                                         </div>
                                     </div>
+                                    <div class="text-center text-danger" v-else>No experience added.</div>
                                 </div>
                                 <div class="row" v-if="isMyProfile()">
                                     <div class="col-12 text-end">
@@ -520,7 +521,7 @@ Date: 04/06/2024
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row" v-if="isMyProfile">
+                                                        <div class="row" v-if="isMyProfile()">
                                                             <label class="col-sm-3 col-form-label"></label>
                                                             <div class="col-sm-9">
                                                                 <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -607,6 +608,8 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, sameAs } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
 import BreadCrumb from '../../components/BreadCrumb.vue';
+
+
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const sizes = ref(["X_SMALL", "SMALL", "MEDIUM", "LARGE", "X_LARGE", "XX_LARGE"]);
@@ -950,8 +953,7 @@ const getListOtherPromoters = () => {
 
 
 const isMyProfile = () => {
-    // console.log(promoterId.value, user.activeUserId)
-    return promoterId.value == user.activeUserId;
+    return promoterId.value == user.activeUserId  && user?.id == userIdParam.value;
 }
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
     removeFileCallback(index);

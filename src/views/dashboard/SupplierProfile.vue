@@ -37,7 +37,7 @@ Date: 04/06/2024
                                             </Image>
                                             </div>
                                         <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
-                                        <div v-if="isMyProfile" @click="showModal = true"
+                                        <div v-if="isMyProfile()" @click="showModal = true"
                                             class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
                                             <i class='bx bx-edit-alt fs-2'></i>
                                         </div>
@@ -240,7 +240,7 @@ Date: 04/06/2024
 
 
                         
-                            <div class="card mt-3 maz-gradient-border-top" v-if="isMyProfile">
+                            <div class="card mt-3 maz-gradient-border-top" v-if="isMyProfile()">
                                 <div class="card-body p-4">
                                     <h4 class="mb-2 ml-2 mt-2">Change Password</h4>
                                         <div class="row mb-3">
@@ -571,7 +571,7 @@ const getUser = () => {
 
 
 const isMyProfile = () => {
-    return userId.value == user.activeUserId;
+    return userId.value == user.activeUserId && user?.id == userIdParam.value;
 }
 const uploadEvent = (callback) => {
     totalSizePercent.value = totalSize.value / 10;
