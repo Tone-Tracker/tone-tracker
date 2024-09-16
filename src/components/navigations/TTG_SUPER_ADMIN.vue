@@ -57,7 +57,7 @@ const getRoleName = () => {
                                 <li :class="{ 'active': currentRoute.path === '/activations' }"><router-link to="/activations"><span class="icon"><i class='bx bx-chat ps-3'></i></span> Map</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat ps-3'></i></span> All</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/promoters' }"><router-link to="/promoters"><i class='bx bx-group ps-3 pe-3'></i> Promoters</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/promoters' }"><router-link to="/promoters"><i class='bx bx-group ps-3 pec-3'></i> Promoters</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>
                                 <!-- <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pe-3'></i> Learning & Teaching</router-link></li> -->
                                 <li :class="{ 'active': currentRoute.path === '/regions'}"><router-link to="/regions"><span class="icon"><i class='bx bx-map ps-3'></i></span> Regions</router-link></li>
@@ -360,6 +360,10 @@ export default {
 
 .active{
     background-color: #333333 !important; /* Adjust this color to match your hover color */
+}
+
+.pec-3{
+    padding-right: 9px !important;
 }
 
   
