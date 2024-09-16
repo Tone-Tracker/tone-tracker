@@ -6,7 +6,7 @@ import { useBrief } from "@/stores/brief";
 import { useRoute } from "vue-router";
 import Drawer from "primevue/drawer";
 import { isClient } from "@vueuse/shared";
-import { useShare } from "@vueuse/core";
+import { useClipboard, useShare } from "@vueuse/core";
 import PDF from "pdf-vue3";
 
 const route = useRoute();
@@ -14,6 +14,7 @@ const briefStore = useBrief();
 let briefs = ref([]);
 let brief = ref({});
 let searchInput = ref('');
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const briefId = ref(route.query.brief?.id || null);
 
@@ -99,28 +100,11 @@ const download = () => {
   }
 };
 
-const shareFile = ref(null);
 
-const options = ref({
-  title: shareFile.value ? shareFile?.value.name : "",
-  text: shareFile.value ? shareFile?.value.name : "",
-  url:
-    isClient && shareFile.value
-      ? import.meta.env.VITE_AWS_S3_BUCKET + shareFile?.value.path
-      : "",
-});
+const source = ref('Hello')
+const { text, copy, copied, isSupported } = useClipboard({ source })
 
-const { share, isSupported } = useShare(options);
 
-async function startShare(file) {
-  console.log(file);
-  shareFile.value = file;
-  try {
-    return await share();
-  } catch (err) {
-    return err;
-  }
-}
 </script>
 <template>
   <Layout>
@@ -182,11 +166,11 @@ async function startShare(file) {
                       Read
                     </button>
                     <button
-                      @click="startShare(briefItem)"
+                      @click="copy(envPath + briefItem?.path)"
                       type="button"
                       class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light maz-gradient-btn"
                     >
-                      Share
+                      {{ copied ? 'Copied!' : 'Share' }}
                     </button>
                   </div>
                  
