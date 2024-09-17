@@ -1,3 +1,81 @@
+<template>
+  <div class="container-login">
+    <div class="section-authentication-cover">
+      <div class="login-cover">
+        <div class="row g-0">
+          <div class="col-12 col-xl-7 col-xxl-8 auth-cover-left align-items-center d-none d-xl-flex">
+            <div class="card shadow-none bg-transparent shadow-none rounded-0 mb-0">
+              <div class="card-body"></div>
+            </div>
+          </div>
+
+          <div class="col-12 col-xl-5 col-xxl-4 auth-cover-right align-items-center justify-content-center">
+            <div class="card rounded-0 m-3 shadow-none bg-transparent mb-0">
+              <div class="card-body p-sm-5">
+                <div class="form-body">
+                  <h5 class="mb-3 text-default">Log in</h5>
+                  <form @submit.prevent="onSubmit" class="row g-3">
+                    <div class="mb-3 col-12">
+                      <label for="inputEmailAddress" class="form-label">User</label>
+                      <input
+                        v-model="form.email"
+                        type="email"
+                        class="form-control custom-input"
+                        id="inputEmailAddress"
+                      />
+                      <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+                        <div class="text-danger">Email is required</div>
+                      </div>
+                    </div>
+
+                    <div class="mb-5 col-12">
+                      <label for="inputChoosePassword" class="form-label">Password</label>
+                      <div class="input-group" id="show_hide_password">
+                        <input
+                          v-model="form.password"
+                          :type="passwordFieldType"
+                          class="form-control border-start-0 border-top-0 border-end-0"
+                          id="inputChoosePassword"
+                        />
+                        <span v-if="form.password.length > 0" class="input-group-text" @click="togglePasswordVisibility">
+                          <i :class="toggleIconClass"></i>
+                        </span>
+                      </div>
+                      <div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
+                        <div class="text-danger">Password is required</div>
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="d-grid">
+                        <button
+                          type="submit"
+                          class="btn p-3 maz-gradient-btn text-white d-flex justify-content-center align-items-center"
+                        >
+                          <div v-if="loading" class="spinner-border text-white" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
+                          {{ loading ? "" : "Continue" }}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                      <router-link to="/forgot-password">Forgot Password?</router-link>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end row-->
+      </div>
+    </div>
+  </div>
+  <RouterView />
+</template>
+
 <script>
 import { RouterLink, RouterView } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
@@ -116,84 +194,6 @@ export default {
 };
 </script>
 
-<template>
-  <div class="container-login">
-    <div class="section-authentication-cover">
-      <div class="login-cover">
-        <div class="row g-0">
-          <div class="col-12 col-xl-7 col-xxl-8 auth-cover-left align-items-center d-none d-xl-flex">
-            <div class="card shadow-none bg-transparent shadow-none rounded-0 mb-0">
-              <div class="card-body"></div>
-            </div>
-          </div>
-
-          <div class="col-12 col-xl-5 col-xxl-4 auth-cover-right align-items-center justify-content-center">
-            <div class="card rounded-0 m-3 shadow-none bg-transparent mb-0">
-              <div class="card-body p-sm-5">
-                <div class="form-body">
-                  <h5 class="mb-3 text-default">Log in</h5>
-                  <form @submit.prevent="onSubmit" class="row g-3">
-                    <div class="mb-3 col-12">
-                      <label for="inputEmailAddress" class="form-label">User</label>
-                      <input
-                        v-model="form.email"
-                        type="email"
-                        class="form-control custom-input"
-                        id="inputEmailAddress"
-                      />
-                      <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-                        <div class="text-danger">Email is required</div>
-                      </div>
-                    </div>
-
-                    <div class="mb-5 col-12">
-                      <label for="inputChoosePassword" class="form-label">Password</label>
-                      <div class="input-group" id="show_hide_password">
-                        <input
-                          v-model="form.password"
-                          :type="passwordFieldType"
-                          class="form-control border-start-0 border-top-0 border-end-0"
-                          id="inputChoosePassword"
-                        />
-                        <span class="input-group-text" @click="togglePasswordVisibility">
-                          <i :class="toggleIconClass"></i>
-                        </span>
-                      </div>
-                      <div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
-                        <div class="text-danger">Password is required</div>
-                      </div>
-                    </div>
-
-                    <div class="col-12">
-                      <div class="d-grid">
-                        <button
-                          type="submit"
-                          class="btn p-3 maz-gradient-btn text-white d-flex justify-content-center align-items-center"
-                        >
-                          <div v-if="loading" class="spinner-border text-white" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                          </div>
-                          {{ loading ? "" : "Continue" }}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div class="mt-3 text-center">
-                      <router-link to="/forgot-password">Forgot Password?</router-link>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--end row-->
-      </div>
-    </div>
-  </div>
-  <RouterView />
-</template>
-
 <style scoped>
 .text-default {
   font-size: 40px;
@@ -212,14 +212,14 @@ input[type="email"],
 input[type="password"] {
   border: none;
   border-bottom: 2px solid #fff;
-  background-color: none;
+  background-color: transparent;
   outline: 0;
 }
 
 input[type="email"]:focus,
 input[type="password"]:focus {
   border: none;
-  background-color: none;
+  background-color: transparent;
 }
 
 .section-authentication-cover {
@@ -270,30 +270,27 @@ input[type="password"]:focus {
   border-left: 1px solid #707070;
 }
 
+.input-group-text {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
 .input-group-text i {
-  font-size: 2rem;
+  font-size: 1.5rem;
   line-height: 1;
+  color: #fff;
 }
 
-html.dark-theme .input-group-text[data-v-fa254d35] {
-    color: #d1d7de;
-    background-color: transparent;
-    border: none !important;
-}
-
-
-
-/* /////////////////////// */
 html.dark-theme .input-group-text {
   color: #d1d7de;
-  background-color: #12181a;
+  background-color: transparent;
   border: none !important;
 }
 
 html.dark-theme .form-control {
   color: #c0c8d1;
-  background-color: #12181a;
-  /* border: none !important; */
+  background-color: transparent;
 }
 
 @media (max-width: 768px) {
