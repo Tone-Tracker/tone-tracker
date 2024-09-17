@@ -295,7 +295,7 @@ loading.value = true;
                     <div class="col-lg-10 col-md-12">
 						<div class="gradient-card">
 						  <div class="content">
-							<strong>Region:</strong> Gauteng Central<br>
+							<strong>Region:</strong> {{ warehouse?.regionName}}<br>
 							<strong>Number of storage units:</strong> {{ warehouse?.numberOfUnits }} unit(s)<br>
 							<strong>Capacity:</strong> {{ warehouse?.capacity }}%<br>
 							<strong>Number of items:</strong> {{ warehouse?.numberOfItems }}

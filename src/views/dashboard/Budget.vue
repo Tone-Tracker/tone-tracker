@@ -7,8 +7,8 @@
 
 				<BreadCrumb title="Budget" icon="bx bx-calculator"/>
                 <div>
-                    <h5>Date: July - August 2024</h5>
-                    <h6>(16 Week Period)</h6>
+                    <!-- <h5>Date: July - August 2024</h5>
+                    <h6>(16 Week Period)</h6> -->
                 </div>
 
                 <div class="row mt-4">

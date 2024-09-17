@@ -15,7 +15,7 @@ export const useCampaignStore = defineStore('useCampaign', () => {
       return axiosInstance.get(`/api/campaigns/${campaignId}`);
     }
     const getTimeSheetReport = (campaignId) => {
-      return axiosInstance.get(`/api/campaigns/${campaignId}/budget`);
+      return axiosInstance.get(`/api/campaigns/budget`);
     }
 
     const updateCampaign = (client) => {

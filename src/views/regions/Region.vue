@@ -330,7 +330,7 @@ const items = (region) => [
                                                         <td>
                                                             <router-link :to="`/admin-view-warehouses-by-region/${region.id}?name=${region.name}`" type="button" class="btn maz-gradient-btn position-relative me-lg-5"> 
                                                                 <i class='bx bx-building-house align-middle' ></i> 
-                                                                View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">24 
+                                                                View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">{{region?.numberOfWarehouses}} 
                                                                     <span class="visually-hidden">warehouses</span></span>
                                                             </router-link>
                                                         </td>
