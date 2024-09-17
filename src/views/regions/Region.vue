@@ -286,7 +286,7 @@ const items = (region) => [
                 <div class="card">
                     <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
 
-                <div class="position-relative mx-4">
+                <div class="position-relative">
                   <input
                     v-model="searchInput"
                     @input="onInput"
