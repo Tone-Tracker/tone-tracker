@@ -95,7 +95,7 @@ export default {
       showPassword.value ? "text" : "password"
     );
     const toggleIconClass = computed(() =>
-      showPassword.value ? "fas fa-eye-slash" : "fas fa-eye"
+      showPassword.value ? "bx bx-hide" : "bx bx-show"
     );
     const togglePasswordVisibility = () => {
       showPassword.value = !showPassword.value;
@@ -152,7 +152,7 @@ export default {
                         <input
                           v-model="form.password"
                           :type="passwordFieldType"
-                          class="form-control"
+                          class="form-control border-start-0 border-top-0 border-end-0"
                           id="inputChoosePassword"
                         />
                         <span class="input-group-text" @click="togglePasswordVisibility">
@@ -269,6 +269,19 @@ input[type="password"]:focus {
   background: rgba(34, 36, 35, 0.7);
   border-left: 1px solid #707070;
 }
+
+.input-group-text i {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+html.dark-theme .input-group-text[data-v-fa254d35] {
+    color: #d1d7de;
+    background-color: transparent;
+    border: none !important;
+}
+
+
 
 /* /////////////////////// */
 html.dark-theme .input-group-text {
