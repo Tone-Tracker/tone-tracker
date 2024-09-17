@@ -14,6 +14,9 @@ export const useCampaignStore = defineStore('useCampaign', () => {
     const getCampaignName = (campaignId) => {
       return axiosInstance.get(`/api/campaigns/${campaignId}`);
     }
+    const getTimeSheetReport = (campaignId) => {
+      return axiosInstance.get(`/api/campaigns/budget`);
+    }
 
     const updateCampaign = (client) => {
       let obj = {name: client.name}
@@ -32,5 +35,5 @@ export const useCampaignStore = defineStore('useCampaign', () => {
       return axiosInstance.get(`/api/campaigns/${id}/report`);
     }
   
-    return { getCampaignName,submitCampaign,getStatusReport, getCampaigns,updateCampaign,deleteCampaign,getCampaignsByClientId }
+    return { getCampaignName,getTimeSheetReport,submitCampaign,getStatusReport, getCampaigns,updateCampaign,deleteCampaign,getCampaignsByClientId }
   })

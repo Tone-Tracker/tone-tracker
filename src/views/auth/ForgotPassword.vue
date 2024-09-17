@@ -37,9 +37,15 @@ export default {
         .then(function (response) {
           toaster.success("Password reset instructions sent to your email");
           setTimeout(() => {
-            router.push('/login');
+            router.push('/');
           }, 1000)
         }).catch(function (error) {
+
+          if (error.response.data == "Email does not exist.") {
+            // Token has expired
+            toaster.error("Email does not exist");
+            return;
+          }
           toaster.error("Error sending reset instructions");
           console.log(error);
         }).finally(function () {

@@ -7,8 +7,8 @@
 
 				<BreadCrumb title="Budget" icon="bx bx-calculator"/>
                 <div>
-                    <h5>Date: July - August 2024</h5>
-                    <h6>(16 Week Period)</h6>
+                    <!-- <h5>Date: July - August 2024</h5>
+                    <h6>(16 Week Period)</h6> -->
                 </div>
 
                 <div class="row mt-4">
@@ -45,7 +45,7 @@
                          </div>
                            <div class="card-body">
                             <div class="chart-container1">
-                                <canvas id="maz-bar" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
+                                <canvas id="timesheet-graph" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
                             </div>
                            </div>
                            
@@ -56,63 +56,8 @@
 
 
 
-                 <div class="row">
-                    <div class="col-12 col-lg-5">
-                        <div class="card radius-10">
-                            <div class="card-header">
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex">
-                                        <h6 class="mb-0">Time Sheet Summary <span class="font-14 mt-2 d-block">Promoters:</span></h6>
-                                        <h6 class="mb-0 mx-4">Total Time vs actual hours spent</h6>
-                                    </div>
-                                    <div class="dropdown ms-auto"></div>
-                                </div>
-                            </div>
-                            <div class="card-body row">
-                                <div class="col-6">
-                                <div class="chart-container0 ">
-                                    <canvas id="pieChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 300px; width: 1200px;">kkkkkkk</canvas>                                    
-                                </div>
-                                <div class="mt-2 d-flex justify-content-center">
-                                    <div class="legend">
-                                        <div class="legend-item">
-                                          <div class="legend-color non-billable"></div>
-                                          <span>Non billable</span>
-                                        </div>
-                                        <div class="legend-item">
-                                          <div class="legend-color billable"></div>
-                                          <span>Billable</span>
-                                        </div>
-                                      </div>
-                                </div>
-                            </div>
-                                <div class="col-6">
-                                    <canvas id="horizontalChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-7">
-                        <div class="card radius-10">
-                            <div class="card-header">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <h6 class="mb-0">ROI</h6>
-                                    </div>
-                                    <div class="dropdown ms-auto"></div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container1">
-									<canvas id="lineChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
-								</div>
-                            </div>
-                         </div>
-                    </div>
-                    
-                </div>
 
-                <div class="row mt-4">
+                <div class="row mt-4 d-none">
                     <div class="col-12 col-lg-12 d-flex">
                        <div class="card radius-10 w-50">                      
                            <div class="card-body">
@@ -134,7 +79,7 @@
                  </div>
 
 
-                 <div class="row mt-4">
+                 <div class="row mt-4 d-none">
                     <div class="col-12 col-lg-12 d-flex">
                        <div class="card radius-10">                      
                            <div class="card-body">
@@ -156,275 +101,52 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useCampaignStore } from '@/stores/useCampaign';
+
+const campaignStore = useCampaignStore();
+const timeSheetData = ref(null);
 
     onMounted(() => {
-        barChart();
-        pieChart();
-        lineChart();
-        horizontalChart();
-        costPerElement();
-        itemsSold();
-        numberOfActivations();
-    })
+        getTimeSheets();
+    });
 
-    const numberOfActivations = () => {
-        var ctx = document.getElementById('numberOfActivations').getContext('2d');
-        new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['JHB/VALL', 'DBN', 'CPT'],
-            datasets: [{
-                label: 'Number Of Activations',
-                data: [23, 50, 87],
-                backgroundColor: [
-                'rgb(95, 193, 255)',
-                ],
-                borderColor: [
-                'rgb(95, 193, 255)',
-                ],
-                borderWidth: 1
-            },
-            {
-                label: 'Buy In',
-                data: [65, 59, 80, 81, 40],
-                backgroundColor: [
-                'rgb(1, 89, 144)',
-                ],
-                borderColor: [
-                'rgb(1, 89, 144)',
-                ],
-                borderWidth: 1
-            },
-            {
-                label: 'Sales Out',
-                data: [35, 49, 70, 71, 20],
-                backgroundColor: [
-                'rgb(165, 196, 216)',
-                ],
-                borderColor: [
-                'rgb(165, 196, 216)',
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-    responsive: true,
-    interaction: {
-      mode: 'index',
-      intersect: false,
-    },
-    stacked: false,
-    plugins: {
-      title: {
-        display: false,
-        text: 'Chart.js Line Chart - Multi Axis'
-      }
-    },
-    scales: {
-      y: {
-        type: 'linear',
-        display: true,
-        position: 'left',
-        text: 'Number Of Activations',
-      },
-      y1: {
-        type: 'linear',
-        display: true,
-        position: 'right',
-        text: 'Number Of Activations',
+    const getTimeSheets = async () => {
+  campaignStore.getTimeSheetReport(2).then(response => {
+    timeSheetData.value = response.data;
+    budgetChart();    
+  }).catch(error => {
+    console.log(error);
+  }).finally(() => {
+    
+  });
+};
 
-        // grid line settings
-        grid: {
-          drawOnChartArea: false, // only want the grid lines for one axis to show up
-        },
-      },
-    }
-  },
-    });
-    }
-        const itemsSold = () => {
-        var ctx = document.getElementById('itemsSold').getContext('2d');
-        new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Shirts', 'Bucket hats', 'Key rings', 'Water Bottles'],
-            datasets: [{
-                label: 'Items Sold',
-                data: [65, 59, 80, 81, 56],
-                backgroundColor: [
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)'
-                ],
-                borderColor: [
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)',
-                'rgb(218,74,86)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            barPercentage: 0.6,
-            categoryPercentage: 0.5,
-            plugins: {
-				legend: {
-					position:'bottom',
-					display: true,
-                    labels: {
-                    filter: function(item) {
-                        return item.text !== 'Items Sold';
-                    }
-                }
-				}
-			},
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-    }
-   
-    const costPerElement = () => {
-        var ctx = document.getElementById('costPerElement').getContext('2d');
-        new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Production', 'Influencers', 'Internal Launch', 'Storage', 'Concept and Ideation'],
-            datasets: [{
-                label: 'Cost Per Element',
-                data: [65, 59, 80, 81, 56, 55],
-                backgroundColor: [
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)'
-                ],
-                borderColor: [
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)',
-                'rgb(154,58,177)',
-                'rgb(52,152,219)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            barPercentage: 0.6,
-            categoryPercentage: 0.5,
-            plugins: {
-				legend: {
-					position:'bottom',
-					display: true,
-                    labels: {
-                    filter: function(item) {
-                        return item.text !== 'Cost Per Element';
-                    }
-                }
-				}
-			},
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-    }
-    const horizontalChart = () => {
-        var ctx = document.getElementById('horizontalChart').getContext('2d');
+const getMonthName = (monthNumber) => {
+  const monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+  return monthNames[monthNumber - 1];
+};
+
+
+const budgetChart = () => {
+    
+    const labels = timeSheetData.value?.map(item => getMonthName(item[0])); 
+    const budgetData = timeSheetData.value?.map(item => item[1]); 
+
+    var ctx = document.getElementById('timesheet-graph').getContext('2d');
     new Chart(ctx, {
-	type: 'bar',
-	data: {
-		labels: ['Activation 1', 'Activation 2', 'Activation 3', 'Activation 4', 'Activation 5', 'Activation 6', 'Activation 7'],
-		datasets: [{
-			label: 'Google',
-			data: [18, 25, 14, 12, 17, 8, 10],
-			backgroundColor: [
-				'#fd3550'
-			],
-			lineTension: 0,
-			borderColor: [
-				'#fd3550'
-			],
-			borderWidth: 0
-		}
-		]
-	},
-	options: {
-		maintainAspectRatio: false,
-		barPercentage: 0.5,
-		categoryPercentage: 0.7,
-		indexAxis: 'y',
-		plugins: {
-			legend: {
-				position:'bottom',
-				display: true,
-                labels: {
-                    filter: function(item) {
-                        return item.text !== 'Google';
-                    }
-                }
-			}
-		},
-		scales: {
-			y: {
-				beginAtZero: true
-			}
-		}
-	}
-});
-    }
-const barChart = () => {
-    var ctx = document.getElementById('maz-bar').getContext('2d');
-        new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['1', '6', '2', '5', '7', '12', '23','24','25','26','27','28','29','30','31'],
+            labels: labels,  
             datasets: [{
-                label: 'Google',
-                data: [18, 25, 14, 12, 17, 8, 10, 11, 9, 60, 5, 40, 30, 24, 15],
-                backgroundColor: [
-                    '#0d6efd'
-                ],
-                lineTension: 0,
-                borderColor: [
-                    '#0d6efd'
-                ],
+                label: 'Budget',
+                data: budgetData, 
+                backgroundColor: '#0d6efd',
+                borderColor: '#0d6efd',
                 borderWidth: 3,
                 backgroundColor: 'rgb(154,58,177)',
-            },
-            {
-                label: 'Facebook',
-                
-                data: [12, 30, 16, 23, 8, 14, 11, 10, 19, 63, 50, 41, 33, 22, 12],
-                backgroundColor: [
-                    '#15ca20'
-                ],
-                tension: 0,
-                borderColor: [
-                    '#15ca20'
-                ],
-                borderWidth: 3
             }]
         },
         options: {
@@ -432,16 +154,11 @@ const barChart = () => {
             barPercentage: 0.6,
             categoryPercentage: 0.5,
             plugins: {
-				legend: {
-					position:'bottom',
-					display: true,
-                    labels: {
-                    filter: function(item) {
-                        return item.text !== 'Facebook' && item.text !== 'Google';
-                    }
+                legend: {
+                    position: 'bottom',
+                    display: true,
                 }
-				}
-			},
+            },
             scales: {
                 y: {
                     beginAtZero: true
@@ -449,119 +166,9 @@ const barChart = () => {
             }
         }
     });
-}
+};
 
-const lineChart = () => {
-    var ctx = document.getElementById('lineChart').getContext('2d');
-        new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul','Aug','Sep','Oct','Nov','Dec'],
-            datasets: [{
-                label: 'Planned',
-                data: [18, 25, 14, 12, 17, 8, 10, 11, 9, 60, 5, 40],
-                backgroundColor: [
-                    '#FE9947'
-                ],
-                lineTension: 0,
-                borderColor: [
-                    '#FE9947'
-                ],
-                borderWidth: 3
-            },
-            {
-                label: 'Actual',
-                data: [12, 30, 16, 23, 8, 14, 11, 10, 19, 63, 50, 41],
-                backgroundColor: [
-                    '#A93ABA'
-                ],
-                tension: 0,
-                borderColor: [
-                    '#A93ABA'
-                ],
-                borderWidth: 3
-            },
-            {
-				type: 'line',
-                label: 'Billable Hours %',
-                data: [5, 30, 16, 23, 8, 14, 11, 10, 19, 63, 50, 41],
-                backgroundColor: [
-                    '#FE0040'
-                ],
-                tension: 0.4,
-                borderColor: [
-                    '#FE0040'
-                ],
-                borderWidth: 4
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            barPercentage: 0.6,
-            categoryPercentage: 0.5,
-            plugins: {
-				legend: {
-					position:'bottom',
-					display: true,
-				}
-			},
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
 
-const pieChart = () => {
-    var ctx = document.getElementById("pieChart").getContext('2d');
-
-  var gradientStroke1 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke1.addColorStop(0, '#ee0979');
-      gradientStroke1.addColorStop(1, '#ff6a00');
-    
-  var gradientStroke2 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke2.addColorStop(0, '#283c86');
-      gradientStroke2.addColorStop(1, '#39bd3c');
-
-  var gradientStroke3 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke3.addColorStop(0, '#1E90D9');
-      gradientStroke3.addColorStop(1, '#e100ff');
-
-        new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ["Completed", "Pending", "Process"],
-          datasets: [{
-            backgroundColor: [
-              gradientStroke1,
-              gradientStroke2,
-              gradientStroke3
-            ],
-
-             hoverBackgroundColor: [
-              gradientStroke1,
-              gradientStroke2,
-              gradientStroke3
-            ],
-
-            data: [50, 50, 50],
-            borderWidth: [1, 1, 1]
-          }]
-        },
-        options: {
-          maintainAspectRatio: false,
-          cutout: 95,
-          plugins: {
-            legend: {
-                display: false,
-             }
-          }
-          
-       }
-      });
-}
 </script>
 <style>
 .maz-height{

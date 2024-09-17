@@ -12,6 +12,7 @@ const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const route = useRoute();
 const router = useRouter();
 const promoters = ref([]);
+const timeSheetData = ref([]);
 const activationStore = useActivation();
 const activationId = ref(route.query.activation);
 const activation = ref(null);
@@ -36,11 +37,23 @@ const getActivation = async () => {
     loading.value = false;
     
       mountDoghunrt();
+      getTimeSheets();
     
   }).catch(error => {
     console.log(error);
   }).finally(() => {
     loading.value = false;
+  });
+};
+
+const getTimeSheets = async () => {
+  activationStore.getTimeSheetReport(activationId.value).then(response => {
+    timeSheetData.value = response.data;
+      lineChart();    
+  }).catch(error => {
+    console.log(error);
+  }).finally(() => {
+    
   });
 };
 
@@ -92,6 +105,62 @@ const mountDoghunrt = () => {
         },
       });
     };
+
+
+    const lineChart = () => {
+      const labels = timeSheetData.value?.map(item => item.jobNumber);
+    const plannedData = timeSheetData.value?.map(item => item.plannedHours);
+    const actualData = timeSheetData.value?.map(item => item.actualHours);
+    
+    var ctx = document.getElementById('lineChart').getContext('2d');
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Planned',
+                data: plannedData,
+                backgroundColor: [
+                    '#FE9947'
+                ],
+                lineTension: 0,
+                borderColor: [
+                    '#FE9947'
+                ],
+                borderWidth: 3
+            },
+            {
+                label: 'Actual',
+                data: actualData,
+                backgroundColor: [
+                    '#A93ABA'
+                ],
+                tension: 0,
+                borderColor: [
+                    '#A93ABA'
+                ],
+                borderWidth: 3
+            },]
+        },
+        options: {
+            maintainAspectRatio: false,
+            barPercentage: 0.6,
+            categoryPercentage: 0.5,
+            plugins: {
+				legend: {
+					position:'bottom',
+					display: true,
+				}
+			},
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
 </script>
 <template>
   <Layout>
@@ -177,7 +246,7 @@ const mountDoghunrt = () => {
             </div>
           </div>
           <div class="col-12" v-else>
-            <div class="text-center" :class="loading ? 'text-success' : 'text-danger'" >{{ loading ? 'Loading...' : 'No data found.'}}</div>
+            <div class="text-center" :class="loading ? 'text-success' : 'text-danger'" >{{ loading ? 'Loading...' : 'No promoters found.'}}</div>
           </div>
         </div>
 
@@ -201,6 +270,26 @@ const mountDoghunrt = () => {
          
           <ReportTaskTable :activation="activation?.name" :tasks="activation?.tasks" :statuses="statuses"/>  
         </div>
+
+        <div class="col-12 col-lg-12">
+          <div class="card radius-10">
+              <div class="card-header">
+                  <div class="d-flex align-items-center">
+                      <div>
+                          <h6 class="mb-0">Total Time vs actual hours spent</h6>
+                      </div>
+                      <div class="dropdown ms-auto"></div>
+                  </div>
+              </div>
+              <div class="card-body">
+                  <div class="chart-container1">
+                  <canvas id="lineChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
+                </div>
+              </div>
+           </div>
+      </div>
+
+
       </div>
 
       <div class="card bg-primary p-5 d-none">

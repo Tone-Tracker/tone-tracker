@@ -11,6 +11,7 @@ import { debounce } from '@/helpers/helpers';
 
 import { useRegion } from '@/stores/useRegion';
 import { onClickOutside } from '@vueuse/core';
+import HTMLTableToPDF from '@/components/HTMLTableToPDF.vue';
 
 let showModal = ref(false);
 let showLoading = ref(false);
@@ -121,13 +122,6 @@ const clearFilter = () => {
 }
 
 
-const exportToPDF = () => {
-      html2pdf(document.getElementById("my-invoice"), {
-        margin: 1,
-        filename: "crm.pdf",
-      });
-    }
-
     function fnExcelReport() {
   var table = document.getElementById('my-invoice'); // id of table
   var tableHTML = table.outerHTML;
@@ -154,6 +148,16 @@ const exportToPDF = () => {
     document.body.removeChild(a);
   }
 }
+
+const tableHeaders = ref([
+  "Contact Name",
+    "Contact Surname",
+    "Email",
+    "Cell Number",
+    "Opt-in",
+    "Activation Area",
+    "Region",
+]);
 </script>
 
 <template>
@@ -209,7 +213,7 @@ const exportToPDF = () => {
                     </table>
                     <div class="text-end">
                         <button class="btn btn-secondary btn-export rounded-0 mb-0 mx-2" @click="fnExcelReport" type="button">Export</button>
-                        <button class="btn btn-primary btn-download rounded-0 mb-0"  @click="exportToPDF" type="button">Download</button>
+                        <HTMLTableToPDF :headers="tableHeaders" :data="users"/>
                     </div>
                     <iframe id="dummyFrame" style="display:none"></iframe>
                 </div>

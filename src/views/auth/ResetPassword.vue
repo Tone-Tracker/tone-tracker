@@ -1,8 +1,8 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView, useRoute } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required, minLength, sameAs } from '@vuelidate/validators';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import router from '@/router';
 import { useMonitorSize } from '@/composables/useMonitorSize';
 import { useAuth } from '@/stores/auth';
@@ -11,49 +11,68 @@ import useToaster from '@/composables/useToaster';
 export default {
   setup() {
     const loading = ref(false);
-
     const screenSizes = useMonitorSize();
     const auth = useAuth();
     const toaster = useToaster();
+    const route = useRoute();
 
-    const form = reactive({
-      password: '',
-      confirmPassword: '',
-      token: ''  // This should be populated from the URL or route params
-    });
-
+    const password = ref('');
+    const confirmPassword = ref('');
+    const token = ref(route.query.token || '');
 
     const rules = {
       password: { required, minLength: minLength(8) },
-      confirmPassword: { required, sameAsPassword: sameAs(form.password) },
+      confirmPassword: { sameAs: sameAs(password) },
       token: { required }
-    }
-    const v$ = useVuelidate(rules, form)
+    };
+
+    const v$ = useVuelidate(rules, { password, confirmPassword, token });
 
     const onSubmit = async () => {
       loading.value = true;
       const isFormCorrect = await v$.value.$validate();
       if (!isFormCorrect) return;
-      auth.resetPassword(form)
+
+      const data = {
+        password: password.value,
+        token: token.value
+      };
+
+      auth.resetPassword(data)
         .then(function (response) {
+          
+          console.log(response);
           toaster.success("Password reset successfully");
-          setTimeout(() => {
-            router.push('/login');
-          }, 1000)
-        }).catch(function (error) {
+          // setTimeout(() => {
+          //   router.push('/');
+          // }, 1000);
+        })
+        .catch(function (error) {
+          if (error.response.data == "Token has expired") {
+            // 
+            toaster.error("Token has expired");
+            return;
+          }
           toaster.error("Error resetting password");
           console.log(error);
-        }).finally(function () {
+        })
+        .finally(function () {
           loading.value = false;
         });
-    }
+    };
 
     return {
-      form, v$, onSubmit, screenSizes,
-    }
+      password,
+      confirmPassword,
+      v$,
+      onSubmit,
+      screenSizes,
+      loading
+    };
   }
-}
+};
 </script>
+
 
 <template>
   <div class="logo-light"></div>
@@ -64,8 +83,7 @@ export default {
         <div class="row g-0">
           <div class="col-12 col-xl-7 col-xxl-8 auth-cover-left align-items-center d-none d-xl-flex">
             <div class="card shadow-none bg-transparent shadow-none rounded-0 mb-0">
-              <div class="card-body">
-              </div>
+              <div class="card-body"></div>
             </div>
           </div>
           <div class="col-12 col-xl-5 col-xxl-4 auth-cover-right align-items-center justify-content-center">
@@ -77,15 +95,15 @@ export default {
                     <form @submit.prevent="onSubmit" class="row g-3">
                       <div class="mb-3 col-12">
                         <label for="inputPassword" class="form-label">New Password</label>
-                        <input v-model="form.password" type="password" class="form-control custom-input"
-                          id="inputPassword">
+                        {{ v$.$errors }}
+                        <input v-model="password" type="password" class="form-control custom-input" id="inputPassword">
                         <div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
                           <div class="text-danger">{{ error.$message }}</div>
                         </div>
                       </div>
                       <div class="mb-3 col-12">
                         <label for="inputConfirmPassword" class="form-label">Confirm Password</label>
-                        <input v-model="form.confirmPassword" type="password" class="form-control custom-input"
+                        <input v-model="confirmPassword" type="password" class="form-control custom-input"
                           id="inputConfirmPassword">
                         <div class="input-errors" v-for="error of v$.confirmPassword.$errors" :key="error.$uid">
                           <div class="text-danger">{{ error.$message }}</div>
@@ -116,6 +134,11 @@ export default {
   </div>
   <RouterView />
 </template>
+
+<style scoped>
+/* Add your styles here */
+</style>
+
 
 <style scoped>
 .text-default {

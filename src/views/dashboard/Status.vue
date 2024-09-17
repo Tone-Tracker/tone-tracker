@@ -25,7 +25,7 @@
 
 				<div class="row">
 
-					<div class="col-12 col-lg-9 d-flex">
+					<div class="col-12 col-lg-12 d-flex">
 						<div class="card p-0 radius-10 w-100">
 							<div class="card-header p-0 mb-0 card-background">
 								<div class="d-flex  align-items-center">
@@ -57,6 +57,9 @@
 												</td>
 												<td class="text-center table-dark-custom-2">{{ activation?.progress }}%</td>
 											</tr>
+											<tr v-else>
+												<td colspan="3" class="text-center text-danger">{{ loading ? 'Loading...' : 'No activations found' }}</td>
+											</tr>
 
 											
 										</tbody>
@@ -67,39 +70,19 @@
 					</div>
 				</div>
 
-				<div class="row">
-                    <div class="col-12 col-lg-9">
+				<div class="row mx-auto">
+                    <div class="col-12 col-lg-12">
                         <div class="card radius-10">
                             <div class="card-header">
                                     <div class="row">
-                                        <div class="col-8">
-											<h6 class="mb-0">Time Sheet Summary <span class="font-14 mt-2 d-block">Promoters:</span></h6>
-										</div>
 										<div class="col-4">
-											<h6 class="mb-0 mx-4">Total Time vs actual hours spent</h6>
+											<h6 class="mb-0 ">Activation Progress</h6>
 										</div>
                                         
                                     </div>
                             </div>
                             <div class="card-body row">
-                                <div class="col-6">
-                                <div class="chart-container0 ">
-                                    <canvas id="pieChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 300px; width: 1200px;">kkkkkkk</canvas>                                    
-                                </div>
-                                <div class="mt-2 d-flex justify-content-center">
-                                    <div class="legend">
-                                        <div class="legend-item">
-                                          <div class="legend-color non-billable"></div>
-                                          <span>Non billable</span>
-                                        </div>
-                                        <div class="legend-item">
-                                          <div class="legend-color billable"></div>
-                                          <span>Billable</span>
-                                        </div>
-                                      </div>
-                                </div>
-                            </div>
-                                <div class="col-6">
+                                <div class="col-12">
                                     <canvas id="horizontalChart" width="1301" height="380" style="display: block; box-sizing: border-box; height: 380px; width: 1301px;"></canvas>
                                 </div>
                             </div>
@@ -145,113 +128,68 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const campaignId = ref(route.query.campaign);
 const campaign = useCampaignStore();
-
+const loading = ref(false);
 const campaignData = ref(null);
 
 onMounted(() => {
 	getReport();
-	horizontalChart();
-	pieChart();
 })
 
 const getReport = () => {
+	loading.value = true;
 	campaign.getStatusReport(campaignId.value).then(function (response) {
 		campaignData.value = response.data;
+		loading.value = false;
+		horizontalChart();
+
 	})
 }
 
-const pieChart = () => {
-    var ctx = document.getElementById("pieChart").getContext('2d');
 
-  var gradientStroke1 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke1.addColorStop(0, '#ee0979');
-      gradientStroke1.addColorStop(1, '#ff6a00');
-    
-  var gradientStroke2 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke2.addColorStop(0, '#283c86');
-      gradientStroke2.addColorStop(1, '#39bd3c');
+const horizontalChart = () => {
+    const labels = campaignData.value?.activations.map(activation => activation.name);
+    const progressData = campaignData.value?.activations.map(activation => Math.floor(activation.progress));
 
-  var gradientStroke3 = ctx.createLinearGradient(0, 0, 0, 300);
-      gradientStroke3.addColorStop(0, '#1E90D9');
-      gradientStroke3.addColorStop(1, '#e100ff');
-
-        new Chart(ctx, {
-        type: 'pie',
+    var ctx = document.getElementById('horizontalChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
         data: {
-          labels: ["Completed", "Pending", "Process"],
-          datasets: [{
-            backgroundColor: [
-              gradientStroke1,
-              gradientStroke2,
-              gradientStroke3
-            ],
-
-             hoverBackgroundColor: [
-              gradientStroke1,
-              gradientStroke2,
-              gradientStroke3
-            ],
-
-            data: [50, 50, 50],
-            borderWidth: [1, 1, 1]
-          }]
+            labels: labels,  
+            datasets: [{
+                label: 'Activation Progress',
+                data: progressData,  
+                backgroundColor: '#8D40B4',
+                borderColor: '#8D40B4',
+                borderWidth: 0
+            }]
         },
         options: {
-          maintainAspectRatio: false,
-          cutout: 95,
-          plugins: {
-            legend: {
-                display: false,
-             }
-          }
-          
-       }
-      });
-}
-const horizontalChart = () => {
-        var ctx = document.getElementById('horizontalChart').getContext('2d');
-    new Chart(ctx, {
-	type: 'bar',
-	data: {
-		labels: ['Activation 1', 'Activation 2', 'Activation 3', 'Activation 4', 'Activation 5', 'Activation 6', 'Activation 7'],
-		datasets: [{
-			label: 'Google',
-			data: [18, 25, 14, 12, 17, 8, 10],
-			backgroundColor: [
-				'#fd3550'
-			],
-			lineTension: 0,
-			borderColor: [
-				'#fd3550'
-			],
-			borderWidth: 0
-		}
-		]
-	},
-	options: {
-		maintainAspectRatio: false,
-		barPercentage: 0.5,
-		categoryPercentage: 0.7,
-		indexAxis: 'y',
-		plugins: {
-			legend: {
-				position:'bottom',
-				display: true,
-                labels: {
-                    filter: function(item) {
-                        return item.text !== 'Google';
+            maintainAspectRatio: false,
+            barPercentage: 0.5,
+            categoryPercentage: 0.7,
+            indexAxis: 'y',  // Horizontal bar chart
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    display: true,
+                }
+            },
+			scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: 'white',
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: 'white',
                     }
                 }
-			}
-		},
-		scales: {
-			y: {
-				beginAtZero: true
-			}
-		}
-	}
-});
-    }
+            }
+        }
+    });
+};
 </script>
 <style scoped>
 .status-icon {

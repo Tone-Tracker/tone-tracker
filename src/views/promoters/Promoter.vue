@@ -168,6 +168,7 @@ const onPageChange = (event) => {
   updatePaginatedPromoters(); // Update paginated data when the page changes
 };
 
+
 const getAllSizes = async () => {
   showLoading.value = true;
   sizeStore.getSizes().then(response => {

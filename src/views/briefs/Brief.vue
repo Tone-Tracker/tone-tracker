@@ -6,7 +6,7 @@ import { useBrief } from "@/stores/brief";
 import { useRoute } from "vue-router";
 import Drawer from "primevue/drawer";
 import { isClient } from "@vueuse/shared";
-import { useShare } from "@vueuse/core";
+import { useClipboard, useShare } from "@vueuse/core";
 import PDF from "pdf-vue3";
 
 const route = useRoute();
@@ -14,6 +14,7 @@ const briefStore = useBrief();
 let briefs = ref([]);
 let brief = ref({});
 let searchInput = ref('');
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const briefId = ref(route.query.brief?.id || null);
 
@@ -52,11 +53,13 @@ const onInput = () => {
     briefs.value = briefs.value.filter((brief) => {
       // Extract and normalize the data to be searchable
       const activationName = brief.activationName?.toLowerCase() || '';
+      const taskName = brief.taskName?.toLowerCase() || '';
       const path = brief.path?.toLowerCase() || '';
 
       // Filter based on searchTerm
       return (
         activationName.includes(searchTerm) ||
+        taskName.includes(searchTerm) ||
         path.includes(searchTerm)
       );
     });
@@ -97,24 +100,11 @@ const download = () => {
   }
 };
 
-const shareFile = ref(null);
 
-const options = ref({
-  title: shareFile.value ? shareFile?.value.name : "",
-  text: shareFile.value ? shareFile?.value.name : "",
-  url:
-    isClient && shareFile.value
-      ? import.meta.env.VITE_AWS_S3_BUCKET + shareFile?.value.path
-      : "",
-});
+const source = ref('Hello')
+const { text, copy, copied, isSupported } = useClipboard({ source })
 
-const { share, isSupported } = useShare(options);
 
-function startShare(file) {
-  console.log(file);
-  shareFile.value = file;
-  return share().catch((err) => err);
-}
 </script>
 <template>
   <Layout>
@@ -153,9 +143,13 @@ function startShare(file) {
                 class="col-md-4 col-lg-3 mb-4"
               >
                 <div class="brief-card">
-                  <h5 class="py-1 px-4 mb-0 text-center bg-black">
+                  <h5 v-if="briefItem.type == 'ACTIVATION'" class="py-1 px-4 mb-0 text-center bg-black">
                     {{ briefItem.activationName }}
                   </h5>
+                  <h5 v-if="briefItem.type == 'TASK'" class="py-1 px-4 mb-0 text-center bg-black">
+                    {{ briefItem.taskName }}
+                  </h5>
+
                   <div class="text-center">
                     <img
                       src="https://www.iconpacks.net/icons/1/free-document-icon-901-thumb.png"
@@ -172,11 +166,11 @@ function startShare(file) {
                       Read
                     </button>
                     <button
-                      @click="startShare(briefItem)"
+                      @click="copy(envPath + briefItem?.path)"
                       type="button"
                       class="btn text-white w-100 rounded-0 border border-primary bg-primary btn-outline-light maz-gradient-btn"
                     >
-                      Share
+                      {{ copied ? 'Copied!' : 'Share' }}
                     </button>
                   </div>
                  
