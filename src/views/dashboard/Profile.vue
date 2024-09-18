@@ -38,14 +38,17 @@ Date: 04/06/2024
                                                 <i class='bx bx-search-alt-2' ></i>
                                                 </template>
                                                 <template #image>
-                                                    <img 
-                                                    src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" 
-                                                    alt="image" width="350" />
-                                                </template>
-                                                <template #preview="slotProps">
-                                                    <img 
-                                                    src="https://tonetracker-bucket.s3.af-south-1.amazonaws.com/images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                                                </template>
+                                                    <img v-if="path == null" 
+                                                        :src="`https://tonetracker-bucket.s3.af-south-1.amazonaws.com/${userInfo?.path ? userInfo.path : 'images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg'}`" 
+                                                        alt="image" width="350" />
+                                                    <img v-else :src="path" alt="image" width="350" />
+                                                    </template>
+
+                                                    <template #preview="slotProps">
+                                                    <img :src="`https://tonetracker-bucket.s3.af-south-1.amazonaws.com/${userInfo?.path ? userInfo.path : 'images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg'}`" 
+                                                        alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                    </template>
+
                                             </Image>
                                             </div>
                                         <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
@@ -57,7 +60,9 @@ Date: 04/06/2024
 
                                     <div class="mt-3 mb-4">
                                         <h4 class="text- ">{{ getFullName() }} </h4>
-                                        <h4 class="text-center"><Rating :modelValue="4" :readonly="true" class="mt-2" width="20px"/> </h4>
+                                        <h4 class="text-center">
+                                            <Rating :modelValue="promoterData?.averageRating" :readonly="true" class="mt-2" width="20px"/>
+                                        </h4>
                                     </div>
 
                                     <div class="profile-imgs mb-4">
@@ -274,7 +279,7 @@ Date: 04/06/2024
                                                         v-model="commentForm.comment" autoResize rows="5" cols="30" />
                                                         <label>Write Comment</label>
                                                     </FloatLabel>
-                                                    <p v-if="!commentForm.comment" class="text-danger" style="font-size: .7rem">Please write comment</p>
+                                                    <!-- <p v-if="!commentForm.comment" class="text-danger" style="font-size: .7rem">Please write comment</p> -->
                                                 </div>
                                                 
                                                 <button type="button" @click="submitComment"
@@ -651,7 +656,8 @@ const profilePic = ref(null);
 const showTools = ref(false);
 const showBioTextarea = ref(false);
 
-
+//average rating
+const averageRating = ref(0);
 
 const password = ref('');
 const confirmPassword = ref('');
@@ -776,7 +782,6 @@ const uploadInput = ref(null)
         
         // Push the new comment object to the ratings array
         promoterData.value.ratings.push(newComment);
-          
             toaster.success("Comment submitted successfully");
         }).catch(function (error) {
             toaster.error("Error submitting comment");
@@ -924,6 +929,25 @@ const getPromoterDetails = () => {
     promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
         console.log('Fuck',response.data);
         promoterData.value = response.data;
+
+        let sum = 0;
+        const ratings = response.data.ratings;
+
+        if (ratings.length > 0) {
+            for (let i = 0; i < ratings.length; i++) {
+                sum += ratings[i].rating;
+            }
+            // Calculate the average rating
+            averageRating.value = sum / ratings.length;
+            // Set the average rating in the reactive promoterData object
+            promoterData.value["averageRating"] = averageRating.value;
+        } else {
+            // Handle case when there are no ratings
+            averageRating.value = 0;
+            promoterData.value["averageRating"] = 0;
+        }
+
+
         Object.assign(profileForm.value, {
             topSize: response.data.topSize,
             pantsSize: response.data.pantsSize,
@@ -933,6 +957,7 @@ const getPromoterDetails = () => {
             gender: response.data.gender
         })
         myBio.value = response.data.bio;
+        
   }).catch(function (error) {
     toaster.error("Error fetching profile");
     console.log(error);
