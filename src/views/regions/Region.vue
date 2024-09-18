@@ -385,7 +385,7 @@ const items = (region) => [
             </div>
         </div>
         <Dialog v-model:visible="visible" position="top" modal :header="`Add ${regionName} Regional Manager`" :style="{ width: '25rem' }">
-            <form @submit.prevent="submitRegionalManager" class="row g-3">
+            <!-- <form @submit.prevent="submitRegionalManager" class="row g-3"> -->
                 <div class="col-md-12">
                     <div class="card my-card flex justify-center">
                         <label for="input1" class="form-label">Regional Manager</label>
@@ -399,7 +399,7 @@ const items = (region) => [
                     </button>
                 </div>
           
-            </form>
+            <!-- </form> -->
         </Dialog>
         <Dialog v-model:visible="warehouseVisible" position="top" modal header="Add Warehouse" style="width: 26rem">
                
