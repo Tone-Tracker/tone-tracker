@@ -150,8 +150,8 @@ const clearFilter = () => {
 }
 
 const tableHeaders = ref([
-  "Contact Name",
-    "Contact Surname",
+    "Name",
+    "Surname",
     "Email",
     "Cell Number",
     "Opt-in",
