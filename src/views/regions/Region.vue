@@ -249,7 +249,7 @@ const onWarehouseSubmit = async () => {
 const items = (region) => [
     {
         label: 'Edit',
-        icon: 'bx bx-bullseye fs-4 text-white',
+        icon: 'bx bx-show fs-4 text-white',
         command: () => {
             openModal('top', region)
         }

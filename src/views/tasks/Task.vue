@@ -405,7 +405,7 @@ const taskItems = (task) => {
     },
         {
             label: 'View',
-            icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
+            icon: 'bx bx-show fs-4 maz-gradient-txt',
             command: () => {
                 URLrouter.push(`/tasks/${task.id}?name=${task.name}`);
             }

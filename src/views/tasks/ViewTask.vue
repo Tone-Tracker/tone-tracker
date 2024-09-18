@@ -208,7 +208,7 @@ const saveSelectedPromoters = () => {
 const items = (bid) => [    {
   
         label: 'View Costing',
-        icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
+        icon: 'bx bx-show fs-4 maz-gradient-txt',
         command: () => {
           previewCosting(bid);
         }

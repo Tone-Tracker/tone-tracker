@@ -323,7 +323,7 @@ const deleteRecord = (event, task) => {
 
 const promoterItems = (task) => [    {
         label: 'View',
-        icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
+        icon: 'bx bx-show fs-4 maz-gradient-txt',
         command: () => {
             URLrouter.push(`/view-talent-task/${task.id}`);
         }
