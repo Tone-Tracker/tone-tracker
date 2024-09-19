@@ -31,7 +31,7 @@ function exportToPDF() {
         doc.text(row.join(" "), 10, 20 + (index * 10));
       });
 
-      doc.save("users.pdf");
+      doc.save("CRM.pdf");
     }
 
 </script>
