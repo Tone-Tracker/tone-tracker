@@ -1,6 +1,6 @@
 <template>
-    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3"><i class='maz-gradient-txt' :class="icon"></i> {{ title }}</div>
+    <div class="page-breadcrumb d-none d-sm-flex  mb-3">
+        <div class="breadcrumb-title d-flex align-items-center justify-content-center"><i class='maz-gradient-txt me-3' :class="icon"></i> {{ title }}</div>
     </div>
 </template>
 <script setup >

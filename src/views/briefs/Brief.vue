@@ -110,7 +110,7 @@ const { text, copy, copied, isSupported } = useClipboard({ source })
   <Layout>
     <div class="page-wrapper">
       <div class="page-content">
-        <BreadCrumb title="Briefs" icon="" />
+        <BreadCrumb title="Briefs" icon="bx bx-file" />
         <p>View briefs</p>
 
         <div class="card">

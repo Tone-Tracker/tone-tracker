@@ -141,7 +141,7 @@ const onInput = () => {
   <Layout>
     <div class="page-wrapper">
       <div class="page-content">
-        <BreadCrumb title="Clients" icon="" />
+        <BreadCrumb title="Clients" icon="bx bx-user"/>
         <div class="card">
 
          
