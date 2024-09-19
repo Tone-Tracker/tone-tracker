@@ -234,7 +234,7 @@ const onInput = () => {
 const items = (activation) => [
     {
         label: 'View Activation',
-        icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
+        icon: 'bx bx-show fs-4 maz-gradient-txt',
         command: () => {
             URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${activation.campaignDTO.name}&name=${activation.name}`);
         }
@@ -273,7 +273,7 @@ const items = (activation) => [
 const activationItems = (activation) => [
     {
         label: 'View Activation',
-        icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
+        icon: 'bx bx-show fs-4 maz-gradient-txt',
         command: () => {
             URLrouter.push(`/view-activation?activation=${activation.id}&campaign=${activation.campaign.name}&name=${activation.name}`);
         }

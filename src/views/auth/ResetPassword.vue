@@ -1,79 +1,3 @@
-<script>
-import { RouterLink, RouterView, useRoute } from 'vue-router';
-import { useVuelidate } from '@vuelidate/core';
-import { required, minLength, sameAs } from '@vuelidate/validators';
-import { ref } from 'vue';
-import router from '@/router';
-import { useMonitorSize } from '@/composables/useMonitorSize';
-import { useAuth } from '@/stores/auth';
-import useToaster from '@/composables/useToaster';
-
-export default {
-  setup() {
-    const loading = ref(false);
-    const screenSizes = useMonitorSize();
-    const auth = useAuth();
-    const toaster = useToaster();
-    const route = useRoute();
-
-    const password = ref('');
-    const confirmPassword = ref('');
-    const token = ref(route.query.token || '');
-
-    const rules = {
-      password: { required, minLength: minLength(8) },
-      confirmPassword: { sameAs: sameAs(password) },
-      token: { required }
-    };
-
-    const v$ = useVuelidate(rules, { password, confirmPassword, token });
-
-    const onSubmit = async () => {
-      loading.value = true;
-      const isFormCorrect = await v$.value.$validate();
-      if (!isFormCorrect) return;
-
-      const data = {
-        password: password.value,
-        token: token.value
-      };
-
-      auth.resetPassword(data)
-        .then(function (response) {
-          
-          console.log(response);
-          toaster.success("Password reset successfully");
-          // setTimeout(() => {
-          //   router.push('/');
-          // }, 1000);
-        })
-        .catch(function (error) {
-          if (error.response.data == "Token has expired") {
-            // 
-            toaster.error("Token has expired");
-            return;
-          }
-          toaster.error("Error resetting password");
-          console.log(error);
-        })
-        .finally(function () {
-          loading.value = false;
-        });
-    };
-
-    return {
-      password,
-      confirmPassword,
-      v$,
-      onSubmit,
-      screenSizes,
-      loading
-    };
-  }
-};
-</script>
-
-
 <template>
   <div class="logo-light"></div>
   <div class="shoes"></div>
@@ -95,16 +19,34 @@ export default {
                     <form @submit.prevent="onSubmit" class="row g-3">
                       <div class="mb-3 col-12">
                         <label for="inputPassword" class="form-label">New Password</label>
-                        {{ v$.$errors }}
-                        <input v-model="password" type="password" class="form-control custom-input" id="inputPassword">
+                        <div class="input-group" id="show_hide_password">
+                          <input
+                            v-model="password"
+                            :type="passwordFieldType"
+                            class="form-control border-start-0 border-top-0 border-end-0"
+                            id="inputPassword"
+                          />
+                          <span v-if="password.length > 0" class="input-group-text" @click="togglePasswordVisibility">
+                            <i :class="toggleIconClass"></i>
+                          </span>
+                        </div>
                         <div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
                           <div class="text-danger">{{ error.$message }}</div>
                         </div>
                       </div>
                       <div class="mb-3 col-12">
                         <label for="inputConfirmPassword" class="form-label">Confirm Password</label>
-                        <input v-model="confirmPassword" type="password" class="form-control custom-input"
-                          id="inputConfirmPassword">
+                        <div class="input-group" id="show_hide_confirm_password">
+                          <input
+                            v-model="confirmPassword"
+                            :type="confirmPasswordFieldType"
+                            class="form-control border-start-0 border-top-0 border-end-0"
+                            id="inputConfirmPassword"
+                          />
+                          <span v-if="confirmPassword.length > 0" class="input-group-text" @click="toggleConfirmPasswordVisibility">
+                            <i :class="toggleConfirmIconClass"></i>
+                          </span>
+                        </div>
                         <div class="input-errors" v-for="error of v$.confirmPassword.$errors" :key="error.$uid">
                           <div class="text-danger">{{ error.$message }}</div>
                         </div>
@@ -135,10 +77,103 @@ export default {
   <RouterView />
 </template>
 
-<style scoped>
-/* Add your styles here */
-</style>
+<script>
+import { RouterLink, RouterView, useRoute } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minLength, sameAs } from '@vuelidate/validators';
+import { ref, computed } from 'vue';
+import router from '@/router';
+import { useMonitorSize } from '@/composables/useMonitorSize';
+import { useAuth } from '@/stores/auth';
+import useToaster from '@/composables/useToaster';
 
+export default {
+  setup() {
+    const loading = ref(false);
+    const screenSizes = useMonitorSize();
+    const auth = useAuth();
+    const toaster = useToaster();
+    const route = useRoute();
+
+    const password = ref('');
+    const confirmPassword = ref('');
+    const token = ref(route.query.token || '');
+
+    const rules = {
+      password: { required, minLength: minLength(8) },
+      confirmPassword: { sameAs: sameAs(password) },
+      token: { required }
+    };
+
+    const v$ = useVuelidate(rules, { password, confirmPassword, token });
+
+    const onSubmit = async () => {
+      loading.value = true;
+      const isFormCorrect = await v$.value.$validate();
+      if (!isFormCorrect) {
+        loading.value = false;
+        return;
+      }
+
+      const data = {
+        password: password.value,
+        token: token.value
+      };
+
+      auth.resetPassword(data)
+        .then(function (response) {
+          console.log(response);
+          toaster.success("Password reset successfully");
+          setTimeout(() => {
+            router.push('/');
+          }, 1000);
+        })
+        .catch(function (error) {
+          if (error.response.data == "Token has expired") {
+            toaster.error("Token has expired");
+            return;
+          }
+          toaster.error("Error resetting password");
+          console.log(error);
+        })
+        .finally(function () {
+          loading.value = false;
+        });
+    };
+
+    // Password visibility toggle logic
+    const showPassword = ref(false);
+    const showConfirmPassword = ref(false);
+    const passwordFieldType = computed(() => showPassword.value ? "text" : "password");
+    const confirmPasswordFieldType = computed(() => showConfirmPassword.value ? "text" : "password");
+    const toggleIconClass = computed(() => showPassword.value ? "bx bx-hide" : "bx bx-show");
+    const toggleConfirmIconClass = computed(() => showConfirmPassword.value ? "bx bx-hide" : "bx bx-show");
+    
+    const togglePasswordVisibility = () => {
+      showPassword.value = !showPassword.value;
+    };
+    
+    const toggleConfirmPasswordVisibility = () => {
+      showConfirmPassword.value = !showConfirmPassword.value;
+    };
+
+    return {
+      password,
+      confirmPassword,
+      v$,
+      onSubmit,
+      screenSizes,
+      loading,
+      passwordFieldType,
+      confirmPasswordFieldType,
+      toggleIconClass,
+      toggleConfirmIconClass,
+      togglePasswordVisibility,
+      toggleConfirmPasswordVisibility
+    };
+  }
+};
+</script>
 
 <style scoped>
 .text-default {
@@ -154,16 +189,18 @@ export default {
   color: #fff;
 }
 
-input[type=password] {
+input[type="password"],
+input[type="text"] {
   border: none;
   border-bottom: 2px solid #fff;
-  background-color: none;
+  background-color: transparent;
   outline: 0;
 }
 
-input[type=password]:focus {
+input[type="password"]:focus,
+input[type="text"]:focus {
   border: none;
-  background-color: none;
+  background-color: transparent;
 }
 
 .section-authentication-cover {
@@ -210,8 +247,26 @@ input[type=password]:focus {
 }
 
 .auth-cover-right {
-  background: rgb(34, 36, 35, 0.7);
+  background: rgba(34, 36, 35, 0.7);
   border-left: 1px solid #707070;
+}
+
+.input-group-text {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.input-group-text i {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #fff;
+}
+
+html.dark-theme .input-group-text {
+  color: #d1d7de;
+  background-color: transparent !important;
+  border: none !important;
 }
 
 @media (max-width: 768px) {

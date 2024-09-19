@@ -266,7 +266,7 @@ const onInput = () => {
                                                                 </a>
                                                                 <router-link :to="`/admin-activations?campaign=${campaign.id}`" 
                                                                 v-tooltip.bottom="'View Activations'" class="ms-3">
-                                                                    <i class='bx bxs-bullseye '></i>
+                                                                    <i class='bx bx-show '></i>
                                                                 </router-link>
                                                                 <a @click="deleteRecord($event,campaign)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash text-danger' v-tooltip.bottom="'Delete'"></i>

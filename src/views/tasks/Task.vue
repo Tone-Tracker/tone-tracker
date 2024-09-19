@@ -86,7 +86,7 @@ watch(suggestions, (newSuggestions) => {
     ]);
 
     const onSelectLocation = (event) => {
-        console.log('event',event);
+        // console.log('event',event);
         getGeoCode(event);
        
     };
@@ -106,14 +106,27 @@ watch(suggestions, (newSuggestions) => {
     }
 
     const getGeoCode = async (event) => {
-        const results =  await geocodeByAddress(event.value.name);
-        const byPlacesId = await geocodeByPlaceId(event.value.place_id)
-        // const { lat, lng } =  getLatLng(results);
-        form.address = results[0]?.formatted_address;
-        form.longitude = results[0]?.geometry.viewport.Hh.lo;
-        form.latitude = results[0]?.geometry.viewport.ci.lo;        
+  try {
+    const results = await geocodeByAddress(event.value.name);
+    const byPlacesId = await geocodeByPlaceId(event.value.place_id);
 
-    }
+    // Await the result of getLatLng
+    const { lat, lng } = await getLatLng(results[0]);
+
+    // Now lat and lng are available
+    form.longitude = lat;
+    form.latitude = lng;
+    form.address = results[0]?.formatted_address;
+
+    // console.log({ lat, lng }); // Log the values to confirm
+
+    // Optionally log the form to check the values are assigned correctly
+    console.log(form);
+  } catch (error) {
+    console.error('Error fetching geocode:', error);
+  }
+};
+
 
     const types = ref([
         { name: 'Third Party', code: 'THIRDPARTY' },
@@ -392,7 +405,7 @@ const taskItems = (task) => {
     },
         {
             label: 'View',
-            icon: 'bx bx-bullseye fs-4 maz-gradient-txt',
+            icon: 'bx bx-show fs-4 maz-gradient-txt',
             command: () => {
                 URLrouter.push(`/tasks/${task.id}?name=${task.name}`);
             }
