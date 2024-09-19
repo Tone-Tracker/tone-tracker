@@ -169,7 +169,7 @@ const tableHeaders = ref([
             <div class="">
                 <div class="table-container-colour pl-5;">
                   <div class="mb-2">
-                    <input type="text" class="form-control" placeholder="Search" v-model="searchInput" @input="onSearchInput('')" style="width: 12rem;">
+                    <input type="text" class="form-control" placeholder="Search" v-model="searchInput" @input="onSearchInput('')" style="width: 25rem;">
                   </div>
                     <div class="d-flex justify-content-between">
                         <h5>Database</h5>

@@ -14,7 +14,7 @@
                 <div class="row mt-4">
                     <div class="col-12 col-lg-12 d-flex">
                        <div class="card radius-10 w-100">
-                         <div class="card-header">
+                         <div class="card-header mb-3">
                              <div class="d-flex align-items-center">
                                  <div>
                                     <select class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
@@ -221,5 +221,9 @@ html.dark-theme .widgets-icons {
 	border: 0;
 	border-radius: 0;
 	font-weight: 600;
+}
+
+.card-header {
+    padding: 0px !important;
 }
 </style>
