@@ -250,8 +250,8 @@ const onInput = () => {
                                                             <Avatar v-if="campaign.path" :image="envPath + campaign.path" class="mr-2" size="large" shape="circle" />
                                                             <Avatar v-else :label="campaign.name[0]?.toUpperCase()" class="mr-2" size="large" shape="circle" />
                                                         </td>
-                                                        <td v-if="!campaign.isEditing">{{ campaign.name }}</td>
-                                                        <td v-else>
+                                                        <td v-if="!campaign.isEditing"><div class="d-flex justify-content-center align-items-center align-self-center">{{ campaign.name }}</div></td>
+                                                        <td v-else class="d-flex justify-content-center align-items-center">
                                                             <input v-focus type="text" v-model="campaign.name" @blur="updateCampaign(campaign)" @keyup.enter="updateCampaign(campaign)" class="no-border-input"/>
                                                         </td>
                                                         <td>{{ clientName }}</td>

@@ -1,17 +1,16 @@
 <script setup>
 import CLIENT from "./navigations/CLIENT.vue";
-import TTG_SUPER_ADMIN from "./navigations/TTG_SUPER_ADMIN.vue";
-import TTG_REGIONAL_MANAGER from "./navigations/TTG_REGIONAL_MANAGER.vue";
-import TTG_HEAD_ADMIN from "./navigations/TTG_HEAD_ADMIN.vue";
 import TTG_ACTIVATION_MANAGER from "./navigations/TTG_ACTIVATION_MANAGER.vue";
-import TTG_CLIENT from "./navigations/TTG_CLIENT.vue";
+import TTG_HEAD_ADMIN from "./navigations/TTG_HEAD_ADMIN.vue";
 import TTG_PROMOTERS from "./navigations/TTG_PROMOTERS.vue";
+import TTG_REGIONAL_MANAGER from "./navigations/TTG_REGIONAL_MANAGER.vue";
+import TTG_SUPER_ADMIN from "./navigations/TTG_SUPER_ADMIN.vue";
 
 import { useAuth } from "@/stores/auth";
-import TTG_SUPPLIERS from "./navigations/TTG_SUPPLIERS.vue";
-import Drawer from "primevue/drawer";
-import { onMounted, ref } from "vue";
 import { useNavStore } from '@/stores/ToggleNav';
+import Drawer from "primevue/drawer";
+import { onMounted } from "vue";
+import TTG_SUPPLIERS from "./navigations/TTG_SUPPLIERS.vue";
 
 const navStore = useNavStore();
 
@@ -57,7 +56,7 @@ const visible = navStore.isNavVisible;
 
     <div
       class="mazisi simplebar-wrapper"
-      style="background-color: black; width: 300px"
+      style="background-color: black; width: 250px"
     >
       <Drawer
       v-model:visible="navStore.isNavVisible"
