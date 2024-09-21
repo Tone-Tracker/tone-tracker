@@ -53,7 +53,7 @@ Date: 04/06/2024
                                             </div>
                                         <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
                                         <div v-if="isMyProfile()" 
-                                            class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
+                                            class="edit-icon" @click="showProfilePictuteModal = true">
                                             <i class='bx bx-edit-alt fs-2'></i>
                                         </div>
                                     </div>
@@ -173,70 +173,6 @@ Date: 04/06/2024
                                         </div>
                                     </div>
 
-                                    <!-- Add Profile picture modal -->
-                                    <div class="modal fade" id="addProfilePicModal" tabindex="-1" aria-labelledby="addModalLabel"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="addModalLabel">Add Profile Picture</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                                    
-                                            </div>
-                                            <div class="modal-body">
-                                                <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
-                                            <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label>
-                                            
-                                            <VuePictureCropper
-                                            :boxStyle="{
-                                                width: '100%',
-                                                height: '100%',
-                                                backgroundColor: '#f8f8f8',
-                                                margin: 'auto',
-                                            }"
-                                            :img="pic"
-                                            :options="{
-                                                viewMode: 1,
-                                                dragMode: 'move',
-                                                aspectRatio: 1,
-                                                cropBoxResizable: false,
-                                            }"
-                                            :presetMode="{
-                                                mode: 'fixedSize',
-                                                width: 300,
-                                                height: 400,
-                                            }"
-                                            @ready="ready"
-                                            class="mt-3"
-                                            />
-                                            
-                                            <div class="tools" v-if="showTools">
-                                                <button class="btn" data-bs-dismiss="modal">
-                                                Cancel
-                                                </button>
-                                                <!-- <button class="btn" @click="clear">
-                                                Clear
-                                                </button> -->
-                                                <button class="btn" @click="reset">
-                                                Reset
-                                                </button>
-                                            </div>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <div class="col-12 mt-4">
-                                                    <div class="d-grid">
-                                                        <button @click="getResult" class="btn maz-gradient-btn"
-                                                            type="button">
-                                                            Save
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 </div>
                             
@@ -584,6 +520,67 @@ Date: 04/06/2024
             </div>
             </form>
         </Dialog>
+         <Dialog v-model:visible="showProfilePictuteModal" header="Upload Profile Picture" :style="{ width: '30rem' }" position="top" :modal="true" :draggable="false">
+         
+                                    <div class="modal-body">
+                                        <!-- <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
+                                    <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label> -->
+                                    <FileUploadGeneric 
+                                    :showFilePreview="false" 
+                                    accept="image/*" 
+                                    fileType="image" 
+                                    @fileUploaded="onFileChange"
+                                    @fileDropped="onfileDropped"
+                            />
+                                    <VuePictureCropper
+                                    :boxStyle="{
+                                        width: '100%',
+                                        height: '100%',
+                                        backgroundColor: '#f8f8f8',
+                                        margin: 'auto',
+                                    }"
+                                    :img="pic"
+                                    :options="{
+                                        viewMode: 1,
+                                        dragMode: 'move',
+                                        aspectRatio: 1,
+                                        cropBoxResizable: false,
+                                    }"
+                                    :presetMode="{
+                                        mode: 'fixedSize',
+                                        width: 300,
+                                        height: 400,
+                                    }"
+                                    @ready="ready"
+                                    class="mt-3"
+                                    />
+                                    
+                                    <div class="tools" v-if="showTools">
+                                        <button class="btn" data-bs-dismiss="modal">
+                                        Cancel
+                                        </button>
+                                        <!-- <button class="btn" @click="clear">
+                                        Clear
+                                        </button> -->
+                                        <button class="btn" @click="reset">
+                                        Reset
+                                        </button>
+                                    </div>
+                                    </div>
+
+                                            <div class="modal-footer">
+                                                <div class="col-12 mt-4">
+                                                    <div class="ms-auto">
+                                                        <button @click="getResult" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+                                                            <div v-if="showLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                                            </div>
+                                                            <i v-if="!showLoading" class="bx bxs-plus-square"></i>
+                                                            {{ showLoading ?  '' : 'Save' }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+        </Dialog>
     </Layout>
 </template>
 <script setup>
@@ -613,6 +610,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, sameAs } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
 import BreadCrumb from '../../components/BreadCrumb.vue';
+import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 
 
 
@@ -646,6 +644,7 @@ const totalSize = ref(0);
 const showLoading = ref(false);
 const showProfileLoading = ref(false);
 const showPasswordLoading = ref(false);
+const showProfilePictuteModal = ref(false);
 
 const user = JSON.parse(authStore.user)
 const promoterData = ref({});
@@ -855,6 +854,14 @@ async function getResult() {
 
         promoterStore.uploadSingleImage(user.id,formData, config).then(function (response) {
             console.log(response);
+            getUser();
+            toaster.success("Profile picture updated successfully");
+            showLoading.value = false
+        }).catch(function (error) {
+            toaster.error("Error updating profile picture");
+            console.log(error);
+        }).finally(() => {
+            showLoading.value = false
         })
 
     }
@@ -1072,7 +1079,7 @@ const getImages = async () => {
 
 
 </script>
-<style>
+<style scoped>
 /* //Acordion// */
 html.dark-theme .accordion-item {
     /* color: #e4e5e6; */

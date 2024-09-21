@@ -86,6 +86,7 @@ const onInput = () => {
 	modalData.value = user;
 	isEdit.value = true;
 	visible.value = true
+	Object.assign(form,user)
   }
 
   const deleteUser = (user) => {
@@ -291,78 +292,66 @@ const onSubmit = async () => {
 				@closeModal="hideModal()"
 				/> -->
 				<Dialog v-model:visible="visible" position="top" modal header="Add Activation Manager" :style="{ width: '45rem' }">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-						  <div class="modal-header">
-							<h5 class="modal-title">{{ isEdit ? 'Edit' : 'Create'}} User</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						  </div>
-						  <div class="modal-body">
-							<div class="form-body mt-4">
-							  <div class="row">
-								<div class="col-lg-12">
-								  <div class="border border-3 p-4 rounded">
-								   
-									<div class="row g-3">
-									  <div class="col-md-6">
-										<label for="firstName" class="form-label">First Name</label>
-										<input v-model="form.firstName" type="text" class="form-control" id="firstName" >
-										<div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
-										  <div class="text-danger">First Name is required</div>
-										</div>
-									  </div>
-									  <div class="col-md-6">
-										<label for="lastName" class="form-label">Last Name</label>
-										<input v-model="form.lastName" type="text" class="form-control" id="lastName" >
-										<div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
-										  <div class="text-danger">Last Name is required</div>
-										</div>
-									  </div>
-									  <div class="col-md-6">
-										<label for="email" class="form-label">Email</label>
-										<input v-model="form.email" type="email" class="form-control" id="email" >
-										<div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-										  <div class="text-danger">Email is required</div>
-										</div>
-									  </div>
-									  <div class="col-md-6">
-										<label for="cell" class="form-label">Cell Number</label>
-										<input v-model="form.phone" type="text" class="form-control" id="cell" >
-										<div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
-										  <div class="text-danger">Cell Number is required</div>
-										</div>
-									  </div>
-									  <div class="row g-3 mb-3">
-										<div class="col-md-6">
-										  <label for="role" class="form-label">Role</label>
-										  <select v-model="form.role" class="form-control" id="role">
-											<option :value="''" :selected="true">Select Role</option>
-											<option v-for="role in ROLES" :key="role" :value="role">{{ role }}</option>
-										  </select>
-										  <div class="input-errors" v-for="error of v$.role.$errors" :key="error.$uid">
-											<div class="text-danger">Role is required</div>
-										  </div>
-										</div>
-									  </div>
-									 
-									</div>
-				  
-												<!-- Conditionally display SizeAndHeightForm component -->
-											 <SizeAndHeightForm v-if="form.role === 'TTG_TALENT'" :form="form" :sizes="sizes" />
-				  
-									<div class="col-12 mt-3">
-									  <div class="d-grid">
-										<button @click="onSubmit" class="btn maz-gradient-btn" type="button">
-										  <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-										  {{ modalData.value?.id ? 'Update' : 'Submit' }}
-										</button>
-									  </div>
-									</div>
-								  </div> 
+					<div class="row">
+						<div class="col-lg-12">
+						  <div class="border border-3 p-4 rounded">
+						   
+							<div class="row g-3">
+							  <div class="col-md-6">
+								<label for="firstName" class="form-label">First Name</label>
+								<input v-model="form.firstName" type="text" class="form-control" id="firstName" >
+								<div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
+								  <div class="text-danger">First Name is required</div>
 								</div>
 							  </div>
-							</div> 
-						  </div>
+							  <div class="col-md-6">
+								<label for="lastName" class="form-label">Last Name</label>
+								<input v-model="form.lastName" type="text" class="form-control" id="lastName" >
+								<div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
+								  <div class="text-danger">Last Name is required</div>
+								</div>
+							  </div>
+							  <div class="col-md-6">
+								<label for="email" class="form-label">Email</label>
+								<input v-model="form.email" type="email" class="form-control" id="email" >
+								<div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+								  <div class="text-danger">Email is required</div>
+								</div>
+							  </div>
+							  <div class="col-md-6">
+								<label for="cell" class="form-label">Cell Number</label>
+								<input v-model="form.phone" type="text" class="form-control" id="cell" >
+								<div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
+								  <div class="text-danger">Cell Number is required</div>
+								</div>
+							  </div>
+							  <div class="row g-3 mb-3">
+								<div class="col-md-6">
+								  <label for="role" class="form-label">Role</label>
+								  <select v-model="form.role" class="form-control" id="role">
+									<option :value="''" :selected="true">Select Role</option>
+									<option v-for="role in ROLES" :key="role" :value="role">{{ role }}</option>
+								  </select>
+								  <div class="input-errors" v-for="error of v$.role.$errors" :key="error.$uid">
+									<div class="text-danger">Role is required</div>
+								  </div>
+								</div>
+							  </div>
+							 
+							</div>
+		  
+										<!-- Conditionally display SizeAndHeightForm component -->
+									 <SizeAndHeightForm v-if="form.role === 'TTG_TALENT' && !isEdit" :form="form" :sizes="sizes" />
+		  
+							<div class="col-12 mt-3">
+							  <div class="d-grid">
+								<button @click="onSubmit" class="btn maz-gradient-btn" type="button">
+								  <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+								  {{ modalData.value?.id ? 'Update' : 'Submit' }}
+								</button>
+							  </div>
+							</div>
+						  </div> 
 						</div>
 					  </div>
 				</Dialog>
