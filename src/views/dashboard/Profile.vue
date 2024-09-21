@@ -908,7 +908,7 @@ const profileForm = ref({
 
 });
 const getUser = () => {
-    userStore.getUser(userIdParam.value).then(function (response) {
+    userStore.getUser(promoterId.value).then(function (response) {
         console.log('userInfo',response);
         userInfo.value = response.data;
         myBio.value = response.data.bio;
@@ -926,7 +926,7 @@ const getUser = () => {
 }
 
 const getPromoterDetails = () => {
-    promoterStore.getTalentByTalentId(promoterId.value).then(function (response) {
+    promoterStore.getTalentByTalentId(userIdParam.value).then(function (response) {
         console.log('Fuck',response.data);
         promoterData.value = response.data;
 
