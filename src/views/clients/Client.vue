@@ -251,7 +251,7 @@ const onInput = () => {
                         </div>
                       </div>
                       <div class="row mt-3">
-                        <div class="col-6">
+                        <div class="col-12 mt-2">
                           <div class="position-relative">
                             <label for="input1" class="form-label">First Name</label>
                             <input v-model="form.firstName" @input="onInput" type="text" class="form-control ps-3 ">
@@ -260,7 +260,7 @@ const onInput = () => {
                             </div>
                           </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 mt-2">
                           <div class="position-relative">
                             <label for="input1" class="form-label">Last Name</label>
                             <input v-model="form.lastName" @input="onInput" type="text" class="form-control ps-3 ">
@@ -272,7 +272,7 @@ const onInput = () => {
                       </div>
 
                       <div class="row mt-3">
-                        <div class="col-6">
+                        <div class="col-12 mt-2">
                           <div class="position-relative">
                             <label for="input1" class="form-label">Phone Number</label>
                             <input v-model="form.phone" @input="onInput" type="text" class="form-control ps-3 ">
@@ -281,7 +281,7 @@ const onInput = () => {
                             </div>
                           </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 mt-2">
                           <div class="position-relative">
                             <label for="input1" class="form-label">Email</label>
                             <input v-model="form.email" @input="onInput" type="email" class="form-control ps-3 ">
