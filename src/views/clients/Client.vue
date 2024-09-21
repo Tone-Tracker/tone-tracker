@@ -8,6 +8,7 @@ import useToaster from '@/composables/useToaster';
 import { useClientStore } from '@/stores/useClient';
 import { useConfirm } from "primevue/useconfirm";
 import ColorPicker from 'primevue/colorpicker';
+import router from "@/router";
 
 const toaster = useToaster();
 const clientStore = useClientStore();
@@ -150,7 +151,12 @@ const onInput = () => {
 };
 
 
-
+const redirectToCampaign = (client) => {
+  router.push({ 
+    path: '/campaigns', 
+    query: { client: client.id } // Add query parameter properly
+  });
+};
 
 
 
@@ -210,9 +216,8 @@ const onInput = () => {
                             </td>
                             <td>Mazisi</td>
                             <td>
-                              <button v-tooltip.bottom="'View'" type="button" class="btn maz-gradient-btn">
-                                <RouterLink :to="`/campaigns?client=${client.id}`">View Campaign</RouterLink>
-                                <!-- <span class="badge bg-dark">4</span> -->
+                              <button @click="redirectToCampaign(client)" v-tooltip.bottom="'View Campaign'" type="button" class="btn maz-gradient-btn">
+                                View Campaign
                               </button>
                             </td>
                             <td>
@@ -293,11 +298,11 @@ const onInput = () => {
                       </div>
                       <div class="row mt-3">
                         <div class="col-12">
-                          <div class="card flex justify-center">
+                          <div class="flex justify-center">
                             <ColorPicker v-model="form.color" inline />
                         </div>
                         </div>
-                        <span class="badge" :style="`color: #000; background-color: #${form.color}`">Sample Background</span>
+                        <span class="badge" :style="`color: #fff; background-color: #${form.color}`">Sample Background</span>
                       </div>
 
                     

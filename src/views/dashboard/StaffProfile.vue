@@ -188,7 +188,7 @@ Date: 04/06/2024
                         </div>
                        <!-- fgfgfg -->
                     </div>
-                    <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12" v-if="isMyProfile">
+                    <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12" v-if="isMyProfile()">
                         <div class="card">
                             <div class="card-body p-4">
 									<div class="row mb-3">
@@ -506,7 +506,7 @@ const getUser = () => {
 
 
 const isMyProfile = () => {
-    // console.log(promoterId.value, user.activeUserId)
+    console.log(promoterId.value, user.activeUserId)
     return promoterId.value == user.activeUserId;
 }
 const uploadEvent = (callback) => {

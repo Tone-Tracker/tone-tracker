@@ -200,7 +200,7 @@ const toggleCampaignSearch = (event) => {
           </div>
         </router-link>
       </li>
-      <li @click="logout" v-tooltip="'Warehouse'" class="side-nav__item">
+      <li @click="logout" v-tooltip="'Logout'" class="side-nav__item">
         <router-link to="/warehouse">
           <div class="side-nav__link">
            <Logout />
