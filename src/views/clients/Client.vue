@@ -1,12 +1,13 @@
 <script setup>
 import { onMounted, ref, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
+import { email, maxValue, numeric, required } from '@vuelidate/validators';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import useToaster from '@/composables/useToaster';
 import { useClientStore } from '@/stores/useClient';
 import { useConfirm } from "primevue/useconfirm";
+import ColorPicker from 'primevue/colorpicker';
 
 const toaster = useToaster();
 const clientStore = useClientStore();
@@ -17,12 +18,25 @@ let showLoading = ref(false);
 let loading = ref(false);  
 let searchInput = ref('');
 
-const form = reactive({ name: '' });
+const form = reactive({ 
+  name: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  color: '#007bff'
+});
 onMounted(() => {
   getAllClients();
 });
 
-const rules = { name: { required } };
+const rules = { 
+  name: { required },
+  firstName: { required },
+  lastName: { required },
+  email: { required, email },
+  phone: { required, numeric, maxValue: 10 }
+};
 const v$ = useVuelidate(rules, form);
 
 const createClient = async () => {
@@ -34,7 +48,12 @@ const createClient = async () => {
   clientStore.submitClient(form).then(function (response) {
     toaster.success("Client created successfully");
     getAllClients();
-    form.name = '';  
+    form.name = ''; 
+    form.firstName = '';
+    form.lastName = '';
+    form.email = '';
+    form.phone = '';
+    form.color = '';
 	v$.value.$errors = [];
 	v$.value.$reset();
   }).catch(function (error) {
@@ -141,7 +160,7 @@ const onInput = () => {
   <Layout>
     <div class="page-wrapper">
       <div class="page-content">
-        <BreadCrumb title="Clients" icon="bx bx-user"/>
+        <BreadCrumb title="Clients" icon="bx bx-user-circle"/>
         <div class="card">
 
          
@@ -168,7 +187,7 @@ const onInput = () => {
                 </div>
               </div>
              </div>
-              <div class="col-8 col-lg-8 col-xl-8 d-flex">
+              <div class="col-9 col-lg-9 col-xl-9 d-flex">
                 <div class="radius-10 w-100">
                   <div class="card-body">
                     <div class="table-responsive">
@@ -177,6 +196,7 @@ const onInput = () => {
                           <tr>
                             <th>#</th>
                             <th>Name</th>
+                            <th>Person Responsible</th>
                             <th>View Campaign</th>
                             <th>Action</th>
                           </tr>
@@ -188,6 +208,7 @@ const onInput = () => {
                             <td v-else>
                               <input v-focus type="text" v-model="client.name" @blur="updateClient(client)" @keyup.enter="updateClient(client)" class="no-border-input"/>
                             </td>
+                            <td>Mazisi</td>
                             <td>
                               <button v-tooltip.bottom="'View'" type="button" class="btn maz-gradient-btn">
                                 <RouterLink :to="`/campaigns?client=${client.id}`">View Campaign</RouterLink>
@@ -218,16 +239,68 @@ const onInput = () => {
                   </div>
                 </div>
               </div>
-              <div class="col-4 col-lg-4 col-xl-4 d-flex">
+              <div class="col-3 col-lg-3 col-xl-3 d-flex">
                 <div class=" w-100 radius-10">
                   <div class="card-body">
                     <div class="table-responsive">
                       <div class="position-relative">
-                        <input v-model="form.name" @input="onInput" type="text" class="form-control ps-5 " placeholder="Client Name">
+                        <label for="input1" class="form-label">Client Name</label>
+                        <input v-model="form.name" @input="onInput" type="text" class="form-control ps-3 ">
                         <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                           <div class="text-danger">Client Name is required</div>
                         </div>
                       </div>
+                      <div class="row mt-3">
+                        <div class="col-6">
+                          <div class="position-relative">
+                            <label for="input1" class="form-label">First Name</label>
+                            <input v-model="form.firstName" @input="onInput" type="text" class="form-control ps-3 ">
+                            <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
+                              <div class="text-danger">First name is required</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="position-relative">
+                            <label for="input1" class="form-label">Last Name</label>
+                            <input v-model="form.lastName" @input="onInput" type="text" class="form-control ps-3 ">
+                            <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
+                              <div class="text-danger">Last name is required</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mt-3">
+                        <div class="col-6">
+                          <div class="position-relative">
+                            <label for="input1" class="form-label">Phone Number</label>
+                            <input v-model="form.phone" @input="onInput" type="text" class="form-control ps-3 ">
+                            <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
+                              <div class="text-danger">Phone is required</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="position-relative">
+                            <label for="input1" class="form-label">Email</label>
+                            <input v-model="form.email" @input="onInput" type="email" class="form-control ps-3 ">
+                            <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+                              <div class="text-danger">Email is required</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <div class="col-12">
+                          <div class="card flex justify-center">
+                            <ColorPicker v-model="form.color" inline />
+                        </div>
+                        </div>
+                        <span class="badge" :style="`color: #000; background-color: #${form.color}`">Sample Background</span>
+                      </div>
+
+                    
                       <div class="ms-auto mt-6">
                         <a @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
                           <i class="bx bxs-plus-square"></i>
@@ -255,4 +328,6 @@ const onInput = () => {
   border: none;
   outline: none;
 }
+
+
 </style>

@@ -9,6 +9,15 @@ import Warehouse from '../svgs/Warehouse.vue';
 import Popover from 'primevue/popover';
 import { useActivation } from '@/stores/activation';
 import { useCampaignStore } from '@/stores/useCampaign';
+import Logout from '../svgs/Logout.vue';
+
+
+import { useAuth } from '@/stores/auth';
+
+const auth = useAuth();
+const logout = () => {
+    auth.logout();
+}
 
 onMounted(() => {
   getAllActivations();
@@ -188,6 +197,13 @@ const toggleCampaignSearch = (event) => {
         <router-link to="/chat">
           <div class="side-nav__link">
             <i class='bx bxs-chat fs-3'></i>
+          </div>
+        </router-link>
+      </li>
+      <li @click="logout" v-tooltip="'Warehouse'" class="side-nav__item">
+        <router-link to="/warehouse">
+          <div class="side-nav__link">
+           <Logout />
           </div>
         </router-link>
       </li>

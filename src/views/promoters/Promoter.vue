@@ -312,26 +312,24 @@ const genderChange = (event) => {
               <div class="ms-auto"></div>
             </div>
             
-            
-            
-            <!-- Promoters list -->
-            <div class="row g-2">
-              <div v-for="promoter in paginatedPromoters" :key="promoter.id" class="col-md-3">
-                <div class="gallery card w-100">
-                  <div class="asc py-3">
-                    {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}
-                  </div>
-                  <router-link :to="{ path: `/profile/${promoter.userDetails?.id}/${promoter?.id}` }">
-                    <div style="height: 200px; overflow: hidden;">
-                      <img v-if="promoter.userDetails.path" :src="`${envPath}${promoter.userDetails.path}`" alt="Promoter Image" class="img-fluid w-100 h-100" style="object-fit: cover;" />
-                      <img src="../../assets/images/placeholder.jpg" v-else icon="pi pi-user" size="xlarge" />
-                    </div>
-                  </router-link>
-                  <div class="card-body">
-                    <div class="d-flex justify-content-end order-actions cursor-pointer">
-                      <a @click="openPosition('top', promoter)" class="cursor-pointer">
+
+            <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
+              <div class="col"  v-for="promoter in paginatedPromoters" :key="promoter.id">
+                <div class="card radius-15">
+                  <div class="card-body text-center">
+                    <div class="p-4 border radius-15">
+                      <img v-if="promoter.userDetails.path" :src="`${envPath}${promoter.userDetails.path}`" width="110" height="110" class="rounded-circle shadow" alt="">
+                      <img v-else src="../../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
+                      <h5 class="mb-0 mt-5">{{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</h5>
+                      <p class="mb-3">{{ promoter.userDetails.email }}</p>
+                      <div class="list-inline contacts-social mt-3 mb-3"> 
+                        <a v-tooltip.right="'Edit'" @click="openPosition('top', promoter)" href="javascript:;" class="list-inline-item maz-gradient-btn text-white border-0">
                         <i class="bx bxs-edit"></i>
                       </a>
+                      </div>
+                      <div class="d-grid"> 
+                        <router-link :to="{ path: `/profile/${promoter.userDetails?.id}/${promoter?.id}` }" class="btn btn-outline-primary radius-15">View Profile</router-link>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -439,4 +437,5 @@ const genderChange = (event) => {
 .p-popover.p-component {
   left: 50rem !important;
 }
+
 </style>
