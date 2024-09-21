@@ -654,7 +654,6 @@ const profilePicName = ref('');
 const profilePicPreview = ref(null);
 const profilePic = ref(null);
 const showTools = ref(false);
-const showBioTextarea = ref(false);
 
 //average rating
 const averageRating = ref(0);
@@ -728,9 +727,7 @@ const addExperience = async () => {
 const myBio = ref(promoterData.value.bio ? promoterData.value.bio : '');
 console.log('myBio',promoterData.value)
 
-const editBio = () => {
-    showBioTextarea.value = !showBioTextarea.value
-}
+
 
 const updateProfile = () => {
     showProfileLoading.value = true;
@@ -747,11 +744,6 @@ const updateProfile = () => {
         showProfileLoading.value = false
     })
 }
-
-const closeBioTextarea = () => {
-    showBioTextarea.value = false
-}
-
 
 
 const commentForm = reactive({
@@ -1060,7 +1052,10 @@ const onSubmit = () => {
 }
 const images = ref([]);
 const getImages = async () => {
-    promoterStore.getImages(user.id, 'promoters', user.activeUserId).then(response => {
+//     const promoterId = ref(route.params.id);
+// const userIdParam = ref(route.params.userId);
+
+    promoterStore.getImages(userIdParam.value, 'promoters', promoterId.value).then(response => {
         console.log('images',response.data)
 	images.value = response.data;
 	console.log('images',images.value)

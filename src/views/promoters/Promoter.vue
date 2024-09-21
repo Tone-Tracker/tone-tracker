@@ -1,35 +1,23 @@
 <script setup>
 import { onMounted, ref, reactive, watch } from 'vue';
-import { truncateText } from '@/helpers/helpers';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
-import AutoComplete from 'primevue/autocomplete';
 import Textarea from 'primevue/textarea';
 import Dialog from 'primevue/dialog';
-import ConfirmPopup from 'primevue/confirmpopup';
 import { useVuelidate } from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
+import { email, required } from '@vuelidate/validators';
 import { usePromoter } from '@/stores/promoter';
 import useToaster from '@/composables/useToaster';
-import { useConfirm } from "primevue/useconfirm";
 import { usePrimeVue } from 'primevue/config';
-import FileUpload from 'primevue/fileupload';
-import Button from 'primevue/button';
-import { useUserStore } from '@/stores/userStore';
-import Badge from 'primevue/badge';
 import { useSizes } from '@/stores/sizes';
-import Popover from 'primevue/popover';
 import Select from 'primevue/select';
 import Paginator from 'primevue/paginator';
 
 const promoterStore = usePromoter();
 const toaster = useToaster();
-const userStore = useUserStore();
-const confirm = useConfirm();
 const sizeStore = useSizes();
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
-let users = ref([]);
 let sizes = ref([]);
 let promoters = ref([]);
 let paginatedPromoters = ref([]); // This will store the promoters to be displayed on the current page
@@ -43,6 +31,10 @@ const rowsPerPage = ref(10); // Rows per page
 const totalRecords = ref(0); // Total number of records
 
 const form = reactive({
+  firstName: null,
+  lastName: null,
+  phone: null,
+  email: null,
   user: null,
   dressSize: null,
   pantsSize: null,
@@ -55,11 +47,14 @@ const form = reactive({
 
 onMounted(() => {
   getAllPromoters();
-  getAllUsers();
   getAllSizes();
 });
 
 const rules = {
+  firstName: { required },
+  lastName: { required },
+  email: { required, email },
+  phone: { required },
   user: { required },
   dressSize: { required },
   pantsSize: { required },
@@ -148,7 +143,7 @@ const getAllPromoters = async () => {
     totalRecords.value = promoters.value.length;
     updatePaginatedPromoters(); // Update paginated data after fetching promoters
   }).catch(error => {
-    toaster.error("Error fetching users");
+    toaster.error("Error fetching promoters");
     console.log(error);
   }).finally(() => {
     showLoading.value = false;
@@ -174,25 +169,12 @@ const getAllSizes = async () => {
   sizeStore.getSizes().then(response => {
     sizes.value = response.data;
   }).catch(error => {
-    toaster.error("Error fetching users");
     console.log(error);
   }).finally(() => {
     showLoading.value = false;
   });
 };
 
-const getAllUsers = async () => {
-  showLoading.value = true;
-  userStore.getUserByRole('TTG_TALENT').then(response => {
-    users.value = response.data.content;
-    dropdownItems.value = [...users.value];
-  }).catch(error => {
-    toaster.error("Error fetching users");
-    console.log(error);
-  }).finally(() => {
-    showLoading.value = false;
-  });
-};
 
 const deletePromoter = (promoter) => {
   promoterStore.deletePromoter(promoter.id).then(response => {
@@ -218,17 +200,20 @@ const search = (event) => {
   dropdownItems.value = myObj.map(user => user.firstName + ' ' + user.lastName);
 };
 
-const onUserChange = (event) => {
-  form.user = users.value.find(user => user.firstName + ' ' + user.lastName === event.value).id;
-};
+
 
 const openPosition = (pos, promoter) => {
+  console.log('promoter', promoter.userDetails?.firstName)
   if (promoter) {
     isEdit.value = true;
     promoterId.value = promoter.id;
-    form.user = promoter.user;
-    user_id.value = users.value.find(user => user.id === promoter.user).firstName + ' ' + users.value.find(user => user.id === promoter.user).lastName;
+    form.user = promoter.userDetails?.id;
+    user_id.value = promoter.userDetails?.id;
+      
     Object.assign(form, {
+      firstName : promoter.userDetails.firstName,
+      lastName : promoter.userDetails?.lastName,
+      email : promoter.userDetails?.email,
       dressSize: promoter.dressSize,
       pantsSize: promoter.pantsSize,
       topSize: promoter.topSize,
@@ -350,14 +335,44 @@ const genderChange = (event) => {
     </div>
 
     <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter'" :style="{ width: '50rem' }">
-      <div class="card flex justify-center">
-        <label for="input1" class="form-label">Gender </label>
-        <Select v-model="myGender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select gender" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
-        <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
-          <div class="text-danger">Gender is required</div>
-        </div>
-      </div>
+     
       <div class="row g-3">
+        <div class="col-md-6">
+          <label for="firstName" class="form-label">First Name</label>
+          <input v-model="form.firstName" type="text" class="form-control" id="firstName" >
+          <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
+            <div class="text-danger">First Name is required</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="lastName" class="form-label">Last Name</label>
+          <input v-model="form.lastName" type="text" class="form-control" id="lastName" >
+          <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
+            <div class="text-danger">Last Name is required</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="email" class="form-label">Email</label>
+          <input v-model="form.email" type="email" class="form-control" id="email" >
+          <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+            <div class="text-danger">Email is required</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="cell" class="form-label">Phone Number</label>
+          <input v-model="form.phone" type="text" class="form-control" id="cell" >
+          <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
+            <div class="text-danger">Cell Number is required</div>
+          </div>
+        </div>
+        <div class="card flex justify-center">
+          <label for="input1" class="form-label">Gender </label>
+          <Select v-model="myGender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select gender" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
+          <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
+            <div class="text-danger">Gender is required</div>
+          </div>
+        </div>
+
         <div class="col-md-3">
           <label for="dress_size" class="form-label">Dress Size</label>
           <select v-model="form.dressSize" class="form-control" id="dress_size">
@@ -392,7 +407,7 @@ const genderChange = (event) => {
         </div>
         <div class="col-md-3">
           <label for="bio" class="form-label">Bio</label>
-          <Textarea v-model="form.bio" autoResize rows="5" cols="100" />
+          <Textarea v-model="form.bio" autoResize rows="5" cols="91" />
           <div class="input-errors" v-for="error of v$.bio.$errors" :key="error.$uid">
             <div class="text-danger">Bio is required</div>
           </div>
