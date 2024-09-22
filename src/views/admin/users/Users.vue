@@ -2,13 +2,16 @@
 import { onMounted, ref, reactive } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
-import UsersModal from './UsersModal.vue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, email } from '@vuelidate/validators';
 import { useUserStore } from '@/stores/userStore';
 import useToaster from '@/composables/useToaster';
 import { useAuth } from '@/stores/auth';
 import { useConfirm } from "primevue/useconfirm";
 import router from '@/router';
 import Paginator from 'primevue/paginator';
+import Dialog from 'primevue/dialog';
+import SizeAndHeightForm from '@/components/SizeAndHeightForm.vue';
 
 const userStore = useUserStore();
 const toaster = useToaster();
@@ -16,6 +19,8 @@ const auth = useAuth();
 const confirm = useConfirm();
 const currentUser = JSON.parse(auth.user);
 
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+const visible = ref(false);
 
 let paginatedUsers = ref([]); // This will store the users to be displayed on the current page
 let showLoading = ref(false);
@@ -27,14 +32,27 @@ const currentPage = ref(1); // Current page
 let users = ref([]);
 let modalData = reactive({});
 
+const ROLES = ref([]);
+const sizes = ref(["X_SMALL", "SMALL", "MEDIUM", "LARGE", "X_LARGE", "XX_LARGE"]);
+
 onMounted(() => {
-	getAllUsers();
-})
+getAllUsers();
+  getRoles();
+});
+
+const getRoles = async () => {
+  try {
+    const response = await auth.getRoles();
+    ROLES.value = response.data;
+  } catch (error) {
+    console.error("Failed to fetch roles", error);
+  }
+};
 
 let showModal = ref(true);
 const toggleModal = () => {
 	isEdit.value = false;
-	showModal.value = true,
+	visible.value = true,
 	modalData.value = {}
 }
 
@@ -62,23 +80,13 @@ const onInput = () => {
 	 }
   };
 
-//   const getAllUsers = async () => {
-// 	showLoading.value = true;
-// 	userStore.getUsers().then(function (response) {
-// 		showLoading.value = false;
-// 		users.value = response.data.content
-// 	}).catch(function (error) {
-// 		toaster.error("Error fetching users");
-// 		console.log(error);
-// 	}).finally(function () {
-// 		showLoading.value = false;
-// 	})
-//   }
 
   const isEdit = ref(false);
   const showDetails = (user) => {
 	modalData.value = user;
 	isEdit.value = true;
+	visible.value = true
+	Object.assign(form,user)
   }
 
   const deleteUser = (user) => {
@@ -97,25 +105,7 @@ const isMyProfile = (user) => {
 	return user.id === currentUser.id
 }
 
-const showProfile = (user) => {console.log(user)
-	if(!user.activeUserId){return alert('kkk')}
-	if(user.role == 'TTG_ADMIN' || user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_ACTIVATION_MANAGER' || user.role == 'TTG_REGIONAL_MANAGER') {
-		return router.push({ name: 'staff-profile', params: { id: user.id } })
-	}else if(user.role == 'TTG_TALENT') {
-		router.push({ 
-      name: 'staff-profile', 
-      params: { 
-        user: user.id, 
-        userId: user.activeUserId
-		// ${user.activeUserId}/${user.id}  path: '/staff-profile/:id/:userId',
-      } 
-	})
-	}else if(user.role == 'SUPPLIER') {
-		return router.push({ name: 'supplier-profile', params: { id: user.id } })
-	}else {
-		return;
-	}
-}
+
 
 const deleteRecord = (event, user) => {
     confirm.require({
@@ -156,7 +146,9 @@ const getAllUsers = async () => {
   showLoading.value = true;
   try {
     const response = await userStore.getUsers();
-    users.value = response.data.content;
+	//get users which have role = TTG_ADMIN, TTG_SUPER_ADMIN, TTG_ACTIVATION_MANAGER, TTG_REGIONAL_MANAGER only
+	users.value = response.data.content.filter(user => user.role == 'TTG_ADMIN' || user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_ACTIVATION_MANAGER' || user.role == 'TTG_REGIONAL_MANAGER');
+   
     totalRecords.value = users.value.length;
     updatePaginatedUsers();
   } catch (error) {
@@ -167,12 +159,84 @@ const getAllUsers = async () => {
   }
 };
 
+const redirectToProfile = (user) => {
+	if(!user?.staff) return
+  router.push({ name: "staff-profile", params: { id: user?.staff, userId: user?.id } });
+  // :to="{ path: `/staff-profile/${user?.staff}/${user?.id}` }"
+};
+
+
+
+
+const form = reactive({
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  activationArea: '',
+  location: [],
+  role: "",
+  topSize: "",
+  pantsSize: "",
+  dressSize: "",
+  height: "",
+  bio: ""
+});
+
+
+const rules = {
+  firstName: { required },
+  email: { required, email },
+  lastName: { required },
+  phone: { required },
+  role: { required },
+  // dressSize: { required },
+  // pantsSize: { required },
+  // topSize: { required },
+  // height: { required },
+};
+
+const v$ = useVuelidate(rules, form);
+
+const onSubmit = async () => {
+  const isFormValid = await v$.value.$validate();
+  if (!isFormValid) {
+    return;
+  }
+  showLoading.value = true;
+  if (modalData.value.id) {
+    return userStore.updateUser(modalData.value.id, form)
+      .then(function (response) {
+        console.log(response);
+        showLoading.value = false;
+        visible.value = false;
+        toaster.success("User updated successfully");
+      })
+      .catch(function (error) {
+        showLoading.value = false;
+        toaster.error("Error updating user");
+        console.log(error);
+      });
+  } else {
+    userStore.submitUser(form)
+      .then(function (response) {
+        showLoading.value = false;
+        visible.value = false;
+        toaster.success("User created successfully");
+      })
+      .catch(function (error) {
+        showLoading.value = false;
+        toaster.error("Error creating user");
+        console.log(error);
+      });
+  }
+};
 </script>
 <template>
     <Layout>
         <div class="page-wrapper">
 			<div class="page-content">
-                <BreadCrumb title="All Users" icon="bx bxs-user-badge"/>
+                <BreadCrumb title="TTG Staff Members" icon="bx bxs-user-badge"/>
 				<div class="card">
 					<div class="card-body">
 						<div class="d-lg-flex align-items-center mb-4 gap-3">
@@ -182,73 +246,115 @@ const getAllUsers = async () => {
 								<span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
 						  <div class="ms-auto">
-							<a @click="toggleModal" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user"  class="btn maz-gradient-btn mt-2 mt-lg-0">
+							<a @click="toggleModal" href="javascript:;"  class="btn maz-gradient-btn mt-2 mt-lg-0">
 							<i class="bx bxs-plus-square"></i>Add User</a></div>
 						</div>
-						<div class="table-responsive">
-							<table class="table mb-0">
-								<thead class="table-light">
-									<tr>
-										<th>Contact Name</th>
-										<th>Contact Surname</th>
-										<th>Email</th>
-										<th>Cell Number</th>
-										<th>Role</th>
-										<th>Actions</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-if="paginatedUsers.length > 0" v-for="user in paginatedUsers" :key="user.id">
-										<td>{{user.firstName}}</td>
-										<td>{{user.lastName}}</td>
-										<td>{{user.email}}</td>
-										<td>{{user.phone}}</td>
-										<td>
-											{{ user.role }}
-										</td>
-										<td>
-											<div class="d-flex order-actions">
-												<a v-tooltip.bottom="'Edit'" @click="showDetails(user)" href="javascript:;" data-bs-toggle="modal" data-bs-target="#create-user" class="">
-													<i class='bx bxs-edit'></i></a>
-													<!-- <a v-tooltip.bottom="'View Profile'" @click="showProfile(user)" href="javascript:;" class="ms-3">
-														<i class='bx bx-bullseye'></i></a> -->
-												<a v-tooltip.bottom="'Delete'" @click="deleteRecord($event,user)" href="javascript:;" class="ms-3">
-													<i v-if="!isMyProfile(user)" class='bx bxs-trash text-danger'></i>
-													<i v-if="isMyProfile(user)" class='bx bx-stop-circle text-danger cursor-no-drop'></i>
-												</a>
-												<ConfirmPopup></ConfirmPopup>
-											</div>
-										</td>
-									</tr>
-									<tr v-else>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td colspan="7" class="text-center">
-											<!-- <CustomSpinner v-if="showLoading"/> -->
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+					
+
+						<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
+							<div class="col"  v-if="paginatedUsers.length > 0" v-for="user in paginatedUsers" :key="user.id">
+							  <div class="card radius-15">
+								<div class="card-body text-center">
+								  <div class="p-4 border radius-15">
+									<img v-if="user.path" :src="`${envPath}${user.path}`" width="110" height="110" class="rounded-circle shadow" alt="">
+									<img v-else src="../../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
+									<h5 class="mb-0 mt-5">{{ user.firstName }} {{ user.lastName }} {{ isMyProfile(user) ? '(You)' : '' }}</h5>
+									<p class="mb-3">{{ user.email }}</p>
+									<div class="list-inline contacts-social mt-3 mb-3"> 
+									  <a v-tooltip.right="'Edit'" @click="showDetails(user)" href="javascript:;" class="list-inline-item maz-gradient-btn text-white border-0">
+									  <i class="bx bxs-edit"></i>
+									</a>
+									</div>
+									<div class="d-grid"> 
+									  <button @click="redirectToProfile(user)"  class="btn btn-outline-primary radius-15">View Profile</button>
+									</div>
+								  </div>
+								</div>
+							  </div>
+							</div>
+						  </div>
 						<div class="card">
-							<Paginator 
-                :first="(currentPage - 1) * rowsPerPage"
-                :rows="rowsPerPage"
-                :totalRecords="totalRecords"
-                :rowsPerPageOptions="[10, 20, 30]"
-                @page="onPageChange"
-              ></Paginator>
+							<Paginator v-if="totalRecords > 0"
+								:first="(currentPage - 1) * rowsPerPage"
+								:rows="rowsPerPage"
+								:totalRecords="totalRecords"
+								:rowsPerPageOptions="[10, 20, 30]"
+								@page="onPageChange"
+							></Paginator>
 						</div>
 					</div>
 				</div>
 
-				<UsersModal v-if="showModal"
+				<!-- <UsersModal v-if="showModal"
 				:showModal="showModal"
 				:isEdit="isEdit"
 				:modalData="modalData"
 				@closeModal="hideModal()"
-				/>
+				/> -->
+				<Dialog v-model:visible="visible" position="top" modal header="Add Activation Manager" :style="{ width: '45rem' }">
+					<div class="row">
+						<div class="col-lg-12">
+						  <div class="border border-3 p-4 rounded">
+						   
+							<div class="row g-3">
+							  <div class="col-md-6">
+								<label for="firstName" class="form-label">First Name</label>
+								<input v-model="form.firstName" type="text" class="form-control" id="firstName" >
+								<div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
+								  <div class="text-danger">First Name is required</div>
+								</div>
+							  </div>
+							  <div class="col-md-6">
+								<label for="lastName" class="form-label">Last Name</label>
+								<input v-model="form.lastName" type="text" class="form-control" id="lastName" >
+								<div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
+								  <div class="text-danger">Last Name is required</div>
+								</div>
+							  </div>
+							  <div class="col-md-6">
+								<label for="email" class="form-label">Email</label>
+								<input v-model="form.email" type="email" class="form-control" id="email" >
+								<div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+								  <div class="text-danger">Email is required</div>
+								</div>
+							  </div>
+							  <div class="col-md-6">
+								<label for="cell" class="form-label">Cell Number</label>
+								<input v-model="form.phone" type="text" class="form-control" id="cell" >
+								<div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
+								  <div class="text-danger">Cell Number is required</div>
+								</div>
+							  </div>
+							  <div class="row g-3 mb-3">
+								<div class="col-md-6">
+								  <label for="role" class="form-label">Role</label>
+								  <select v-model="form.role" class="form-control" id="role">
+									<option :value="''" :selected="true">Select Role</option>
+									<option v-for="role in ROLES" :key="role" :value="role">{{ role }}</option>
+								  </select>
+								  <div class="input-errors" v-for="error of v$.role.$errors" :key="error.$uid">
+									<div class="text-danger">Role is required</div>
+								  </div>
+								</div>
+							  </div>
+							 
+							</div>
+		  
+										<!-- Conditionally display SizeAndHeightForm component -->
+									 <SizeAndHeightForm v-if="form.role === 'TTG_TALENT' && !isEdit" :form="form" :sizes="sizes" />
+		  
+							<div class="col-12 mt-3">
+							  <div class="d-grid">
+								<button @click="onSubmit" class="btn maz-gradient-btn" type="button">
+								  <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+								  {{ modalData.value?.id ? 'Update' : 'Submit' }}
+								</button>
+							  </div>
+							</div>
+						  </div> 
+						</div>
+					  </div>
+				</Dialog>
 			</div>
 		</div>
     </Layout>

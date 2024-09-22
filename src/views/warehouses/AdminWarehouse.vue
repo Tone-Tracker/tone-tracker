@@ -321,7 +321,7 @@ const items = (warehouse) => [
                        <div class="card radius-10 w-100">
                            <div class="card-body">
                              <div class="chart-container-1">                            
-                                    <div class="table-container-colour pt-2 p-5">
+                                    <div class="table-container-colour pt-2 p-1">
                                         <div class="d-flex justify-content-between align-items-center mb-4">
                                             <h5></h5>
                                             <button type="button" class="btn maz-gradient-btn" @click="openModal('top','Warehouse')">Add Warehouse</button>

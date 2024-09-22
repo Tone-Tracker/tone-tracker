@@ -8,6 +8,7 @@ import Drawer from "primevue/drawer";
 import { isClient } from "@vueuse/shared";
 import { useClipboard, useShare } from "@vueuse/core";
 import PDF from "pdf-vue3";
+import Dialog from "primevue/dialog";
 
 const route = useRoute();
 const briefStore = useBrief();
@@ -17,6 +18,7 @@ let searchInput = ref('');
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const briefId = ref(route.query.brief?.id || null);
+const showAddModal = ref(false);
 
 watch(
   () => route.query.brief?.id,
@@ -110,14 +112,14 @@ const { text, copy, copied, isSupported } = useClipboard({ source })
   <Layout>
     <div class="page-wrapper">
       <div class="page-content">
-        <BreadCrumb title="Briefs" icon="" />
+        <BreadCrumb title="Briefs" icon="bx bx-file" />
         <p>View briefs</p>
 
         <div class="card">
           <div class="card-body">
             <div>
               <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
-                <!-- <button class="btn rounded-0 btn-primary">+ New</button> -->
+                <button type="button" @click="showAddModal=true" class="btn rounded-0 btn-primary">+ New</button>
 
                 <div class="position-relative">
                   <input
@@ -199,6 +201,13 @@ const { text, copy, copied, isSupported } = useClipboard({ source })
         </a>
       </Drawer>
     </div>
+
+
+    <Dialog v-model:visible="showAddModal" position="top" modal header="Upload Brief File" :style="{ width: '30rem' }">
+             
+     kkkk
+
+</Dialog>
   </Layout>
 </template>
 

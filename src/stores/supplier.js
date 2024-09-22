@@ -12,6 +12,10 @@ export const useSupplier = defineStore('supplier', () => {
     }
 
 
+    const getAllSuppliers = () => {
+      return axiosInstance.get(`api/users/role?role=SUPPLIER`);
+    }
+
     const getThirdPartyTasks = (thirdPartyId) => {
       return axiosInstance.get(`api/bids/thirdParty/${thirdPartyId}`);
     }
@@ -32,6 +36,6 @@ export const useSupplier = defineStore('supplier', () => {
       return axiosInstance.post(`/api/bids/${bidId}/costs`,data);
     }
 
-    return { submit, getSignedDocuments, getThirdParties,getThirdPartyTasks,submitBid,getThirdPartyAwardedTasks,uploadSignedDocuments }
+    return { submit, getAllSuppliers,getSignedDocuments, getThirdParties,getThirdPartyTasks,submitBid,getThirdPartyAwardedTasks,uploadSignedDocuments }
   
   })  

@@ -56,7 +56,7 @@ onMounted(() => {
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <BreadCrumb title="Upload Documents" icon="" />
+                <BreadCrumb title="Upload Documents" icon="bx bx-upload" />
                 <!-- <p>Upload supporting contract / documentation</p> -->
                 <p>Upload NDA and SLA documents</p>
 

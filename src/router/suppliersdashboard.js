@@ -3,8 +3,14 @@ import SuppliersDashboard from "../views/suppliers/SuppliersDashboard.vue";
 import ViewSupplierTask from "@/views/suppliers/ViewSupplierTask.vue";
 import SupplierAwarded from "@/views/suppliers/SupplierAwarded.vue";
 import ViewSupplierAwardedTask from "@/views/suppliers/ViewSupplierAwardedTask.vue";
+import Suppliers from "@/views/suppliers/Suppliers.vue";
 
 export default [
+    {
+        path: '/suppliers',
+        name: 'suppliers',
+        component: Suppliers
+    },
     {
         path: '/supplier-dashboard',
         name: 'supplier-dashboard',

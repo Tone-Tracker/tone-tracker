@@ -1,5 +1,5 @@
 <template>
-    <div class="card mx-5 ">
+    <div class="card">
       <h5>Data collected </h5>
       <div class="chart-container">
         <canvas ref="doughnutChart"></canvas>

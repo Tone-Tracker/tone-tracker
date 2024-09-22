@@ -68,6 +68,8 @@ watch(() => props.modalData, (newVal) => {
     role: modalData.value.role || '',
     bio: modalData.value.bio || '',
     name: "Supplier",
+    staff: modalData.value.staff || '',
+    id: modalData.value.id || '',
   });
 }, { deep: true });
 
