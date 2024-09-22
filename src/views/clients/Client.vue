@@ -11,6 +11,7 @@ import ColorPicker from 'primevue/colorpicker';
 import router from "@/router";
 import SplitButton from 'primevue/splitbutton';
 import Dialog from 'primevue/dialog';
+import Badge from 'primevue/badge';
 
 const toaster = useToaster();
 const clientStore = useClientStore();
@@ -227,7 +228,7 @@ const items = (client) => [
                         </thead>
                         <tbody>
                           <tr v-if="clients.length > 0" v-for="(client, index) in clients" :key="client.id">
-                            <td>{{ index + 1 }}</td>
+                            <td> <Badge :value="index + 1 " size="large" severity="success"></Badge></td>
                             <td>{{ client.name }}</td>
                             <td>Mazisi Msebele</td>
                             <td>

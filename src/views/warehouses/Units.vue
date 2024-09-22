@@ -367,6 +367,7 @@ loading.value = true;
 									 <button @click="visible=true" 
 									 :disabled="!unitId"
 									 type="button" class="btn maz-gradient-btn">Add Stock</button>
+									 <p class="fs-6 text-danger" v-if="!unitId">Choose unit</p>
 								  </div>
 							  </div>
 						  </div>
