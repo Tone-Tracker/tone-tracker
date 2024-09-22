@@ -54,8 +54,8 @@ const getRoleName = () => {
                     <div class="accordion-body">
                         <ul class="nav-list">
                             <li><router-link to="/talent"><span class="icon ps-3"><i class='bx bx-chat'></i></span> All</router-link></li>
-                            <li :class="{ 'active': currentRoute.path === '/profile' || currentRoute.path === `/profile/${user.activeUserId}/${user.id}`}">
-                                <router-link  :to="{ path: `/profile/${user.activeUserId}/${user.id}` }"><span class="icon ps-3"><i class='bx bx-user-pin'></i></span> Profile </router-link></li>
+                            <!-- <li :class="{ 'active': currentRoute.path === '/profile' || currentRoute.path === `/profile/${user.activeUserId}/${user.id}`}">
+                                <router-link  :to="{ path: `/profile/${user.activeUserId}/${user.id}` }"><span class="icon ps-3"><i class='bx bx-user-pin'></i></span> Profile </router-link></li> -->
                                 <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pe-3'></i> Learning & Teaching</router-link></li>
                             <li><router-link to="/crm"><span class="icon ps-3"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
                          

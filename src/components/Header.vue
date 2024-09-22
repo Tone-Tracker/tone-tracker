@@ -37,7 +37,7 @@
         </div>
 
         <div class="user-box dropdown px-3">
-          <a class="d-flex align-items-center nav-link gap-3" href="#" role="button">
+          <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
             <img :src="user?.path ? envPath + user?.path : '/src/assets/images/placeholder.jpg'" class="user-img" alt="user avatar" />
           </a>
         </div>
@@ -51,17 +51,29 @@ import { ref, onMounted } from 'vue';
 import DarkThemeNavbarToggle from './DarkThemeNavbarToggle.vue';
 import axios from 'axios';
 import { useAuth } from '@/stores/auth';
+import router from '@/router';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const auth = useAuth();
 const user = JSON.parse(auth.user);
 
+
 const query = ref('');
 const allActivations = ref([]);
 const filteredSuggestions = ref([]);
 
 let debounceTimeout = null; // To hold the debounce timer
+
+const redirectToProfile = () => {
+  if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'REGIONAL_MANAGER' || user.role == 'ACTIVATION_MANAGER'){
+    router.push({ path: `/staff-profile/${user?.activeUserId}/${user?.id}` });
+  }else if(user.role == 'TTG_TALENT'){
+    router.push({ path: `/profile/${user?.activeUserId}/${user?.id}` });
+  }else if(user.role == 'SUPPLIER'){
+    router.push({ path: `/supplier-profile/${user?.activeUserId}/${user?.id}` });
+  }
+}
 
 // Fetch all activations from the API
 const fetchAllActivations = async () => {

@@ -200,8 +200,8 @@ Date: 04/06/2024
                         <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
                         <div>
                             <h4 class="mb-2 ml-2">Signed NDA Document</h4>
-                            <div  class="d-flex w-100"> 
-                                <div v-if="ndaFile"  class="file-details mt-2 w-100 p-1 border rounded d-flex align-items-center">
+                            <div  class="d-flex w-100" v-if="ndaFile?.length > 0" > 
+                                <div  class="file-details mt-2 w-100 p-1 border rounded d-flex align-items-center">
                                     <div class="file-icon me-3" v-tooltip.bottom="'View NDA File'">
                                     <img @click="previewDocs('nda')"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
                                     </div>
@@ -213,13 +213,13 @@ Date: 04/06/2024
                                     
                                     </div>
                                 </div>
-                                <!-- <div v-else class="text-danger">No signed NDA document.</div> -->
                                 
                             </div>
+                            <div v-else class="text-danger">Signed NDA document not found.</div>
                         </div>
                         <div>
                             <h4 class="mb-2 ml-2 mt-2">Signed SLA Document</h4>
-                            <div  class="d-flex w-100"> 
+                            <div  class="d-flex w-100" v-if="slaFile?.length > 0" > 
                                 <div v-if="slaFile"  class="file-details mt-2 w-100 p-1 border rounded d-flex align-items-center">
                                     <div class="file-icon me-3" v-tooltip.bottom="'View SLA File'">
                                     <img @click="previewDocs('sla')"  src="/src/assets/images/pdf.png" alt="pdf" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
@@ -232,9 +232,8 @@ Date: 04/06/2024
                                     
                                     </div>
                                 </div>
-                                <!-- <div v-else class="text-danger">No signed NDA document.</div> -->
-                                
                             </div>
+                             <div v-else class="text-danger">Signed SLA document not found.</div>
                         </div>
 
 
@@ -592,7 +591,7 @@ const showPreviewSheet = ref(false);
 const fileType = ref('');
 const previewFile = ref(null);
 const previewDocs = (type) => {
-    
+    console.log('previewDocs',ndaFile.value);return
     let myNDA = ndaFile.value ? ndaFile.value[0].path : [];
     let mySLA = slaFile.value ? slaFile.value[0].path : [];
      if(type == 'nda' && !myNDA){return}
