@@ -9,6 +9,8 @@ import { useClientStore } from '@/stores/useClient';
 import { useConfirm } from "primevue/useconfirm";
 import ColorPicker from 'primevue/colorpicker';
 import router from "@/router";
+import SplitButton from 'primevue/splitbutton';
+import Dialog from 'primevue/dialog';
 
 const toaster = useToaster();
 const clientStore = useClientStore();
@@ -79,6 +81,7 @@ const getAllClients = () => {
 };
 
 const deleteClient = (client) => {
+  if(!window.confirm("Are you sure you want to delete this client?")){ return; }
   clientStore.deleteClient(client.id).then(function (response) {
     toaster.success("Client deleted successfully");
     getAllClients();
@@ -88,10 +91,6 @@ const deleteClient = (client) => {
   });
 };
 
-const editClient = (client) => {
-  clients.value.forEach(c => c.isEditing = false); // Ensure only one edit at a time
-  client.isEditing = true;
-};
 
 const updateClient = (client) => {
   client.isEditing = false;
@@ -104,28 +103,6 @@ const updateClient = (client) => {
   });
 };
 
-const deleteRecord = (event, client) => {
-  confirm.require({
-    target: event.currentTarget,
-    message: 'Do you want to delete this client?',
-    icon: '',
-    rejectProps: {
-      label: 'Cancel',
-      severity: '',
-      outlined: true
-    },
-    acceptProps: {
-      label: 'Delete',
-      severity: 'danger'
-    },
-    accept: () => {
-      deleteClient(client);
-    },
-    reject: () => {
-      // do nothing
-    }
-  });
-};
 
 const vFocus = {
   mounted: (el) => el.focus()
@@ -158,7 +135,49 @@ const redirectToCampaign = (client) => {
   });
 };
 
-
+const viewContacts = (client) => {
+  router.push({ 
+    path: '/manage-contacts', 
+    query: { client: client.id } // Add query parameter properly
+  });
+};
+const viewedClient = ref(null);
+const visible = ref(false);
+const openModal = (client) => {
+    visible.value = true;
+    viewedClient.value = client;
+    Object.assign(form, client);
+};
+const items = (client) => [
+    {
+        label: 'Edit',
+        icon: 'bx bxs-edit fs-4 maz-gradient-txt',
+        command: () => {
+          openModal(client)
+        }
+    },
+	{
+        label: 'View Contacts',
+        icon: 'bx bx-user fs-4 maz-gradient-txt',
+        command: () => {
+            viewContacts(client)
+        }
+    },
+    {
+        label: 'View Campaign',
+        icon: 'bx bx-building-house fs-4 maz-gradient-txt',
+        command: () => {
+          redirectToCampaign(client)
+        }
+    },
+    {
+        label: 'Delete',
+        icon: 'bx bx-trash text-danger fs-4 ',
+        command: () => {
+          deleteClient(client)
+        }
+    }
+];
 
 </script>
 
@@ -193,7 +212,7 @@ const redirectToCampaign = (client) => {
                 </div>
               </div>
              </div>
-              <div class="col-9 col-lg-9 col-xl-9 d-flex">
+              <div class="col-8 col-lg-8 col-xl-8 d-flex">
                 <div class="radius-10 w-100">
                   <div class="card-body">
                     <div class="table-responsive">
@@ -203,35 +222,20 @@ const redirectToCampaign = (client) => {
                             <th>#</th>
                             <th>Name</th>
                             <th>Person Responsible</th>
-                            <th>View Campaign</th>
                             <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr v-if="clients.length > 0" v-for="(client, index) in clients" :key="client.id">
                             <td>{{ index + 1 }}</td>
-                            <td v-if="!client.isEditing">{{ client.name }}</td>
-                            <td v-else>
-                              <input v-focus type="text" v-model="client.name" @blur="updateClient(client)" @keyup.enter="updateClient(client)" class="no-border-input"/>
-                            </td>
-                            <td>Mazisi</td>
-                            <td>
-                              <button @click="redirectToCampaign(client)" v-tooltip.bottom="'View Campaign'" type="button" class="btn maz-gradient-btn">
-                                View Campaign
-                              </button>
-                            </td>
+                            <td>{{ client.name }}</td>
+                            <td>Mazisi Msebele</td>
                             <td>
                               <div class="d-flex order-actions">
-                                <a v-if="!client.isEditing" @click="editClient(client)" href="javascript:;">
-                                  <i class='bx bxs-edit' v-tooltip.bottom="'Edit'"></i>
-                                </a>
-                                <a v-else @click="updateClient(client)" href="javascript:;" class="ms-3">
-                                  <i class='bx bx-check text-success'></i>
-                                </a>
-                                <a @click="deleteRecord($event,client)" href="javascript:;" class="ms-3">
-                                  <i class='bx bxs-trash text-danger' v-tooltip.bottom="'Delete'"></i>
-                                </a>
-                                <ConfirmPopup></ConfirmPopup>
+                                <SplitButton class="text-white" label="" 
+                                icon="bx bx-cog fs-4" 
+                                dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+                                :model="items(client)"/>
                               </div>
                             </td>
                           </tr>
@@ -244,7 +248,7 @@ const redirectToCampaign = (client) => {
                   </div>
                 </div>
               </div>
-              <div class="col-3 col-lg-3 col-xl-3 d-flex">
+              <div class="col-4 col-lg-4 col-xl-4 d-flex">
                 <div class=" w-100 radius-10">
                   <div class="card-body">
                     <div class="table-responsive">
@@ -308,7 +312,6 @@ const redirectToCampaign = (client) => {
                     
                       <div class="ms-auto mt-6">
                         <a @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
-                          <i class="bx bxs-plus-square"></i>
                           <span v-if="loading">Creating...</span>
                           <span v-else>Create Client</span>
                         </a>
@@ -322,6 +325,80 @@ const redirectToCampaign = (client) => {
         </div>
       </div>
     </div>
+    <Dialog v-model:visible="visible" position="top" modal header="Edit Client" :style="{ width: '40rem' }">
+             
+      <form class="row g-3" @submit.prevent="addActivationManager">
+        <div class="card-body">
+          <div class="table-responsive">
+            <div class="position-relative">
+              <label for="input1" class="form-label">Client Name</label>
+              <input v-model="form.name" @input="onInput" type="text" class="form-control ps-3 ">
+              <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
+                <div class="text-danger">Client Name is required</div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-12 mt-2">
+                <div class="position-relative">
+                  <label for="input1" class="form-label">First Name</label>
+                  <input v-model="form.firstName" @input="onInput" type="text" class="form-control ps-3 ">
+                  <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
+                    <div class="text-danger">First name is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 mt-2">
+                <div class="position-relative">
+                  <label for="input1" class="form-label">Last Name</label>
+                  <input v-model="form.lastName" @input="onInput" type="text" class="form-control ps-3 ">
+                  <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
+                    <div class="text-danger">Last name is required</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-12 mt-2">
+                <div class="position-relative">
+                  <label for="input1" class="form-label">Phone Number</label>
+                  <input v-model="form.phone" @input="onInput" type="text" class="form-control ps-3 ">
+                  <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
+                    <div class="text-danger">Phone is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 mt-2">
+                <div class="position-relative">
+                  <label for="input1" class="form-label">Email</label>
+                  <input v-model="form.email" @input="onInput" type="email" class="form-control ps-3 ">
+                  <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+                    <div class="text-danger">Email is required</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-12">
+                <div class="flex justify-center">
+                  <ColorPicker v-model="form.color" inline />
+              </div>
+              </div>
+              <span class="badge" :style="`color: #fff; background-color: #${form.color}`">Sample Background</span>
+            </div>
+
+          
+            <div class="ms-auto mt-6">
+              <a @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
+                <span v-if="loading">Creating...</span>
+                <span v-else>Create Client</span>
+              </a>
+            </div>
+          </div>
+        </div>
+</form>
+
+</Dialog>
   </Layout>
 </template>
 

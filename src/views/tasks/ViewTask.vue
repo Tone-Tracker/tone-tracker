@@ -298,7 +298,7 @@ const onSubmitPO = () => {
       <div class="page-content">
         <div class="d-flex">
           <BreadCrumb :title="taskName" icon="bx bx-task" />
-          <div  class="ms-auto">
+          <div  class="ms-auto" v-if="singleTask?.type  == 'THIRDPARTY'">
 							<button @click="viewBriefFile" type="button" class="btn mt-3 btn maz-gradient-btn" data-bs-toggle="dropdown">
                 View Brief File
 							</button>
@@ -445,13 +445,12 @@ const onSubmitPO = () => {
               <div class="text-center mt-2 text-danger">No available Promoters.</div>
             </template> 
             <div class="ms-auto" v-if="selectedPromoterIds.length > 0">
-              <a @click="saveSelectedPromoters" href="javascript:;" class="w-80 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+              <button @click="saveSelectedPromoters" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
                 <div v-if="isLoading" class="spinner-border text-white" role="status">
                   <span class="visually-hidden">Loading...</span>
                 </div>
-                <i v-if="!isLoading" class="bx bxs-plus-square"></i>
                 {{ isLoading ? '' : 'Save' }}
-              </a>
+              </button>
             </div>
           </div>
         </div>

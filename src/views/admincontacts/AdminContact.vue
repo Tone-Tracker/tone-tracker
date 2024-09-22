@@ -42,7 +42,7 @@ const handleSubmit = async () => {
 		<div class="page-wrapper">
 			<div class="page-content">
 				<BreadCrumb title="Admin" icon="" />
-				<p>Manage Contacts</p>
+				<p class="text-white">Manage Contacts</p>
 				<div class="card card-color rounded-0 p-5">
 					<div class="description">
 						<p class="text-white">Below is contact information relating to the account owner, also known as
@@ -66,7 +66,7 @@ const handleSubmit = async () => {
 								</thead>
 								<tbody>
 									<tr>
-										<td><input type="checkbox" /></td>
+										<td><Checkbox v-model="authoritativeForm" :binary="true" /></td>
 										<td>Natalie Murison</td>
 										<td>+27786258990</td>
 										<td class="email">Natalie@twotone.co.za</td>
@@ -86,7 +86,7 @@ const handleSubmit = async () => {
 					<div class="card border-card rounded-0">
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Authoritative Contacts</h5>
-							<div class="btn-group">
+							<div class="btn-group gap-2">
 								<button class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn" data-bs-toggle="modal"
 									data-bs-target="#addContactModal">Add</button>
 								<button class="btn btn-secondary rounded-0 btn- maz-gradient-btn">Delete</button>
@@ -119,7 +119,7 @@ const handleSubmit = async () => {
 					<div class="card border-card rounded-0">
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Billing Contacts</h5>
-							<div class="btn-group">
+							<div class="btn-group gap-2">
 								<button @click="showModal=true" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn" data-bs-toggle="modal"
 									data-bs-target="#addContactModal">Add</button>
 								<button class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn">Delete</button>
@@ -137,7 +137,7 @@ const handleSubmit = async () => {
 								</thead>
 								<tbody>
 									<tr>
-										<td><input type="checkbox" /></td>
+										<td><Checkbox v-model="authoritativeForm" :binary="true" /></td>
 										<td>Natalie Sawyer</td>
 										<td>+27749258768</td>
 										<td class="email">Natalie@twotone.co.za</td>
@@ -260,9 +260,7 @@ td {
 	padding: 10px;
 }
 
-.email {
-	color: #7a7a7a;
-}
+
 
 .section-title {
 	font-weight: bold;
