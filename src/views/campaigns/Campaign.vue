@@ -316,12 +316,11 @@ const onInput = () => {
                                                 </div>
                                             </form>
                                             <div class="ms-auto">
-                                                <a @click="createCampaign" href="javascript:;" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+                                                <button @click="createCampaign" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
                                                     <div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
                                                     </div>
-                                                    <i v-if="!loading" class="bx bxs-plus-square"></i>
                                                     {{ loading ?  '' : 'Create Campaign' }}
-                                                </a>
+                                                </button>
                                             </div>
                                        
                                     </div>
