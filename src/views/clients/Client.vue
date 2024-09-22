@@ -12,12 +12,20 @@ import router from "@/router";
 import SplitButton from 'primevue/splitbutton';
 import Dialog from 'primevue/dialog';
 import Badge from 'primevue/badge';
+import Paginator from 'primevue/paginator';
 
 const toaster = useToaster();
 const clientStore = useClientStore();
 const confirm = useConfirm();
 
 let clients = ref([]);
+const paginatedClients = ref([]);
+
+const rowsPerPage = ref(10); // Rows per page
+const totalRecords = ref(0); // Total number of records
+const currentPage = ref(1); // Current page
+
+
 let showLoading = ref(false);
 let loading = ref(false);  
 let searchInput = ref('');
@@ -74,12 +82,26 @@ const getAllClients = () => {
   clientStore.getClients().then(function (response) {
     showLoading.value = false;
     clients.value = response.data.content.map(client => ({ ...client, isEditing: false }));
+    totalRecords.value = clients.value.length;
+    updatePaginatedClients();
   }).catch(function (error) {
     toaster.error("Error fetching users");
     console.log(error);
   }).finally(function () {
     showLoading.value = false;
   });
+};
+
+const onPageChange = (event) => {
+  currentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
+  rowsPerPage.value = event.rows;
+  updatePaginatedClients();
+};
+
+const updatePaginatedClients = () => {
+  const start = (currentPage.value - 1) * rowsPerPage.value;
+  const end = start + rowsPerPage.value;
+  paginatedClients.value = clients.value.slice(start, end);
 };
 
 const deleteClient = (client) => {
@@ -228,8 +250,8 @@ const items = (client) => [
                           </tr>
                         </thead>
                         <tbody>
-                          <tr v-if="clients.length > 0" v-for="(client, index) in clients" :key="client.id">
-                            <td> <Badge :value="index + 1 " size="large" severity="success"></Badge></td>
+                          <tr v-if="paginatedClients.length > 0" v-for="(client, index) in paginatedClients" :key="client.id">
+                            <td> <Badge :value="index + 1 " size="large" :style="{'background-color': '#'+ client.color}" ></Badge></td>
                             <td>{{ client.name }}</td>
                             <td>Mazisi Msebele</td>
                             <td>
@@ -246,6 +268,15 @@ const items = (client) => [
                           </tr>
                         </tbody>
                       </table>
+                    </div>
+                    <div class="card">
+                      <Paginator v-if="totalRecords > 0"
+                        :first="(currentPage - 1) * rowsPerPage"
+                        :rows="rowsPerPage"
+                        :totalRecords="totalRecords"
+                        :rowsPerPageOptions="[10, 20, 30]"
+                        @page="onPageChange"
+                      ></Paginator>
                     </div>
                   </div>
                 </div>
