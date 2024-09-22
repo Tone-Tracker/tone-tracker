@@ -11,9 +11,8 @@ export const useClientStore = defineStore('useClientStore', () => {
       return axiosInstance.get(`/api/clients`);
     }
 
-    const updateClient = (client) => {
-      let obj = {name: client.name}
-      return axiosInstance.put(`/api/clients/${client.id}`,obj);
+    const updateClient = (clientId,clientData) => {
+      return axiosInstance.put(`/api/clients/${clientId}`,clientData);
     }
     const deleteClient = (id) => {
       return axiosInstance.delete(`/api/clients/${id}`);

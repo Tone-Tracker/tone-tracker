@@ -116,27 +116,6 @@ const deleteClient = (client) => {
 };
 
 
-const updateClient = (client) => {
-  client.isEditing = false;
-  clientStore.updateClient(client).then(response => {
-    toaster.success("Client updated successfully");
-    getAllClients(); // Refetch clients after updating
-  }).catch(error => {
-    toaster.error("Error updating client");
-    console.log(error);
-  });
-};
-
-
-const vFocus = {
-  mounted: (el) => el.focus()
-};
-
-
-
-
-
-
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
@@ -167,11 +146,53 @@ const viewContacts = (client) => {
 };
 const viewedClient = ref(null);
 const visible = ref(false);
+
+const editForm = reactive({ 
+  name: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  role: 'CLIENT',
+  color: '#007bff'
+});
+onMounted(() => {
+  getAllClients();
+});
+
+const editRules = { 
+  name: { required },
+  firstName: { required },
+  lastName: { required },
+  email: { required, email },
+  phone: { required, numeric, maxValue: 10 }
+};
+const vEdit$ = useVuelidate(editRules, editForm);
+
 const openModal = (client) => {
     visible.value = true;
     viewedClient.value = client;
-    Object.assign(form, client);
+    editForm.id = client.id;
+    editForm.name= client.name;
+    editForm.firstName = client?.users[0]?.firstName;
+    editForm.lastName = client?.users[0]?.lastName;
+    editForm.email = client?.users[0]?.email;
+    editForm.phone = client?.users[0]?.phone;
+    editForm.role = client?.users[0]?.role;
+    editForm.color = client.color;
 };
+
+const updateClient = () => {
+  clientStore.updateClient(editForm.id,editForm).then(response => {
+    toaster.success("Client updated successfully");
+    getAllClients(); // Refetch clients after updating
+    visible.value = false;
+  }).catch(error => {
+    toaster.error("Error updating client");
+    console.log(error);
+  });
+};
+
 const items = (client) => [
     {
         label: 'Edit',
@@ -253,7 +274,9 @@ const items = (client) => [
                           <tr v-if="paginatedClients.length > 0" v-for="(client, index) in paginatedClients" :key="client.id">
                             <td> <Badge :value="index + 1 " size="large" :style="{'background-color': '#'+ client.color}" ></Badge></td>
                             <td>{{ client.name }}</td>
-                            <td>Mazisi Msebele</td>
+                            <td>{{ 
+                              client?.users?.length > 0 ? client?.users[0]?.firstName + ' ' + client?.users[0]?.lastName : ''
+                             }}</td>
                             <td>
                               <div class="d-flex order-actions">
                                 <SplitButton class="text-white" label="" 
@@ -365,7 +388,7 @@ const items = (client) => [
           <div class="table-responsive">
             <div class="position-relative">
               <label for="input1" class="form-label">Client Name</label>
-              <input v-model="form.name" type="text" class="form-control ps-3 ">
+              <input v-model="editForm.name" type="text" class="form-control ps-3 ">
               <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                 <div class="text-danger">Client Name is required</div>
               </div>
@@ -374,7 +397,7 @@ const items = (client) => [
               <div class="col-12 mt-2">
                 <div class="position-relative">
                   <label for="input1" class="form-label">First Name</label>
-                  <input v-model="form.firstName" type="text" class="form-control ps-3 ">
+                  <input v-model="editForm.firstName" type="text" class="form-control ps-3 ">
                   <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
                     <div class="text-danger">First name is required</div>
                   </div>
@@ -383,7 +406,7 @@ const items = (client) => [
               <div class="col-12 mt-2">
                 <div class="position-relative">
                   <label for="input1" class="form-label">Last Name</label>
-                  <input v-model="form.lastName" type="text" class="form-control ps-3 ">
+                  <input v-model="editForm.lastName" type="text" class="form-control ps-3 ">
                   <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
                     <div class="text-danger">Last name is required</div>
                   </div>
@@ -395,7 +418,7 @@ const items = (client) => [
               <div class="col-12 mt-2">
                 <div class="position-relative">
                   <label for="input1" class="form-label">Phone Number</label>
-                  <input v-model="form.phone" type="text" class="form-control ps-3 ">
+                  <input v-model="editForm.phone" type="text" class="form-control ps-3 ">
                   <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
                     <div class="text-danger">Phone is required</div>
                   </div>
@@ -404,7 +427,7 @@ const items = (client) => [
               <div class="col-12 mt-2">
                 <div class="position-relative">
                   <label for="input1" class="form-label">Email</label>
-                  <input v-model="form.email" type="email" class="form-control ps-3 ">
+                  <input v-model="editForm.email" type="email" class="form-control ps-3 ">
                   <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
                     <div class="text-danger">Email is required</div>
                   </div>
@@ -414,17 +437,17 @@ const items = (client) => [
             <div class="row mt-3">
               <div class="col-12">
                 <div class="flex justify-center">
-                  <ColorPicker v-model="form.color" inline />
+                  <ColorPicker v-model="editForm.color" inline />
               </div>
               </div>
-              <span class="badge" :style="`color: #fff; background-color: #${form.color}`">Sample Background</span>
+              <span class="badge" :style="`color: #fff; background-color: #${editForm.color}`">Sample Background</span>
             </div>
 
           
             <div class="ms-auto mt-6">
-              <button @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
-                <span v-if="loading">Creating...</span>
-                <span v-else>Create Client</span>
+              <button @click="updateClient" type="button" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
+                <span v-if="loading">Updating...</span>
+                <span v-else>Update Client</span>
               </button>
             </div>
           </div>
