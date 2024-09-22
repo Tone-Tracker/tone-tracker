@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
 import { reactive } from 'vue';
+import { type } from 'jquery';
 
 export const useUserStore = defineStore('useUserStore', () => {
   /**
@@ -32,6 +33,7 @@ export const useUserStore = defineStore('useUserStore', () => {
         pantsSize: form.pantsSize,
         dressSize: form.dressSize,
         bio: '',
+        type : form.type,
         password: generatePassword()
       });
       return axiosInstance.post(`/api/users`,userData,);

@@ -28,6 +28,7 @@ const form = reactive({
   lastName: '',
   email: '',
   phone: '',
+  role: 'CLIENT',
   color: '#007bff'
 });
 onMounted(() => {
@@ -255,7 +256,7 @@ const items = (client) => [
                     <div class="table-responsive">
                       <div class="position-relative">
                         <label for="input1" class="form-label">Client Name</label>
-                        <input v-model="form.name" @input="onInput" type="text" class="form-control ps-3 ">
+                        <input v-model="form.name" type="text" class="form-control ps-3 ">
                         <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                           <div class="text-danger">Client Name is required</div>
                         </div>
@@ -264,7 +265,7 @@ const items = (client) => [
                         <div class="col-12 mt-2">
                           <div class="position-relative">
                             <label for="input1" class="form-label">First Name</label>
-                            <input v-model="form.firstName" @input="onInput" type="text" class="form-control ps-3 ">
+                            <input v-model="form.firstName" type="text" class="form-control ps-3 ">
                             <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
                               <div class="text-danger">First name is required</div>
                             </div>
@@ -273,7 +274,7 @@ const items = (client) => [
                         <div class="col-12 mt-2">
                           <div class="position-relative">
                             <label for="input1" class="form-label">Last Name</label>
-                            <input v-model="form.lastName" @input="onInput" type="text" class="form-control ps-3 ">
+                            <input v-model="form.lastName" type="text" class="form-control ps-3 ">
                             <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
                               <div class="text-danger">Last name is required</div>
                             </div>
@@ -285,7 +286,7 @@ const items = (client) => [
                         <div class="col-12 mt-2">
                           <div class="position-relative">
                             <label for="input1" class="form-label">Phone Number</label>
-                            <input v-model="form.phone" @input="onInput" type="text" class="form-control ps-3 ">
+                            <input v-model="form.phone" type="text" class="form-control ps-3 ">
                             <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
                               <div class="text-danger">Phone is required</div>
                             </div>
@@ -294,7 +295,7 @@ const items = (client) => [
                         <div class="col-12 mt-2">
                           <div class="position-relative">
                             <label for="input1" class="form-label">Email</label>
-                            <input v-model="form.email" @input="onInput" type="email" class="form-control ps-3 ">
+                            <input v-model="form.email" type="email" class="form-control ps-3 ">
                             <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
                               <div class="text-danger">Email is required</div>
                             </div>
@@ -328,12 +329,12 @@ const items = (client) => [
     </div>
     <Dialog v-model:visible="visible" position="top" modal header="Edit Client" :style="{ width: '40rem' }">
              
-      <form class="row g-3" @submit.prevent="addActivationManager">
+      <div class="row g-3">
         <div class="card-body">
           <div class="table-responsive">
             <div class="position-relative">
               <label for="input1" class="form-label">Client Name</label>
-              <input v-model="form.name" @input="onInput" type="text" class="form-control ps-3 ">
+              <input v-model="form.name" type="text" class="form-control ps-3 ">
               <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                 <div class="text-danger">Client Name is required</div>
               </div>
@@ -342,7 +343,7 @@ const items = (client) => [
               <div class="col-12 mt-2">
                 <div class="position-relative">
                   <label for="input1" class="form-label">First Name</label>
-                  <input v-model="form.firstName" @input="onInput" type="text" class="form-control ps-3 ">
+                  <input v-model="form.firstName" type="text" class="form-control ps-3 ">
                   <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
                     <div class="text-danger">First name is required</div>
                   </div>
@@ -351,7 +352,7 @@ const items = (client) => [
               <div class="col-12 mt-2">
                 <div class="position-relative">
                   <label for="input1" class="form-label">Last Name</label>
-                  <input v-model="form.lastName" @input="onInput" type="text" class="form-control ps-3 ">
+                  <input v-model="form.lastName" type="text" class="form-control ps-3 ">
                   <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
                     <div class="text-danger">Last name is required</div>
                   </div>
@@ -363,7 +364,7 @@ const items = (client) => [
               <div class="col-12 mt-2">
                 <div class="position-relative">
                   <label for="input1" class="form-label">Phone Number</label>
-                  <input v-model="form.phone" @input="onInput" type="text" class="form-control ps-3 ">
+                  <input v-model="form.phone" type="text" class="form-control ps-3 ">
                   <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
                     <div class="text-danger">Phone is required</div>
                   </div>
@@ -372,7 +373,7 @@ const items = (client) => [
               <div class="col-12 mt-2">
                 <div class="position-relative">
                   <label for="input1" class="form-label">Email</label>
-                  <input v-model="form.email" @input="onInput" type="email" class="form-control ps-3 ">
+                  <input v-model="form.email" type="email" class="form-control ps-3 ">
                   <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
                     <div class="text-danger">Email is required</div>
                   </div>
@@ -390,14 +391,14 @@ const items = (client) => [
 
           
             <div class="ms-auto mt-6">
-              <a @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
+              <button @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
                 <span v-if="loading">Creating...</span>
                 <span v-else>Create Client</span>
-              </a>
+              </button>
             </div>
           </div>
         </div>
-</form>
+      </div>
 
 </Dialog>
   </Layout>

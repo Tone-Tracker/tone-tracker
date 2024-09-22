@@ -4,7 +4,7 @@ import axiosInstance from '@/axiosInstance';
 export const useClientStore = defineStore('useClientStore', () => {
 
     function submitClient(form) {
-      return axiosInstance.post(`/api/clients`,form);
+      return axiosInstance.post(`/api/users`,form);
     }
 
     const getClients = () => {

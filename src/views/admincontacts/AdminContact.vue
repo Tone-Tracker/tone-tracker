@@ -7,31 +7,56 @@ import InputText from 'primevue/inputtext';
 import { ref,reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
+import Dialog from 'primevue/dialog';
+import { useUserStore } from '@/stores/userStore';
 
 const authoritativeForm = ref(null);
-const showModal = ref(true);
+const visible = ref(false);
+const type = ref(null);
+const loading = ref(null);
+
+const userStore = useUserStore();
 
 const form = reactive({
-	name: '',
+	lastName: '',
+	firstName: '',
 	phone: '',
 	email: '',
+	role: 'CLIENT',
+	type: ''
 });
 
-const rules = {
-		name: { required },
-		phone: { required },
-        email: { required, email } 
-    }
+const showModal = (typeParam) => {
+	type.value = typeParam == 'BILLING' ? 'Billing' : 'Authoritative';
+	form.type = typeParam;
+	visible.value = true;
+};
 
-	const v$ = useVuelidate(rules, form)
+const rules = {
+	firstName: { required },
+	lastName: { required },
+	phone: { required },
+	email: { required, email },
+	role: { required }, 
+	type: { required } 
+}
+
+const v$ = useVuelidate(rules, form);
 // Function to handle form submission
 const handleSubmit = async () => {
 	const isFormCorrect = await v$.value.$validate();
 		if (!isFormCorrect) return;
-		console.log(form);
-		//on success hide modal
-		showModal.value = false;
-		document.querySelector('.modal-backdrop').remove();
+		
+		userStore.submitUser(form).then(function (response) {
+			toaster.success("Contact added successfully");
+			visible.value = false;
+		}).catch(function (error) {
+			toaster.error("Error adding contact");
+			console.log(error);
+		}).finally(() => {
+			loading.value = false;
+})
+		
 
 
 };
@@ -87,8 +112,7 @@ const handleSubmit = async () => {
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Authoritative Contacts</h5>
 							<div class="btn-group gap-2">
-								<button class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn" data-bs-toggle="modal"
-									data-bs-target="#addContactModal">Add</button>
+								<button @click="showModal('AUTHORITATIVE')" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn" type="button">Add</button>
 								<button class="btn btn-secondary rounded-0 btn- maz-gradient-btn">Delete</button>
 							</div>
 						</div>
@@ -120,8 +144,7 @@ const handleSubmit = async () => {
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Billing Contacts</h5>
 							<div class="btn-group gap-2">
-								<button @click="showModal=true" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn" data-bs-toggle="modal"
-									data-bs-target="#addContactModal">Add</button>
+								<button @click="showModal('BILLING')" type="button" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn">Add</button>
 								<button class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn">Delete</button>
 							</div>
 						</div>
@@ -148,60 +171,54 @@ const handleSubmit = async () => {
 					</div>
 				</div>
 			</div>
-
-			<!-- Add Contact Modal -->
-			<div v-if="showModal" class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="addContactModalLabel"
-				aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="addContactModalLabel">Add New Contact</h5>
-							<button type="button" class="btn-close maz-gradient-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div class="modal-body">
-
-							<div class="row g-3">
-								<div class="col-md-12">
-									<label for="name" class="form-label">Name</label>
-									<InputText type="text" v-model="form.name" fluid />
-									<div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-										<div class="text-danger">First Name is required</div>
-									  </div>
-								  </div>
-								 
-								  <div class="col-md-12">
-									<div class="">
-										<label for="phone" class="form-label" >Phone</label>
-										<InputMask id="phone" v-model="form.phone" mask="(999) 999-9999" placeholder="(999) 999-9999" fluid />
-									</div>
-									<div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
-										<div class="text-danger">Phone Number is required</div>
-									  </div>
-								  </div>
-                                
-
-								  <div class="col-md-12">
-									<label for="activation-area" class="form-label">Email</label>
-									<InputText type="text" v-model="form.email" fluid />
-									<div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-										<div class="text-danger">Email is required</div>
-									  </div>
-								  </div>
-								 
-								  <div class="col-12">
-									  <div class="d-grid">
-										<button @click="handleSubmit" class="btn maz-gradient-btn" type="button" >
-											 Add Contact
-										</button>
-									  </div>
-								  </div>
-							  </div> 
-						</div>
-					</div>
-				</div>
-
-			</div>
 		</div>
+		<Dialog v-model:visible="visible" position="top" modal :header="`Add ${type} Contact`" :style="{ width: '30rem' }">
+			<div class="row g-3">
+				<div class="col-md-12">
+					<label for="name" class="form-label">First Name</label>
+					<InputText type="text" v-model="form.firstName" fluid />
+					<div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
+						<div class="text-danger">First Name is required</div>
+					  </div>
+				  </div>
+				  <div class="col-md-12">
+					<label for="name" class="form-label">Last Name</label>
+					<InputText type="text" v-model="form.lastName" fluid />
+					<div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
+						<div class="text-danger">Last Name is required</div>
+					  </div>
+				  </div>
+				 
+				  <div class="col-md-12">
+					<div class="">
+						<label for="phone" class="form-label" >Phone</label>
+						<InputMask id="phone" v-model="form.phone" mask="(999) 999-9999" fluid />
+					</div>
+					<div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
+						<div class="text-danger">Phone Number is required</div>
+					  </div>
+				  </div>
+				
+
+				  <div class="col-md-12">
+					<label for="activation-area" class="form-label">Email</label>
+					<InputText type="text" v-model="form.email" fluid />
+					<div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+						<div class="text-danger">Email is required</div>
+					  </div>
+				  </div>
+				 
+				  <div class="col-12">
+					<div class="ms-auto">
+						<button @click="handleSubmit" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+							<div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+							</div>
+							{{ loading ?  '' : 'Add Contact' }}
+						</button>
+					</div>
+				  </div>
+			  </div>
+		</Dialog>
 	</Layout>
 </template>
 
