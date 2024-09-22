@@ -38,11 +38,6 @@ const form = reactive({
   phone: null,
   email: null,
   user: null,
-  dressSize: null,
-  pantsSize: null,
-  client: null,
-  topSize: null,
-  height: null,
   bio: null,
   gender: null
 });
@@ -58,12 +53,8 @@ const rules = {
   email: { required, email },
   phone: { required },
   user: { required },
-  dressSize: { required },
-  pantsSize: { required },
-  height: { required },
-  topSize: { required },
-  bio: { required },
   gender: { required },
+  bio: { required },
 };
 const v$ = useVuelidate(rules, form);
 
@@ -200,6 +191,7 @@ const openPosition = (pos, promoter) => {
       lastName : promoter.lastName,
       email : promoter.email,
       bio: promoter.bio,
+      role: promoter.role,
       gender: promoter.gender
     });
     myGender.value = form.gender;
