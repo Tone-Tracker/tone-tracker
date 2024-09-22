@@ -15,7 +15,7 @@ export const usePromoter = defineStore('promoter', () => {
     }
 
     const updatePromoter = (id, data) => {
-      return axiosInstance.put(`/api/promoters/${id}`,data);
+      return axiosInstance.put(`/api/users/${id}`,data);
     }
     const deletePromoter = (id) => {
       return axiosInstance.delete(`/api/promoters/${id}`);
