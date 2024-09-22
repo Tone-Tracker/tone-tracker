@@ -232,7 +232,7 @@ const onInput = () => {
                     <div class="card-body">
                         <div class="row">
                             <div class="col-8 col-lg-8 col-xl-8 d-flex">
-                                <div class="card radius-10 w-100">
+                                <div class=" radius-10 w-100">
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <table class="table mb-0">
@@ -297,7 +297,7 @@ const onInput = () => {
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <div class="card flex justify-center">  
+                                                        <div class=" flex justify-center">  
                                                             <!-- <input accept="image/*" ref="img" type="file" hidden id="img" @change="onFileChange($event)"/>
                                                             <label for="img" class="btn btn-primary px-5">
                                                                 <i class="bx bx-cloud-upload mr-1"></i>
