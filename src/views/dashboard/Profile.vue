@@ -523,13 +523,11 @@ Date: 04/06/2024
          <Dialog v-model:visible="showProfilePictuteModal" header="Upload Profile Picture" :style="{ width: '30rem' }" position="top" :modal="true" :draggable="false">
          
                                     <div class="modal-body">
-                                        <!-- <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
-                                    <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label> -->
                                     <FileUploadGeneric 
                                     :showFilePreview="false" 
                                     accept="image/*" 
                                     fileType="image" 
-                                    @fileUploaded="onFileChange"
+                                    @fileUploaded="onProfilePicSelect"
                                     @fileDropped="onfileDropped"
                             />
                                     <VuePictureCropper
@@ -791,6 +789,11 @@ const uploadInput = ref(null)
         console.log(error);
         })
     }
+
+    const onfileDropped = (dropedFile) => {
+       onProfilePicSelect(dropedFile[0]);
+    };
+
 const onProfilePicSelect = (event) => {
 
       // Reset last selection and results
@@ -798,12 +801,13 @@ const onProfilePicSelect = (event) => {
       result.dataURL = ''
       result.blobURL = ''
 
-      // Get selected files
-      const { files } = event.target
-      if (!files || !files.length) return
+      
+      const files = event;
+
+      if (!files) return
 
       // Convert to dataURL and pass to the cropper component
-      const file = files[0]
+      const file = files
       const reader = new FileReader()
       reader.readAsDataURL(file)
       reader.onload = () => {

@@ -11,8 +11,9 @@ import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import useToaster from "@/composables/useToaster";
 import { useRegion } from "@/stores/useRegion";
-import moment from "moment";
 import { useRouter } from "vue-router";
+import MultiSelect from "primevue/multiselect";
+import FileUploadGeneric from "../upload/FileUploadGeneric.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -87,14 +88,34 @@ const v$ = useVuelidate(rules, form);
 const imageName = ref("");
 const fileName = ref("");
 
-const onFileChange = (event) => {
-  if (!event.target.files[0].name.includes(".pdf")) {
+
+const onFileChange = (uploadedFile) => {
+  
+  if (!uploadedFile.name.includes(".pdf")) {
     toaster.error("Please select a pdf file");
     return;
   }
-    selectedFile.value = event.target.files[0];
-    fileName.value = event.target.files[0].name;
+    console.log('event', uploadedFile);
+    selectedFile.value = uploadedFile;
 }
+
+const onfileDropped = (dropedFile) => {
+  if (!dropedFile[0].name.includes(".pdf")) {
+    toaster.error("Please select a pdf file");
+    return;
+  }
+   console.log('dropedFile', dropedFile);
+      selectedFile.value = null
+
+      // Get selected files
+      const files = dropedFile;
+      if (!files) return
+      const file = files[0];
+      selectedFile.value = file;
+};
+
+const regionsArray = ref([]);
+
 
 const onSubmit = async () => {
 
@@ -103,7 +124,17 @@ if (!isFormValid) {
  return
 }
 
+if (!selectedFile.value) {
+  toaster.error("Please upload a brief file");
+  return;
+}
+
 loading.value = true;
+//loop through regions and push id to regionsArray
+for (let i = 0; i < form.region.length; i++) {
+  regionsArray.value.push(form.region[i].id);
+}
+form.region = regionsArray.value;
 
 const formData = new FormData();
 formData.append('briefFile', selectedFile.value);
@@ -163,6 +194,7 @@ try {
                         type="text"
                         class="form-control"
                         id="name"
+                        style="height: 2.6rem !important"
                       />
                       <div
                         class="input-errors"
@@ -203,22 +235,10 @@ try {
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="region" class="form-label">Region</label>
-                      <select
-                        v-model="form.region"
-                        class="form-control"
-                        id="activation-area"
-                      >
-                        <option value="" selected disabled>
-                          Select Region
-                        </option>
-                        <option
-                          v-for="region in regions"
-                          :key="region"
-                          :value="region.id"
-                        >
-                          {{ region.name }}
-                        </option>
-                      </select>
+                      <div class="card flex justify-center">
+                        <MultiSelect v-model="form.region" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
+                            :maxSelectedLabels="5" class="w-full md:w-80" />
+                    </div>
                       <div
                         class="input-errors"
                         v-for="error of v$.region.$errors"
@@ -309,22 +329,13 @@ try {
                     </div>
                     <div class="col-md-12 mb-3 w-50 m-auto">
                       <label for="file-upload" class="form-label">Upload Brief File</label>
-                      <div class="upload-box">
-                        <input
-                          type="file"
-                          @change="onFileChange($event)"
-                          id="file-upload"
-                          hidden
-                          accept="application/pdf"
-                        />
-                        <label for="file-upload" class="file-upload-label">
-                          <div class="upload-icon">+</div>
-                          <div class="upload-text">Click to upload PDF</div>
-                        </label>
-                      </div>
-                      <p v-if="fileName" class="text-center text-danger mt-2">
-                        {{ fileName }}
-                      </p>
+                      <FileUploadGeneric 
+                      :showFilePreview="true" 
+                        accept="application/pdf" 
+                        fileType="pdf" 
+                        @fileUploaded="onFileChange"
+                        @fileDropped="onfileDropped"
+                      />
                     </div>
                     <div class="col-12 mt-4">
                   <div class="d-grid">
@@ -403,5 +414,10 @@ try {
 }
 .w-80 {
   width: 90% !important;
+}
+
+.p-multiselect {
+  background: #12181a !important;
+  height: 2.6rem !important;
 }
 </style>

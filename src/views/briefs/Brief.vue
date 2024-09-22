@@ -1,18 +1,27 @@
 <script setup>
 import Layout from "@/views/shared/Layout.vue";
 import BreadCrumb from "@/components/BreadCrumb.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { useBrief } from "@/stores/brief";
 import { useRoute } from "vue-router";
 import Drawer from "primevue/drawer";
-import { isClient } from "@vueuse/shared";
+import { useActivation } from "@/stores/activation";
 import { useClipboard, useShare } from "@vueuse/core";
 import PDF from "pdf-vue3";
 import Dialog from "primevue/dialog";
+import Select from "primevue/select";
+import FileUploadGeneric from "../upload/FileUploadGeneric.vue";
+import useToaster from "@/composables/useToaster";
+import { required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
 
 const route = useRoute();
 const briefStore = useBrief();
+const activationStore = useActivation();
+const toaster = useToaster();
+
 let briefs = ref([]);
+const allActivations = ref([]);
 let brief = ref({});
 let searchInput = ref('');
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
@@ -35,9 +44,16 @@ onMounted(() => {
   if (briefId.value) {
     getBriefById();
   }
+  fetchAllActivations();
 });
 
-
+const fetchAllActivations = async () => {
+  activationStore.getAllActivationsForTemporal().then((res) => {
+    allActivations.value = res.data;
+  }).catch((error) => {
+    console.log(error);
+  })
+}
 const getBriefs = async () => {
   try {
     const response = await briefStore.getBriefs();
@@ -102,11 +118,66 @@ const download = () => {
   }
 };
 
-
+const briefFile = ref(null);
+const loading = ref(false);
 const source = ref('Hello')
-const { text, copy, copied, isSupported } = useClipboard({ source })
+const { text, copy, copied, isSupported } = useClipboard({ source });
+
+const form = reactive({
+  selectedActivation: ''
+});
 
 
+const rules = { selectedActivation: { required }};
+const v$ = useVuelidate(rules, form);
+
+
+const onActivationChange = (e) => {
+  form.selectedActivation = e.value;
+}
+
+const onFileChange = (uploadedFile) => {
+    if(!uploadedFile.name.includes(".pdf")){
+        toaster.error("Please upload a pdf file");
+        return;
+    }
+    briefFile.value = uploadedFile;
+}
+
+const onfileDropped = (dropedFile) => {
+   console.log('dropedFile', dropedFile);
+      briefFile.value = null
+
+      // Get selected files
+      const files = dropedFile;
+      if (!files) return
+      const file = files[0];
+      briefFile.value = file;
+};
+
+const submitBriefFile = async () => {
+  const isFormValid = await v$.value.$validate();
+	if (!isFormValid) {
+		return;
+	}
+  if(!briefFile.value) {toaster.error("Please upload a brief file");return}
+  const formData = new FormData();
+  loading.value = true;
+  formData.append('briefFile', briefFile.value);
+  formData.append('activation', JSON.stringify(form.selectedActivation.id));
+  console.log('Formdata',form.selectedActivation);return;
+  briefStore.submit(formData).then(() => {
+    getBriefs();
+    showAddModal.value = false;
+    loading.value = false;
+    toaster.success("Brief uploaded successfully");
+  }).catch((error) => {
+    console.log(error);
+  }).finally(() => {
+    loading.value = false;
+  })
+
+}
 </script>
 <template>
   <Layout>
@@ -205,9 +276,32 @@ const { text, copy, copied, isSupported } = useClipboard({ source })
 
     <Dialog v-model:visible="showAddModal" position="top" modal header="Upload Brief File" :style="{ width: '30rem' }">
              
-     kkkk
+      <div class="card flex justify-center">
+        <Select v-model="form.selectedActivation" :options="allActivations" @change="onActivationChange" filter optionLabel="name" placeholder="Select Activation" class="w-full md:w-56">
+            
+        </Select>
+        
+        <div class="input-errors" v-for="error of v$.selectedActivation.$errors" :key="error.$uid">
+          <div class="text-danger">Activation is required</div>
+      </div>
+      <FileUploadGeneric 
+        :showFilePreview="true" 
+        accept="application/pdf" 
+        fileType="pdf" 
+        @fileUploaded="onFileChange"
+        @fileDropped="onfileDropped"
+          />
+    </div>
+    <div class="ms-auto">
+      <button @click="submitBriefFile" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+          <div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+          </div>
+          <i v-if="!loading" class="bx bxs-plus-square"></i>
+          {{ loading ?  '' : 'Upload' }}
+      </button>
+  </div>
 
-</Dialog>
+   </Dialog>
   </Layout>
 </template>
 

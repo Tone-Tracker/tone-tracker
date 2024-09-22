@@ -37,7 +37,7 @@ function onDrop(event) {
   }
   const droppedFile = droppedFiles[0];
   //if its not image 
-  if (!droppedFile.type.includes("image")) {
+  if (props.fileType === 'image' && !droppedFile.type.includes("image")) {
     file.value = null;
     toaster.error("Only image files are allowed");
     return;
