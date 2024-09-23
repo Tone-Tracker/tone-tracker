@@ -257,20 +257,20 @@ const onInput = () => {
                                                         <td class="pt-4">{{ clientName }}</td>
                                                         <td class="pt-3">
                                                             <div class="d-flex order-actions">
-                                                                <button v-if="!campaign.isEditing" @click="editClient(campaign)" type="button">
+                                                                <a v-if="!campaign.isEditing" @click="editClient(campaign)" href="javascript:;">
                                                                     <i class='bx bxs-edit ' v-tooltip.bottom="'Edit'"></i>
-                                                                </button>
-                                                                <button v-else @click="updateCampaign(campaign)" type="button" class="ms-3">
+                                                                </a>
+                                                                <a v-else @click="updateCampaign(campaign)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bx-check ' 
                                                                     v-tooltip.bottom="'Edit'" ></i>
-                                                                </button>
+                                                                </a>
                                                                 <router-link :to="`/admin-activations?campaign=${campaign.id}`" 
                                                                 v-tooltip.bottom="'View Activations'" class="ms-3">
                                                                     <i class='bx bx-show '></i>
                                                                 </router-link>
-                                                                <button @click="deleteRecord($event,campaign)" type="button" class="ms-3">
+                                                                <a @click="deleteRecord($event,campaign)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash text-danger' v-tooltip.bottom="'Delete'"></i>
-                                                                </button>
+                                                                </a>
                                                                 <ConfirmPopup></ConfirmPopup>
                                                             </div>
                                                         </td>
