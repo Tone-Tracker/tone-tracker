@@ -368,10 +368,10 @@ const items = (client) => [
 
                     
                       <div class="ms-auto mt-6">
-                        <a @click="createClient" href="javascript:;" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
+                        <button @click="createClient" type="button" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
                           <span v-if="loading">Creating...</span>
                           <span v-else>Create Client</span>
-                        </a>
+                        </button>
                       </div>
                     </div>
                   </div>
