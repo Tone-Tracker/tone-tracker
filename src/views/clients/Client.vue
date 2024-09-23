@@ -122,7 +122,7 @@ const deleteClient = (client) => {
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
-    clients.value = clients.value.filter((client) => {
+    paginatedClients.value = clients.value.filter((client) => {
       const name = client.name?.toLowerCase() || '';
       return (
         name.includes(searchTerm) 
