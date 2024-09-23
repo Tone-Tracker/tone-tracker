@@ -203,7 +203,9 @@ const toggleCampaignSearch = (event) => {
       <li @click="logout" v-tooltip="'Logout'" class="side-nav__item">
         <router-link to="/warehouse">
           <div class="side-nav__link">
-           <Logout />
+           <!-- <Logout /> -->
+           <i class='bx bx-log-out fs-2'></i>
+
           </div>
         </router-link>
       </li>

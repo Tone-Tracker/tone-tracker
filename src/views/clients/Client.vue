@@ -356,8 +356,8 @@ const items = (client) => [
                       </div>
                       <div class="row mt-3">
                         <div class="col-12">
-                          <div class="flex justify-center">
-                            <ColorPicker v-model="form.color" inline />
+                          <div class="color-picker-container">
+                            <ColorPicker v-model="form.color" inline class="w-100" />
                             <div class="input-errors" v-for="error of v$.color.$errors" :key="error.$uid">
                               <div class="text-danger">Client color is required</div>
                             </div>
@@ -429,6 +429,8 @@ const items = (client) => [
   border: none;
   outline: none;
 }
+
+
 
 
 </style>
