@@ -37,7 +37,7 @@ const form = reactive({
   email: '',
   phone: '',
   role: 'CLIENT',
-  color: '#007bff'
+  color: ''
 });
 onMounted(() => {
   getAllClients();
@@ -48,7 +48,8 @@ const rules = {
   firstName: { required },
   lastName: { required },
   email: { required, email },
-  phone: { required, numeric, maxValue: 10 }
+  phone: { required, numeric, maxValue: 10 },
+  color: { required }
 };
 const v$ = useVuelidate(rules, form);
 
@@ -59,6 +60,7 @@ const createClient = async () => {
   }
   loading.value = true;  
   clientStore.submitClient(form).then(function (response) {
+    loading.value = false;
     toaster.success("Client created successfully");
     getAllClients();
     form.name = ''; 
@@ -72,6 +74,7 @@ const createClient = async () => {
   }).catch(function (error) {
     toaster.error("Error creating client");
     console.log(error);
+    loading.value = false;
   }).finally(() => {
     loading.value = false; 
   });
@@ -149,11 +152,6 @@ const visible = ref(false);
 
 const editForm = reactive({ 
   name: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  role: 'CLIENT',
   color: '#007bff'
 });
 onMounted(() => {
@@ -162,10 +160,7 @@ onMounted(() => {
 
 const editRules = { 
   name: { required },
-  firstName: { required },
-  lastName: { required },
-  email: { required, email },
-  phone: { required, numeric, maxValue: 10 }
+  color: { required }
 };
 const vEdit$ = useVuelidate(editRules, editForm);
 
@@ -183,12 +178,15 @@ const openModal = (client) => {
 };
 
 const updateClient = () => {
+  loading.value = true;
   clientStore.updateClient(editForm.id,editForm).then(response => {
+    loading.value = false;
     toaster.success("Client updated successfully");
     getAllClients(); // Refetch clients after updating
     visible.value = false;
   }).catch(error => {
     toaster.error("Error updating client");
+    loading.value = false;
     console.log(error);
   });
 };
@@ -360,6 +358,9 @@ const items = (client) => [
                         <div class="col-12">
                           <div class="flex justify-center">
                             <ColorPicker v-model="form.color" inline />
+                            <div class="input-errors" v-for="error of v$.color.$errors" :key="error.$uid">
+                              <div class="text-danger">Client color is required</div>
+                            </div>
                         </div>
                         </div>
                         <span class="badge" :style="`color: #fff; background-color: #${form.color}`">Sample Background</span>
@@ -394,50 +395,12 @@ const items = (client) => [
               </div>
             </div>
             <div class="row mt-3">
-              <div class="col-12 mt-2">
-                <div class="position-relative">
-                  <label for="input1" class="form-label">First Name</label>
-                  <input v-model="editForm.firstName" type="text" class="form-control ps-3 ">
-                  <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
-                    <div class="text-danger">First name is required</div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 mt-2">
-                <div class="position-relative">
-                  <label for="input1" class="form-label">Last Name</label>
-                  <input v-model="editForm.lastName" type="text" class="form-control ps-3 ">
-                  <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
-                    <div class="text-danger">Last name is required</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row mt-3">
-              <div class="col-12 mt-2">
-                <div class="position-relative">
-                  <label for="input1" class="form-label">Phone Number</label>
-                  <input v-model="editForm.phone" type="text" class="form-control ps-3 ">
-                  <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
-                    <div class="text-danger">Phone is required</div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 mt-2">
-                <div class="position-relative">
-                  <label for="input1" class="form-label">Email</label>
-                  <input v-model="editForm.email" type="email" class="form-control ps-3 ">
-                  <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-                    <div class="text-danger">Email is required</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row mt-3">
               <div class="col-12">
                 <div class="flex justify-center">
                   <ColorPicker v-model="editForm.color" inline />
+                  <div class="input-errors" v-for="error of v$.color.$errors" :key="error.$uid">
+                    <div class="text-danger">Client color is required</div>
+                  </div>
               </div>
               </div>
               <span class="badge" :style="`color: #fff; background-color: #${editForm.color}`">Sample Background</span>
