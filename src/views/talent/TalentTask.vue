@@ -328,13 +328,13 @@ const promoterItems = (task) => [    {
             URLrouter.push(`/view-talent-task/${task.id}`);
         }
     },
-	{
-        label: 'Add Images',
-        icon: 'bx bx-image-add fs-4 maz-gradient-txt',
-        command: () => {
-            URLrouter.push(`/talent/images/${task.id}`);
-        }
-    }
+	// {
+    //     label: 'Add Images',
+    //     icon: 'bx bx-image-add fs-4 maz-gradient-txt',
+    //     command: () => {
+    //         URLrouter.push(`/talent/images/${task.id}`);
+    //     }
+    // }
     
 ];
 
@@ -357,7 +357,7 @@ const promoterItems = (task) => [    {
                                 <table class="table table-dark table-bordered">
                                     <thead>
                                         <tr class="table-dark-color">
-                                            <th>Activation</th>
+                                            <!-- <th>Activation</th> -->
                                             <th>Task</th>
                                             <th>Job Number</th>
                                             <th>Risk</th>
@@ -369,7 +369,7 @@ const promoterItems = (task) => [    {
                                     </thead>
                                     <tbody>
                                         <tr v-if="tasks.length > 0" v-for="task in tasks" :key="task.id" class="table-dark-black">
-                                            <td>{{ activationName }}</td>
+                                            <!-- <td>{{ activationName }}</td> -->
                                             <td>{{ task.name }}</td>
                                             <td>{{ task.jobNumber }}</td>
                                             <td  :class="getClass(task.status)">

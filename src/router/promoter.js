@@ -19,6 +19,11 @@ export default [
         component: TalentTask
       },
       {
+        path: '/talent/images/:id',
+        name: 'talent/images',
+        component: TalentTask
+      },
+      {
         path: '/profile/',
         name: 'profile',
         component: Profile
