@@ -379,18 +379,18 @@ const onSubmitPO = () => {
                       </template>
                       <template #image>
                           <img 
-                          :src="promoter.userDetails.path ? promoter.userDetails.path : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
+                          :src="promoter.userDetails.path ? envPath + promoter.userDetails.path : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
                           alt="image" width="250" />
                       </template>
                       <template #preview="slotProps">
                         <img 
-                          :src="promoter.userDetails.path ? promoter.userDetails.path : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
+                          :src="promoter.userDetails.path ? envPath + promoter.userDetails.path : avatarGenerator(promoter.userDetails.firstName, promoter.userDetails.lastName)" 
                           alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                       </template>
                     </Image>
                   </div>
                   <div>
-                    <RouterLink :to="`/profile/${promoter.id}?taskId=${taskId}`">
+                    <RouterLink :to="`/profile/${promoter?.userDetails?.id}/${promoter?.id}?taskId=${taskId}`">
                     <div class="desc cursor-pointer" >
                       {{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}
                     </div>

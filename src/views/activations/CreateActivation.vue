@@ -58,7 +58,7 @@ const form = reactive({
   name: "",
   budget: null,
   campaign: campaignId.value,
-  region: "",
+  regions: "",
   startDate: "",
   endDate: "",
   brief: "",
@@ -77,7 +77,7 @@ const rules = {
   name: { required },
   budget: { required },
   campaign: { required },
-  region: { required },
+  regions: { required },
   startDate: { required },
   endDate: { required },
   targetGroup: { required },
@@ -85,8 +85,6 @@ const rules = {
   painPoints: { required },
 };
 const v$ = useVuelidate(rules, form);
-const imageName = ref("");
-const fileName = ref("");
 
 
 const onFileChange = (uploadedFile) => {
@@ -131,10 +129,10 @@ if (!selectedFile.value) {
 
 loading.value = true;
 //loop through regions and push id to regionsArray
-for (let i = 0; i < form.region.length; i++) {
-  regionsArray.value.push(form.region[i].id);
+for (let i = 0; i < form.regions.length; i++) {
+  regionsArray.value.push(form.regions[i].id);
 }
-form.region = regionsArray.value;
+form.regions = regionsArray.value;
 
 const formData = new FormData();
 formData.append('briefFile', selectedFile.value);
@@ -236,12 +234,12 @@ try {
                     <div class="col-md-4 mb-3">
                       <label for="region" class="form-label">Region</label>
                       <div class="card flex justify-center">
-                        <MultiSelect v-model="form.region" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
+                        <MultiSelect v-model="form.regions" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
                             :maxSelectedLabels="5" class="w-full md:w-80" />
                     </div>
                       <div
                         class="input-errors"
-                        v-for="error of v$.region.$errors"
+                        v-for="error of v$.regions.$errors"
                         :key="error.$uid"
                       >
                         <div class="text-danger">Region is required</div>
