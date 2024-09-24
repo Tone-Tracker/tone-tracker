@@ -12,6 +12,8 @@ import { debounce } from '@/helpers/helpers';
 import { useRegion } from '@/stores/useRegion';
 import { onClickOutside } from '@vueuse/core';
 import HTMLTableToPDF from '@/components/HTMLTableToPDF.vue';
+import Dialog from 'primevue/dialog';
+import Checkbox from 'primevue/checkbox';
 
 let showModal = ref(false);
 let showLoading = ref(false);
@@ -168,8 +170,9 @@ const tableHeaders = ref([
             <!-- Code here -->
             <div class="">
                 <div class="table-container-colour pl-5;">
-                  <div class="mb-2">
+                  <div class="mb-2 d-flex justify-content-between">
                     <input type="text" class="form-control" placeholder="Search" v-model="searchInput" @input="onSearchInput('')" style="width: 25rem;">
+                    <button class="btn btn-primary maz-gradient-btn" @click="toggleModal">Add New User</button>
                   </div>
                     <div class="d-flex justify-content-between">
                         <h5>Database</h5>
@@ -194,7 +197,7 @@ const tableHeaders = ref([
                           <th>Email</th>
                           <th>Cell Number</th>
                           <th>Opt-in</th>
-                          <th>Activation Area</th>
+                          <th>Address</th>
                           <th>Region</th>
                         </tr>
                       </thead>
@@ -205,8 +208,10 @@ const tableHeaders = ref([
                           <td>{{ user.email }}</td>
                           <td>{{ user.phone }}</td>
                           
-                          <td>{{ user.optIn }}</td>
-                          <td>{{ user.activationName }}</td>
+                          <td>
+                            <Checkbox v-model="user.optIn" :binary="true" />
+                          </td>
+                          <td>{{ user.address }}</td>
                           <td>{{ user.regionName }}</td>
                         </tr>
                       </tbody>
@@ -224,13 +229,14 @@ const tableHeaders = ref([
     </Layout>
   
     <!-- Modal component -->
-    <CrmModal 
-      v-if="showModal" 
+     <Dialog v-model:visible="showModal" position="top" modal header="Add User" :style="{ width: '35rem' }" >
+    <CrmModal
       :showModal="showModal" 
       :modalData="modalData" 
       :regions="regions" 
       @closeModal="hideModal" 
     />
+  </Dialog>
   </template>
   
   <style scoped>

@@ -570,7 +570,9 @@ const getUser = () => {
 
 
 const isMyProfile = () => {
-    return userId.value == user.activeUserId && user?.id == userIdParam.value;
+    console.log(user)
+    console.log(userId.value, user.activeUserId)
+    // return userId.value == user.activeUserId && user?.id == userIdParam.value;
 }
 const uploadEvent = (callback) => {
     totalSizePercent.value = totalSize.value / 10;
@@ -591,7 +593,7 @@ const showPreviewSheet = ref(false);
 const fileType = ref('');
 const previewFile = ref(null);
 const previewDocs = (type) => {
-    console.log('previewDocs',ndaFile.value);return
+    console.log('previewDocs',ndaFile.value);
     let myNDA = ndaFile.value ? ndaFile.value[0].path : [];
     let mySLA = slaFile.value ? slaFile.value[0].path : [];
      if(type == 'nda' && !myNDA){return}

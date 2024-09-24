@@ -981,7 +981,10 @@ const getListOtherPromoters = () => {
 
 
 const isMyProfile = () => {
-    return promoterId.value == user.activeUserId  && user?.id == userIdParam.value;
+    // path: `/profile/${promoter.userDetails?.id}/${promoter?.id}`
+    // path: '/profile/:id/:userId',
+    return (userIdParam.value == user.activeUserId  && user?.id == promoterId.value)
+    || user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN';
 }
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
     removeFileCallback(index);

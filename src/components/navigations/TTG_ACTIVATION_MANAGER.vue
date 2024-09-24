@@ -75,7 +75,7 @@ const getRoleName = () => {
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item">
+                <div class="accordion-item d-none">
                     <h2 class="accordion-header">
                         <button class="d-flex gap-2 justify-content-end flex-row-reverse accordion-button w-0 collapsed "
                             type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo"

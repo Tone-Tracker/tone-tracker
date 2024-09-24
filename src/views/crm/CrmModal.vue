@@ -25,10 +25,11 @@ let form = reactive({
   phone: '',
   optIn: '',
   activation: '',
-  region: ''
+  region: '',
+  address: ''
 });
 
-watch(() => props.modalData, (newVal) => { console.log("regions", newVal.region);
+watch(() => props.modalData, (newVal) => { 
   Object.assign(form, {
     name: newVal.name || '',
     surname: newVal.surname || '',
@@ -36,7 +37,8 @@ watch(() => props.modalData, (newVal) => { console.log("regions", newVal.region)
     phone: newVal.phone || '',
     optIn: newVal.optIn || '',
     activation: newVal.activation || 4,
-    region: newVal.region || ''
+    region: newVal.region || '',
+    address: ''
   });
 }, { deep: true });
 
@@ -46,7 +48,8 @@ const rules = {
   email: { required , email},
   phone: { required },
   activation: {  },
-  region: { required }
+  region: { required },
+  address: { required }
 };
 
 const v$ = useVuelidate(rules, form);
@@ -86,71 +89,66 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div v-if="showModal" class="modal fade show d-block" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ modalData.id ? 'Update User' : 'Create User' }}</h5>
-          <button type="button" class="btn-close maz-gradient-btn" @click="emit('closeModal')" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Form Fields -->
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="name" class="form-label">Name</label>
-              <input v-model="form.name" type="text" class="form-control" id="name">
-              <div class="text-danger" v-if="v$.name.$error">Name is required</div>
-            </div>
-            <div class="col-md-6">
-              <label for="surname" class="form-label">Surname</label>
-              <input v-model="form.surname" type="text" class="form-control" id="surname">
-              <div class="text-danger" v-if="v$.surname.$error">Surname is required</div>
-            </div>
-            <div class="col-md-6">
-              <label for="email" class="form-label">Email</label>
-              <input v-model="form.email" type="email" class="form-control" id="email">
-              <div class="text-danger" v-if="v$.email.$error">Email is required</div>
-            </div>
-            <div class="col-md-6">
-              <label for="cell" class="form-label">Cell Number</label>
-              <input v-model="form.phone" type="text" class="form-control" id="cell">
-              <div class="text-danger" v-if="v$.phone.$error">Cell Number is required</div>
-            </div>
-            
-            <div class="col-md-6">
-              <label for="cell" class="form-label">Region</label>
-              <select @change="getAllActivationsByRegion" v-model="form.region" class="form-select" id="region">
-                <option value="" selected disabled>Select Region</option>
-                <option v-for="region in regions" :key="region" :value="region.id">
-                  {{ region.name }}
-                </option>
-              </select>
-              <div class="text-danger" v-if="v$.region.$error">Region is required</div>
-            </div>
-            <div class="col-md-6" v-if="form.region != ''">
-              <label for="Activation" class="form-label">Activation Area</label>
-              <select v-model="form.activation" class="form-select" id="activation">
-                <option value="" selected disabled>Select Activation Area</option>
-                <option v-for="activation in activations" :key="activation" :value="activation.id">
-                  {{ activation.name }}
-                </option>
-              </select>
-              <div class="text-danger" v-if="v$.activation.$error">Activation Area is required</div>
-            </div>
-            <div class="col-md-6">
-              <input v-model="form.optIn" type="checkbox" class="" id="optin">
-              <label for="optin" class="form-label ms-2">Opt In</label>
-            </div>            
-          </div>
-          
-          <div class="mt-4">
-            <button @click="onSubmit" class="btn btn-primary maz-gradient-btn">
-              <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              {{ modalData.id ? 'Update' : 'Submit' }}
-            </button>
-          </div>
-        </div>
-      </div>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="name" class="form-label">Name</label>
+      <input v-model="form.name" type="text" class="form-control" id="name">
+      <div class="text-danger" v-if="v$.name.$error">Name is required</div>
     </div>
+    <div class="col-md-6">
+      <label for="surname" class="form-label">Surname</label>
+      <input v-model="form.surname" type="text" class="form-control" id="surname">
+      <div class="text-danger" v-if="v$.surname.$error">Surname is required</div>
+    </div>
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email</label>
+      <input v-model="form.email" type="email" class="form-control" id="email">
+      <div class="text-danger" v-if="v$.email.$error">Email is required</div>
+    </div>
+    <div class="col-md-6">
+      <label for="cell" class="form-label">Cell Number</label>
+      <input v-model="form.phone" type="text" class="form-control" id="cell">
+      <div class="text-danger" v-if="v$.phone.$error">Cell Number is required</div>
+    </div>
+
+    <div class="col-md-9">
+      <label for="address" class="form-label">Address</label>
+      <input v-model="form.address" type="text" class="form-control" id="address">
+      <div class="text-danger" v-if="v$.address.$error">Address is required</div>
+    </div>
+    <div class="col-md-3">
+      <label for="address" class="form-label d-block invisible">Address</label>
+      <input v-model="form.optIn" type="checkbox" class="" id="optin">
+      <label for="optin" class="form-label ms-2">Opt In</label>
+    </div> 
+    
+    <div class="col-md-6">
+      <label for="region" class="form-label">Region</label>
+      <select @change="getAllActivationsByRegion" v-model="form.region" class="form-select" id="region">
+        <option value="" selected disabled>Select Region</option>
+        <option v-for="region in regions" :key="region" :value="region.id">
+          {{ region.name }}
+        </option>
+      </select>
+      <div class="text-danger" v-if="v$.region.$error">Region is required</div>
+    </div>
+    <div class="col-md-6" v-if="form.region != ''">
+      <label for="Activation" class="form-label">Activation Area</label>
+      <select v-model="form.activation" class="form-select" id="activation">
+        <option value="" selected disabled>Select Activation Area</option>
+        <option v-for="activation in activations" :key="activation" :value="activation.id">
+          {{ activation.name }}
+        </option>
+      </select>
+      <div class="text-danger" v-if="v$.activation.$error">Activation Area is required</div>
+    </div>
+               
+  </div>
+  
+  <div class="mt-4">
+    <button @click="onSubmit" class="btn btn-primary maz-gradient-btn w-100">
+      <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{ modalData.id ? 'Update' : 'Submit' }}
+    </button>
   </div>
 </template>
