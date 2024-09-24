@@ -38,7 +38,7 @@
 
         <div class="user-box dropdown px-3">
           <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
-            <img :src="user?.path ? envPath + user?.path : '/src/assets/images/placeholder.jpg'" class="user-img" alt="user avatar" />
+            <img :src="user?.path ? envPath + user?.path : '../../assets/images/placeholder.jpg'" class="user-img" alt="user avatar" />
           </a>
         </div>
       </nav>
@@ -69,7 +69,7 @@ const redirectToProfile = () => {
   if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'REGIONAL_MANAGER' || user.role == 'ACTIVATION_MANAGER'){
     router.push({ path: `/staff-profile/${user?.activeUserId}/${user?.id}` });
   }else if(user.role == 'TTG_TALENT'){
-     return console.log('hhh',user)
+    // return console.log('hhh',user)
     // path: `/profile/${promoter.userDetails?.id}/${promoter?.id}`
     router.push({ path: `/profile/${user?.id}/${user?.activeUserId}` });
   }else if(user.role == 'SUPPLIER'){
