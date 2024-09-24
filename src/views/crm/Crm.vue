@@ -229,7 +229,7 @@ const tableHeaders = ref([
     </Layout>
   
     <!-- Modal component -->
-     <Dialog v-model:visible="showModal" position="top" modal header="Add Activation Manager" :style="{ width: '35rem' }" >
+     <Dialog v-model:visible="showModal" position="top" modal header="Add User" :style="{ width: '35rem' }" >
     <CrmModal
       :showModal="showModal" 
       :modalData="modalData" 
