@@ -77,6 +77,31 @@ const getAllActivations = () => {
         showInfoWindow: false // Initialize with false
       }));
     });
+  } else  {
+    activationStore.getAllActivations(user.role, user.id).then(response => {
+     console.log("test activations", response.data);
+  
+      // Ensure response.content exists before calling map
+      if (response && response.data && response.data.content) {
+        locations.value = response.data.content.map(activation => ({
+          lat: activation.centralLatitude,
+          lng: activation.centralLongitude,
+          startDate: activation.startDate,
+          endDate: activation.endDate,
+          costPerContact: activation.costPerContact || 0, // Default to 0 if null
+          regionName: activation.regionName || 'Unknown', // Default to 'Unknown' if null
+          title: activation.name || 'Untitled Activation', // Default to 'Untitled Activation' if null
+          leads: activation.numberOfLeads || 0, // Default to 0 if null
+          showInfoWindow: false // Initialize with false
+        }));
+      } else {
+        console.error("Response content is undefined or empty", response);
+        locations.value = []; // Fallback in case of no activations
+      }
+    }).catch(error => {
+      console.error("Error fetching activations", error);
+    });
+     
   }
 
   // Handle other roles similarly...
