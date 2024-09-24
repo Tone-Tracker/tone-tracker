@@ -101,14 +101,14 @@ const handleSubmit = async () => {
 						</div>
 					</div>
 
-					<div class="description">
+					<div class="description d-none">
 						<p class="text-white">Below is a listing of additional contacts. You can edit these contacts by
 							clicking
 							on a contact's
 							name</p>
 					</div>
 
-					<div class="card border-card rounded-0">
+					<div class="card border-card rounded-0 d-none">
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Authoritative Contacts</h5>
 							<div class="btn-group gap-2">
@@ -140,7 +140,7 @@ const handleSubmit = async () => {
 						</div>
 					</div>
 
-					<div class="card border-card rounded-0">
+					<div class="card border-card rounded-0 d-none">
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Billing Contacts</h5>
 							<div class="btn-group gap-2">
