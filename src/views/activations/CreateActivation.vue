@@ -50,7 +50,7 @@ watch(
 const getRegions = async () => {
   regionStore.getRegions().then(function (response) {
     regions.value = response.data.content;
-  });
+    });
 };
 
 const form = reactive({
@@ -59,6 +59,7 @@ const form = reactive({
   budget: null,
   campaign: campaignId.value,
   regions: "",
+  region: "",
   startDate: "",
   endDate: "",
   brief: "",
@@ -70,6 +71,8 @@ const getActivationById = async () => {
   activation.getActivationById(activationId.value).then(function (response) {
     console.log(response.data);
     Object.assign(form, response.data);
+    // form.regions = response.data.region;
+    form.region = response.data.region;
   });
 };
 
@@ -77,7 +80,7 @@ const rules = {
   name: { required },
   budget: { required },
   campaign: { required },
-  regions: { required },
+  // regions: { required },
   startDate: { required },
   endDate: { required },
   targetGroup: { required },
@@ -122,17 +125,20 @@ if (!isFormValid) {
  return
 }
 
-if (!selectedFile.value) {
+if (!selectedFile.value && !activationId.value) {
   toaster.error("Please upload a brief file");
   return;
 }
 
 loading.value = true;
 //loop through regions and push id to regionsArray
-for (let i = 0; i < form.regions.length; i++) {
+if(!activationId.value){
+  for (let i = 0; i < form.regions.length; i++) {
   regionsArray.value.push(form.regions[i].id);
 }
 form.regions = regionsArray.value;
+}
+
 
 const formData = new FormData();
 formData.append('briefFile', selectedFile.value);
@@ -231,10 +237,10 @@ try {
                         id="activation-area"
                       />
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-3" v-if="!activationId">
                       <label for="region" class="form-label">Region</label>
                       <div class="card flex justify-center">
-                        <MultiSelect v-model="form.regions" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
+                        <MultiSelect v-model="form.region" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
                             :maxSelectedLabels="5" class="w-full md:w-80" />
                     </div>
                       <div
@@ -244,6 +250,18 @@ try {
                       >
                         <div class="text-danger">Region is required</div>
                       </div>
+                    </div>
+                    <div class="col-md-4 mb-3" v-else >
+                      <label for="regionName" class="form-label">Region</label>
+                      <div class="card flex justify-center">
+                         <InputText
+                        v-model="form.regionName"
+                        disabled="disabled"
+                        class="form-control"
+                        id="regionName"
+                      /> 
+                      <!-- <Select v-model="form.region" :options="regions" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" /> -->
+                    </div>
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="input1" class="form-label">Start Date</label>
