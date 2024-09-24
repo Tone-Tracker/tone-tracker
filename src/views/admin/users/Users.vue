@@ -257,7 +257,7 @@ const onSubmit = async () => {
 								<div class="card-body text-center">
 								  <div class="p-4 border radius-15">
 									<img v-if="user.path" :src="`${envPath}${user.path}`" width="110" height="110" class="rounded-circle shadow" alt="">
-									<img v-else src="../../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
+									<img v-else src="../../../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
 									<h5 class="mb-0 mt-5">{{ user.firstName }} {{ user.lastName }} {{ isMyProfile(user) ? '(You)' : '' }}</h5>
 									<p class="mb-3">{{ user.email }}</p>
 									<div class="list-inline contacts-social mt-3 mb-3"> 
