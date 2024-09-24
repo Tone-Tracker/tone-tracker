@@ -36,9 +36,9 @@ export default {
       auth.sendEmailPassword(form.email)
         .then(function (response) {
           toaster.success("Password reset instructions sent to your email");
-          setTimeout(() => {
-            router.push('/');
-          }, 1000)
+          // setTimeout(() => {
+          //   router.push('/');
+          // }, 1000)
         }).catch(function (error) {
 
           if (error.response.data == "Email does not exist.") {

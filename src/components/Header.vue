@@ -69,7 +69,9 @@ const redirectToProfile = () => {
   if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'REGIONAL_MANAGER' || user.role == 'ACTIVATION_MANAGER'){
     router.push({ path: `/staff-profile/${user?.activeUserId}/${user?.id}` });
   }else if(user.role == 'TTG_TALENT'){
-    router.push({ path: `/profile/${user?.activeUserId}/${user?.id}` });
+     return console.log('hhh',user)
+    // path: `/profile/${promoter.userDetails?.id}/${promoter?.id}`
+    router.push({ path: `/profile/${user?.id}/${user?.activeUserId}` });
   }else if(user.role == 'SUPPLIER'){
     router.push({ path: `/supplier-profile/${user?.activeUserId}/${user?.id}` });
   }
