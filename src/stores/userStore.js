@@ -34,6 +34,8 @@ export const useUserStore = defineStore('useUserStore', () => {
         dressSize: form.dressSize,
         bio: '',
         type : form.type,
+        name: form.name,
+        description:'',
         password: generatePassword()
       });
       return axiosInstance.post(`/api/users`,userData,);

@@ -3,7 +3,7 @@ import { onMounted, ref, reactive } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required, email } from '@vuelidate/validators';
+import { required, email, requiredIf } from '@vuelidate/validators';
 import { useUserStore } from '@/stores/userStore';
 import useToaster from '@/composables/useToaster';
 import { useAuth } from '@/stores/auth';
@@ -12,6 +12,7 @@ import router from '@/router';
 import Paginator from 'primevue/paginator';
 import Dialog from 'primevue/dialog';
 import SizeAndHeightForm from '@/components/SizeAndHeightForm.vue';
+import Textarea from 'primevue/textarea';
 
 const userStore = useUserStore();
 const toaster = useToaster();
@@ -176,11 +177,13 @@ const form = reactive({
   activationArea: '',
   location: [],
   role: "",
-  topSize: "",
+  topSize: null,
   pantsSize: "",
-  dressSize: "",
+  dressSize: null,
   height: "",
-  bio: ""
+  bio: "",
+  description: "",
+  name: "",
 });
 
 
@@ -190,7 +193,7 @@ const rules = {
   lastName: { required },
   phone: { required },
   role: { required },
-  // dressSize: { required },
+//   name: { requiredIf: (form) => form.role === "SUPPLIER" },
   // pantsSize: { required },
   // topSize: { required },
   // height: { required },
@@ -291,11 +294,10 @@ const onSubmit = async () => {
 				:modalData="modalData"
 				@closeModal="hideModal()"
 				/> -->
-				<Dialog v-model:visible="visible" position="top" modal header="Add Activation Manager" :style="{ width: '45rem' }">
+				<Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit User' : 'Add User'" :style="{ width: '45rem' }">
 					<div class="row">
 						<div class="col-lg-12">
 						  <div class="border border-3 p-4 rounded">
-						   
 							<div class="row g-3">
 							  <div class="col-md-6">
 								<label for="firstName" class="form-label">First Name</label>
@@ -325,6 +327,7 @@ const onSubmit = async () => {
 								  <div class="text-danger">Cell Number is required</div>
 								</div>
 							  </div>
+							  
 							  <div class="row g-3 mb-3">
 								<div class="col-md-6">
 								  <label for="role" class="form-label">Role</label>
@@ -336,7 +339,22 @@ const onSubmit = async () => {
 									<div class="text-danger">Role is required</div>
 								  </div>
 								</div>
+								<div class="col-md-6" v-if="form.role === 'SUPPLIER'">
+									<label for="name" class="form-label">Name</label>
+									<input v-model="form.name" type="text" class="form-control" id="name" >
+									<!-- <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
+									  <div class="text-danger">Name is required</div>
+									</div> -->
+								  </div>
 							  </div>
+
+
+							  <template v-if="form.role === 'SUPPLIER'">
+								<div class="col-md-12">
+									<label for="description" class="form-label">Description</label>
+									<Textarea v-model="form.description" type="text" class="form-control" id="description" />
+								  </div>
+							  </template>
 							 
 							</div>
 		  

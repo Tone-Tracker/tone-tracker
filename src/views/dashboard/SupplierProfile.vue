@@ -297,9 +297,10 @@ Date: 04/06/2024
                 </div>
                     
                 
-                <div class="card flex justify-center">
+                <div class="card flex justify-center">{{ fileType }}
                     <Drawer v-model:visible="showPreviewSheet" position="right" :header="`Preview Signed ${fileType} File`" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
                         <PDF :src="previewFile" />
+                        <button type="button" class="btn w-100 maz-gradient-btn mb-2 cursor-pointer"  @click="download(fileType?.toLowerCase())">Download</button>
                     </Drawer>
                 </div>
 
@@ -344,11 +345,16 @@ const authStore = useAuth();
 const route = useRoute();
 const toaster = useToaster();
 const userStore = useUserStore();
-const promoterId = ref(route.params.id);
 const userId = ref(route.params.userId);
 const userIdParam = ref(route.params.userId);
 const activeUserId = ref(route.params.id);
 const totalSizePercent = ref(0);
+
+const isMyProfile = () => {
+    // path: '/supplier-profile/:id/:userId',
+    return (activeUserId.value == user.activeUserId && user?.id == userId.value)
+    || (user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_REGIONAL_MANAGER' || user.role == 'TTG_ACTIVATION_MANAGER');
+}
 
 
 const totalSize = ref(0);
@@ -405,6 +411,7 @@ const updatePassword = async () => {
 		}
 
 const getSignedNDADocuments = (type) => {
+    console.log(activeUserId.value, type)
     supplierStore.getSignedDocuments(activeUserId.value, type).then(function (response) {
         ndaFile.value = response.data;
         console.log('NDA File', ndaFile.value)
@@ -551,7 +558,6 @@ const form = ref({
 console.log('Form',form)
 const getUser = () => {
     userStore.getUser(userIdParam.value).then(function (response) {
-        console.log('userInfo',response);
         userInfo.value = response.data;
         Object.assign(form.value, {
             firstName: response.data.firstName,
@@ -569,11 +575,7 @@ const getUser = () => {
 
 
 
-const isMyProfile = () => {
-    console.log(user)
-    console.log(userId.value, user.activeUserId)
-    // return userId.value == user.activeUserId && user?.id == userIdParam.value;
-}
+
 const uploadEvent = (callback) => {
     totalSizePercent.value = totalSize.value / 10;
     callback();
@@ -611,6 +613,7 @@ console.log('previewFile',previewFile.value)
 
 
 const download = (type) => {
+    console.log(type)
      try {
         const link = document.createElement('a');
         if(type == 'nda'){

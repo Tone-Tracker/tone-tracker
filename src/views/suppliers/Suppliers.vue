@@ -83,37 +83,18 @@ const onSubmit = async () => {
   }
 };
 
-// Filter by gender
-const onGenderChange = (event) => {
-  let selectedGender = event.target.value.toLowerCase();
-  
-  if (selectedGender === 'all') {
-    promoters.value = [...originalPromoters.value]; // Reset to original full list
-  } else {
-    promoters.value = originalPromoters.value.filter((promoter) => {
-      return promoter.gender?.toLowerCase() === selectedGender.toLowerCase();
-    });
-  }
-  
-  updatePaginatedPromoters(); // Ensure the list is paginated after filtering
-};
+
 
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
     promoters.value = originalPromoters.value.filter((promoter) => {
-      const experiences = promoter.experiences.map(exp => `${exp.name} ${exp.description} ${exp.duration}`).join(" ");
       return (
-        promoter.height?.toString().includes(searchTerm) ||
-        promoter.topSize?.toLowerCase().includes(searchTerm) ||
-        promoter.pantsSize == searchInput.value ||
-        promoter.dressSize?.toLowerCase().includes(searchTerm) ||
-        promoter.bio?.toLowerCase().includes(searchTerm) ||
-        firstName?.toLowerCase().includes(searchTerm) ||
-        lastName?.toLowerCase().includes(searchTerm) ||
-        email?.toLowerCase().includes(searchTerm) ||
-        phone?.toLowerCase().includes(searchTerm) ||
-        experiences?.toLowerCase().includes(searchTerm)
+       promoter.bio?.toLowerCase().includes(searchTerm) ||
+       promoter.firstName?.toLowerCase().includes(searchTerm) ||
+       promoter.lastName?.toLowerCase().includes(searchTerm) ||
+       promoter.email?.toLowerCase().includes(searchTerm) ||
+       promoter.phone?.toLowerCase().includes(searchTerm)
       );
     });
   } else {
@@ -253,16 +234,6 @@ const genderChange = (event) => {
                   <i class="bx bx-search"></i>
                 </span>
               </div>
-              <div class="row">
-              <div class="col-lg-3 col-md-6">
-                <select @change="onGenderChange" class="form-select form-select-sm bg-maz-light">
-                  <option selected disabled>Filter by sex</option>
-                  <option value="all">All</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
-                </select>
-              </div>
-            </div>
               <div class="ms-auto"></div>
             </div>
             
@@ -282,7 +253,7 @@ const genderChange = (event) => {
                       </a>
                       </div>
                       <div class="d-grid"> 
-                        <router-link :to="{ path: `/supplier-profile/${promoter?.id}/${promoter?.id}` }" class="btn btn-outline-primary radius-15">View Profile</router-link>
+                        <router-link :to="{ path: `/supplier-profile/${promoter?.activeUserId}/${promoter?.id}` }" class="btn btn-outline-primary radius-15">View Profile</router-link>
                       </div>
                     </div>
                   </div>
