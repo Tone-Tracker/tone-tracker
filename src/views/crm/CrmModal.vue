@@ -47,7 +47,7 @@ const rules = {
   surname: { required },
   email: { required , email},
   phone: { required },
-  activation: {  },
+  activation: { required },
   region: { required },
   address: { required }
 };

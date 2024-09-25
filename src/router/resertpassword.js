@@ -1,8 +1,8 @@
 import ResetPassword from '../views/auth/ResetPassword.vue';
 const routes = [
     {
-        path: '/reset/update-password',
-        name: 'reset/update-password',
+        path: '/reset-password',
+        name: 'reset-password',
         component: ResetPassword
     }
 ]

@@ -68,7 +68,8 @@ export const useUserStore = defineStore('useUserStore', () => {
       return axiosInstance.put(`/api/users/${userId}`,data);
     }
     const updatePassword = (userId, password) => {
-      return axiosInstance.post(`/api/users/password/update?userId=${userId}&password=${password}`);
+      return axiosInstance.post(`/api/users/reset/update-password?userId=${userId}&password=${password}`);
+      
     }
       
     return { updateProfile,submitUser,createStaffMember,getUsers,updateUser,deleteUser,getUser,getUserByRole,updatePassword }
