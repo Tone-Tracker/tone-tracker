@@ -52,7 +52,7 @@ Date: 04/06/2024
                                             </Image>
                                             </div>
                                         <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
-                                        <div v-if="isMyProfile()" 
+                                        <div v-if="canUpdate()" 
                                             class="edit-icon" @click="showProfilePictuteModal = true">
                                             <i class='bx bx-edit-alt fs-2'></i>
                                         </div>
@@ -87,7 +87,7 @@ Date: 04/06/2024
     </div>
 </div>
                                     <div class="mb-4">
-                                        <button v-if="isMyProfile()"
+                                        <button v-if="canUpdate()"
                                             class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center"
                                             data-bs-toggle="modal" data-bs-target="#addModal">
                                             <span>
@@ -115,7 +115,7 @@ Date: 04/06/2024
                                                             <div class="d-flex flex-wrap justify-content-between align-items-center flex-grow-1 gap-4">
                                                                 <div class="d-flex gap-2">
                                                                     <Button @click="chooseCallback()" icon="bx bx-images" class="btn btn-outline-secondary text-white rounded"></Button>
-                                                                    <Button @click="clearCallback()" icon="bx bx-x" class="btn btn-outline-danger rounded" :disabled="!files || files.length === 0"></Button>
+                                                                    <!-- <Button @click="clearCallback()" icon="bx bx-x" class="btn btn-outline-danger rounded" :disabled="!files || files.length === 0"></Button> -->
                                                                 </div>
                                                             </div>
                                                         </template>
@@ -282,7 +282,7 @@ Date: 04/06/2024
                         
                         </div>
                         <div class="col-xl-4 col-lg-6 col-sm-12">
-                            <div class="card">
+                            <div class="">
                                 <div class="card-body p-4">
                                         <div class="row mb-3">
                                             <label for="first-name" class="col-sm-3 col-form-label">First Name</label>
@@ -392,7 +392,7 @@ Date: 04/06/2024
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row" v-if="isMyProfile()">
+                                        <div class="row" v-if="canUpdate()">
                                             <label class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
                                                 <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -408,7 +408,7 @@ Date: 04/06/2024
                             </div>
                         </div>
                         <div class="col-xl-4 col-lg-12 col-sm-12">
-                        <div class="card mb-3">
+                        <div class=" mb-3">
                             <div class="card-body p-4">
                                 <h4 class="mb-2 text-center mt-2">Experience</h4>
                                 <div class="row mb-3">
@@ -421,7 +421,7 @@ Date: 04/06/2024
                                     </div>
                                     <div class="text-center text-danger" v-else>No experience added.</div>
                                 </div>
-                                <div class="row" v-if="isMyProfile()">
+                                <div class="row" v-if="canUpdate()">
                                     <div class="col-12 text-end">
                                         <button @click="showExperienceModal=true" type="button" class="btn maz-gradient-btn">Add Experience</button>
                                     </div>
@@ -429,7 +429,7 @@ Date: 04/06/2024
                                                 </div>
                                             </div>
 
-                                            <div class="card maz-gradient-border-top mt-4" v-if="isMyProfile">
+                                            <div class="card maz-gradient-border-top mt-4" v-if="canUpdate">
                                                 <div class="card-body p-4">
                                                     <h4 class="mb-2 text-center mt-2">Change Password</h4>
                                                         <div class="row mb-3">
@@ -462,7 +462,7 @@ Date: 04/06/2024
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row" v-if="isMyProfile()">
+                                                        <div class="row" v-if="canUpdate()">
                                                             <label class="col-sm-3 col-form-label"></label>
                                                             <div class="col-sm-9">
                                                                 <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -515,7 +515,7 @@ Date: 04/06/2024
                   </div>
           
                 </div> 
-            <div class="flex justify-end gap-2" v-if="isMyProfile()">
+            <div class="flex justify-end gap-2" v-if="canUpdate()">
                 <button type="submit" class="btn btn maz-gradient-btn mt-2 w-100">Save</button>
             </div>
             </form>
@@ -633,9 +633,9 @@ const userStore = useUserStore();
 const files = ref([]);
 const promoterId = ref(route.params.id);
 const userIdParam = ref(route.params.userId);
+const uploaderId = ref(route.query.uploader);
 const taskId = ref(route.query.taskId);
 const totalSizePercent = ref(0);
-
 
 const $primevue = usePrimeVue();
 const totalSize = ref(0);
@@ -688,7 +688,7 @@ const updatePassword = async () => {
 }
 
 const experienceForm = reactive({
-    promoter: promoterId.value,
+    promoter: userIdParam.value,
     name: null,
 	duration: null,
 	description: null,
@@ -728,7 +728,7 @@ console.log('myBio',promoterData.value)
 
 const updateProfile = () => {
     showProfileLoading.value = true;
-    userStore.updateProfile(user.id,profileForm.value).then(function (response) {
+    userStore.updateProfile(isMyProfile() ? user.id : promoterId.value,profileForm.value).then(function (response) {
         getUser();
         getPromoterDetails();
         showProfileLoading.value = false;
@@ -842,6 +842,7 @@ async function getResult() {
       })
 
       console.log({ base64, blob, file })
+      
       result.dataURL = base64
       result.blobURL = URL.createObjectURL(blob)
       //isShowModal.value = false
@@ -856,11 +857,12 @@ async function getResult() {
         console.log(formData)
         // return
 
-        promoterStore.uploadSingleImage(user.id,formData, config).then(function (response) {
+        promoterStore.uploadSingleImage(isMyProfile.value ? user.id : promoterId.value,formData, config).then(function (response) {
             console.log(response);
             getUser();
             toaster.success("Profile picture updated successfully");
-            showLoading.value = false
+            showLoading.value = false;
+            showProfilePictuteModal.value = false
         }).catch(function (error) {
             toaster.error("Error updating profile picture");
             console.log(error);
@@ -980,7 +982,7 @@ const getListOtherPromoters = () => {
 }
 
 
-const isMyProfile = () => {
+const canUpdate = () => {
     // path: `/profile/${promoter.userDetails?.id}/${promoter?.id}`
     // path: '/profile/:id/:userId',
     return (userIdParam.value == user.activeUserId  && user?.id == promoterId.value)
@@ -1028,6 +1030,10 @@ const getFullName = () => {
     return `${userInfo.value.firstName} ${userInfo.value.lastName}`
 }
 
+const isMyProfile = () => {
+    return (userIdParam.value == user.activeUserId  && user?.id == promoterId.value)
+}
+
 let showModal = ref(true);
 const onSubmit = () => {
     if(!files.value.length){
@@ -1044,8 +1050,8 @@ const onSubmit = () => {
 	  formData.append('imageFiles', files.value[i]);
   }
         formData.append('entity', "promoters");
-        formData.append('entityId', user.id);
-        formData.append('uploaderId', user.activeUserId);
+        formData.append('entityId', isMyProfile() ? user.id : userIdParam.value);//if its admin get promoter id from the url
+        formData.append('uploaderId', isMyProfile() ? user.id : uploaderId.value);//if its admin get uploader id from the url
     const config = {
     useMultipartFormData: true // Add this flag to the request config
 };
@@ -1074,7 +1080,7 @@ const getImages = async () => {
 	images.value = response.data;
 	console.log('images',images.value)
   }).catch(error => {
-	toaster.error("Error fetching task");
+	toaster.error("Error fetching images");
 	console.log(error);
   }).finally(() => {
 	//

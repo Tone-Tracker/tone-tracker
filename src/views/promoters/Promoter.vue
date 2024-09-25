@@ -12,11 +12,16 @@ import { usePrimeVue } from 'primevue/config';
 import { useSizes } from '@/stores/sizes';
 import Select from 'primevue/select';
 import Paginator from 'primevue/paginator';
+import { useAuth } from '@/stores/auth';
 
 const promoterStore = usePromoter();
 const toaster = useToaster();
 const sizeStore = useSizes();
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+
+const auth = useAuth();
+
+const uploader = JSON.parse(auth.user);
 
 let sizes = ref([]);
 let promoters = ref([]);
@@ -316,7 +321,11 @@ const genderChange = (event) => {
                       </a>
                       </div>
                       <div class="d-grid"> 
-                        <router-link :to="{ path: `/profile/${promoter.userDetails?.id}/${promoter?.id}` }" class="btn btn-outline-primary radius-15">View Profile</router-link>
+                        <router-link :to="{ 
+                          path: `/profile/${promoter.userDetails?.id}/${promoter?.id}`, 
+                          query: { uploader: uploader?.id } 
+                        }"
+                         class="btn btn-outline-primary radius-15">View Profile</router-link>
                       </div>
                     </div>
                   </div>

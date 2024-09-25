@@ -13,6 +13,7 @@ import Select from 'primevue/select';
 import Paginator from 'primevue/paginator';
 import { useSupplier } from '@/stores/supplier';
 import { useUserStore } from '@/stores/userStore';
+import axios from 'axios';
 
 const supplierStore = useSupplier();
 const userStore = useUserStore();
@@ -35,11 +36,12 @@ const totalRecords = ref(0); // Total number of records
 const form = reactive({
   firstName: null,
   lastName: null,
+  name: null,
   phone: null,
   email: null,
   user: null,
-  bio: null,
-  gender: null
+  description: null,
+  id: null
 });
 
 onMounted(() => {
@@ -53,8 +55,7 @@ const rules = {
   email: { required, email },
   phone: { required },
   user: { required },
-  gender: { required },
-  bio: { required },
+  // name: { required },
 };
 const v$ = useVuelidate(rules, form);
 
@@ -72,7 +73,8 @@ const onSubmit = async () => {
       console.log(error);
     });
   } else {
-    userStore.submitUser(form).then(function (response) {
+
+    axios.put(import.meta.env.VITE_SERVER_URL, form).then(function (response) {
       toaster.success("Supplier created successfully");
       visible.value = false;
       getSuppliers();
@@ -80,6 +82,14 @@ const onSubmit = async () => {
       toaster.error("Error creating supplier");
       console.log(error);
     });
+    // userStore.submitUser(form).then(function (response) {
+    //   toaster.success("Supplier created successfully");
+    //   visible.value = false;
+    //   getSuppliers();
+    // }).catch(function (error) {
+    //   toaster.error("Error creating supplier");
+    //   console.log(error);
+    // });
   }
 };
 
@@ -173,16 +183,17 @@ const openPosition = (pos, promoter) => {
       email : promoter.email,
       bio: promoter.bio,
       role: promoter.role,
-      gender: promoter.gender
+      name: promoter.name,
+      description: promoter.description,
     });
-    myGender.value = form.gender;
+    
   } else {
     isEdit.value = false;
     Object.assign(form, {
       user: null,
       user_id: null,
-      bio: null,
-      gender: null
+      name: null,
+      description: null,
     });
   }
   position.value = pos;
@@ -274,7 +285,7 @@ const genderChange = (event) => {
       </div>
     </div>
 
-    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter'" :style="{ width: '50rem' }">
+    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Supplier' : 'Add Supplier'" :style="{ width: '50rem' }">
      
       <div class="row g-3">
         <div class="col-md-6">
@@ -305,19 +316,20 @@ const genderChange = (event) => {
             <div class="text-danger">Cell Number is required</div>
           </div>
         </div>
-        <div class="card flex justify-center">
-          <label for="input1" class="form-label">Gender </label>
-          <Select v-model="myGender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select gender" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
-          <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
-            <div class="text-danger">Gender is required</div>
-          </div>
+        <div class="col-md-12">
+          <label for="name" class="form-label">Name</label>
+          <input v-model="form.name" type="text" class="form-control" id="name" >
+          <!-- <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
+            <div class="text-danger">Name is required</div>
+          </div> -->
         </div>
-        <div class="col-md-3">
-          <label for="bio" class="form-label">Bio</label>
-          <Textarea v-model="form.bio" autoResize rows="5" cols="91" />
-          <div class="input-errors" v-for="error of v$.bio.$errors" :key="error.$uid">
-            <div class="text-danger">Bio is required</div>
-          </div>
+     
+        <div class="col-md-12">
+          <label for="name" class="form-label">Description</label>
+          <Textarea v-model="form.description" autoResize rows="5" cols="91" />
+          <!-- <div class="input-errors" v-for="error of v$.description.$errors" :key="error.$uid">
+            <div class="text-danger">Description is required</div>
+          </div> -->
         </div>
       </div>
 

@@ -124,7 +124,9 @@ const source = ref('Hello')
 const { text, copy, copied, isSupported } = useClipboard({ source });
 
 const form = reactive({
-  selectedActivation: ''
+  selectedActivation: '',
+  entity: "Activation",
+  entityId: null,
 });
 
 
@@ -134,6 +136,7 @@ const v$ = useVuelidate(rules, form);
 
 const onActivationChange = (e) => {
   form.selectedActivation = e.value;
+  form.entityId = e.value?.id;
 }
 
 const onFileChange = (uploadedFile) => {
@@ -155,6 +158,10 @@ const onfileDropped = (dropedFile) => {
       briefFile.value = file;
 };
 
+
+const config = {
+    useMultipartFormData: true // Add this flag to the request config
+};
 const submitBriefFile = async () => {
   const isFormValid = await v$.value.$validate();
 	if (!isFormValid) {
@@ -164,9 +171,12 @@ const submitBriefFile = async () => {
   const formData = new FormData();
   loading.value = true;
   formData.append('briefFile', briefFile.value);
-  formData.append('activation', JSON.stringify(form.selectedActivation.id));
-  console.log('Formdata',form.selectedActivation);return;
-  briefStore.submit(formData).then(() => {
+  // formData.append('BriefDTO', briefFile.value);
+  formData.append('entity', form.entity);
+  formData.append('entityId', form.entityId);
+  // formData.append('activation', JSON.stringify(form.selectedActivation.id));
+  // console.log('Formdata',form);return;
+  briefStore.submit(formData, config).then(() => {
     getBriefs();
     showAddModal.value = false;
     loading.value = false;

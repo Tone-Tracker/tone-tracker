@@ -37,8 +37,8 @@ Date: 04/06/2024
                                             </Image>
                                             </div>
                                         <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
-                                        <div v-if="isMyProfile()" @click="showModal = true"
-                                            class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
+                                        <div v-if="canEdit()" @click="showModal = true"
+                                            class="edit-icon" >
                                             <i class='bx bx-edit-alt fs-2'></i>
                                         </div>
                                     </div>
@@ -48,77 +48,6 @@ Date: 04/06/2024
                                     </div>
 
                                 
-                                    <!-- Add Profile picture modal -->
-                                    <div v-if="showModal" class="modal fade" id="addProfilePicModal" tabindex="-1" aria-labelledby="addModalLabel"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="addModalLabel">Update Profile Picture</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                                    
-                                            </div>
-                                            <div class="modal-body">
-                                                <!-- <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
-                                            <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label> -->
-                                            <FileUploadForCropper
-                                            :showFilePreview="showFilePreview" 
-                                                accept="image/*" 
-                                                fileType="image" 
-                                                @fileUploaded="onProfilePicSelect"
-                                            />
-                                            
-                                            <VuePictureCropper
-                                            :boxStyle="{
-                                                width: '100%',
-                                                height: '100%',
-                                                backgroundColor: '#f8f8f8',
-                                                margin: 'auto',
-                                            }"
-                                            :img="pic"
-                                            :options="{
-                                                viewMode: 1,
-                                                dragMode: 'move',
-                                                aspectRatio: 1,
-                                                cropBoxResizable: false,
-                                            }"
-                                            :presetMode="{
-                                                mode: 'fixedSize',
-                                                width: 300,
-                                                height: 400,
-                                            }"
-                                            @ready="ready"
-                                            class="mt-3"
-                                            />
-                                            
-                                            <div class="tools" v-if="showTools">
-                                                <button class="btn" data-bs-dismiss="modal">
-                                                Cancel
-                                                </button>
-                                                <!-- <button class="btn" @click="clear">
-                                                Clear
-                                                </button> -->
-                                                <button class="btn" @click="reset">
-                                                Reset
-                                                </button>
-                                            </div>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <div class="col-12 mt-4">
-                                                    <div class="d-grid">
-                                                        <button @click="getResult" class="btn maz-gradient-btn"
-                                                            type="button">
-                                                            Save
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 </div>
                             
 
@@ -128,7 +57,7 @@ Date: 04/06/2024
                         
                         </div>
                         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                            <div class="card">
+                            <div class="">
                                 <div class="card-body p-4">
                                         <div class="row mb-3">
                                             <label for="first-name" class="col-sm-3 col-form-label">First Name</label>
@@ -181,7 +110,7 @@ Date: 04/06/2024
                                                 <textarea class="form-control" id="description" rows="3" v-model="form.description" placeholder="Business Description"></textarea>
                                             </div>
                                         </div>
-                                        <div class="row" v-if="isMyProfile()">
+                                        <div class="row" v-if="canEdit()">
                                             <label class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
                                                 <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -208,7 +137,7 @@ Date: 04/06/2024
                                     <div class="file-info">
                                     <!-- <p class="m-0 text-white">Brief.pdf</p> -->
                                     </div>
-                                    <div class="ms-auto" v-if="isMyProfile() || isAdmin()">
+                                    <div class="ms-auto" v-if="canEdit() || isAdmin()">
                                         <i @click="download('nda')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download NDA'" ></i>
                                     
                                     </div>
@@ -227,7 +156,7 @@ Date: 04/06/2024
                                     <div class="file-info">
                                     <!-- <p class="m-0 text-white">Brief.pdf</p> -->
                                     </div>
-                                    <div class="ms-auto" v-if="isMyProfile() || isAdmin()">
+                                    <div class="ms-auto" v-if="canEdit() || isAdmin()">
                                         <i @click="download('sla')" class='bx bxs-download maz-gradient-txt fs-2 cursor-pointer' v-tooltip.bottom="'Download SLA'" ></i>
                                     
                                     </div>
@@ -239,7 +168,7 @@ Date: 04/06/2024
 
 
                         
-                            <div class="card mt-3 maz-gradient-border-top" v-if="isMyProfile()">
+                            <div class="card mt-3 maz-gradient-border-top" v-if="canEdit()">
                                 <div class="card-body p-4">
                                     <h4 class="mb-2 ml-2 mt-2">Change Password</h4>
                                         <div class="row mb-3">
@@ -272,7 +201,7 @@ Date: 04/06/2024
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row" v-if="isMyProfile">
+                                        <div class="row" v-if="canEdit">
                                             <label class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
                                                 <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
@@ -297,7 +226,7 @@ Date: 04/06/2024
                 </div>
                     
                 
-                <div class="card flex justify-center">{{ fileType }}
+                <div class="card flex justify-center">
                     <Drawer v-model:visible="showPreviewSheet" position="right" :header="`Preview Signed ${fileType} File`" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
                         <PDF :src="previewFile" />
                         <button type="button" class="btn w-100 maz-gradient-btn mb-2 cursor-pointer"  @click="download(fileType?.toLowerCase())">Download</button>
@@ -306,6 +235,64 @@ Date: 04/06/2024
 
             </div>
         </div>
+        <Dialog v-model:visible="showModal" position="top" modal header="Upload Your Profile Picture" :style="{ width: '30rem' }">
+            <div class="modal-body">
+                <!-- <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
+            <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label> -->
+            <FileUploadForCropper
+            :showFilePreview="showFilePreview" 
+                accept="image/*" 
+                fileType="image" 
+                @fileUploaded="onProfilePicSelect"
+            />
+            
+            <VuePictureCropper v-if="pic"
+            :boxStyle="{
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#f8f8f8',
+                margin: 'auto',
+            }"
+            :img="pic"
+            :options="{
+                viewMode: 1,
+                dragMode: 'move',
+                aspectRatio: 1,
+                cropBoxResizable: false,
+            }"
+            :presetMode="{
+                mode: 'fixedSize',
+                width: 300,
+                height: 400,
+            }"
+            @ready="ready"
+            class="mt-3"
+            />
+            
+            <div class="tools" v-if="showTools">
+                <button class="btn" data-bs-dismiss="modal">
+                Cancel
+                </button>
+                <!-- <button class="btn" @click="clear">
+                Clear
+                </button> -->
+                <button class="btn" @click="reset">
+                Reset
+                </button>
+            </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="col-12 mt-4">
+                    <div class="d-grid">
+                        <button @click="getResult" class="btn maz-gradient-btn"
+                            type="button">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Dialog>
     </Layout>
 </template>
 <script setup>
@@ -326,6 +313,7 @@ import { required, sameAs } from "@vuelidate/validators";
 import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
 import { useNavStore } from '@/stores/ToggleNav';
 import BreadCrumb from '../../components/BreadCrumb.vue';
+import Dialog from 'primevue/dialog';
 
 
 
@@ -349,11 +337,17 @@ const userId = ref(route.params.userId);
 const userIdParam = ref(route.params.userId);
 const activeUserId = ref(route.params.id);
 const totalSizePercent = ref(0);
+console.log('activeUserId',activeUserId.value,'userId',userId.value)
 
-const isMyProfile = () => {
+const canEdit = () => {
     // path: '/supplier-profile/:id/:userId',
     return (activeUserId.value == user.activeUserId && user?.id == userId.value)
     || (user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_REGIONAL_MANAGER' || user.role == 'TTG_ACTIVATION_MANAGER');
+}
+
+
+const isMyProfile = () => {
+    return (activeUserId.value == user.activeUserId && user?.id == userId.value);
 }
 
 
@@ -431,7 +425,7 @@ const getSignedSLADocuments = (type) => {
 
 const updateProfile = () => {
     showLoading.value = true;
-    userStore.updateProfile(user.id,form.value).then(function (response) {
+    userStore.updateProfile(isMyProfile() ? user.id : userId.value,form.value).then(function (response) {
         getUser();
         showLoading.value = false;
         toaster.success('Profile updated successfully')
@@ -489,7 +483,7 @@ const onProfilePicSelect = (event) => {
 };
 
 
-const showModal = ref(true);
+const showModal = ref(false);
 
 async function getResult() {
       if (!cropper) return
@@ -509,10 +503,11 @@ async function getResult() {
         const config = {
         useMultipartFormData: true // Add this flag to the request config
         };
-        promoterStore.uploadSingleImage(user.id,formData, config).then(function (response) {
+        promoterStore.uploadSingleImage(isMyProfile() ? user.id : userId.value,formData, config).then(function (response) {
             toaster.success('Profile picture updated successfully');
+            showTools.value = false;
+            pic.value = '';
             showModal.value = false;
-            document.querySelector('.modal-backdrop').remove();
             getUser();
         }).catch(function (error) {
             toaster.error('Ooops! Something went wrong');
@@ -682,6 +677,10 @@ div.desc {
 .dark-theme .card {
     background-color: transparent !important;
     padding: 0px !important;
+}
+
+.card {
+    box-shadow: none !important;
 }
 
 /* Add some basic styling for the modal */

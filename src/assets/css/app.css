@@ -14,6 +14,10 @@ File: app.css
 	scrollbar-width: thin;
 }
 
+.p-textarea {
+    background: #12181a !important
+}
+
 .no-border-input {
 	border: none;
 	color: #000;
