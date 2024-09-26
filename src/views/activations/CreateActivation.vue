@@ -71,7 +71,7 @@ const getActivationById = async () => {
   activation.getActivationById(activationId.value).then(function (response) {
     console.log(response.data);
     Object.assign(form, response.data);
-    // form.regions = response.data.region;
+    form.regions = response.data.region;
     form.region = response.data.region;
   });
 };
@@ -80,7 +80,7 @@ const rules = {
   name: { required },
   budget: { required },
   campaign: { required },
-  // regions: { required },
+  regions: { required },
   startDate: { required },
   endDate: { required },
   targetGroup: { required },
@@ -179,10 +179,10 @@ try {
           icon="bx bxs-user-badge"
         />
         <div class="d-flex">
-          <h5 class="mx-2">Campaign: {{ campaignName }}</h5>
-          <h5 v-if="activationManager" class="mx-2">
+          <h5 class="mx-2" v-if="campaignName">Campaign: {{ campaignName }}</h5>
+          <h5 v-if="activationManager !== 'null'" class="mx-2">
             Activation Manager:
-            <span class="maz-gradient-txt">{{ activationManager }}</span>
+            <span class="maz-gradient-txt">{{ activationManager ? activationManager : '' }}</span>
           </h5>
         </div>
         <div class="mt-3 card w-80 m-auto">
@@ -240,7 +240,7 @@ try {
                     <div class="col-md-4 mb-3" v-if="!activationId">
                       <label for="region" class="form-label">Region</label>
                       <div class="card flex justify-center">
-                        <MultiSelect v-model="form.region" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
+                        <MultiSelect v-model="form.regions" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
                             :maxSelectedLabels="5" class="w-full md:w-80" />
                     </div>
                       <div
