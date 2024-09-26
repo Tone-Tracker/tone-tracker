@@ -126,7 +126,7 @@ export default {
           toaster.success("Password reset successfully");
           setTimeout(() => {
             router.push('/');
-          }, 1000);
+          }, 2000);
         })
         .catch(function (error) {
           if (error.response.data == "Token has expired") {
