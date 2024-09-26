@@ -123,7 +123,7 @@ export default {
       auth.resetPassword(data)
         .then(function (response) {
           console.log(response);
-          toaster.success("Password reset successfully");
+          toaster.success("Password updated successfully");
           setTimeout(() => {
             router.push('/');
           }, 2000);

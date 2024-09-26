@@ -171,9 +171,9 @@ const submitBriefFile = async () => {
   const formData = new FormData();
   loading.value = true;
   formData.append('briefFile', briefFile.value);
-  // formData.append('BriefDTO', briefFile.value);
   formData.append('entity', form.entity);
   formData.append('entityId', form.entityId);
+  formData.append('entityName', 'Activation');
   // formData.append('activation', JSON.stringify(form.selectedActivation.id));
   // console.log('Formdata',form);return;
   briefStore.submit(formData, config).then(() => {
