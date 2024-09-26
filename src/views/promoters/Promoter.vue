@@ -213,7 +213,7 @@ const openPosition = (pos, promoter) => {
   console.log('promoter', promoter.userDetails?.firstName)
   if (promoter) {
     isEdit.value = true;
-    promoterId.value = promoter.id;
+    promoterId.value = promoter.userDetails?.id;
     form.user = promoter.userDetails?.id;
     user_id.value = promoter.userDetails?.id;
       

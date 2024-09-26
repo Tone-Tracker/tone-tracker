@@ -181,6 +181,7 @@ const openPosition = (pos, promoter) => {
       firstName : promoter.firstName,
       lastName : promoter.lastName,
       email : promoter.email,
+      phone: promoter.phone,
       bio: promoter.bio,
       role: promoter.role,
       name: promoter.name,

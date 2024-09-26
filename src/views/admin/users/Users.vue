@@ -212,6 +212,10 @@ const onSubmit = async () => {
       .then(function (response) {
         console.log(response);
         showLoading.value = false;
+		Object.assign(form, {});
+		v$.value.$reset();
+		v$.value.$errors = [];
+		
         visible.value = false;
         toaster.success("User updated successfully");
       })
