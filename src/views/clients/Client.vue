@@ -210,6 +210,8 @@ const items = (client) => [
         label: 'View Campaign',
         icon: 'bx bx-building-house fs-4 maz-gradient-txt',
         command: () => {
+          localStorage.removeItem('clientColor');
+          localStorage.setItem('clientColor', JSON.stringify(client));
           redirectToCampaign(client)
         }
     },

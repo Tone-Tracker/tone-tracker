@@ -380,21 +380,31 @@ const onUserChange = (event) => {
 			return user.role == 'TTG_ACTIVATION_MANAGER';
 		}
 
+		const clientColor = JSON.parse(localStorage.getItem('clientColor'));
+
+		const clientColorStyles = {
+			color: `#${clientColor?.color} !important`, //clientColor?.color,
+			background: `#${clientColor?.color} !important`, //clientColor?.color
+			borderColor: `#${clientColor?.color} !important`,
+		}
+
 </script>
 <template>
     <Layout>
         <div class="page-wrapper">
 			<div class="page-content">
-                <BreadCrumb title="Activations" icon="bx bxs-user-badge"/>
+                <BreadCrumb title="Activations" icon="bx bxs-user-badge" :style="{ color: clientColorStyles?.color }" />
 				<div class="card">
 					<div class="card-body">
 						<div class="d-lg-flex align-items-center mb-4 gap-3">
 							<div class="position-relative">
-								<input v-model="searchInput" @input="onInput"
+								<input v-model="searchInput" @input="onInput" 
+								:style="{ borderColor: clientColorStyles?.borderColor }"
 								type="text" class="form-control ps-5" placeholder="Search"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
 							</div>
 						  <div v-if="canCreateActivation()" class="ms-auto">
-							<router-link :to="`/create-activation?campaign=${campaignId}&name=${campaignDetails?.name}`"  class="btn maz-gradient-btn mt-2 mt-lg-0">
+							<router-link :to="`/create-activation?campaign=${campaignId}&name=${campaignDetails?.name}`"
+							:style="{ background: clientColorStyles?.background }"  class="btn maz-gradient-btn mt-2 mt-lg-0">
 							<i class="bx bxs-plus-square"></i>Create Activation</router-link>
 						</div>
 						</div>
@@ -460,19 +470,19 @@ const onUserChange = (event) => {
 			</div>
 		</div>
 
-		<Dialog v-model:visible="visible" position="top" modal header="Add Activation Manager" :style="{ width: '30rem' }">
+		<Dialog v-model:visible="visible" position="top" modal header="Add Activation Manager" :style="{ width: '30rem', color: clientColorStyles?.color }">
              
               <form class="row g-3" @submit.prevent="addActivationManager">
 				<div class="col-md-12">
 					<div class="card my-card flex justify-center">
 						<label for="input1" class="form-label">Activation Name</label>
-						   <InputText type="text" v-model="activationName" :disabled="true" />
+						   <InputText type="text" v-model="activationName" :disabled="true" fluid :style="{ borderColor: clientColorStyles?.borderColor }" />
 				</div>                        
 				</div>
 				<div class="col-md-12">
 					<div class="card my-card flex justify-center">
 						<label for="input1" class="form-label">Select Staff</label>
-						<AutoComplete v-model="staffValue" forceSelection dropdown :suggestions="mappedUsers" 
+						<AutoComplete v-model="staffValue" forceSelection dropdown :suggestions="mappedUsers" :style="{ borderColor: clientColorStyles?.borderColor }" 
                               @item-select="onUserChange($event)" @complete="search" field="name" placeholder="Select Staff Member" />
 						   <div class="input-errors" v-for="error of v$.staff.$errors" :key="error.$uid">
 						   <div class="text-danger">User is required</div>
@@ -480,7 +490,7 @@ const onUserChange = (event) => {
 				</div>     
 				</div>
 				<div class="modal-footer">
-					<button :disabled="showLoading" type="submit" class="btn maz-gradient-btn w-100">Submit</button>
+					<button :style="{ background: clientColorStyles?.background }" :disabled="showLoading" type="submit" class="btn maz-gradient-btn w-100">Submit</button>
 				</div>
 			
 				

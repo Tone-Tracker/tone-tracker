@@ -51,6 +51,17 @@ onMounted(() => {
 });
 
 
+
+//get client color from local storage
+const clientColor = JSON.parse(localStorage.getItem('clientColor'));
+
+const clientColorStyles = {
+    color: `#${clientColor?.color} !important`, //clientColor?.color,
+    background: `#${clientColor?.color} !important`, //clientColor?.color
+    borderColor: `#${clientColor?.color} !important`,
+}
+
+
 const rules = { 
 	name: { required },
 	client: { required }
@@ -209,13 +220,14 @@ const onInput = () => {
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <BreadCrumb title="Campaigns" icon="" />
+                <BreadCrumb title="Campaigns" icon="" :style="{ color: clientColorStyles?.color }" />
                 <div class="card">
              <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
               
 
                 <div class="position-relative">
                   <input
+                    :style="{ borderColor: clientColorStyles?.borderColor }"
                     v-model="searchInput"
                     @input="onInput"
                     type="text"
@@ -247,7 +259,8 @@ const onInput = () => {
                                                 <tbody>
                                                     <tr v-if="campaigns.length > 0" v-for="(campaign, index) in campaigns" :key="campaign.id">
                                                         <td>
-                                                            <Avatar v-if="campaign.path" :image="envPath + campaign.path" class="mr-2" size="large" shape="circle" />
+                                                            <Avatar v-if="campaign.path" :image="envPath + campaign.path" class="mr-2" size="large" shape="circle" 
+                                                             />
                                                             <Avatar v-else :label="campaign.name[0]?.toUpperCase()" class="mr-2" size="large" shape="circle" />
                                                         </td>
                                                         <td v-if="!campaign.isEditing" class="pt-4">{{ campaign.name }}</td>
@@ -290,7 +303,7 @@ const onInput = () => {
                                             <form class="">
                                                 <div class="col-md-12">
                                                     <label for="input1" class="form-label">Campaign Name</label>
-                                                    <input v-model="form.name" type="text" class="form-control" id="input1" />
+                                                    <input v-model="form.name" type="text" class="form-control" id="input1" :style="{ borderColor: clientColorStyles?.borderColor }" />
                                                     <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
                                                         <div class="text-danger">Campaign name is required</div>
                                                     </div>
@@ -316,7 +329,7 @@ const onInput = () => {
                                                 </div>
                                             </form>
                                             <div class="ms-auto">
-                                                <button @click="createCampaign" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
+                                                <button :style="{ background: clientColorStyles?.background }" @click="createCampaign" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
                                                     <div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
                                                     </div>
                                                     {{ loading ?  '' : 'Create Campaign' }}
@@ -351,4 +364,5 @@ const onInput = () => {
 .text-danger {
     color: red;
 }
+
 </style>

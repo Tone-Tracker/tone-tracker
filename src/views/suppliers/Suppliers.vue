@@ -185,6 +185,7 @@ const openPosition = (pos, promoter) => {
       role: promoter.role,
       name: promoter.name,
       description: promoter.description,
+      id: promoter.id
     });
     
   } else {

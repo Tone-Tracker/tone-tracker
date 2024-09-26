@@ -464,19 +464,27 @@ const submitThirdParty = () => {
        showLoading.value = false;
    })
 }
+
+const clientColor = JSON.parse(localStorage.getItem('clientColor'));
+
+		const clientColorStyles = {
+			color: `#${clientColor?.color} !important`, //clientColor?.color,
+			background: `#${clientColor?.color} !important`, //clientColor?.color
+			borderColor: `#${clientColor?.color} !important`,
+		}
 </script>
 <template>
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <BreadCrumb title="Tasks" icon="bx bx-task" />
+                <BreadCrumb title="Tasks" icon="bx bx-task" :style="{ color: clientColorStyles?.color }" />
                 <h4 class="mx-2">{{activationName}}</h4>
                 <div class="card">
                     <div class="card-body">
                             <div class="table-container-colour pt-2 p-5">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h5>Main tasks to set up</h5>
-                                    <button type="button" class="btn maz-gradient-btn" @click="openModal('top')" >Add New Task</button>
+                                    <button :style="{ background: clientColorStyles?.background }" type="button" class="btn maz-gradient-btn" @click="openModal('top')" >Add New Task</button>
                                 </div>
                                 <table class="table table-dark table-bordered">
                                     <thead>
@@ -526,7 +534,7 @@ const submitThirdParty = () => {
                     </div>
                 </div>
             </div>
-            <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem' }">
+            <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Task' : 'Add Task'" :style="{ width: '50rem', color: clientColorStyles?.color }">
                 
                 <form @submit.prevent="onSubmit" class="row g-3">
                     <div class="col-md-6">
@@ -650,7 +658,7 @@ const submitThirdParty = () => {
                     </template>
                     <div class="modal-footer" style="margin-top: 2rem">
                        
-                        <button type="submit" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center">
+                        <button :style="{ background: clientColorStyles?.background }" type="submit" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center">
                             <div
                             v-if="showLoading"
                             class="spinner-border text-white"
@@ -669,12 +677,12 @@ const submitThirdParty = () => {
                 </Drawer>
             </div>
 
-            <Dialog v-model:visible="showThirdPartyModal" position="top" modal header="Add Third Party" :style="{ width: '30rem' }">
+            <Dialog v-model:visible="showThirdPartyModal" position="top" modal header="Add Third Party" :style="{ width: '30rem', color: clientColorStyles?.color }">
                 <div class="card flex justify-center">
                     <MultiSelect v-model="selectedThirdPaties" display="chip" :options="thirdPartySuppliers" optionLabel="name" filter placeholder="Select Third Party"
                         :maxSelectedLabels="3" class="w-full md:w-80" />
                         <div class="d-grid">
-                            <button @click="submitThirdParty" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3" type="button" 
+                            <button :style="{ background: clientColorStyles?.background }" @click="submitThirdParty" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3" type="button" 
                                :disabled="!selectedThirdPaties"> 
                                 <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 {{ showLoading ? '' : 'Submit' }}
