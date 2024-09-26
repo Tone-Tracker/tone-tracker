@@ -38,7 +38,7 @@ export const useAuth = defineStore('auth', () => {
     }
     const resetPassword = (data) => {
       // form should include `token` and `password`
-      return axiosInstance.post(`/api/users/verify/update-password?token=${data.token}&password=${data.password}`
+      return axiosInstance.post(`/api/users/reset/update-password?token=${data.token}&password=${data.password}`
      );
   };
     return { attempt, logout, token, user, client, getRoles,sendEmailPassword,resetPassword }
