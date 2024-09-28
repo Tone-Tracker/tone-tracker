@@ -559,7 +559,9 @@ const getUser = () => {
             lastName: response.data.lastName,
             phone: response.data.phone,
             email: response.data.email,
-            role: response.data.role
+            role: response.data.role,
+            name: response.data.name,
+            description: response.data.description
         })
         
   }).catch(function (error) {
