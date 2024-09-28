@@ -3,17 +3,15 @@ import { useOnline } from '@vueuse/core'
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-//////////active///////////
-const isExpanded = ref(false);
-const activeItem = ref('');
+import { useAuth } from '@/stores/auth';
+
+const auth = useAuth();
+const logout = () => {
+    auth.logout();
+}
 
 const currentRoute = useRoute();
-console.log(currentRoute.path);
 
-const setActiveItem = (item) => {
-  activeItem.value = item;
-};
-///////////active//////////
 
 const online = useOnline()
 
@@ -54,16 +52,13 @@ const getRoleName = () => {
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <ul class="nav-list">
-                                <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='bx bx-chat ps-3'></i></span> All</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/activations' }"><router-link to="/activations"><span class="icon"><i class='bx bxs-map ps-3' ></i></span> Map</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/client-campaigns' }"><router-link to="/client-campaigns"><span class="icon"><i class='bx bx-chat ps-3'></i></span> All</router-link></li>
+                                <li :class="{ 'active': currentRoute.path === '/admin-contacts' }" ><router-link to="/admin-contacts"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/regions'}"><router-link to="/regions"><span class="icon"><i class='bx bx-map ps-3'></i></span> Regions</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase ps-3'></i></span> CRM</router-link></li>
-                                <!-- <li><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li> -->
-                                <li :class="{ 'active': currentRoute.path === '/upload' }" ><router-link to="/upload"><span class="icon"><i class='bx bx-upload ps-3'></i></span> Upload contract</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/message-center' }" ><a href="#"><span class="icon"><i class='bx bx-envelope ps-3'></i></span> Message center</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/sent' }"><a href="#"><span class="icon"><i class='bx bx-send ps-3'></i></span> Sent</a></li>
-                                <li :class="{ 'active': currentRoute.path === '/unread' }"><a href="#"><span class="icon"><i class='bx bx-envelope-open ps-3'></i></span> Unread</a></li>
+                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase ps-3'></i></span> CRM</router-link></li>                              
+                                <li @click="logout" class="cursor-pointer"><span class="icon"><i class='bx bx-log-out ps-3'></i></span> Logout</li>                              
                             </ul>
 
                         </div>

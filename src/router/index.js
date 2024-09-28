@@ -31,6 +31,7 @@ import suppliersdashboard from './suppliersdashboard';
 import costs from './costs';
 import SupplierProfile from '@/views/dashboard/SupplierProfile.vue';
 import StaffProfile from '@/views/dashboard/StaffProfile.vue';
+import ClientProfile from '@/views/clientDashboard/ClientProfile.vue';
 
 
 
@@ -128,6 +129,11 @@ const router = createRouter({
       path: '/staff-profile/:id/:userId',
       name: 'staff-profile',
       component: StaffProfile
+    },
+    {
+      path: '/client-profile/:id/:userId',
+      name: 'client-profile',
+      component: ClientProfile
     },
 
 

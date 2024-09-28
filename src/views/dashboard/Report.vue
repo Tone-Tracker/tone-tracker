@@ -1,7 +1,7 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Image from 'primevue/image';
 import { useActivation } from '@/stores/activation';
@@ -19,7 +19,13 @@ const activation = ref(null);
 const loading = ref(false);
 
 onMounted(() => {
+watch(() => route.query.activation, () => {
+  activationId.value = route.query.activation;
+  if (activationId.value != null) {
     getActivation();
+  }
+})
+
   });
 
 const statuses = ref([

@@ -19,6 +19,7 @@
                       <label for="inputEmailAddress" class="form-label">User</label>
                       <input
                         v-model="form.email"
+                        autofocus
                         type="email"
                         class="form-control custom-input"
                         id="inputEmailAddress"
@@ -110,15 +111,17 @@ export default {
         user.role == "TTG_REGIONAL_MANAGER"
       ) {
         router.push("/activations-dashboard");
-      } else if (user.role == "CLIENT" || user.role == "CLIENT") {
-        getClientId("1");
+      } else if (user.role == "CLIENT") {
+        getCampaignsByClientId(user.activeUserId);
         router.push("/client-campaigns");
-      } else if (user.role == "TTG_TALENT" || user.role == "TTG_TALENT") {
+      } else if (user.role == "TTG_TALENT") {
         router.push("/talent");
       } else if (user.role == "SUPPLIER") {
         router.push("/supplier-dashboard");
       } else {
-        router.push("dashboard");
+        //just return
+        return;
+        // router.push("dashboard");
       }
     };
 
@@ -135,9 +138,15 @@ export default {
 
     const clientStore = useClientStore();
 
-    const getClientId = (userId) => {
-      clientStore.getClientByUserId(userId).then((response) => {
-        useStorage("client", response.data);
+    const getCampaignsByClientId = (clientId) => {
+      clientStore.getClientByClientId(clientId).then((response) => {
+        console.log(response.data);
+        const client = {
+          name: response.data.name,
+          id: response.data.id,
+          color: response.data.color
+        }
+        localStorage.setItem("client", JSON.stringify(client));
       });
     };
 

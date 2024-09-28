@@ -13,11 +13,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { useNavStore } from '@/stores/ToggleNav';
 
     const navStore = useNavStore();
-    console.log('IsNavVisible',navStore.isNavVisible);
 
       const toggleSideNav = () => {
         navStore.setIsNavVisible();  // Toggle the navigation visibility
