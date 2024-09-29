@@ -28,7 +28,7 @@ export const useActivation = defineStore('activation', () => {
 
     //make the id optional parameter
 
-    const getAllActivations = ( userRole, id=null) => { 
+    const getAllActivations = ( userRole, id=null) => { console.log(id);
       switch (userRole) {
         case 'TTG_REGIONAL_MANAGER':
           return axiosInstance.get(`/api/activations/region/${id}`);
@@ -39,9 +39,9 @@ export const useActivation = defineStore('activation', () => {
         case 'SUPPLIER':
             return axiosInstance.get(`/api/activations/thirdParty/${id}`);
         case 'CLIENT':
-          return axiosInstance.get(`/api/activations/thirdParty/${id}`);
-        default:
           return axiosInstance.get(`/api/activations/client/${id}`);
+        default:
+          return axiosInstance.get(`/api/activations/campaign/${id}`);
       }
       
     }

@@ -63,7 +63,7 @@ const locations = ref([]);
 const getAllActivations = () => {
   const user = JSON.parse(authStore.user);
 
-  if (user.role === 'TTG_SUPER_ADMIN' || user.role === 'TTG_HEAD_ADMIN') {  
+  if (user.role === 'TTG_SUPER_ADMIN' || user.role === 'TTG_HEAD_ADMIN') {  console.log("test admin");
     activationStore.getAllActivationsAdmins().then(response => {
       locations.value = response.data.map(activation => ({
         lat: activation.centralLatitude,
@@ -77,13 +77,11 @@ const getAllActivations = () => {
         showInfoWindow: false // Initialize with false
       }));
     });
-   } else if(user.role === 'CLIENT'){
+   } else if(user.role === 'CLIENT'){ 
     activationStore.getAllActivations(user.role, user.activeUserId).then(response => {
-     console.log("test activations", response.data);
-  
       // Ensure response.content exists before calling map
-      if (response && response.data && response.data.content) {
-        locations.value = response.data.content.map(activation => ({
+      if (response && response.data && response.data) {
+        locations.value = response.data.map(activation => ({
           lat: activation.centralLatitude,
           lng: activation.centralLongitude,
           startDate: activation.startDate,
@@ -95,7 +93,7 @@ const getAllActivations = () => {
           showInfoWindow: false // Initialize with false
         }));
       } else {
-        console.error("Response content is undefined or empty", response);
+        console.log("Response content is undefined or empty", response);
         locations.value = []; // Fallback in case of no activations
       }
     }).catch(error => {
@@ -104,7 +102,7 @@ const getAllActivations = () => {
 
    } else  {
     activationStore.getAllActivations(user.role, user.id).then(response => {
-     console.log("test activations", response.data);
+     
   
       // Ensure response.content exists before calling map
       if (response && response.data && response.data.content) {
