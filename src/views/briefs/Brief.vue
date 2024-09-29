@@ -14,9 +14,13 @@ import FileUploadGeneric from "../upload/FileUploadGeneric.vue";
 import useToaster from "@/composables/useToaster";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import { useAuth } from "@/stores/auth";
 
 const route = useRoute();
 const briefStore = useBrief();
+const auth = useAuth();
+
+const user = JSON.parse(auth.user);
 const activationStore = useActivation();
 const toaster = useToaster();
 
@@ -40,7 +44,7 @@ watch(
 );
 
 onMounted(() => {
-  getBriefs();
+  getBriefs(user.role, user.activeUserId);
   if (briefId.value) {
     getBriefById();
   }
@@ -54,9 +58,9 @@ const fetchAllActivations = async () => {
     console.log(error);
   })
 }
-const getBriefs = async () => {
+const getBriefs = async (role, id) => {
   try {
-    const response = await briefStore.getBriefs();
+    const response = await briefStore.getBriefs(role,id);
     briefs.value = response.data;
   } catch (error) {
     console.error("Error fetching briefs:", error);
