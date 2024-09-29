@@ -38,6 +38,8 @@ export const useActivation = defineStore('activation', () => {
           return axiosInstance.get(`/api/activations/promoter/${id}`);
         case 'SUPPLIER':
             return axiosInstance.get(`/api/activations/thirdParty/${id}`);
+        case 'CLIENT':
+          return axiosInstance.get(`/api/activations/client/${id}`);
         default:
           return axiosInstance.get(`/api/activations/campaign/${id}`);
       }

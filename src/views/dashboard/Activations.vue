@@ -63,7 +63,7 @@ const locations = ref([]);
 const getAllActivations = () => {
   const user = JSON.parse(authStore.user);
 
-  if (user.role === 'TTG_SUPER_ADMIN' || user.role === 'TTG_HEAD_ADMIN') {  
+  if (user.role === 'TTG_SUPER_ADMIN' || user.role === 'TTG_HEAD_ADMIN') {  console.log("test admin");
     activationStore.getAllActivationsAdmins().then(response => {
       locations.value = response.data.map(activation => ({
         lat: activation.centralLatitude,
@@ -77,9 +77,32 @@ const getAllActivations = () => {
         showInfoWindow: false // Initialize with false
       }));
     });
-  } else  {
+   } else if(user.role === 'CLIENT'){ 
+    activationStore.getAllActivations(user.role, user.activeUserId).then(response => {
+      // Ensure response.content exists before calling map
+      if (response && response.data && response.data) {
+        locations.value = response.data.map(activation => ({
+          lat: activation.centralLatitude,
+          lng: activation.centralLongitude,
+          startDate: activation.startDate,
+          endDate: activation.endDate,
+          costPerContact: activation.costPerContact || 0, // Default to 0 if null
+          regionName: activation.regionName || 'Unknown', // Default to 'Unknown' if null
+          title: activation.name || 'Untitled Activation', // Default to 'Untitled Activation' if null
+          leads: activation.numberOfLeads || 0, // Default to 0 if null
+          showInfoWindow: false // Initialize with false
+        }));
+      } else {
+        console.log("Response content is undefined or empty", response);
+        locations.value = []; // Fallback in case of no activations
+      }
+    }).catch(error => {
+      console.error("Error fetching activations", error);
+    });
+
+   } else  {
     activationStore.getAllActivations(user.role, user.id).then(response => {
-     console.log("test activations", response.data);
+     
   
       // Ensure response.content exists before calling map
       if (response && response.data && response.data.content) {
