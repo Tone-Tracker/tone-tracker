@@ -9,7 +9,6 @@ import Warehouse from '../svgs/Warehouse.vue';
 import Popover from 'primevue/popover';
 import { useActivation } from '@/stores/activation';
 import { useCampaignStore } from '@/stores/useCampaign';
-import Logout from '../svgs/Logout.vue';
 
 
 import { useAuth } from '@/stores/auth';

@@ -1,5 +1,4 @@
 <script setup>
-import CLIENT from "./navigations/CLIENT.vue";
 import TTG_ACTIVATION_MANAGER from "./navigations/TTG_ACTIVATION_MANAGER.vue";
 import TTG_HEAD_ADMIN from "./navigations/TTG_HEAD_ADMIN.vue";
 import TTG_PROMOTERS from "./navigations/TTG_PROMOTERS.vue";
@@ -11,6 +10,8 @@ import { useNavStore } from '@/stores/ToggleNav';
 import Drawer from "primevue/drawer";
 import { onMounted } from "vue";
 import TTG_SUPPLIERS from "./navigations/TTG_SUPPLIERS.vue";
+import TTG_CLIENT from "./navigations/TTG_CLIENT.vue";
+import NAV from "./navigations/NAV.vue";
 
 const navStore = useNavStore();
 
@@ -20,6 +21,10 @@ const user = JSON.parse(auth.user);
 const getUserRole = (role) => {
   return user.role == role;
 };
+
+const isAdmin = () => {
+  return (user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_REGIONAL_MANAGER' || user.role == 'TTG_ACTIVATION_MANAGER');
+}
 
 onMounted(() => {
   // navStore.isNavVisible = false;
@@ -42,7 +47,7 @@ const visible = navStore.isNavVisible;
           <div class="simplebar-content-wrapper" style="height: 100%">
             <div class="simplebar-content mm-active" style="padding: 0px">
               <!--navigation-->
-              <CLIENT :user="user" />
+              <NAV :user="user" v-if="isAdmin()" />
               <!--end navigation-->
             </div>
           </div>
@@ -144,6 +149,11 @@ const visible = navStore.isNavVisible;
       />
       <TTG_SUPPLIERS
         v-if="getUserRole('SUPPLIER')"
+        :user="user"
+        class="d-none d-xl-block"
+      />
+      <TTG_CLIENT
+        v-if="getUserRole('CLIENT')"
         :user="user"
         class="d-none d-xl-block"
       />

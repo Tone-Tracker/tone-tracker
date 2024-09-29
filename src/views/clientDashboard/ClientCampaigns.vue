@@ -7,10 +7,18 @@ import { useCampaignStore } from '@/stores/useCampaign';
 
 const campaign = useCampaignStore();
 
+const clientColor = JSON.parse(localStorage.getItem('client'));
+console.log('clientColor',clientColor)
+const clientColorStyles = {
+    color: `#${clientColor?.color} !important`, //clientColor?.color,
+    background: `#${clientColor?.color} !important`, //clientColor?.color
+    borderColor: `#${clientColor?.color} !important`,
+}
+
 const authStore = useAuth();
 const client = ref(JSON.parse(authStore.client));
 const user = JSON.parse(authStore.user);
-console.log('client',client.value)
+
 
 const campaigns = ref([]);
 
@@ -20,12 +28,8 @@ onMounted(() => {
     }
 });
 
-/*
-*This fetches regions by staff id. Basically its for regional manager
-*/
 const getCampaignsByClientId = () => {
-    campaign.getCampaignsByClientId(client.value.id).then(function (response) {
-    console.log('Campaigns',response)
+    campaign.getCampaignsByClientId(user.activeUserId).then(function (response) {
      campaigns.value = response.data;
   }).catch(function (error) {
     console.log(error);
@@ -40,36 +44,35 @@ const getCampaignsByClientId = () => {
     <Layout>
         <div class="page-wrapper">
             <div class="page-content">
-                <!-- <BreadCrumb :title="user.role == 'TTG_REGIONAL_MANAGER' ? 'WELCOME' : 'JOBS'" icon="" />
-                <p class="fs-3 text-white">{{ user.role == 'TTG_REGIONAL_MANAGER' ? 'All Regions' : 'Active Campaigns'  }}</p> -->
+                 <BreadCrumb title="Campaigns" icon="" />
                 <div class="card">
                     <div class="card-body">
                         <!-- Code here -->
                         <div class="">
                             <div class="row g-4">
                                 <router-link v-if="campaigns?.length > 0" v-for="campaign in campaigns" :key="campaign.id" class="col-md-4 col-lg-3"  
-                                    :to="`/admin-activations?campaign=${campaign.id}&name=${campaign.name}`">
+                                    :to="`/status?campaign=${campaign.id}`">
                                     <div class="job-item">
-                                        <div class="image-container">
+                                        <div class="image-container" :style="{ borderColor: clientColorStyles?.borderColor }">
                                             <img src="../../assets/images/Component102.png" :alt="campaign.name">
                                             <span>{{ campaign.name }}</span>
                                         </div>
                                         <div class="details">
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div>Number Of Activations:</div>
-                                                <div>38%</div>
+                                                <div>{{ campaign?.numberOfActivations }}</div>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div>Leads:</div>
-                                                <div>102,000</div>
+                                                <div>{{ campaign?.leads }}</div>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div>Activations completed:</div>
-                                                <div>10</div>
+                                                <div>{{ campaign?.numberOfCompletedActivations }}</div>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div>Ongoing activations:</div>
-                                                <div>15</div>
+                                                <div>{{ campaign?.numberOfOngoingActivations }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -85,9 +88,6 @@ const getCampaignsByClientId = () => {
     </Layout>
 </template>
 <style scoped>
-
-
-
 
 .job-item {
     margin-bottom: 20px;

@@ -38,7 +38,7 @@
 
         <div class="user-box dropdown px-3">
           <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
-            <img :src="user?.path ? envPath + user?.path : '../../assets/images/placeholder.jpg'" class="user-img" alt="user avatar" />
+            <img :src="user.path ? envPath + user.path : '../assets/images/placeholder.jpg'" class="user-img" :alt="user.firstName + ' ' + user.lastName" />
           </a>
         </div>
       </nav>
@@ -74,6 +74,8 @@ const redirectToProfile = () => {
     router.push({ path: `/profile/${user?.id}/${user?.activeUserId}` });
   }else if(user.role == 'SUPPLIER'){
     router.push({ path: `/supplier-profile/${user?.activeUserId}/${user?.id}` });
+  }else if(user.role == 'CLIENT'){
+    router.push({ path: `/client-profile/${user?.activeUserId}/${user?.id}` });
   }
 }
 

@@ -58,8 +58,6 @@ const getBriefs = async () => {
   try {
     const response = await briefStore.getBriefs();
     briefs.value = response.data;
-
-    console.log("Fetched briefs:", response.data);
   } catch (error) {
     console.error("Error fetching briefs:", error);
   }
@@ -70,15 +68,10 @@ const onInput = () => {
 
     briefs.value = briefs.value.filter((brief) => {
       // Extract and normalize the data to be searchable
-      const activationName = brief.activationName?.toLowerCase() || '';
-      const taskName = brief.taskName?.toLowerCase() || '';
-      const path = brief.path?.toLowerCase() || '';
-
+      const entityName = brief.entityName?.toLowerCase() || '';
       // Filter based on searchTerm
       return (
-        activationName.includes(searchTerm) ||
-        taskName.includes(searchTerm) ||
-        path.includes(searchTerm)
+        entityName.includes(searchTerm)
       );
     });
   } else {

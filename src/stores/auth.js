@@ -13,6 +13,9 @@ export const useAuth = defineStore('auth', () => {
     const logout = () => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('client');
+      localStorage.removeItem('clientColor');
+
       router.push('/').then(() => {
         window.location.reload()
       })
