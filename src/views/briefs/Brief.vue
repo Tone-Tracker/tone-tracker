@@ -70,15 +70,13 @@ const onInput = () => {
 
     briefs.value = briefs.value.filter((brief) => {
       // Extract and normalize the data to be searchable
-      const activationName = brief.activationName?.toLowerCase() || '';
+      const entityName = brief.entityName?.toLowerCase() || '';
       const taskName = brief.taskName?.toLowerCase() || '';
-      const path = brief.path?.toLowerCase() || '';
 
       // Filter based on searchTerm
       return (
-        activationName.includes(searchTerm) ||
-        taskName.includes(searchTerm) ||
-        path.includes(searchTerm)
+        entityName.includes(searchTerm) ||
+        taskName.includes(searchTerm)
       );
     });
   } else {
