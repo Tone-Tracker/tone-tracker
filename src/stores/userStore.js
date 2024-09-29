@@ -41,6 +41,10 @@ export const useUserStore = defineStore('useUserStore', () => {
       return axiosInstance.post(`/api/users`,userData,);
     }
 
+    function submitContact(form) {
+      return axiosInstance.post(`/api/users`,form);
+    }
+
     const getUsers = () => {
       return axiosInstance.get(`/api/users`);
     }
@@ -72,5 +76,5 @@ export const useUserStore = defineStore('useUserStore', () => {
       
     }
       
-    return { updateProfile,submitUser,createStaffMember,getUsers,updateUser,deleteUser,getUser,getUserByRole,updatePassword }
+    return { updateProfile,submitUser,createStaffMember,getUsers,updateUser,deleteUser,getUser,getUserByRole,updatePassword,submitContact }
   })
