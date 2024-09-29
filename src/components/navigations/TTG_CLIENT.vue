@@ -56,7 +56,6 @@ const getRoleName = () => {
                                 <li :class="{ 'active': currentRoute.path === '/client-campaigns' }"><router-link to="/client-campaigns"><span class="icon"><i class='bx bx-chat ps-3'></i></span> All</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/admin-contacts' }" ><router-link to="/admin-contacts"><span class="icon"><i class='bx bx-user ps-3'></i></span> Users</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/regions'}"><router-link to="/regions"><span class="icon"><i class='bx bx-map ps-3'></i></span> Regions</router-link></li>
                                 <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase ps-3'></i></span> CRM</router-link></li>                              
                                 <li @click="logout" class="cursor-pointer"><span class="icon"><i class='bx bx-log-out ps-3'></i></span> Logout</li>                              
                             </ul>
