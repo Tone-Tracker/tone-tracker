@@ -4,11 +4,14 @@ import Checkbox from 'primevue/checkbox';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import InputMask from 'primevue/inputmask';
 import InputText from 'primevue/inputtext';
-import { ref,reactive } from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
+import { useRoute } from 'vue-router';
 import { required, email } from '@vuelidate/validators';
 import Dialog from 'primevue/dialog';
 import { useUserStore } from '@/stores/userStore';
+import { useClientStore } from '@/stores/useClient';
+import { useAuth } from '@/stores/auth';
 
 const authoritativeForm = ref(null);
 const visible = ref(false);
@@ -16,6 +19,17 @@ const type = ref(null);
 const loading = ref(null);
 
 const userStore = useUserStore();
+const clientStore = useClientStore();
+
+const auth = useAuth();
+const route = useRoute();
+
+const currentUser = JSON.parse(auth.user);
+const contacts = ref([]);
+const authoritativeContacts = ref([]);
+const billingContacts = ref([]);
+const owners = ref([]);
+const clientObj = ref();
 
 const form = reactive({
 	lastName: '',
@@ -23,45 +37,74 @@ const form = reactive({
 	phone: '',
 	email: '',
 	role: 'CLIENT',
-	type: ''
+	type: '',
+	password: 'TT_G',
 });
 
+// Track selected checkboxes
+const selectedAuthoritativeContacts = ref([]);
+const selectedBillingContacts = ref([]);
+
+onMounted(() => {
+	if (currentUser.role === 'CLIENT') {
+		getContacts(currentUser.activeUserId);
+	} else {
+		getContacts(route.query.client);
+	}
+});
+
+const getContacts = (clientId) => {
+	clientStore
+		.getClientByClientId(clientId)
+		.then((response) => {
+			clientObj.value = response.data;
+			contacts.value = response.data?.users;
+			owners.value = contacts.value?.filter((contact) => contact.duty === 'OWNER');
+			authoritativeContacts.value = contacts.value?.filter((contact) => contact.duty === 'AUTHORITATIVE');
+			billingContacts.value = contacts.value?.filter((contact) => contact.duty === 'BILLING');
+		})
+		.catch((error) => {});
+};
+
+// Computed property to check if any checkbox is selected
+const canDeleteAuthoritativeContacts = computed(() => selectedAuthoritativeContacts.value.length > 0);
+const canDeleteBillingContacts = computed(() => selectedBillingContacts.value.length > 0);
+
 const showModal = (typeParam) => {
-	type.value = typeParam == 'BILLING' ? 'Billing' : 'Authoritative';
+	type.value = typeParam === 'BILLING' ? 'Billing' : 'Authoritative';
 	form.type = typeParam;
 	visible.value = true;
 };
 
-const rules = {
-	firstName: { required },
-	lastName: { required },
-	phone: { required },
-	email: { required, email },
-	role: { required }, 
-	type: { required } 
-}
-
-const v$ = useVuelidate(rules, form);
 // Function to handle form submission
 const handleSubmit = async () => {
 	const isFormCorrect = await v$.value.$validate();
-		if (!isFormCorrect) return;
-		
-		userStore.submitUser(form).then(function (response) {
-			toaster.success("Contact added successfully");
+	if (!isFormCorrect) return;
+
+	userStore
+		.submitContact(form)
+		.then(() => {
+			toaster.success('Contact added successfully');
 			visible.value = false;
-		}).catch(function (error) {
-			toaster.error("Error adding contact");
-			console.log(error);
-		}).finally(() => {
+		})
+		.catch((error) => {
+			toaster.error('Error adding contact');
+			console.error(error);
+		})
+		.finally(() => {
 			loading.value = false;
-})
-		
-
-
+		});
 };
 
+const deleteSelectedContacts = (type) => {
+	if (type === 'AUTHORITATIVE') {
+		console.log('Deleting selected authoritative contacts:', selectedAuthoritativeContacts.value);
+	} else if (type === 'BILLING') {
+		console.log('Deleting selected billing contacts:', selectedBillingContacts.value);
+	}
+};
 </script>
+
 <template>
 	<Layout>
 		<div class="page-wrapper">
@@ -90,11 +133,14 @@ const handleSubmit = async () => {
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td><Checkbox v-model="authoritativeForm" :binary="true" /></td>
-										<td>Natalie Murison</td>
-										<td>+27786258990</td>
-										<td class="email">Natalie@twotone.co.za</td>
+									<tr v-if="owners?.length > 0" v-for="owner in owners" :key="owner.id">
+										<td><Checkbox  :binary="true" /></td>
+										<td>{{ owner?.firstName }} {{ owner?.lastName }}</td>
+										<td>{{ owner?.phone }}</td>
+										<td class="email"><a :href="`mailto:${owner?.email}`">{{ owner?.email }}</a></td>
+									</tr>
+									<tr v-else>
+										<td colspan="4" class="text-center text-danger">No acount owner found.</td>
 									</tr>
 								</tbody>
 							</table>
@@ -111,9 +157,9 @@ const handleSubmit = async () => {
 					<div class="card border-card rounded-0">
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Authoritative Contacts</h5>
-							<div class="btn-group gap-2">
-								<button @click="showModal('AUTHORITATIVE')" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn" type="button">Add</button>
-								<button class="btn btn-secondary rounded-0 btn- maz-gradient-btn">Delete</button>
+							<div class="btn-group gap-2 bulk-actions">
+								<button v-if="!canDeleteAuthoritativeContacts" @click="showModal('AUTHORITATIVE')" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn" type="button">Add</button>
+								<button v-if="canDeleteAuthoritativeContacts" @click="deleteSelectedContacts('AUTHORITATIVE')" type="button" class="btn btn-secondary rounded-0 btn- maz-gradient-btn">Delete</button>
 							</div>
 						</div>
 						<div class="card-body">
@@ -127,13 +173,14 @@ const handleSubmit = async () => {
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>
-											<Checkbox v-model="authoritativeForm" :binary="true" />
-										</td>
-										<td>Nkosana Silenje</td>
-										<td>+27749258768</td>
-										<td class="email">Nkosana@twotone.co.za</td>
+									<tr v-if="authoritativeContacts?.length > 0" v-for="contact in authoritativeContacts" :key="contact.id" >
+										<td><Checkbox v-model="selectedAuthoritativeContacts" :value="contact.id" /></td>
+										<td>{{ contact?.firstName }} {{ contact?.lastName }}</td>
+										<td>{{ contact?.phone }}</td>
+										<td class="email"><a :href="`mailto:${contact?.email}`">{{ contact?.email }}</a></td>
+									</tr>
+									<tr v-else>
+										<td colspan="12" class="text-center text-danger">No authoritative contacts found</td>
 									</tr>
 								</tbody>
 							</table>
@@ -144,8 +191,8 @@ const handleSubmit = async () => {
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="text-white">Billing Contacts</h5>
 							<div class="btn-group gap-2">
-								<button @click="showModal('BILLING')" type="button" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn">Add</button>
-								<button class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn">Delete</button>
+								<button v-if="!canDeleteBillingContacts" @click="showModal('BILLING')" type="button" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn">Add</button>
+								<button v-if="canDeleteBillingContacts" @click="deleteSelectedContacts('BILLING')" type="button" class="btn btn-secondary rounded-0 btn-sm maz-gradient-btn">Delete</button>
 							</div>
 						</div>
 						<div class="card-body">
@@ -159,11 +206,14 @@ const handleSubmit = async () => {
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td><Checkbox v-model="authoritativeForm" :binary="true" /></td>
-										<td>Natalie Sawyer</td>
-										<td>+27749258768</td>
-										<td class="email">Natalie@twotone.co.za</td>
+									<tr v-if="billingContacts?.length > 0" v-for="contact in billingContacts" :key="contact.id">
+										<td><Checkbox v-model="selectedAuthoritativeContacts" :value="contact.id" /></td>
+										<td>{{ contact?.firstName }} {{ contact?.lastName }}</td>
+										<td>{{ contact?.phone }}</td>
+										<td class="email"><a :href="`mailto:${contact?.email}`">{{ contact?.email }}</a></td>
+									</tr>
+									<tr v-else>
+										<td colspan="4" class="text-center text-danger">No billing contacts found</td>
 									</tr>
 								</tbody>
 							</table>
