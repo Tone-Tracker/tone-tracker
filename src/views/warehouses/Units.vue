@@ -282,7 +282,7 @@ loading.value = true;
 
 				<BreadCrumb title="Warehousing" icon="bx bxs-school"/>
 				<div class="row">
-					<div class="col-lg-1"></div>
+					<!-- <div class="col-lg-1"></div> -->
 					<div class="col-lg-8">
 						<h4 class="mb-4">{{ warehouseName }}</h4>
 					</div>
@@ -291,7 +291,7 @@ loading.value = true;
 				
 
                 <div class="row">
-					<div class="col-lg-1"></div>
+					<!-- <div class="col-lg-1"></div> -->
                     <div class="col-lg-10 col-md-12">
 						<div class="gradient-card">
 						  <div class="content">
@@ -301,35 +301,38 @@ loading.value = true;
 							<strong>Number of items:</strong> {{ warehouse?.numberOfItems }}
 						  </div>
 						</div>
-					  </div>
-                  
-                 </div>
 
-
-				 <div class="row mt-4">
-					<div class="col-lg-1"></div>
+						<div class="row mt-4 d-flex justify-content-between">
+					<!-- <div class="col-lg-1"></div> -->
                     <div class="col-lg-3 col-md-6">
-						<select @change="onUnitChange" class="form-select form-select-sm bg-maz-light" aria-label=".form-select-sm example">
+						<select @change="onUnitChange" class="form-select form-select-sm bg-maz-light w-100" aria-label=".form-select-sm example">
 							<option :value="''" selected="selected" disabled>Filter by unit</option>
 							<option v-for="(unit,index) in warehouse?.unitsList" :key="unit + index" 
 							:value="unit.id">
 								{{ unit.name }}
 							</option>
 						</select>
-					  </div>
-					  <div class="col-lg-4 col-md-6">
-						
-					  </div>
-					  <div class="col-lg-3 col-md-6">
-						<div class="container ">
-							<div class="search-container">
-							  <input v-model="searchInput" type="text" class="form-control search-input" placeholder="Search for item">
-							  <i class="bx bx-search search-icon"></i>
-							</div>
-						  </div>
-					  </div>
-					  <div class="col-lg-1"></div>
+					</div>
+					<!-- <div class="col-lg-4 col-md-6">
+					
+					</div> -->
+					<div class="col-lg-3 col-md-6">
+					<div class="container p-0">
+						<div class="search-container w-100">
+							<input v-model="searchInput" type="text" class="form-control search-input" placeholder="Search for item">
+							<i class="bx bx-search search-icon"></i>
+						</div>
+						</div>
+					</div>
+					<!-- <div class="col-lg-1"></div> -->
                  </div>
+					  </div>
+                  
+					  
+                 </div>
+
+
+				
 				
 				
 
@@ -350,8 +353,8 @@ loading.value = true;
 								  </div>
 							  </div>
 						  </div>
-						  <div class="card-body row mt-2 mx-2">
-							<div class="table-responsive table table-dark table-striped w-50">
+						  <div class="card-body row mx-custom-1">
+							<div class="table-responsive table table-dark table-striped w-50 p-0">
 								<table class="table align-middle mb-0">
 								 <thead class="table-light">
 								  <tr style="background:#1D2126">
@@ -387,7 +390,7 @@ loading.value = true;
 							 </div>
 
 							 
-							 <div class="table-responsive table table-dark table-striped w-50">
+							 <div class="table-responsive table table-dark table-striped w-50 p-0">
 								<table class="table align-middle mb-0">
 								 <thead class="table-light">
 								  <tr style="background:#1D2126">
@@ -707,5 +710,10 @@ loading.value = true;
 	border-radius: 50%;
 	height: 50px;
 	width: 50px;
+}
+
+.mx-custom-1 {
+	margin-right: 0.04rem !important;
+	margin-left: 0.04rem !important;
 }
 </style>
