@@ -335,28 +335,7 @@ loading.value = true;
 
 				 <div class="row mt-4 ">
 					<!-- <div class="col-lg-1"></div> -->
-					<div class="col-12 col-lg-3">
-						<div class=" radius-10">
-							 <div class="card-body">
-								<div class="card card-custom">
-									<h5>Stock check</h5>
-									<p class="text-light"><strong>Storage Capacity:</strong> {{ viewedUnit?.capacity }}%</p>
-									<!-- <p class="text-light"><strong>Days since last check:</strong> 15 Days</p>
-									<p class="text-light"><strong>Checked by:</strong> Tumelo Moloka</p> -->
-								  </div>
-								  
-								  <div class=" card-custom">
-									<h5>Inventory accuracy</h5>
-									<div class="chart-container">
-										<CustomGauge v-show="unitId" :viewedUnit="viewedUnit" />
-									</div>
-								  </div>
-							 </div>
-						</div>
-					</div>
-
-
-					<div class="col-12 col-lg-9 d-flex">
+					<div class="col-12 d-flex">
 					<div class="radius-10 w-100">
 						  <div class="card-header">
 							  <div class="d-flex align-items-center">
@@ -445,6 +424,26 @@ loading.value = true;
 						  </div>
 						</div>
 					 </div>
+					<div class="col-12">
+						<div class=" radius-10">
+							 <div class="card-body">
+								<div class="card card-custom">
+									<h5>Stock check</h5>
+									<p class="text-light"><strong>Storage Capacity:</strong> {{ viewedUnit?.capacity }}%</p>
+									<!-- <p class="text-light"><strong>Days since last check:</strong> 15 Days</p>
+									<p class="text-light"><strong>Checked by:</strong> Tumelo Moloka</p> -->
+								  </div>
+								  
+								  <div class=" card-custom">
+									<h5 class="text-center">Inventory accuracy</h5>
+									<div class="chart-container">
+										<CustomGauge v-show="unitId" :viewedUnit="viewedUnit" />
+									</div>
+								  </div>
+							 </div>
+						</div>
+					</div>
+
 				</div>
 
 
@@ -685,6 +684,7 @@ loading.value = true;
 	border-radius: 10px;
 	padding: 20px;
 	margin: 20px 0;
+	width: 435px;
   }
 
   .card-custom h5,
