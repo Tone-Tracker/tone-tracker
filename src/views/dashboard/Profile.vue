@@ -542,12 +542,12 @@ Date: 04/06/2024
                                         viewMode: 1,
                                         dragMode: 'move',
                                         aspectRatio: 1,
-                                        cropBoxResizable: false,
+                                        cropBoxResizable: true,
                                     }"
                                     :presetMode="{
-                                        mode: 'fixedSize',
-                                        width: 300,
-                                        height: 400,
+                                        mode: '',
+                                        width: 500,
+                                        height: 600,
                                     }"
                                     @ready="ready"
                                     class="mt-3"

@@ -10,9 +10,9 @@ File: app.css
 
 */
 /* Reduce all scroll bars width */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
 	scrollbar-width: thin;
-}
+} */
 
 .p-textarea {
     background: #12181a !important

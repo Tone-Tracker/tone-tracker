@@ -242,9 +242,9 @@ const onSubmit = async () => {
 <template>
     <Layout>
         <div class="page-wrapper">
-			<div class="page-content">
+			<div class="page-content ">
                 <BreadCrumb title="TTG Staff Members" icon="bx bxs-user-badge"/>
-				<div class="card">
+				<div class="card ">
 					<div class="card-body">
 						<div class="d-lg-flex align-items-center mb-4 gap-3">
 							<div class="position-relative">
@@ -258,7 +258,7 @@ const onSubmit = async () => {
 						</div>
 					
 
-						<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
+						<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4"> 
 							<div class="col"  v-if="paginatedUsers.length > 0" v-for="user in paginatedUsers" :key="user.id">
 							  <div class="card radius-15">
 								<div class="card-body text-center">
