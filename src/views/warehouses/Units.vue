@@ -19,7 +19,7 @@ import Avatar from 'primevue/avatar';
 import Drawer from 'primevue/drawer';
 import Image from 'primevue/image';
 import SplitButton from 'primevue/splitbutton';
-import CustomApex from './CustomApex.vue';
+import CustomGauge from './CustomGauge.vue';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const authStore = useAuth();
@@ -348,7 +348,7 @@ loading.value = true;
 								  <div class=" card-custom">
 									<h5>Inventory accuracy</h5>
 									<div class="chart-container">
-										<CustomApex v-show="unitId" :viewedUnit="viewedUnit" />
+										<CustomGauge v-show="unitId" :viewedUnit="viewedUnit" />
 									</div>
 								  </div>
 							 </div>
