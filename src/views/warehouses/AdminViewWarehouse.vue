@@ -1,4 +1,4 @@
-<script setup>
+vi<script setup>
 import { useRoute } from "vue-router";
 import { onMounted, ref, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
@@ -358,23 +358,31 @@ const viewUnits = async (warehouse) => {
                                                 <tbody>
                                                     <tr v-if="warehouses.length > 0" v-for="(region, index) in warehouses" :key="region.id">
                                                     <td>{{ region.name }}</td>
-                                                        <td>
-                                                            <router-link :to="`/view-warehouse/${region.id}?name=${region.name}`" v-tooltip.bottom="region.unitsList?.length + ' units'"
-                                                              class="btn maz-gradient-btn position-relative me-lg-5"> 
-                                                                <i class='bx bx-building-house align-middle' ></i> 
-                                                                View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
-                                                                    {{ region.unitsList?.length }} 
-                                                                    <span class="visually-hidden">warehouses</span></span>
-                                                            </router-link>
-                                                        </td>
+                                                    <td>
+                                                        <router-link :to="`/view-warehouse/${region.id}?name=${region.name}`" v-tooltip.bottom="region.unitsList?.length + ' units'"
+                                                            class="btn maz-gradient-btn position-relative me-lg-5"> 
+                                                            <i class='bx bx-building-house align-middle'></i> 
+                                                            <span class="d-none d-xxl-inline">View</span> <!-- This will only show on screens larger than 1440px -->
+                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
+                                                                {{ region.unitsList?.length }} 
+                                                                <span class="visually-hidden">warehouses</span>
+                                                            </span>
+                                                        </router-link>
+                                                    </td>
+
+
                                                         <td>{{ region.streetAddress + ', ' + region.zipCode }}</td>
                                                         <td>
-
-                                                            <SplitButton  class="text-white" label="Action" 
-                                                            icon="bx bx-cog fs-4" 
-                                                            dropdownIcon="text-white fs-4 bx bx-chevron-down" 
-                                                            :model="items(region)"/>                                                         
+                                                            <SplitButton class="text-white" 
+                                                                icon="bx bx-cog fs-4" 
+                                                                dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+                                                                :model="items(region)">
+                                                                <template v-slot:label>
+                                                                    <span class="d-inline d-xxl-none">Action</span> <!-- Show "Action" text only on screens from 0px to 1440px -->
+                                                                </template>
+                                                            </SplitButton>                                                         
                                                         </td>
+
                                                     </tr>
                                                     <tr v-else>
                                                         <td colspan="7" class="text-center text-danger">No regions found.</td>

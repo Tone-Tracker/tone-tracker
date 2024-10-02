@@ -15,7 +15,7 @@ File: app.css
 } */
 
 .p-textarea {
-    background: #12181a !important
+	background: #12181a !important
 }
 
 .no-border-input {
@@ -5150,5 +5150,19 @@ form select.error:focus {
 	.page-content {
 		margin-left: 10%;
 		padding: 1.5rem 1.5rem 1.5rem 0rem !important;
+	}
+}
+
+@media (max-width: 1440px) {
+	.icon-sm-down {
+		display: inline-block !important;
+		/* Make the icon visible */
+	}
+}
+
+@media (min-width: 1441px) {
+	.icon-sm-down {
+		display: none !important;
+		/* Hide the icon on larger screens */
 	}
 }
