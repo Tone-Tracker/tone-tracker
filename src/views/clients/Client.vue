@@ -292,8 +292,8 @@ const items = (client) => [
                         </tbody>
                       </table>
                     </div>
-                    <div class="card">
-                      <Paginator v-if="totalRecords > 0"
+                    <div class="card mt-4">
+                      <Paginator v-if="totalRecords> 0"
                         :first="(currentPage - 1) * rowsPerPage"
                         :rows="rowsPerPage"
                         :totalRecords="totalRecords"
