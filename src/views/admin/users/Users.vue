@@ -258,7 +258,7 @@ const onSubmit = async () => {
 						</div>
 					
 
-						<div class="row row-cols-sm-2 row-cols-1 row-cols-lg-2 row-cols-xl-4"> 
+						<div class="row row-cols-1 row-cols-md-3 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4"> 
 							<div class="col"  v-if="paginatedUsers.length > 0" v-for="user in paginatedUsers" :key="user.id">
 							  <div class="card radius-15">
 								<div class="card-body text-center">

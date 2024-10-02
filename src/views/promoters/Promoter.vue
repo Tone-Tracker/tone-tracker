@@ -306,7 +306,7 @@ const genderChange = (event) => {
             </div>
             
 
-            <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
+            <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
               <div class="col"  v-for="promoter in paginatedPromoters" :key="promoter.id">
                 <div class="card radius-15">
                   <div class="card-body text-center">
