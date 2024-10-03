@@ -303,7 +303,7 @@ const updatePassword = async () => {
         return;
       }
     showPasswordLoading.value = true;
-    userStore.updatePassword(user.id,password.value).then(function (response) {
+    userStore.updatePasswordInternal(user.id,password.value).then(function (response) {
         showPasswordLoading.value = false;
         toaster.success('Password updated successfully');
         password.value = '';
