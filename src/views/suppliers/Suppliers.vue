@@ -59,37 +59,57 @@ const rules = {
 };
 const v$ = useVuelidate(rules, form);
 
+// const onSubmit = async () => {
+//   const isFormValid = await v$.value.$validate();
+//   if (!isFormValid) { return; }
+  
+//   if (isEdit.value) {
+//     userStore.updateUser(supplierId.value, form).then(function (response) {
+//       toaster.success("Supplier updated successfully");
+//       visible.value = false;
+//       getSuppliers();
+//     }).catch(function (error) {
+//       toaster.error("Error updating supplier");
+//       console.log(error);
+//     });
+//   } else {
+
+//     axios.put(import.meta.env.VITE_SERVER_URL, form).then(function (response) {
+//       toaster.success("Supplier created successfully");
+//       visible.value = false;
+//       getSuppliers();
+//     }).catch(function (error) {
+//       toaster.error("Error creating supplier");
+//       console.log(error);
+//     });
+//     // userStore.submitUser(form).then(function (response) {
+//     //   toaster.success("Supplier created successfully");
+//     //   visible.value = false;
+//     //   getSuppliers();
+//     // }).catch(function (error) {
+//     //   toaster.error("Error creating supplier");
+//     //   console.log(error);
+//     // });
+//   }
+// };
+
 const onSubmit = async () => {
   const isFormValid = await v$.value.$validate();
-  if (!isFormValid) { return; }
+  if (!isFormValid) return; // Stop if the form is not valid
   
-  if (isEdit.value) {
-    userStore.updateUser(supplierId.value, form).then(function (response) {
+  try {
+    if (isEdit.value) {
+      await userStore.updateUser(supplierId.value, form);
       toaster.success("Supplier updated successfully");
-      visible.value = false;
-      getSuppliers();
-    }).catch(function (error) {
-      toaster.error("Error updating supplier");
-      console.log(error);
-    });
-  } else {
-
-    axios.put(import.meta.env.VITE_SERVER_URL, form).then(function (response) {
+    } else {
+      await axios.put(import.meta.env.VITE_SERVER_URL, form);
       toaster.success("Supplier created successfully");
-      visible.value = false;
-      getSuppliers();
-    }).catch(function (error) {
-      toaster.error("Error creating supplier");
-      console.log(error);
-    });
-    // userStore.submitUser(form).then(function (response) {
-    //   toaster.success("Supplier created successfully");
-    //   visible.value = false;
-    //   getSuppliers();
-    // }).catch(function (error) {
-    //   toaster.error("Error creating supplier");
-    //   console.log(error);
-    // });
+    }
+    closeDialog(); // Close the modal
+    getSuppliers(); // Refresh suppliers list
+  } catch (error) {
+    toaster.error("Error processing supplier");
+    console.error(error);
   }
 };
 
@@ -231,6 +251,24 @@ const myGender = ref();
 const genderChange = (event) => {
   form.gender = myGender.value.code;
 };
+
+
+////////////////////
+const closeDialog = () => {
+  visible.value = false;
+};
+
+const toggleModal = () => {
+  isEdit.value = false; // Reset edit mode
+  form.firstName = null;
+  form.lastName = null;
+  form.email = null;
+  form.phone = null;
+  form.description = null;
+  visible.value = true; // Show modal
+};
+
+
 </script>
 
 <template>
@@ -248,6 +286,12 @@ const genderChange = (event) => {
                 </span>
               </div>
               <div class="ms-auto"></div>
+
+              <div class="ms-auto">
+                <a @click="toggleModal" href="javascript:;" class="btn maz-gradient-btn mt-2 mt-lg-0">
+                  <i class="bx bxs-plus-square"></i>Add Suppliers
+                </a>
+              </div>
             </div>
             
 
@@ -287,7 +331,8 @@ const genderChange = (event) => {
       </div>
     </div>
 
-    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Supplier' : 'Add Supplier'" :style="{ width: '50rem' }">
+    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Supplier' : 'Add Supplier'" :style="{ width: '50rem' }"   @hide="closeDialog"
+    >
      
       <div class="row g-3">
         <div class="col-md-6">
