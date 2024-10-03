@@ -115,14 +115,14 @@ const submitStock = async () => {
         await stock.addStock(formData, config);
 		visible.value = false;
 		getStock();
-        toaster.success("Region created successfully");
+        toaster.success("Stock created successfully");
         stockForm.description = ''; // Reset the form input
 		stockForm.quantity = '';
 		stockForm.type = '';
         stockV$.value.$reset(); // Reset the validatione();
 		stockV$.$errors = [];
     } catch (error) {
-        toaster.error("Error creating region");
+        toaster.error("Error creating stock");
         console.log(error);
     } finally {
         loading.value = false;
