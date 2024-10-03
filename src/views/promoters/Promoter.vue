@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, reactive, watch } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import Textarea from 'primevue/textarea';
@@ -17,37 +17,34 @@ import { useAuth } from '@/stores/auth';
 const promoterStore = usePromoter();
 const toaster = useToaster();
 const sizeStore = useSizes();
-const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
-
 const auth = useAuth();
 
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const uploader = JSON.parse(auth.user);
 
 let sizes = ref([]);
 let promoters = ref([]);
-let paginatedPromoters = ref([]); // This will store the promoters to be displayed on the current page
+let paginatedPromoters = ref([]);
 let showLoading = ref(false);
 let searchInput = ref('');
 const filteredPromoters = ref([]);
 
 // Pagination Variables
-const currentPage = ref(1); // Current page
-const rowsPerPage = ref(10); // Rows per page
-const totalRecords = ref(0); // Total number of records
+const currentPage = ref(1);
+const rowsPerPage = ref(10);
+const totalRecords = ref(0);
 
 const form = reactive({
-  firstName: null,
-  lastName: null,
-  phone: null,
-  email: null,
-  user: null,
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
   role: "TTG_TALENT",
   dressSize: null,
-  pantsSize: null,
-  client: null,
+  pantsSize: '',
   topSize: null,
-  height: null,
-  bio: null,
+  height: '',
+  bio: '',
   gender: null
 });
 
@@ -61,21 +58,22 @@ const rules = {
   lastName: { required },
   email: { required, email },
   phone: { required },
-  user: { required },
   dressSize: { required },
   pantsSize: { required },
   height: { required },
   topSize: { required },
   bio: { required },
   gender: { required },
-  role: {required}
+  role: { required }
 };
+
 const v$ = useVuelidate(rules, form);
 
 const onSubmit = async () => {
   const isFormValid = await v$.value.$validate();
-  if (!isFormValid) { return; }
+  if (!isFormValid) return;
   
+  showLoading.value = true;
   if (isEdit.value) {
     promoterStore.updatePromoter(promoterId.value, form).then(function (response) {
       toaster.success("Promoter updated successfully");
@@ -84,6 +82,8 @@ const onSubmit = async () => {
     }).catch(function (error) {
       toaster.error("Error updating promoter");
       console.log(error);
+    }).finally(() => {
+      showLoading.value = false;
     });
   } else {
     promoterStore.submitPromoter(form).then(function (response) {
@@ -93,23 +93,24 @@ const onSubmit = async () => {
     }).catch(function (error) {
       toaster.error("Error creating promoter");
       console.log(error);
+    }).finally(() => {
+      showLoading.value = false;
     });
   }
 };
 
-// Filter by gender
 const onGenderChange = (event) => {
   let selectedGender = event.target.value.toLowerCase();
   
   if (selectedGender === 'all') {
-    promoters.value = [...originalPromoters.value]; // Reset to original full list
+    promoters.value = [...originalPromoters.value];
   } else {
     promoters.value = originalPromoters.value.filter((promoter) => {
       return promoter.gender?.toLowerCase() === selectedGender.toLowerCase();
     });
   }
   
-  updatePaginatedPromoters(); // Ensure the list is paginated after filtering
+  updatePaginatedPromoters();
 };
 
 const onInput = () => {
@@ -132,23 +133,22 @@ const onInput = () => {
       );
     });
   } else {
-    promoters.value = [...originalPromoters.value]; // Reset to original full list if no search term
+    promoters.value = [...originalPromoters.value];
   }
 
-  updatePaginatedPromoters(); // Ensure the list is paginated after search
+  updatePaginatedPromoters();
 };
 
-let originalPromoters = ref([]); // Store the original unfiltered list
+let originalPromoters = ref([]);
 
-// Fetch all promoters and store them in both originalPromoters and promoters.value
 const getAllPromoters = async () => {
   showLoading.value = true;
   promoterStore.getPromoters().then(response => {
     showLoading.value = false;
-    originalPromoters.value = response.data.content; // Store original list
-    promoters.value = [...originalPromoters.value]; // Set the current promoters list
+    originalPromoters.value = response.data.content;
+    promoters.value = [...originalPromoters.value];
     totalRecords.value = promoters.value.length;
-    updatePaginatedPromoters(); // Update paginated data after fetching promoters
+    updatePaginatedPromoters();
   }).catch(error => {
     toaster.error("Error fetching promoters");
     console.log(error);
@@ -163,13 +163,11 @@ const updatePaginatedPromoters = () => {
   paginatedPromoters.value = promoters.value.slice(start, end);
 };
 
-// Handle page change in pagination
 const onPageChange = (event) => {
-  currentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
+  currentPage.value = event.page + 1;
   rowsPerPage.value = event.rows;
-  updatePaginatedPromoters(); // Update paginated data when the page changes
+  updatePaginatedPromoters();
 };
-
 
 const getAllSizes = async () => {
   showLoading.value = true;
@@ -182,7 +180,6 @@ const getAllSizes = async () => {
   });
 };
 
-
 const deletePromoter = (promoter) => {
   promoterStore.deletePromoter(promoter.id).then(response => {
     toaster.success("Promoter deleted successfully");
@@ -193,34 +190,36 @@ const deletePromoter = (promoter) => {
   });
 };
 
-let user_id = ref(null);
-const visible = ref(false);
 let isEdit = ref(false);
 let promoterId = ref(null);
 
-const position = ref('top');
-const dropdownItems = ref([]);
-
-const search = (event) => {
-  const query = event.query.toLowerCase();
-  let myObj = users.value.filter(user => user.firstName.toLowerCase().includes(query));
-  dropdownItems.value = myObj.map(user => user.firstName + ' ' + user.lastName);
+const visible = ref(false);
+const toggleModal = () => {
+  isEdit.value = false;
+  visible.value = true;
+  Object.assign(form, {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    role: "TTG_TALENT",
+    dressSize: null,
+    pantsSize: '',
+    topSize: null,
+    height: '',
+    bio: '',
+    gender: null
+  });
 };
 
-
-
 const openPosition = (pos, promoter) => {
-  console.log('promoter', promoter.userDetails?.firstName)
   if (promoter) {
     isEdit.value = true;
     promoterId.value = promoter.userDetails?.id;
-    form.user = promoter.userDetails?.id;
-    user_id.value = promoter.userDetails?.id;
-      
     Object.assign(form, {
-      firstName : promoter.userDetails.firstName,
-      lastName : promoter.userDetails?.lastName,
-      email : promoter.userDetails?.email,
+      firstName: promoter.userDetails.firstName,
+      lastName: promoter.userDetails?.lastName,
+      email: promoter.userDetails?.email,
       dressSize: promoter.dressSize,
       phone: promoter.userDetails?.phone,
       pantsSize: promoter.pantsSize,
@@ -229,29 +228,22 @@ const openPosition = (pos, promoter) => {
       bio: promoter.bio,
       gender: promoter.gender
     });
-    myGender.value = form.gender;
   } else {
-    isEdit.value = false;
-    Object.assign(form, {
-      user: null,
-      user_id: null,
-      dressSize: null,
-      pantsSize: null,
-      topSize: null,
-      height: null,
-      bio: null,
-      gender: null
-    });
+    toggleModal();
   }
-  position.value = pos;
   visible.value = true;
 };
 
+const genders = ref([
+  { name: 'MALE', code: 'MALE' },
+  { name: 'FEMALE', code: 'FEMALE' },
+]);
+
+const genderChange = (event) => {
+  form.gender = event.value.code;
+};
 
 const $primevue = usePrimeVue();
-
-const files = ref([]);
-
 
 const formatSize = (bytes) => {
   const k = 1024;
@@ -266,15 +258,6 @@ const formatSize = (bytes) => {
   const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
 
   return `${formattedSize} ${sizes[i]}`;
-};
-
-const genders = ref([
-  { name: 'MALE', code: 'MALE' },
-  { name: 'FEMALE', code: 'FEMALE' },
-]);
-const myGender = ref();
-const genderChange = (event) => {
-  form.gender = myGender.value.code;
 };
 </script>
 
@@ -293,21 +276,24 @@ const genderChange = (event) => {
                 </span>
               </div>
               <div class="row">
-              <div class="col-lg-3 col-md-6">
-                <select @change="onGenderChange" class="form-select form-select-sm bg-maz-light">
-                  <option selected disabled>Filter by sex</option>
-                  <option value="all">All</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
-                </select>
+                <div class="col-lg-3 col-md-6">
+                  <select @change="onGenderChange" class="form-select form-select-sm bg-maz-light">
+                    <option selected disabled>Filter by sex</option>
+                    <option value="all">All</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                  </select>
+                </div>
+              </div>
+              <div class="ms-auto">
+                <a @click="toggleModal" href="javascript:;" class="btn maz-gradient-btn mt-2 mt-lg-0">
+                  <i class="bx bxs-plus-square"></i>Add Promoter
+                </a>
               </div>
             </div>
-              <div class="ms-auto"></div>
-            </div>
             
-
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
-              <div class="col"  v-for="promoter in paginatedPromoters" :key="promoter.id">
+              <div class="col" v-for="promoter in paginatedPromoters" :key="promoter.id">
                 <div class="card radius-15">
                   <div class="card-body text-center">
                     <div class="p-4 border radius-15">
@@ -317,8 +303,8 @@ const genderChange = (event) => {
                       <p class="mb-3">{{ promoter.userDetails.email }}</p>
                       <div class="list-inline contacts-social mt-3 mb-3"> 
                         <a v-tooltip.right="'Edit'" @click="openPosition('top', promoter)" href="javascript:;" class="list-inline-item maz-gradient-btn text-white border-0">
-                        <i class="bx bxs-edit"></i>
-                      </a>
+                          <i class="bx bxs-edit"></i>
+                        </a>
                       </div>
                       <div class="d-grid"> 
                         <router-link :to="{ 
@@ -333,7 +319,6 @@ const genderChange = (event) => {
               </div>
             </div>
 
-            <!-- Pagination -->
             <Paginator
               :first="(currentPage - 1) * rowsPerPage"
               :rows="rowsPerPage"
@@ -347,79 +332,80 @@ const genderChange = (event) => {
     </div>
 
     <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter'" :style="{ width: '50rem' }">
-     
       <div class="row g-3">
         <div class="col-md-6">
           <label for="firstName" class="form-label">First Name</label>
-          <input v-model="form.firstName" type="text" class="form-control" id="firstName" >
+          <input v-model="form.firstName" type="text" class="form-control" id="firstName">
           <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
             <div class="text-danger">First Name is required</div>
           </div>
         </div>
         <div class="col-md-6">
           <label for="lastName" class="form-label">Last Name</label>
-          <input v-model="form.lastName" type="text" class="form-control" id="lastName" >
+          <input v-model="form.lastName" type="text" class="form-control" id="lastName">
           <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
             <div class="text-danger">Last Name is required</div>
           </div>
         </div>
         <div class="col-md-6">
           <label for="email" class="form-label">Email</label>
-          <input v-model="form.email" type="email" class="form-control" id="email" >
+          <input v-model="form.email" type="email" class="form-control" id="email">
           <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
             <div class="text-danger">Email is required</div>
           </div>
         </div>
         <div class="col-md-6">
-          <label for="cell" class="form-label">Phone Number</label>
-          <input v-model="form.phone" type="text" class="form-control" id="cell" >
+          <label for="phone" class="form-label">Phone Number</label>
+          <input v-model="form.phone" type="text" class="form-control" id="phone">
           <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
-            <div class="text-danger">Cell Number is required</div>
+            <div class="text-danger">Phone Number is required</div>
           </div>
         </div>
-        <div class="card flex justify-center">
-          <label for="input1" class="form-label">Gender </label>
-          <Select v-model="myGender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select gender" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
+        <div class="col-md-6">
+          <label for="gender" class="form-label">Gender</label>
+          <Select v-model="form.gender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select gender" class="w-full" />
           <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
             <div class="text-danger">Gender is required</div>
           </div>
         </div>
-
-        <div class="col-md-3">
-          <label for="dress_size" class="form-label">Dress Size</label>
-          <select v-model="form.dressSize" class="form-control" id="dress_size">
-            <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
+        <div class="d-flex justify-content-between gap-3">
+          <div class="col-md-2">
+          <label for="dressSize" class="form-label">Dress Size</label>
+          <select v-model="form.dressSize" class="form-control" id="dressSize">
+            <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
           </select>
           <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
             <div class="text-danger">Dress Size is required</div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label for="pantsSize" class="form-label">Pants Size</label>
           <input v-model="form.pantsSize" class="form-control" id="pantsSize" />
           <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
             <div class="text-danger">Pants Size is required</div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+          <label for="topSize" class="form-label">Top Size</label>
+          <select v-model="form.topSize" class="form-control" id="topSize">
+            <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+          </select>
+          <div class="input-errors" v-for="error of v$.topSize.$errors" :key="error.$uid">
+            <div class="text-danger">Top Size is required</div>
+          </div>
+        </div>
+        <div class="col-md-2">
           <label for="height" class="form-label">Height</label>
           <input v-model="form.height" type="number" class="form-control" id="height">
           <div class="input-errors" v-for="error of v$.height.$errors" :key="error.$uid">
             <div class="text-danger">Height is required</div>
           </div>
         </div>
-        <div class="col-md-3">
-          <label for="top-size" class="form-label">Top Size</label>
-          <select v-model="form.topSize" class="form-control" id="top-size">
-            <option v-for="size in sizes" :key="size.id" :value="size">{{ size }}</option>
-          </select>
-          <div class="input-errors" v-for="error of v$.topSize.$errors" :key="error.$uid">
-            <div class="text-danger">Top Size is required</div>
-          </div>
         </div>
-        <div class="col-md-3">
+       
+        <div class="col-md-12">
           <label for="bio" class="form-label">Bio</label>
-          <Textarea v-model="form.bio" autoResize rows="5" cols="91" />
+          <Textarea v-model="form.bio" autoResize rows="5" cols="30" class="w-full" />
           <div class="input-errors" v-for="error of v$.bio.$errors" :key="error.$uid">
             <div class="text-danger">Bio is required</div>
           </div>
@@ -429,6 +415,7 @@ const genderChange = (event) => {
       <div class="col-12 mt-4">
         <div class="d-grid">
           <button @click="onSubmit" class="btn maz-gradient-btn" type="button">
+            <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             {{ isEdit ? 'Update' : 'Submit' }}
           </button>
         </div>
@@ -436,6 +423,7 @@ const genderChange = (event) => {
     </Dialog>
   </Layout>
 </template>
+
 
 
 <style scoped>
