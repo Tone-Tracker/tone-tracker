@@ -101,7 +101,7 @@ const previewBase64PDF = () => {
       <img v-if="fileType === 'pdf'" @click="previewBase64PDF" 
       src="/src/assets/images/pdf.png" 
       alt="" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
-      <i v-else class='bx bx-image-alt fs-1 text-info cursor-pointer' @click="previewBase64PDF"></i>
+      <i v-else class='bx bx-image-alt fs-1 maz-gradient-txt cursor-pointer' @click="previewBase64PDF"></i>
     </div>
     <div class="file-info">
       <p class="m-0 text-white">{{ file.name }}</p>

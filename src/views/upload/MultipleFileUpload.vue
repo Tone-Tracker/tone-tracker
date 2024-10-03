@@ -17,15 +17,14 @@ const emit = defineEmits(['fileUploaded','fileDropped']);
 const toaster = useToaster();
 const uploadStore = useDocUpload();
 
-const file = ref(null);
+const files = ref([]);
 const isDragging = ref(false);
 const showLoading = ref(false);
 
 function onFileChange(event) {
-  const selectedFile = event.target.files[0];
-  if (selectedFile) {
-    file.value = selectedFile;
-    emit('fileUploaded', selectedFile);
+  if (event.target.files) {
+    files.value = event.target.files;
+    emit('fileUploaded', files.value);
   }
 }
 
@@ -38,11 +37,11 @@ function onDrop(event) {
   const droppedFile = droppedFiles[0];
   //if its not image 
   if (props.fileType === 'image' && !droppedFile.type.includes("image")) {
-    file.value = null;
+    files.value = null;
     toaster.error("Only image files are allowed");
     return;
   }
-  file.value = droppedFile;
+  files.value = droppedFile;
   emit('fileDropped', event.dataTransfer.files);
   isDragging.value = false;
 }
@@ -59,16 +58,19 @@ function onDragLeave() {
   isDragging.value = false;
 }
 
-function removeFile() {
-  file.value = null;
+function removeFile(fileIndex) {
+  const fileArray = Array.from(files.value);
+  fileArray.splice(fileIndex, 1);
+  files.value = fileArray;
+  emit('fileUploaded',files.value)
 }
 
 const view_uploaded_file_visible = ref(false);
 const base64PDF = ref(null);
-const previewBase64PDF = () => {
+const previewBase64PDF = (file) => {
     //convert brief file to base64
     const reader = new FileReader();
-    reader.readAsDataURL(file.value);
+    reader.readAsDataURL(file);
     reader.onloadend = () => {
         base64PDF.value = reader.result
      
@@ -121,23 +123,23 @@ const submitFile = () => {
     <div class="text-center">
       <i class='bx bx-cloud-upload text-white fs-1' ></i>
       <p class="mt-2 text-white">Drag and drop your file here or <label for="nda-fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
-      <input id="nda-fileInput" type="file" :accept="accept" class="d-none" @change="onFileChange">
+      <input id="nda-fileInput" type="file" :accept="accept" multiple class="d-none" @change="onFileChange">
     </div>
   </div>
 
-  <div v-if="file && showFilePreview" class="file-details mt-3 p-1 border rounded d-flex align-items-center">
+  <div v-if="files && showFilePreview" v-for="(file, index) in files" class="file-details mt-3 p-1 border rounded d-flex align-items-center">
     <div class="file-icon me-3">
       <img v-if="fileType === 'pdf'" @click="previewBase64PDF" 
       src="/src/assets/images/pdf.png" 
       alt="" class="img-fluid cursor-pointer" style=" width: 100px; height: 100px; border-radius: 6px;"/>
-      <i v-else class='bx bx-image-alt fs-1 maz-gradient-txt cursor-pointer' @click="previewBase64PDF"></i>
+      <i v-else class='bx bx-image-alt fs-1 maz-gradient-txt cursor-pointer' @click="previewBase64PDF(file)"></i>
     </div>
     <div class="file-info">
       <p class="m-0 text-white">{{ file.name }}</p>
       <small class="m-0 text-white">{{ (file.size / 1024).toFixed(2) }} KB</small>
     </div>
     <div class="ms-auto">
-      <span class="cursor-pointer" @click="removeFile">
+      <span class="cursor-pointer" @click="removeFile(index)">
           <i class='bx bx-trash fs-3 text-danger' ></i>
       </span>
     </div>
