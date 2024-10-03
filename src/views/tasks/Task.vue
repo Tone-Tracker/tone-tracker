@@ -433,7 +433,13 @@ const taskItems = (task) => {
     return items;
 };
 
-
+const getTaskType = (type) => {
+    if(type === 'INHOUSE') {
+        return 'In House';
+    } else if(type === 'THIRDPARTY') {
+        return 'Third Party';
+    }
+}
 
 
 const selectedThirdPaties = ref();
@@ -494,6 +500,7 @@ const clientColor = JSON.parse(localStorage.getItem('clientColor'));
                                             <th>Risk</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
+                                            <th>Time Record</th>
                                             <th>Type</th>
                                             <th>Completion</th>
                                             <th>Actions</th>
@@ -509,6 +516,7 @@ const clientColor = JSON.parse(localStorage.getItem('clientColor'));
                                             <td>{{task.startDate}}</td>
                                             <td>{{task.plannedEndDate}}</td>
                                             <td>{{task.timeRecord}}</td>
+                                            <td>{{ getTaskType(task.type) }}</td>
                                             <td>{{task.completion}}</td>
                                             <td>
                                                 <div class="d-flex order-actions">

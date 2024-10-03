@@ -17,6 +17,14 @@ const getClass = (status) => {
         return 'risk-at-risk';
     }
 }
+
+const getTaskType = (type) => {
+    if(type === 'INHOUSE') {
+        return 'In House';
+    } else if(type === 'THIRDPARTY') {
+        return 'Third Party';
+    }
+}
 const getStatus = (status) => {
     return props.statuses.find(stat => stat.code === status).name;
 }
@@ -32,6 +40,7 @@ const getStatus = (status) => {
                         <th>Risk</th>
                         <th>Planned End-Date</th>
                         <th>Time Record</th>
+                        <th>Type</th>
                         <th>Completion</th>
                     </tr>
                 </thead>
@@ -44,6 +53,7 @@ const getStatus = (status) => {
                     </td>
                     <td>{{task.plannedEndDate}}</td>
                     <td>{{task.timeRecord}}</td>
+                    <td>{{getTaskType(task.type)}}</td>
                     <td>{{task.completion}}</td>
                     </tr>
                     <tr v-else>

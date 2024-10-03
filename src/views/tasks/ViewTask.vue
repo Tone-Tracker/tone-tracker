@@ -22,6 +22,7 @@ const toaster = useToaster();
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const isLoading = ref(false);
+const availablePromotersLoading = ref(false);
 
 const taskName = ref(route.query.name);
 
@@ -65,14 +66,17 @@ const form = reactive({
 });
 
 const getTask = async () => {
+  isLoading.value = true;
   taskStore.getTask(taskId.value).then(response => {
-    singleTask.value = response.data
+    isLoading.value = false;
+    singleTask.value = response.data;
     Object.assign(form, response.data);
   }).catch(error => {
+    isLoading.value = false;
     toaster.error("Error fetching task");
     console.log(error);
   }).finally(() => {
-    //
+    isLoading.value = false;
   });
 };
 
@@ -93,13 +97,14 @@ const getBids = async () => {
 
   const getAvailablePromoters = async () => {  
   taskStore.getAvailablePromotersByTaskId(taskId.value).then(response => {
-    console.log("tasks", response.data);
+    availablePromotersLoading.value = false;
     availablePromoters.value = response.data;
   }).catch(error => {
     //toaster.error("Error fetching users");
+    availablePromotersLoading.value = false;
     console.log(error);
   }).finally(() => {
-    
+    availablePromotersLoading.value = false;
   });
 };
 
@@ -166,9 +171,8 @@ const getFullName = (firstName, lastName) => {
 }
 
 const redirectToProfile = (user) => {
-  alert("user", user);
-	let client = user.id;
-	router.push({ path: `/profile/${user.id}/?taskId=${taskId.value}` });
+  console.log("user", user);
+	router.push({ path: `/profile/${user?.user}/${user?.id}/?taskId=${taskId.value}` });
 }
 
 const selectedPromoterIds = ref([]);
@@ -400,10 +404,10 @@ const onSubmitPO = () => {
               </div>  
             </template>  
             <template v-else>
-              <div class="text-center mt-2 text-danger">No available Promoters on the job. </div>
+              <div class="text-center mt-2 text-danger">{{ isLoading ? 'Loading...' : 'No available Promoters on the job.' }} </div>
             </template> 
           </div>        
-          <div class="row mt-6 row-cols-xl-9 gap-4">
+          <div class="row mt-6 gap-4">
             <div>
               <h4 class="mb-2 ml-2">Available Promoters</h4>
             </div>
@@ -418,12 +422,12 @@ const onSubmitPO = () => {
                         </template>
                         <template #image>
                           <img
-                            :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" 
+                            :src="availablePromoter.userDetails.path ? envPath + availablePromoter.userDetails.path : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" 
                             alt="image" width="250" />
                         </template>
                         <template #preview="slotProps">
                           <img 
-                            :src="availablePromoter.userDetails.image ? availablePromoter.userDetails.image : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" 
+                            :src="availablePromoter.userDetails.path ? envPath + availablePromoter.userDetails.path : avatarGenerator(availablePromoter.userDetails.firstName, availablePromoter.userDetails.lastName)" 
                             alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                         </template>
                       </Image>
@@ -442,7 +446,7 @@ const onSubmitPO = () => {
               </div>  
             </template>
             <template v-else>
-              <div class="text-center mt-2 text-danger">No available Promoters.</div>
+              <div class="text-center mt-2 text-danger">{{ availablePromotersLoading ? 'Loading...' : 'No available Promoters.' }}</div>
             </template> 
             <div class="ms-auto" v-if="selectedPromoterIds.length > 0">
               <button @click="saveSelectedPromoters" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
