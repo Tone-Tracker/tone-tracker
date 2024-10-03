@@ -5152,17 +5152,3 @@ form select.error:focus {
 		padding: 1.5rem 1.5rem 1.5rem 0rem !important;
 	}
 }
-
-@media (max-width: 1440px) {
-	.icon-sm-down {
-		display: inline-block !important;
-		/* Make the icon visible */
-	}
-}
-
-@media (min-width: 1441px) {
-	.icon-sm-down {
-		display: none !important;
-		/* Hide the icon on larger screens */
-	}
-}
