@@ -41,7 +41,11 @@ const form = reactive({
   email: null,
   user: null,
   description: null,
-  id: null
+  id: null,
+  dressSize: null,
+  pantsSize: null,
+  topSize: null,
+  height: null
 });
 
 onMounted(() => {
@@ -55,48 +59,17 @@ const rules = {
   email: { required, email },
   phone: { required },
   user: { required },
-  // name: { required },
+  dressSize: { required },
+  pantsSize: { required },
+  topSize: { required },
+  height: { required }
 };
 const v$ = useVuelidate(rules, form);
-
-// const onSubmit = async () => {
-//   const isFormValid = await v$.value.$validate();
-//   if (!isFormValid) { return; }
-  
-//   if (isEdit.value) {
-//     userStore.updateUser(supplierId.value, form).then(function (response) {
-//       toaster.success("Supplier updated successfully");
-//       visible.value = false;
-//       getSuppliers();
-//     }).catch(function (error) {
-//       toaster.error("Error updating supplier");
-//       console.log(error);
-//     });
-//   } else {
-
-//     axios.put(import.meta.env.VITE_SERVER_URL, form).then(function (response) {
-//       toaster.success("Supplier created successfully");
-//       visible.value = false;
-//       getSuppliers();
-//     }).catch(function (error) {
-//       toaster.error("Error creating supplier");
-//       console.log(error);
-//     });
-//     // userStore.submitUser(form).then(function (response) {
-//     //   toaster.success("Supplier created successfully");
-//     //   visible.value = false;
-//     //   getSuppliers();
-//     // }).catch(function (error) {
-//     //   toaster.error("Error creating supplier");
-//     //   console.log(error);
-//     // });
-//   }
-// };
 
 const onSubmit = async () => {
   const isFormValid = await v$.value.$validate();
   if (!isFormValid) return; // Stop if the form is not valid
-  
+
   try {
     if (isEdit.value) {
       await userStore.updateUser(supplierId.value, form);
@@ -113,18 +86,16 @@ const onSubmit = async () => {
   }
 };
 
-
-
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
     promoters.value = originalPromoters.value.filter((promoter) => {
       return (
-       promoter.bio?.toLowerCase().includes(searchTerm) ||
-       promoter.firstName?.toLowerCase().includes(searchTerm) ||
-       promoter.lastName?.toLowerCase().includes(searchTerm) ||
-       promoter.email?.toLowerCase().includes(searchTerm) ||
-       promoter.phone?.toLowerCase().includes(searchTerm)
+        promoter.bio?.toLowerCase().includes(searchTerm) ||
+        promoter.firstName?.toLowerCase().includes(searchTerm) ||
+        promoter.lastName?.toLowerCase().includes(searchTerm) ||
+        promoter.email?.toLowerCase().includes(searchTerm) ||
+        promoter.phone?.toLowerCase().includes(searchTerm)
       );
     });
   } else {
@@ -166,7 +137,6 @@ const onPageChange = (event) => {
   updatePaginatedPromoters(); // Update paginated data when the page changes
 };
 
-
 const getAllSizes = async () => {
   showLoading.value = true;
   sizeStore.getSizes().then(response => {
@@ -178,7 +148,6 @@ const getAllSizes = async () => {
   });
 };
 
-
 let user_id = ref(null);
 const visible = ref(false);
 let isEdit = ref(false);
@@ -187,20 +156,17 @@ let supplierId = ref(null);
 const position = ref('top');
 const dropdownItems = ref([]);
 
-
-
 const openPosition = (pos, promoter) => {
-  console.log('promoter', promoter.firstName)
   if (promoter) {
     isEdit.value = true;
     supplierId.value = promoter.id;
     form.user = promoter.id;
     user_id.value = promoter.id;
-      
+
     Object.assign(form, {
-      firstName : promoter.firstName,
-      lastName : promoter.lastName,
-      email : promoter.email,
+      firstName: promoter.firstName,
+      lastName: promoter.lastName,
+      email: promoter.email,
       phone: promoter.phone,
       bio: promoter.bio,
       role: promoter.role,
@@ -208,7 +174,6 @@ const openPosition = (pos, promoter) => {
       description: promoter.description,
       id: promoter.id
     });
-    
   } else {
     isEdit.value = false;
     Object.assign(form, {
@@ -222,38 +187,8 @@ const openPosition = (pos, promoter) => {
   visible.value = true;
 };
 
-
 const $primevue = usePrimeVue();
 
-const files = ref([]);
-
-
-const formatSize = (bytes) => {
-  const k = 1024;
-  const dm = 3;
-  const sizes = $primevue.config.locale.fileSizeTypes;
-
-  if (bytes === 0) {
-    return `0 ${sizes[0]}`;
-  }
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-  return `${formattedSize} ${sizes[i]}`;
-};
-
-const genders = ref([
-  { name: 'MALE', code: 'MALE' },
-  { name: 'FEMALE', code: 'FEMALE' },
-]);
-const myGender = ref();
-const genderChange = (event) => {
-  form.gender = myGender.value.code;
-};
-
-
-////////////////////
 const closeDialog = () => {
   visible.value = false;
 };
@@ -265,9 +200,12 @@ const toggleModal = () => {
   form.email = null;
   form.phone = null;
   form.description = null;
+  form.dressSize = null;
+  form.pantsSize = null;
+  form.topSize = null;
+  form.height = null;
   visible.value = true; // Show modal
 };
-
 
 </script>
 
@@ -285,18 +223,15 @@ const toggleModal = () => {
                   <i class="bx bx-search"></i>
                 </span>
               </div>
-              <div class="ms-auto"></div>
-
               <div class="ms-auto">
                 <a @click="toggleModal" href="javascript:;" class="btn maz-gradient-btn mt-2 mt-lg-0">
                   <i class="bx bxs-plus-square"></i>Add Suppliers
                 </a>
               </div>
             </div>
-            
 
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
-              <div class="col"  v-for="promoter in paginatedPromoters" :key="promoter.id">
+              <div class="col" v-for="promoter in paginatedPromoters" :key="promoter.id">
                 <div class="card radius-15">
                   <div class="card-body text-center">
                     <div class="p-4 border radius-15">
@@ -304,12 +239,12 @@ const toggleModal = () => {
                       <img v-else src="../../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
                       <h5 class="mb-0 mt-5">{{ promoter.firstName }} {{ promoter.lastName }}</h5>
                       <p class="mb-3">{{ promoter.email }}</p>
-                      <div class="list-inline contacts-social mt-3 mb-3"> 
+                      <div class="list-inline contacts-social mt-3 mb-3">
                         <a v-tooltip.right="'Edit'" @click="openPosition('top', promoter)" href="javascript:;" class="list-inline-item maz-gradient-btn text-white border-0">
-                        <i class="bx bxs-edit"></i>
-                      </a>
+                          <i class="bx bxs-edit"></i>
+                        </a>
                       </div>
-                      <div class="d-grid"> 
+                      <div class="d-grid">
                         <router-link :to="{ path: `/supplier-profile/${promoter?.activeUserId}/${promoter?.id}` }" class="btn btn-outline-primary radius-15">View Profile</router-link>
                       </div>
                     </div>
@@ -331,52 +266,81 @@ const toggleModal = () => {
       </div>
     </div>
 
-    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Supplier' : 'Add Supplier'" :style="{ width: '50rem' }"   @hide="closeDialog"
-    >
-     
+    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Supplier' : 'Add Supplier'" :style="{ width: '50rem' }" @hide="closeDialog">
       <div class="row g-3">
+        <!-- Existing form fields -->
         <div class="col-md-6">
           <label for="firstName" class="form-label">First Name</label>
-          <input v-model="form.firstName" type="text" class="form-control" id="firstName" >
+          <input v-model="form.firstName" type="text" class="form-control" id="firstName">
           <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
             <div class="text-danger">First Name is required</div>
           </div>
         </div>
         <div class="col-md-6">
           <label for="lastName" class="form-label">Last Name</label>
-          <input v-model="form.lastName" type="text" class="form-control" id="lastName" >
+          <input v-model="form.lastName" type="text" class="form-control" id="lastName">
           <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
             <div class="text-danger">Last Name is required</div>
           </div>
         </div>
         <div class="col-md-6">
           <label for="email" class="form-label">Email</label>
-          <input v-model="form.email" type="email" class="form-control" id="email" >
+          <input v-model="form.email" type="email" class="form-control" id="email">
           <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
             <div class="text-danger">Email is required</div>
           </div>
         </div>
         <div class="col-md-6">
           <label for="cell" class="form-label">Phone Number</label>
-          <input v-model="form.phone" type="text" class="form-control" id="cell" >
+          <input v-model="form.phone" type="text" class="form-control" id="cell">
           <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
             <div class="text-danger">Cell Number is required</div>
           </div>
         </div>
         <div class="col-md-12">
           <label for="name" class="form-label">Name</label>
-          <input v-model="form.name" type="text" class="form-control" id="name" >
-          <!-- <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-            <div class="text-danger">Name is required</div>
-          </div> -->
+          <input v-model="form.name" type="text" class="form-control" id="name">
         </div>
-     
         <div class="col-md-12">
-          <label for="name" class="form-label">Description</label>
-          <Textarea v-model="form.description" autoResize rows="5" cols="91" />
-          <!-- <div class="input-errors" v-for="error of v$.description.$errors" :key="error.$uid">
-            <div class="text-danger">Description is required</div>
-          </div> -->
+          <label for="description" class="form-label">Description</label>
+          <Textarea v-model="form.description" autoResize rows="5" cols="91"/>
+        </div>
+
+        <!-- New input fields for sizes and height -->
+        <div class="d-flex justify-content-between gap-1">
+         
+          <div class="col-md-2">
+            <label for="dressSize" class="form-label">Dress Size</label>
+            <select v-model="form.dressSize" class="form-control" id="dressSize">
+              <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+            </select>
+            <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
+              <div class="text-danger">Dress Size is required</div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label for="pantsSize" class="form-label">Pants Size</label>
+            <input v-model="form.pantsSize" class="form-control" id="pantsSize"/>
+            <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
+              <div class="text-danger">Pants Size is required</div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label for="topSize" class="form-label">Top Size</label>
+            <select v-model="form.topSize" class="form-control" id="topSize">
+              <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+            </select>
+            <div class="input-errors" v-for="error of v$.topSize.$errors" :key="error.$uid">
+              <div class="text-danger">Top Size is required</div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label for="height" class="form-label">Height</label>
+            <input v-model="form.height" type="number" class="form-control" id="height">
+            <div class="input-errors" v-for="error of v$.height.$errors" :key="error.$uid">
+              <div class="text-danger">Height is required</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -390,7 +354,6 @@ const toggleModal = () => {
     </Dialog>
   </Layout>
 </template>
-
 
 <style scoped>
 .mt-4 {

@@ -361,15 +361,16 @@ const formatSize = (bytes) => {
             <div class="text-danger">Phone Number is required</div>
           </div>
         </div>
-        <div class="col-md-6">
+        
+        <div class="d-flex justify-content-between gap-1">
+          <div class="col-md-2">
           <label for="gender" class="form-label me-2">Gender</label>
           <Select v-model="form.gender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select gender" class="w-full" />
           <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
             <div class="text-danger">Gender is required</div>
           </div>
         </div>
-        <div class="d-flex justify-content-between gap-1">
-          <div class="col-md-3">
+          <div class="col-md-2">
           <label for="dressSize" class="form-label">Dress Size</label>
           <select v-model="form.dressSize" class="form-control" id="dressSize">
             <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
@@ -378,14 +379,15 @@ const formatSize = (bytes) => {
             <div class="text-danger">Dress Size is required</div>
           </div>
         </div>
-        <div class="col-md-3">
+
+        <div class="col-md-2">
           <label for="pantsSize" class="form-label">Pants Size</label>
           <input v-model="form.pantsSize" class="form-control" id="pantsSize" />
           <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
             <div class="text-danger">Pants Size is required</div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label for="topSize" class="form-label">Top Size</label>
           <select v-model="form.topSize" class="form-control" id="topSize">
             <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
@@ -394,7 +396,7 @@ const formatSize = (bytes) => {
             <div class="text-danger">Top Size is required</div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label for="height" class="form-label">Height</label>
           <input v-model="form.height" type="number" class="form-control" id="height">
           <div class="input-errors" v-for="error of v$.height.$errors" :key="error.$uid">
