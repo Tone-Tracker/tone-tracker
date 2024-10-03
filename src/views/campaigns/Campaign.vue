@@ -38,6 +38,7 @@ const clientName = ref('');
 let campaigns = ref([]);
 const img = ref(null);
 const loading = ref(false);
+const isFecthing = ref(false);
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 const form = reactive({
@@ -119,13 +120,16 @@ const createCampaign = async () => {
 };
 
 const getCampaignsByClientId = async () => {
+    isFecthing.value = true;
     campaignStore.getCampaignsByClientId(clientId.value).then(function (response) {
-        console.log(response.data);
+        isFecthing.value = false;
         campaigns.value = response.data;
     }).catch(function (error) {
+        isFecthing.value = false;
         toaster.error("Error fetching campaigns");
         console.log(error);
     }).finally(function () {
+        isFecthing.value = false;
     });
 };
 
@@ -259,9 +263,13 @@ const onInput = () => {
                                                 <tbody>
                                                     <tr v-if="campaigns.length > 0" v-for="(campaign, index) in campaigns" :key="campaign.id">
                                                         <td>
-                                                            <Avatar v-if="campaign.path" :image="envPath + campaign.path" class="mr-2" size="large" shape="circle" 
+                                                            <Avatar v-if="campaign.path" :image="envPath + campaign.path" 
+                                                            :style="{ background: clientColorStyles?.background }" 
+                                                             class="mr-2" size="large" shape="circle" 
                                                              />
-                                                            <Avatar v-else :label="campaign.name[0]?.toUpperCase()" class="mr-2" size="large" shape="circle" />
+                                                            <Avatar v-else :label="campaign.name[0]?.toUpperCase()" class="mr-2" 
+                                                            :style="{ background: clientColorStyles?.background }" 
+                                                            size="large" shape="circle" />
                                                         </td>
                                                         <td v-if="!campaign.isEditing" class="pt-4">{{ campaign.name }}</td>
                                                         <td v-else class="pt-4">
@@ -289,7 +297,7 @@ const onInput = () => {
                                                         </td>
                                                     </tr>
                                                     <tr v-else>
-                                                        <td colspan="7" class="text-center text-danger">{{ clientName }} has no campaigns.</td>
+                                                        <td colspan="7" class="text-center text-danger">{{ isFecthing ? 'Loading...' : clientName + 'has no campaigns.'}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -364,5 +372,7 @@ const onInput = () => {
 .text-danger {
     color: red;
 }
-
+.fuck{
+    background: red !important;
+}
 </style>

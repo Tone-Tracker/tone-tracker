@@ -439,13 +439,13 @@ const onUserChange = (event) => {
 										<td>
 											<div class="d-flex order-actions">
 												<template v-if="isAdmin()">
-													<SplitButton class="text-white" label="Actions" 
+													<SplitButton class="text-white" label="" 
 													icon="bx bx-cog fs-4" 
 													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
 													:model="items(activation)"/>
 												</template>
 												<template v-if="isActivationManager()">
-													<SplitButton class="text-white" label="Actions" 
+													<SplitButton class="text-white" label="" 
 													icon="bx bx-cog fs-4" 
 													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
 													:model="activationItems(activation)"/>
@@ -457,7 +457,7 @@ const onUserChange = (event) => {
 									</tr>
 									<tr v-else>
 										<td colspan="7" class="text-center text-danger">
-											No activations found
+											{{ showLoading ? 'Loading...' : 'No activations found' }}
 										</td>
 									</tr>
 									
@@ -499,8 +499,21 @@ const onUserChange = (event) => {
 		</Dialog>
     </Layout>
 </template>
-<style>
+<style scoped>
 .p-splitbutton {
     height: 36px !important;
+}
+
+.p-button {
+	background:  var();
+	border: none !important;
+	color: #fff !important;
+}
+
+.p-button:hover {
+	background: linear-gradient(to right, #117AD1, #9A3AB1) !important;
+	background: linear-gradient(to right, #9A3AB1, #117AD1) !important;
+	border: none !important;
+	color: #fff !important;
 }
 </style>
