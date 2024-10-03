@@ -90,7 +90,7 @@ const previewBase64PDF = () => {
     :class="{ 'file-drop-zone-active': isDragging }"
   >
     <div class="text-center">
-      <i class='bx bx-cloud-upload text-dark fs-1 text-dark' ></i>
+      <i class='bx bx-cloud-upload fs-1 text-white' ></i>
       <p class="mt-2">Drag and drop your file here or <label for="sla-fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
       <input id="sla-fileInput" type="file" :accept="accept" class="d-none" @change="onFileChange">
     </div>
@@ -104,8 +104,8 @@ const previewBase64PDF = () => {
       <i v-else class='bx bx-image-alt fs-1 text-info cursor-pointer' @click="previewBase64PDF"></i>
     </div>
     <div class="file-info">
-      <p class="m-0">{{ file.name }}</p>
-      <small class="m-0 text-dark">{{ (file.size / 1024).toFixed(2) }} KB</small>
+      <p class="m-0 text-white">{{ file.name }}</p>
+      <small class="m-0 text-white">{{ (file.size / 1024).toFixed(2) }} KB</small>
     </div>
     <div class="ms-auto">
       <button class="btn btn-danger" @click="removeFile">
@@ -143,7 +143,7 @@ const previewBase64PDF = () => {
   }
   
   .file-details {
-    background-color: #f8f9fa;
+    background-color: #333;
   }
   
   .file-icon svg {

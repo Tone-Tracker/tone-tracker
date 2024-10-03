@@ -100,7 +100,7 @@ function removeFile() {
   }
   
   .file-details {
-    background-color: #f8f9fa;
+    background-color: #333;
   }
   
   .file-icon svg {

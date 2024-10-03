@@ -133,7 +133,7 @@ const submitFile = () => {
       <i v-else class='bx bx-image-alt fs-1 text-info cursor-pointer' @click="previewBase64PDF"></i>
     </div>
     <div class="file-info">
-      <p class="m-0">{{ file.name }}</p>
+      <p class="m-0 text-white">{{ file.name }}</p>
       <small class="m-0 text-white">{{ (file.size / 1024).toFixed(2) }} KB</small>
     </div>
     <div class="ms-auto">
@@ -171,7 +171,7 @@ const submitFile = () => {
   }
   
   .file-details {
-    background-color: #f8f9fa;
+    background-color: #333;
   }
   
   .file-icon svg {

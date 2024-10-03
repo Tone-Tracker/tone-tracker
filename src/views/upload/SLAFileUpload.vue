@@ -116,7 +116,7 @@ const submitFile = () => {
       <img @click="previewBase64PDF" src="/src/assets/images/pdf.png" alt="pdf" class="cursor-pointer img-fluid" style=" width: 100px; height: 100px; border-radius: 6px;"/>
     </div>
     <div class="file-info">
-      <p class="m-0 ">{{ file.name }}</p>
+      <p class="m-0 text-white">{{ file.name }}</p>
       <small class="m-0 text-white">{{ (file.size / 1024).toFixed(2) }} KB</small>
     </div>
     <div class="ms-auto">
@@ -154,7 +154,7 @@ const submitFile = () => {
   }
   
   .file-details {
-    background-color: #f8f9fa;
+    background-color: #333;
   }
   
   .file-icon svg {
