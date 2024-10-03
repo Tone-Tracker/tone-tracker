@@ -247,7 +247,7 @@ try {
                     <div class="col-md-4 mb-3">
                       <label for="region" class="form-label">Region</label>
                       <div class="card flex justify-center">
-                        <MultiSelect v-model="form.region" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
+                        <MultiSelect v-model="form.regions" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
                             :maxSelectedLabels="5" class="w-full md:w-80" />
                     </div>
                       <div
