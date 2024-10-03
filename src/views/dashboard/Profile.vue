@@ -87,9 +87,9 @@ Date: 04/06/2024
     </div>
 </div>
                                     <div class="mb-4">
-                                        <button v-if="canUpdate()"
-                                            class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center"
-                                            data-bs-toggle="modal" data-bs-target="#addModal">
+                                        <button v-if="canUpdate()" 
+                                            @click="showModal = true"
+                                            class="btn rounded-0 btn-primary ps-5 pe-5 d-flex justify-content-center align-items-center">
                                             <span>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" style="fill: #ffffff;transform: msFilter;">
@@ -100,62 +100,17 @@ Date: 04/06/2024
 
                                     </div>
                                     <!-- Add Modal -->
-                                    <div v-if="showModal" class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="addModalLabel">Drag and drop your images</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
+                                    <Dialog v-model:visible="showModal" position="top" modal header="Add Promoter Images" :style="{ width: '30rem', color: clientColorStyles?.color }">
+                                   
+                                               
                                                 <div class="modal-body">
-                                                    <FileUpload name="demo[]" url="/api/upload" @upload="onTemplatedUpload($event)"  :multiple="true" accept="image/*" @select="onSelectedFiles">
-                                                        <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
-                                                            <div class="d-flex flex-wrap justify-content-between align-items-center flex-grow-1 gap-4">
-                                                                <div class="d-flex gap-2">
-                                                                    <Button @click="chooseCallback()" icon="bx bx-images" class="btn btn-outline-secondary text-white rounded"></Button>
-                                                                    <!-- <Button @click="clearCallback()" icon="bx bx-x" class="btn btn-outline-danger rounded" :disabled="!files || files.length === 0"></Button> -->
-                                                                </div>
-                                                            </div>
-                                                        </template>
-                                                        <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
-                                                            <div class="d-flex flex-column gap-4 pt-4">
-                                                                <div v-if="files.length > 0">
-                                                                    <div class="d-flex flex-wrap gap-4">
-                                                                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="p-4 rounded border d-flex flex-column border-secondary align-items-center gap-2">
-                                                                            <div>
-                                                                                <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                                                                            </div>
-                                                                            <span class="font-weight-bold text-truncate w-75">{{ file.name }}</span>
-                                                                            <div>{{ formatSize(file.size) }}</div>
-                                                                            <Button icon="bx bx-x" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" class="btn btn-outline-danger rounded" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                            
-                                                                <div v-if="uploadedFiles.length > 0">
-                                                                    <div class="d-flex flex-wrap gap-4">
-                                                                        <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="p-4 rounded border d-flex flex-column border-secondary align-items-center gap-2">
-                                                                            <div>
-                                                                                <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                                                                            </div>
-                                                                            <span class="font-weight-bold text-truncate w-75">{{ file.name }}</span>
-                                                                            <div>{{ formatSize(file.size) }}</div>
-                                                                            <Badge value="Completed" class="mt-4 badge bg-success" />
-                                                                            <Button icon="bx bx-x" @click="removeUploadedFileCallback(index)" class="btn btn-outline-danger rounded" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </template>
-                                                        <template #empty>
-                                                            <div class="d-flex align-items-center justify-content-center flex-column">
-                                                                <i class="bx bx-cloud-upload border border-2 rounded-circle p-4 fs-6 text-muted" />
-                                                                <p class="mt-3 mb-0">Drag and drop files to here to upload.</p>
-                                                            </div>
-                                                        </template>
-                                                    </FileUpload>
+                                                    <MultipleFileUpload
+                                                    :showFilePreview="true" 
+                                                     accept="image/*" 
+                                                     fileType="image" 
+                                                     @fileUploaded="onFileChange"
+                                                     @fileDropped="onfileDropped"
+                                                    />
                                                 </div>
 
                                                 <div class="modal-footer">
@@ -169,9 +124,7 @@ Date: 04/06/2024
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </Dialog>
 
 
                                 </div>
@@ -430,51 +383,63 @@ Date: 04/06/2024
                                             </div>
 
                                             <div class="card maz-gradient-border-top mt-4" v-if="canUpdate">
-                                                <div class="card-body p-4">
-                                                    <h4 class="mb-2 text-center mt-2">Change Password</h4>
-                                                        <div class="row mb-3">
-                                                            <label for="password" class="col-sm-3 col-form-label">New Password</label>
-                                                            <div class="col-sm-9">
-                                                                <div class="position-relative input-icon">
-                                                                    <input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
-                                                                    <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-                                                                </div>
-                                                                <div
-                                                                class="input-errors"
-                                                                v-for="error of vv$.password.$errors"
-                                                                :key="error.$uid">
-                                                                <div class="text-danger">Password is required</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
-                                                            <div class="col-sm-9">
-                                                                <div class="position-relative input-icon">
-                                                                    <input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
-                                                                    <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-                                                                </div>
-                                                                <div
-                                                                class="input-errors"
-                                                                v-for="error of vv$.confirmPassword.$errors"
-                                                                :key="error.$uid">
-                                                                <div class="text-danger">Please confirm your password</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row" v-if="canUpdate()">
-                                                            <label class="col-sm-3 col-form-label"></label>
-                                                            <div class="col-sm-9">
-                                                                <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
-                                                                    <button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
-                                                                        <div v-if="showPasswordLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
-                                                                        </div>
-                                                                        {{ showPasswordLoading ?  '' : 'Update Password' }}
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+
+                                                
+
+        <Accordion :value="['maz']">
+            <AccordionPanel value="maz">
+                <AccordionHeader><h4 class="mb-2 text-center mt-2">Change Password</h4></AccordionHeader>
+                <AccordionContent>
+                    <div class="card-body p-4">
+                       
+                            <div class="row mb-3 mt-2">
+                                <label for="password" class="col-sm-3 col-form-label">New Password</label>
+                                <div class="col-sm-9">
+                                    <div class="position-relative input-icon">
+                                        <input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
+                                        <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+                                    </div>
+                                    <div
+                                    class="input-errors"
+                                    v-for="error of vv$.password.$errors"
+                                    :key="error.$uid">
+                                    <div class="text-danger">Password is required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
+                                <div class="col-sm-9">
+                                    <div class="position-relative input-icon">
+                                        <input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
+                                        <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+                                    </div>
+                                    <div
+                                    class="input-errors"
+                                    v-for="error of vv$.confirmPassword.$errors"
+                                    :key="error.$uid">
+                                    <div class="text-danger">Please confirm your password</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" v-if="canUpdate()">
+                                <label class="col-sm-3 col-form-label"></label>
+                                <div class="col-sm-9">
+                                    <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
+                                        <button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
+                                            <div v-if="showPasswordLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            {{ showPasswordLoading ?  '' : 'Update Password' }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </AccordionContent>
+            </AccordionPanel>
+        </Accordion>
+
+                                               
                                             </div>
                         </div>
                     </div>
@@ -483,7 +448,7 @@ Date: 04/06/2024
 
             </div>
         </div>
-        <Dialog v-model:visible="showExperienceModal" header="Add Experience" :style="{ width: '30rem' }" position="top" :modal="true" :draggable="false">
+        <Dialog v-model:visible="showExperienceModal" header="Add Activation Experience" :style="{ width: '30rem' }" position="top" :modal="true" :draggable="false">
             <form @submit.prevent="addExperience">
             <div class="row g-3">
                   <div class="col-md-12">
@@ -609,6 +574,7 @@ import { required, sameAs } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
 import BreadCrumb from '../../components/BreadCrumb.vue';
 import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
+import MultipleFileUpload from '../upload/MultipleFileUpload.vue';
 
 
 
@@ -685,6 +651,11 @@ const updatePassword = async () => {
     }).finally(() => {
         showPasswordLoading.value = false
     })
+}
+
+const onFileChange = (filesArr) => {
+    console.log(filesArr)
+  files.value = filesArr
 }
 
 const experienceForm = reactive({
@@ -932,7 +903,6 @@ const getUser = () => {
 
 const getPromoterDetails = () => {
     promoterStore.getTalentByTalentId(userIdParam.value).then(function (response) {
-        console.log('Fuck',response.data);
         promoterData.value = response.data;
 
         let sum = 0;
@@ -988,39 +958,6 @@ const canUpdate = () => {
     return (userIdParam.value == user.activeUserId  && user?.id == promoterId.value)
     || (user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_REGIONAL_MANAGER' || user.role == 'TTG_ACTIVATION_MANAGER');
 }
-const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
-    removeFileCallback(index);
-    totalSize.value -= parseInt(formatSize(file.size));
-    totalSizePercent.value = totalSize.value / 10;
-};
-
-
-const onSelectedFiles = (event) => {
-    files.value = event.files;
-    files.value.forEach((file) => {
-        totalSize.value += parseInt(formatSize(file.size));
-    });
-};
-
-const uploadEvent = (callback) => {
-    totalSizePercent.value = totalSize.value / 10;
-    callback();
-};
-
-const formatSize = (bytes) => {
-    const k = 1024;
-    const dm = 3;
-    const sizes = $primevue.config.locale.fileSizeTypes;
-
-    if (bytes === 0) {
-        return `0 ${sizes[0]}`;
-    }
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-    return `${formattedSize} ${sizes[i]}`;
-};
 
 
 const getFullName = () => {
@@ -1034,8 +971,9 @@ const isMyProfile = () => {
     return (userIdParam.value == user.activeUserId  && user?.id == promoterId.value)
 }
 
-let showModal = ref(true);
+let showModal = ref(false);
 const onSubmit = () => {
+    console.log(files.vale);return;
     if(!files.value.length){
       toaster.error("Please select at least one image");
       return
