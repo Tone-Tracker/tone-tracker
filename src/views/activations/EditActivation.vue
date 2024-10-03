@@ -63,7 +63,6 @@ const form = reactive({
   startDate: "",
   endDate: "",
   brief: "",
-  regions: "",
   targetGroup: "",
   painPoints: "",
 });
@@ -78,19 +77,33 @@ const getActivationById = async () => {
   });
 };
 
-const rules = {
+let rules = null;
+
+if(!activationId){
+    rules = {
       name: { required },
       budget: { required },
       campaign: { required },
-      regions: { required },
+      // regions: { required },
       startDate: { required },
       endDate: { required },
       targetGroup: { required },
       brief: { required },
       painPoints: { required },
     };
-  
-
+}else{
+    rules = {
+    name: { required },
+    budget: { required },
+    campaign: { required },
+    //regions: { required },
+    startDate: { required },
+    endDate: { required },
+    targetGroup: { required },
+    brief: { required },
+    painPoints: { required },
+  };
+}
 
 const v$ = useVuelidate(rules, form);
 
@@ -182,7 +195,7 @@ try {
     <div class="page-wrapper">
       <div class="page-content">
         <BreadCrumb
-          :title="activationId ? 'Edit Activation' : 'Create Activation'"
+          title="Edit Activation"
           icon="bx bxs-user-badge"
         />
         <div class="d-flex">
@@ -244,7 +257,7 @@ try {
                         id="activation-area"
                       />
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-3" v-if="!activationId">
                       <label for="region" class="form-label">Region</label>
                       <div class="card flex justify-center">
                         <MultiSelect v-model="form.region" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
@@ -257,6 +270,18 @@ try {
                       >
                         <div class="text-danger">Region is required</div>
                       </div>
+                    </div>
+                    <div class="col-md-4 mb-3" v-else >
+                      <label for="regionName" class="form-label">Region</label>
+                      <div class="card flex justify-center">
+                         <InputText
+                        v-model="form.regionName"
+                        disabled="disabled"
+                        class="form-control"
+                        id="regionName"
+                      /> 
+                      <!-- <Select v-model="form.region" :options="regions" showClear  optionLabel="name" placeholder="Select Risk" class="w-full md:w-56" /> -->
+                    </div>
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="input1" class="form-label">Start Date</label>

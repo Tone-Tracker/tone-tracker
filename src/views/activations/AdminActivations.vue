@@ -250,7 +250,7 @@ const items = (activation) => [
         label: 'Edit',
         icon: 'bx bx-edit-alt fs-4 maz-gradient-txt',
         command: () => {
-            URLrouter.push(`/create-activation?activation=${activation.id}&campaign=${campaignId.value}&manager=${activation?.firstName + ' ' + activation?.lastName}&name=${activation.campaignDTO.name}`);
+            URLrouter.push(`/edit-activation?activation=${activation.id}&campaign=${campaignId.value}&manager=${activation?.firstName + ' ' + activation?.lastName}&name=${activation.campaignDTO.name}`);
         }
     },    
     

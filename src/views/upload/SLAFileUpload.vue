@@ -105,8 +105,8 @@ const submitFile = () => {
     :class="{ 'file-drop-zone-active': isDragging }"
   >
     <div class="text-center">
-      <i class='bx bx-cloud-upload text-dark fs-1' ></i>
-      <p class="mt-2">Drag and drop your SLA file here or <label for="sla-fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
+      <i class='bx bx-cloud-upload text-white fs-1' ></i>
+      <p class="mt-2 text-white ">Drag and drop your SLA file here or <label for="sla-fileInput" class="text-primary" style="cursor: pointer;">select file to upload</label></p>
       <input id="sla-fileInput" type="file" accept="application/pdf" class="d-none" @change="onFileChange">
     </div>
   </div>
@@ -117,7 +117,7 @@ const submitFile = () => {
     </div>
     <div class="file-info">
       <p class="m-0 ">{{ file.name }}</p>
-      <small class="m-0 text-dark">{{ (file.size / 1024).toFixed(2) }} KB</small>
+      <small class="m-0 text-white">{{ (file.size / 1024).toFixed(2) }} KB</small>
     </div>
     <div class="ms-auto">
       <button class="btn btn-danger" @click="removeFile">
