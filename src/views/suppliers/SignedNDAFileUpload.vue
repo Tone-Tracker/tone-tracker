@@ -138,17 +138,12 @@ const submitFile = () => {
       <small class="m-0 text-white">{{ (file.size / 1024).toFixed(2) }} KB</small>
     </div>
     <div class="ms-auto">
-      <button class="btn btn-danger" @click="removeFile">
-          <i class='bx bx-trash' ></i>
-      </button>
+      <span class="cursor-pointer" @click="removeFile">
+          <i class='bx bx-trash fs-3 text-danger' ></i>
+      </span>
     </div>
   </div>
-  <!-- <div class="d-grid">
-  <button @click="submitFile" type="button" class="btn  maz-gradient-btn w-100 text-white d-flex justify-content-center align-items-center mt-3">
-    <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-    {{ showLoading ? 'Uploading...' : 'Submit' }}
-  </button>
-  </div> -->
+ 
   <div class="card flex justify-center">
     <Drawer v-model:visible="view_uploaded_file_visible" position="right" :header="`Preview ${fileType} File`" class="!w-full md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
         <PDF v-if="fileType === 'pdf'" :src="base64PDF" />

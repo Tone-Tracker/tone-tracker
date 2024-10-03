@@ -125,9 +125,9 @@ const submitFile = () => {
       <small class="m-0 text-white">{{ (file.size / 1024).toFixed(2) }} KB</small>
     </div>
     <div class="ms-auto">
-      <button class="btn btn-danger" @click="removeFile">
-          <i class='bx bx-trash' ></i>
-      </button>
+      <span class="cursor-pointer" @click="removeFile">
+          <i class='bx bx-trash fs-3 text-danger' ></i>
+      </span>
     </div>
   </div>
   <div class="d-grid">
