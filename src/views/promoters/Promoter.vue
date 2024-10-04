@@ -40,9 +40,9 @@ const form = reactive({
   email: '',
   phone: '',
   role: "TTG_TALENT",
-  dressSize: null,
+  dressSize: "",
   pantsSize: '',
-  topSize: null,
+  topSize: "",
   height: '',
   bio: '',
   gender: null
@@ -169,10 +169,16 @@ const onPageChange = (event) => {
   updatePaginatedPromoters();
 };
 
+const originalSizes = ref([]);
 const getAllSizes = async () => {
   showLoading.value = true;
   sizeStore.getSizes().then(response => {
     sizes.value = response.data;
+    originalSizes.value = response.data;
+    sizes.value = originalSizes.value.map(size => ({
+    value: size.toUpperCase(),
+    text: size.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
+  }));
   }).catch(error => {
     console.log(error);
   }).finally(() => {
@@ -373,7 +379,9 @@ const formatSize = (bytes) => {
           <div class="col-md-2">
           <label for="dressSize" class="form-label">Dress Size</label>
           <select v-model="form.dressSize" class="form-control" id="dressSize">
-            <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+
+            <option :selected="true" :disabled="true" :value="''">Select...</option>
+            <option v-for="size in sizes" :key="size?.value" :value="size?.value">{{ size.text }}</option>
           </select>
           <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
             <div class="text-danger">Dress Size is required</div>
@@ -390,7 +398,7 @@ const formatSize = (bytes) => {
         <div class="col-md-2">
           <label for="topSize" class="form-label">Top Size</label>
           <select v-model="form.topSize" class="form-control" id="topSize">
-            <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+            <option v-for="size in sizes" :key="size?.value" :value="size?.value">{{ size.text }}</option>
           </select>
           <div class="input-errors" v-for="error of v$.topSize.$errors" :key="error.$uid">
             <div class="text-danger">Top Size is required</div>
