@@ -246,6 +246,7 @@ const genders = ref([
 ]);
 
 const genderChange = (event) => {
+  console.log(event);
   form.gender = event.value.code;
 };
 
