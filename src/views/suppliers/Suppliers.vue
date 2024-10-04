@@ -41,6 +41,7 @@ const form = reactive({
   email: null,
   user: null,
   description: null,
+  gender: null,
   id: null,
   dressSize: null,
   pantsSize: null,
@@ -53,11 +54,18 @@ onMounted(() => {
   getAllSizes();
 });
 
+const genders = ref([
+  { name: 'Male', value: 'male' },
+  { name: 'Female', value: 'female' },
+  { name: 'Other', value: 'other' }
+]);
+
 const rules = {
   firstName: { required },
   lastName: { required },
   email: { required, email },
   phone: { required },
+  gender: { required },
   user: { required },
   dressSize: { required },
   pantsSize: { required },
@@ -216,7 +224,7 @@ const toggleModal = () => {
         <BreadCrumb title="Suppliers" icon="bx bxs-user-detail" />
         <div class="card">
           <div class="card-body">
-            <div class="d-lg-flex align-items-center mb-4 gap-3">
+            <div class="d-lg-flex align-items-center mb-4 gap-1">
               <div class="position-relative">
                 <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5" placeholder="Search">
                 <span class="position-absolute top-50 product-show translate-middle-y">
@@ -308,6 +316,15 @@ const toggleModal = () => {
 
         <!-- New input fields for sizes and height -->
         <div class="d-flex justify-content-between gap-1">
+
+          <!-- Gender field -->
+      <div class="col-md-2">
+        <label for="gender" class="form-label me-2">Gender</label>
+        <Select v-model="form.gender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select gender" class="w-full" />
+        <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
+          <div class="text-danger">Gender is required</div>
+        </div>
+      </div>
          
           <div class="col-md-2">
             <label for="dressSize" class="form-label">Dress Size</label>
