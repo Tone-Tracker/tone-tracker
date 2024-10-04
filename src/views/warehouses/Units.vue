@@ -43,6 +43,13 @@ const editVisible = ref(false);
 const stockMovementVisible = ref(false);
 const showFilePreview = ref(true);
 
+//////////////units change modal////////////////
+const unitVisible = ref(false);
+
+
+//////////////units change modal////////////////
+
+
 
 watch(searchInput, () => {
 	merchendiseList.value = stockList.value?.filter((stock) => stock.type === 'MERCH' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
@@ -68,6 +75,8 @@ const onUnitChange = (event) => {
 	unitName.value = warehouse.value?.unitsList?.filter((unit) => unit.id == event.target.value)[0]?.name;
 	viewedUnit.value= null;
 	viewedUnit.value = warehouse.value?.unitsList?.filter((unit) => unit.id == event.target.value)[0];
+	unitVisible.value = true; // Show the modal after unit selection
+
 	console.log(viewedUnit.value);
 	getStock();
 }
@@ -292,7 +301,7 @@ loading.value = true;
 
                 <div class="row">
 					<!-- <div class="col-lg-1"></div> -->
-                    <div class="col-lg-10 col-md-12">
+                    <div class="col-lg-10 col-md-12 w-100">
 						<div class="gradient-card">
 						  <div class="content">
 							<strong>Region:</strong> {{ warehouse?.regionName}}<br>
@@ -312,7 +321,7 @@ loading.value = true;
 								{{ unit.name }}
 							</option>
 						</select>
-						<div v-if="unitId">
+						<div v-if="unitId" class="cursor-pointer" @click="unitVisible = true">
 							<i class="bx bx-edit fs-1"></i>
 						</div>
 					</div>
@@ -606,6 +615,42 @@ loading.value = true;
 				
 			</form>
         </Dialog>
+		<Dialog v-model:visible="unitVisible" position="top" modal :header="`Add Unit to ${warehouseQueryName}`" style="width: 26rem">
+               
+			   <form @submit.prevent="onSubmitUnit" class="row">
+				   
+				   <div class="col-md-12">
+					   <div class="card my-card flex justify-center">
+						   <label for="input1" class="form-label">Unit Name</label>
+							  <InputText type="text" v-model="unitForm.name" />
+							  <div class="input-errors" v-for="error of unitV$.name.$errors" :key="error.$uid">
+							  <div class="text-danger">Warehouse name is required</div>
+					   </div>
+				   </div>                        
+				   </div>
+   
+   
+				   <div class="col-md-12">
+					   <div class="card my-card flex justify-center">
+						   <label for="input1" class="d-flex form-label">Capacity <i 
+							   v-tooltip.top="'Estimate the percentage capacity of the unit. e.g 100. For 100% capacity, enter 100'" class='bx bx-info-circle cursor-pointer ms-1 bx bx-info-circle  fs-6' ></i></label>
+							  <InputNumber inputId="minmax" :min="0" :max="100" v-model="unitForm.capacity" />
+							  <div class="input-errors" v-for="error of unitV$.capacity.$errors" :key="error.$uid">
+							  <div class="text-danger">Capacity estimate is required</div>
+						   </div>
+				   </div>                        
+				   </div>
+				   <div class="modal-footer">
+					   <button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
+		   <div v-if="loading" class="spinner-border text-white" role="status">
+			   <span class="visually-hidden">Loading...</span>
+		   </div>
+		   Submit
+	   </button>
+				   </div>
+				   
+			   </form>
+		   </Dialog>
 		<div class="card flex justify-center">
 			<Drawer v-model:visible="showStockImage" position="right" :header="`View Stock Image`" class="w-100 md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
 				<!-- <img :src="stockImagePreview" style="width: 26rem!important;" /> -->
