@@ -323,23 +323,27 @@ const viewUnits = async (warehouse) => {
                 <BreadCrumb :title="regionQueryName + ' Region'" icon="bx bx-building-house" />
             
                 <div class="card">
-                    <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
+                    <div class="mb-4 d-lg-flex align-items-center mb-4">
 
-                <div class="position-relative mx-4">
-                  <input
-                    v-model="searchInput"
-                    @input="onInput"
-                    type="text"
-                    class="form-control ps-5"
-                    placeholder="Search"
-                  />
-                  <span
-                    class="position-absolute top-50 product-show translate-middle-y"
-                  >
-                    <i class="bx bx-search"></i>
-                  </span>
-                </div>
-              </div>
+                        <div class="position-relative me-4">
+                        <input
+                            v-model="searchInput"
+                            @input="onInput"
+                            type="text"
+                            class="form-control ps-5"
+                            placeholder="Search"
+                        />
+                        <span
+                            class="position-absolute top-50 product-show translate-middle-y"
+                        >
+                            <i class="bx bx-search"></i>
+                        </span>
+                        
+                        </div>
+                       
+                
+                
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-12 col-xl-8 d-flex">

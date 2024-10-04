@@ -302,9 +302,9 @@ loading.value = true;
 						  </div>
 						</div>
 
-						<div class="row mt-4 d-flex justify-content-between">
+						<div class="row mt-4 d-flex justify-content-between align-items-center">
 					<!-- <div class="col-lg-1"></div> -->
-                    <div class="col-lg-3 col-md-6">
+                    <div class="d-flex justify-content-between align-items-center gap-2 col-lg-3 col-md-6">
 						<select @change="onUnitChange" class="form-select form-select-sm bg-maz-light w-100" aria-label=".form-select-sm example">
 							<option :value="''" selected="selected" disabled>Filter by unit</option>
 							<option v-for="(unit,index) in warehouse?.unitsList" :key="unit + index" 
@@ -312,6 +312,9 @@ loading.value = true;
 								{{ unit.name }}
 							</option>
 						</select>
+						<div v-if="unitId">
+							<i class="bx bx-edit fs-1"></i>
+						</div>
 					</div>
 					<!-- <div class="col-lg-4 col-md-6">
 					
