@@ -380,7 +380,7 @@ const formatSize = (bytes) => {
           <label for="dressSize" class="form-label">Dress Size</label>
           <select v-model="form.dressSize" class="form-control" id="dressSize">
 
-            <option :selected="true" :disabled="true" :value="''">Select...</option>
+            <!-- <option :selected="true" :disabled="true" :value="''">Select...</option> -->
             <option v-for="size in sizes" :key="size?.value" :value="size?.value">{{ size.text }}</option>
           </select>
           <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
