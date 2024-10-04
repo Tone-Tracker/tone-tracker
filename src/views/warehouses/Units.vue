@@ -365,8 +365,8 @@ loading.value = true;
 								  </div>
 							  </div>
 						  </div>
-						  <div class="card-body row mx-custom-1">
-							<div class="table-responsive table table-dark table-striped w-50 p-0">
+						  <div class="card-body mx-custom-1 d-flex gap-2">
+							<div class="table-responsive table table-dark table-striped w-100 p-0">
 								<table class="table align-middle mb-0">
 								 <thead class="table-light">
 								  <tr style="background:#1D2126">
@@ -402,7 +402,7 @@ loading.value = true;
 							 </div>
 
 							 
-							 <div class="table-responsive table table-dark table-striped w-50 p-0">
+							 <div class="table-responsive table table-dark table-striped w-100 p-0">
 								<table class="table align-middle mb-0">
 								 <thead class="table-light">
 								  <tr style="background:#1D2126">
@@ -763,5 +763,12 @@ loading.value = true;
 .mx-custom-1 {
 	margin-right: 0.04rem !important;
 	margin-left: 0.04rem !important;
+}
+
+@media only screen and (max-width: 768px) {
+	.mx-custom-1 {
+	flex-wrap: wrap
+
+}
 }
 </style>
