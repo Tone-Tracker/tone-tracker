@@ -44,7 +44,7 @@ getAllUsers();
 const getRoles = async () => {
   try {
     const response = await auth.getRoles();
-    ROLES.value = response.data.filter(role => role !== 'CLIENT' && role !== 'SUPPLIER');;
+    ROLES.value = response.data.filter(role => role !== 'CLIENT' && role !== 'SUPPLIER' && role !== 'TTG_TALENT');;
   } catch (error) {
     console.error("Failed to fetch roles", error);
   }
