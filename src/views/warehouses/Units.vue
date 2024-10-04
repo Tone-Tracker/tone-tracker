@@ -360,7 +360,7 @@ loading.value = true;
 								  <div class="dropdown ms-auto mb-2">
 									 <button @click="visible=true" 
 									 :disabled="!unitId"
-									 type="button" class="btn maz-gradient-btn">Add Stock</button>
+									 type="button" class="btn maz-gradient-btn mx-width">Add Stock</button>
 									 <p class="fs-6 text-danger" v-if="!unitId">Choose unit</p>
 								  </div>
 							  </div>
@@ -763,6 +763,12 @@ loading.value = true;
 .mx-custom-1 {
 	margin-right: 0.04rem !important;
 	margin-left: 0.04rem !important;
+}
+
+.mx-width {
+	max-width: 524px !important;
+	padding-left: 50px;
+	padding-right: 50px;
 }
 
 @media only screen and (max-width: 768px) {
