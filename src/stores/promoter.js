@@ -10,6 +10,10 @@ export const usePromoter = defineStore('promoter', () => {
       });
     }
 
+    function submitUser(form) {
+      return axiosInstance.post(`/api/users`,form);
+    }
+
     const getPromoters = () => {
       return axiosInstance.get(`/api/promoters`);
     }
@@ -58,5 +62,5 @@ export const usePromoter = defineStore('promoter', () => {
     }
 
     return { checkIn, addExperience,submitPromoter, getPromoters,getImages, updatePromoter, deletePromoter, submitRating, uploadSingleImage,
-      uploadImages ,getTalentByTalentId,getTalentByUserId, getOtherPromotersByTaskId}
+      uploadImages ,getTalentByTalentId,getTalentByUserId, submitUser, getOtherPromotersByTaskId}
   })

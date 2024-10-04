@@ -34,24 +34,37 @@ const currentPage = ref(1);
 const rowsPerPage = ref(10);
 const totalRecords = ref(0);
 
+onMounted(() => {
+  getAllPromoters();
+  getAllSizes();
+});
+
+const generateRandomPassword = () => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const passwordLength = 8;
+  let password = '';
+  for (let i = 0; i < passwordLength; i++) {
+    password += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return password;
+} 
+
 const form = reactive({
   firstName: '',
   lastName: '',
   email: '',
   phone: '',
   role: "TTG_TALENT",
-  dressSize: "",
+  dressSize: '',
   pantsSize: '',
   topSize: "",
   height: '',
   bio: '',
-  gender: null
+  gender: null,
+  password: generateRandomPassword()
 });
 
-onMounted(() => {
-  getAllPromoters();
-  getAllSizes();
-});
+
 
 const rules = {
   firstName: { required },
@@ -79,6 +92,8 @@ const onSubmit = async () => {
       toaster.success("Promoter updated successfully");
       visible.value = false;
       getAllPromoters();
+      v$.value.$reset();
+      v$.value.$errors = [];
     }).catch(function (error) {
       toaster.error("Error updating promoter");
       console.log(error);
@@ -86,7 +101,7 @@ const onSubmit = async () => {
       showLoading.value = false;
     });
   } else {
-    promoterStore.submitPromoter(form).then(function (response) {
+    promoterStore.submitUser(form).then(function (response) {
       toaster.success("Promoter created successfully");
       visible.value = false;
       getAllPromoters();
@@ -244,9 +259,9 @@ const genders = ref([
   { name: 'MALE', code: 'MALE' },
   { name: 'FEMALE', code: 'FEMALE' },
 ]);
-
+const selectedGender = ref(null);
 const genderChange = (event) => {
-  console.log(event);
+  selectedGender.value = event.value;
   form.gender = event.value.code;
 };
 
@@ -372,7 +387,7 @@ const formatSize = (bytes) => {
         <div class="d-flex justify-content-between gap-1">
           <div class="col-md-2">
           <label for="gender" class="form-label me-2">Gender</label>
-          <Select v-model="form.gender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select gender" class="w-full" />
+          <Select v-model="selectedGender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select" class="w-full" />
           <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
             <div class="text-danger">Gender is required</div>
           </div>
@@ -380,8 +395,7 @@ const formatSize = (bytes) => {
           <div class="col-md-2">
           <label for="dressSize" class="form-label">Dress Size</label>
           <select v-model="form.dressSize" class="form-control" id="dressSize">
-
-            <!-- <option :selected="true" :disabled="true" :value="''">Select...</option> -->
+            <!-- <option selected disabled :value="''">Select...</option> -->
             <option v-for="size in sizes" :key="size?.value" :value="size?.value">{{ size.text }}</option>
           </select>
           <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
@@ -391,7 +405,7 @@ const formatSize = (bytes) => {
 
         <div class="col-md-2">
           <label for="pantsSize" class="form-label">Pants Size</label>
-          <input v-model="form.pantsSize" class="form-control" id="pantsSize" />
+          <input type="number" v-model="form.pantsSize" class="form-control" id="pantsSize" />
           <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
             <div class="text-danger">Pants Size is required</div>
           </div>
@@ -406,7 +420,7 @@ const formatSize = (bytes) => {
           </div>
         </div>
         <div class="col-md-2">
-          <label for="height" class="form-label">Height</label>
+          <label for="height" class="form-label me-2">Height<span class="text-muted text-xs p-1">(cm)</span></label>
           <input v-model="form.height" type="number" class="form-control" id="height">
           <div class="input-errors" v-for="error of v$.height.$errors" :key="error.$uid">
             <div class="text-danger">Height is required</div>
@@ -438,6 +452,10 @@ const formatSize = (bytes) => {
 
 
 <style scoped>
+
+.p-select {
+  min-width: 8rem !important;
+}
 .mt-4 {
   margin-top: 1rem;
 }

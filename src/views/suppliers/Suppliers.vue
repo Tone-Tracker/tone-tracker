@@ -233,7 +233,7 @@ const toggleModal = () => {
               </div>
               <div class="ms-auto">
                 <a @click="toggleModal" href="javascript:;" class="btn maz-gradient-btn mt-2 mt-lg-0">
-                  <i class="bx bxs-plus-square"></i>Add Suppliers
+                  <i class="bx bxs-plus-square"></i>Add Supplier
                 </a>
               </div>
             </div>
