@@ -192,63 +192,63 @@ Date: 04/06/2024
             
 
                     <div class="row justify-content-start">
-    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-        <div class="accordion" id="passwordAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingPassword">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePassword" aria-expanded="false" aria-controls="collapsePassword">
-                        Update Password
-                    </button>
-                </h2>
-                <div id="collapsePassword" class="accordion-collapse collapse" aria-labelledby="headingPassword" data-bs-parent="#passwordAccordion">
-                    <div class="accordion-body">
-                        <div class="card">
-                            <div class="card-body p-4">
-                                <div class="row mb-3">
-                                    <label for="password" class="col-sm-3 col-form-label">New Password</label>
-                                    <div class="col-sm-9">
-                                        <div class="position-relative input-icon">
-                                            <input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
-                                            <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-                                        </div>
-                                        <div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
-                                            <div class="text-danger">Password is required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
-                                    <div class="col-sm-9">
-                                        <div class="position-relative input-icon">
-                                            <input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
-                                            <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-                                        </div>
-                                        <div class="input-errors" v-for="error of v$.confirmPassword.$errors" :key="error.$uid">
-                                            <div class="text-danger">Please confirm your password</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" v-if="isMyProfile()">
-                                    <label class="col-sm-3 col-form-label"></label>
-                                    <div class="col-sm-9">
-                                        <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
-                                            <button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
-                                                <div v-if="showPasswordLoading" class="spinner-border text-white" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                            <div class="accordion outline-0" id="passwordAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingPassword">
+                                        <button class="accordion-button collapsed mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePassword" aria-expanded="false" aria-controls="collapsePassword">
+                                            Change Password
+                                        </button>
+                                    </h2>
+                                    <div id="collapsePassword" class="accordion-collapse collapse" aria-labelledby="headingPassword" data-bs-parent="#passwordAccordion">
+                                        <div class="accordion-body">
+                                            <div class="card">
+                                                <div class="card-body p-4">
+                                                    <div class="row mb-3">
+                                                        <label for="password" class="col-sm-3 col-form-label">New Password</label>
+                                                        <div class="col-sm-9">
+                                                            <div class="position-relative input-icon">
+                                                                <input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
+                                                                <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+                                                            </div>
+                                                            <div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
+                                                                <div class="text-danger">Password is required</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
+                                                        <div class="col-sm-9">
+                                                            <div class="position-relative input-icon">
+                                                                <input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
+                                                                <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+                                                            </div>
+                                                            <div class="input-errors" v-for="error of v$.confirmPassword.$errors" :key="error.$uid">
+                                                                <div class="text-danger">Please confirm your password</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" v-if="isMyProfile()">
+                                                        <label class="col-sm-3 col-form-label"></label>
+                                                        <div class="col-sm-9">
+                                                            <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
+                                                                <button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
+                                                                    <div v-if="showPasswordLoading" class="spinner-border text-white" role="status">
+                                                                        <span class="visually-hidden">Loading...</span>
+                                                                    </div>
+                                                                    {{ showPasswordLoading ? '' : 'Update Password' }}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                {{ showPasswordLoading ? '' : 'Update Password' }}
-                                            </button>
-                                        </div>
+                                            </div>
+                                        </div>  
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>  
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                    </div>
 
               
                 </div>
@@ -697,6 +697,19 @@ div.desc {
 .comment .comment-text {
     margin-top: 0.5rem;
     color: #ced4da;
+}
+.accordion-button:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.accordion-button:not(.collapsed) {
+    box-shadow: none;
+    outline: none;
+}
+
+.accordion-button {
+    outline: none;
 }
 
 
