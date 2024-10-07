@@ -20,9 +20,11 @@ import Drawer from 'primevue/drawer';
 import Image from 'primevue/image';
 import SplitButton from 'primevue/splitbutton';
 import CustomGauge from './CustomGauge.vue';
+import { useUnit } from '@/stores/unit';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const authStore = useAuth();
+const unitStore = useUnit();
 const user = JSON.parse(authStore.user);
 
 const route = useRoute();
@@ -74,10 +76,12 @@ const onUnitChange = (event) => {
 	stockForm.unit = event.target.value;
 	unitName.value = warehouse.value?.unitsList?.find((unit) => unit.id == event.target.value)[0]?.name;
 	viewedUnit.value= null;
-	viewedUnit.value = warehouse.value?.unitsList?.find((unit) => unit.id == event.target.value)[0];
+	viewedUnit.value = warehouse.value?.unitsList?.find((unit) => unit.id == event.target.value);
 	// unitVisible.value = true; // Show the modal after unit selection
 
-	console.log(viewedUnit.value);
+	unitForm.name = viewedUnit.value?.name;
+	unitForm.capacity = viewedUnit.value?.capacity;
+	unitForm.id = viewedUnit.value?.id;
 	getStock();
 }
 
@@ -282,7 +286,8 @@ loading.value = true;
 //////////////modal icon/////////////
 const unitForm = reactive({
     name: '',
-    capacity: null
+    capacity: null,
+	id: null
 });
 
 const unitRules = {
@@ -293,17 +298,24 @@ const unitRules = {
 const unitV$ = useVuelidate(unitRules, unitForm);
 // const loading = ref(false);
 
-const onSubmitUnit = async () => {
+const onUpdateUnit = async () => {
     const isFormValid = await unitV$.value.$validate();
     if (!isFormValid) return;
     
     loading.value = true;
     
     try {
-        // Call API to save the unit information
-        // Example: await saveUnitData(unitForm);
-        toaster.success("Unit updated successfully");
-        unitVisible.value = false;
+	   await unitStore.updateUnit(unitForm.id, unitForm).then(() => {
+			// unitForm.name = '';
+			// unitForm.capacity = null;
+			// unitV$.value.$errors = [];
+			// unitV$.value.$reset();
+		   loading.value = false;
+		   getWarehouse();
+		   toaster.success("Unit updated successfully");
+		   unitVisible.value = false;
+	   });
+        
     } catch (error) {
         toaster.error("Error updating unit");
         console.error(error);
@@ -356,7 +368,7 @@ const onSubmitUnit = async () => {
 							</option>
 						</select>
 						<div v-if="unitId" class="cursor-pointer" @click="unitVisible = true">
-							<i class="bx bx-edit fs-1"></i>
+							<i class="bx bx-edit fs-1" v-tooltip.right="'Edit unit'"></i>
 						</div>
 					</div>
 					<!-- <div class="col-lg-4 col-md-6">
@@ -651,7 +663,7 @@ const onSubmitUnit = async () => {
         </Dialog>
 		<Dialog v-model:visible="unitVisible" position="top" modal header="Edit Unit" style="width: 26rem">
                
-			   <form @submit.prevent="onSubmitUnit" class="row">
+			   <form @submit.prevent="onUpdateUnit" class="row">
 				   
 				   <div class="col-md-12 pt-3">
 					   <div class="card my-card flex justify-center">
