@@ -615,7 +615,7 @@ loading.value = true;
 				
 			</form>
         </Dialog>
-		<Dialog v-model:visible="unitVisible" position="top" modal :header="`Add Unit to ${warehouseQueryName}`" style="width: 26rem">
+		<Dialog v-model:visible="unitVisible" position="top" modal header="Edit Unit" style="width: 26rem">
                
 			   <form @submit.prevent="onSubmitUnit" class="row">
 				   

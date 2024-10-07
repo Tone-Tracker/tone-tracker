@@ -14,6 +14,7 @@ import Paginator from 'primevue/paginator';
 import { useSupplier } from '@/stores/supplier';
 import { useUserStore } from '@/stores/userStore';
 import axios from 'axios';
+import Password from 'primevue/password';
 
 const supplierStore = useSupplier();
 const userStore = useUserStore();
@@ -42,11 +43,9 @@ const form = reactive({
   user: null,
   description: null,
   gender: null,
-  id: null,
-  dressSize: null,
-  pantsSize: null,
-  topSize: null,
-  height: null
+  role: "SUPPLIER",
+  password: "cpweb",
+
 });
 
 onMounted(() => {
@@ -65,12 +64,7 @@ const rules = {
   lastName: { required },
   email: { required, email },
   phone: { required },
-  gender: { required },
-  user: { required },
-  dressSize: { required },
-  pantsSize: { required },
-  topSize: { required },
-  height: { required }
+  // gender: { required },
 };
 const v$ = useVuelidate(rules, form);
 
@@ -83,11 +77,18 @@ const onSubmit = async () => {
       await userStore.updateUser(supplierId.value, form);
       toaster.success("Supplier updated successfully");
     } else {
-      await axios.put(import.meta.env.VITE_SERVER_URL, form);
+      supplierStore.submitSupplier(form).then(function (response) {
+      getSuppliers();
+      closeDialog(); // Close the modal
+
       toaster.success("Supplier created successfully");
+
+      }).catch(function (error) {
+        toaster.error("Error creating supplier");
+        console.log(error);
+      });
+      
     }
-    closeDialog(); // Close the modal
-    getSuppliers(); // Refresh suppliers list
   } catch (error) {
     toaster.error("Error processing supplier");
     console.error(error);
@@ -208,10 +209,6 @@ const toggleModal = () => {
   form.email = null;
   form.phone = null;
   form.description = null;
-  form.dressSize = null;
-  form.pantsSize = null;
-  form.topSize = null;
-  form.height = null;
   visible.value = true; // Show modal
 };
 
@@ -283,6 +280,7 @@ const toggleModal = () => {
           <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
             <div class="text-danger">First Name is required</div>
           </div>
+        
         </div>
         <div class="col-md-6">
           <label for="lastName" class="form-label">Last Name</label>
