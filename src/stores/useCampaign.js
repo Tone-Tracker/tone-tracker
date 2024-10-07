@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
+import { ref } from 'vue';
 
 export const useCampaignStore = defineStore('useCampaign', () => {
+  const allCampaigns = ref([]);
     function submitCampaign(form,config) {
       console.log(form);
       console.log(form);
@@ -34,6 +36,10 @@ export const useCampaignStore = defineStore('useCampaign', () => {
     const  getStatusReport = (id) => {
       return axiosInstance.get(`/api/campaigns/${id}/report`);
     }
+
+    const setCampaigns = (campaigns) => {
+      allCampaigns.value = campaigns;
+    }
   
-    return { getCampaignName,getTimeSheetReport,submitCampaign,getStatusReport, getCampaigns,updateCampaign,deleteCampaign,getCampaignsByClientId }
+    return { getCampaignName,setCampaigns,allCampaigns,getTimeSheetReport,submitCampaign,getStatusReport, getCampaigns,updateCampaign,deleteCampaign,getCampaignsByClientId }
   })

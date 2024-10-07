@@ -1,7 +1,10 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
+import { ref } from 'vue';
 
 export const useClientStore = defineStore('useClientStore', () => {
+
+  const allClients = ref([]);
 
     function submitClient(form) {
       return axiosInstance.post(`/api/clients`,form);
@@ -25,7 +28,11 @@ export const useClientStore = defineStore('useClientStore', () => {
     const  getClientByUserId = (id) => {
       return axiosInstance.get(`/api/clients/${id}`);
     }
+
+    const setClients = (clients) => {
+      allClients.value = clients
+    }
    
   
-    return {getClientByClientId, submitClient,getClients,updateClient,deleteClient ,getClientByUserId}
+    return {getClientByClientId, submitClient,getClients,updateClient,deleteClient ,getClientByUserId,setClients,allClients}
 })

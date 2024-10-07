@@ -23,7 +23,7 @@ const userStore = useUserStore();
 const staff = useStaff();
 
 let clients = ref([]);
-let regions = ref([]);
+const regions = ref([...regionStore.allRegions]);
 let staffMembers = ref([]);
 const visible = ref(false);
 const position = ref('top');
@@ -121,6 +121,8 @@ const submitRegionalManager = async () => {
 const getRegions = async () => {
     try {
         const response = await regionStore.getRegions();
+        regionStore.setAllRegions(response.data.content);
+        regions.value = [...regionStore.allRegions]; 
         regions.value = response.data.content;
     } catch (error) {
         toaster.error("Error fetching regions");
@@ -217,7 +219,7 @@ const onInput = () => {
       );
     });
   } else {
-    getRegions(); 
+    regions.value = [...regionStore.allRegions];
   }
 };
 

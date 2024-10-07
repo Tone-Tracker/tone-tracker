@@ -1,7 +1,10 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
+import { ref } from 'vue';
 
 export const useWarehouse = defineStore('warehouse', () => {
+
+  const allWarehouses = ref([]);
 
     function submit(form) {
       return axiosInstance.post(`/api/warehouses`,form);
@@ -26,6 +29,10 @@ export const useWarehouse = defineStore('warehouse', () => {
     const viewWarehouse = (id) => {
       return axiosInstance.get(`/api/warehouses/${id}`);
     }
+
+    const setAllWarehouses = (data) => {
+      allWarehouses.value = data;
+    }
   
-    return { submit,getWarehouses,update,deleteWarehouse,getWarehousesByRegionId,viewWarehouse }
+    return { allWarehouses,setAllWarehouses,submit,getWarehouses,update,deleteWarehouse,getWarehousesByRegionId,viewWarehouse }
   })

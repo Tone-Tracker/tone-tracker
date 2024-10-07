@@ -92,7 +92,8 @@ watch(suggestions, (newSuggestions) => {
     };
     const getThirdPartySuppliers = async () => {
         supplierStore.getThirdParties().then(response => {
-            let result = response.data.content;
+            supplierStore.setAllSuppliers(response.data.content);
+            let result = supplierStore.allSuppliers;
             console.log('result',result);
             if(result.length > 0) {
                 //map third party suppliers
@@ -240,7 +241,8 @@ const onPlannedStartDateChange = (event) => {
 
 const getTasksByActivationId = async () => {
   taskStore.getTasksByActivationId(activation.value).then(response => {
-    tasks.value = response.data;
+    taskStore.setAlltasks(response.data);
+    tasks.value = taskStore.allTasks;
   }).catch(error => {
     toaster.error("Error fetching tasks");
     console.log(error);
@@ -507,7 +509,7 @@ const clientColor = JSON.parse(localStorage.getItem('clientColor'));
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-if="tasks.length > 0" v-for="task in tasks" :key="task.id" class="table-dark-black">
+                                        <tr v-if="taskStore.allTasks.length > 0" v-for="task in taskStore.allTasks" :key="task.id" class="table-dark-black">
                                             <td>{{ task.name }}</td>
                                             <td>{{ task.jobNumber }}</td>
                                             <td  :class="getClass(task.status)">

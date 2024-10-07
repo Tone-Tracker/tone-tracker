@@ -30,7 +30,7 @@ const rowsPerPage = ref(10); // Rows per page
 const totalRecords = ref(0); // Total number of records
 const currentPage = ref(1); // Current page
 
-let users = ref([]);
+const users = ref([...userStore.allUsers]);
 let modalData = reactive({});
 
 const ROLES = ref([]);
@@ -44,7 +44,8 @@ getAllUsers();
 const getRoles = async () => {
   try {
     const response = await auth.getRoles();
-    ROLES.value = response.data.filter(role => role !== 'CLIENT' && role !== 'SUPPLIER' && role !== 'TTG_TALENT');;
+	auth.setAllRoles(response.data);
+    ROLES.value = auth.allRoles.filter(role => role !== 'CLIENT' && role !== 'SUPPLIER' && role !== 'TTG_TALENT');;
   } catch (error) {
     console.error("Failed to fetch roles", error);
   }
@@ -67,7 +68,7 @@ const hideModal = () => {
 
 const onInput = () => {
 	 if(searchInput.value){ {
-		paginatedUsers.value = paginatedUsers.value.filter((user) => {
+		users.value = userStore.allUsers.filter((user) => {
 			return user.firstName.toLowerCase().includes(searchInput.value.toLowerCase()) 
 			|| user.lastName.toLowerCase().includes(searchInput.value.toLowerCase())
 			|| user.email.toLowerCase().includes(searchInput.value.toLowerCase())
@@ -77,7 +78,7 @@ const onInput = () => {
 
 		
 	 }else{
-		getAllUsers();
+		users.value = userStore.allUsers
 	 }
   };
 
@@ -141,16 +142,17 @@ const onPageChange = (event) => {
 const updatePaginatedUsers = () => {
   const start = (currentPage.value - 1) * rowsPerPage.value;
   const end = start + rowsPerPage.value;
-  paginatedUsers.value = users.value.slice(start, end);
+  paginatedUsers.value = userStore.allUsers?.slice(start, end);
 };
 const getAllUsers = async () => {
   showLoading.value = true;
   try {
     const response = await userStore.getUsers();
+	userStore.setAllUsers(response.data.content);
 	//get users which have role = TTG_ADMIN, TTG_SUPER_ADMIN, TTG_ACTIVATION_MANAGER, TTG_REGIONAL_MANAGER only
-	users.value = response.data.content.filter(user => user.role == 'TTG_ADMIN' || user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_ACTIVATION_MANAGER' || user.role == 'TTG_REGIONAL_MANAGER');
+	users.value = userStore.allUsers?.filter(user => user.role == 'TTG_ADMIN' || user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_ACTIVATION_MANAGER' || user.role == 'TTG_REGIONAL_MANAGER');
    
-    totalRecords.value = users.value.length;
+    totalRecords.value =userStore.allUsers.length;
     updatePaginatedUsers();
   } catch (error) {
     toaster.error("Error fetching users");
@@ -260,7 +262,7 @@ const onSubmit = async () => {
 					
 
 						<div class="row row-cols-1 row-cols-md-3 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4"> 
-							<div class="col"  v-if="paginatedUsers.length > 0" v-for="user in paginatedUsers" :key="user.id">
+							<div class="col"  v-if="users.length > 0" v-for="user in users" :key="user.id">
 							  <div class="card radius-15">
 								<div class="card-body text-center">
 								  <div class="p-4 border radius-15">

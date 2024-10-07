@@ -9,12 +9,9 @@ import { email, required } from '@vuelidate/validators';
 import useToaster from '@/composables/useToaster';
 import { usePrimeVue } from 'primevue/config';
 import { useSizes } from '@/stores/sizes';
-import Select from 'primevue/select';
 import Paginator from 'primevue/paginator';
 import { useSupplier } from '@/stores/supplier';
 import { useUserStore } from '@/stores/userStore';
-import axios from 'axios';
-import Password from 'primevue/password';
 
 const supplierStore = useSupplier();
 const userStore = useUserStore();
@@ -23,7 +20,7 @@ const sizeStore = useSizes();
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 let sizes = ref([]);
-let promoters = ref([]);
+const promoters = ref([...supplierStore.allSuppliers]);
 let paginatedPromoters = ref([]); // This will store the promoters to be displayed on the current page
 let showLoading = ref(false);
 let searchInput = ref('');

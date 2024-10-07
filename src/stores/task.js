@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
+import { ref } from 'vue';
 
 export const useTask = defineStore('task', () => {
+  const allTasks = ref([]);
 
     function submit(form,config) {
       return axiosInstance.post(`/api/tasks`,form, config);
@@ -70,8 +72,12 @@ export const useTask = defineStore('task', () => {
     const getCheckins = (taskId) => {
       return axiosInstance.get(`/api/checkins/task/${taskId}`);
     }
+
+    const setAlltasks = (tasks) => {
+      allTasks.value = tasks;
+    }
   
-    return { submit, getSuppliers,getBids, submitPODocument,getAvailablePromotersByTaskId,getTaskImages,getAwardedTasks,
+    return { submit,allTasks, setAlltasks, getSuppliers,getBids, submitPODocument,getAvailablePromotersByTaskId,getTaskImages,getAwardedTasks,
       getTasks,update,deleteTask,getTasksByActivationId,getTasksByPromoterId,getTask,addPromotersToTask,addThirdPartiesToTask,getCheckins }
     
   })

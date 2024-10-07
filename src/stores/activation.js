@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
+import { ref } from 'vue';
 
 export const useActivation = defineStore('activation', () => {
+  const allActivations = ref([]);
 
     function submit(formData, config) {
       return axiosInstance.post(`/api/activations`,formData, config);
@@ -126,10 +128,14 @@ export const useActivation = defineStore('activation', () => {
     const getActivationReport = (activationId) => {
       return axiosInstance.get(`/api/activations/${activationId}/report`);
     }
+
+    const setAllActivations = (data) => {
+      allActivations.value = data;
+    }
   
     return { submit,getActivations,update,deleteActivation,getActivationById,getActivationsByCampaignId,getActivationByStaffId,getAllActivationsForTemporal,
-             uploadImages , getAllActivations, getActivationImages, getAllActivationsAdmins, getAllActivationsRegionalManager, getTimeSheetReport,
-             getAllActivationsManager, getAllTasksLocation, getAllTrainingMaterial,recordUserOpenedFile, submitTrainingMaterial,
+             uploadImages , setAllActivations, getAllActivations, getActivationImages, getAllActivationsAdmins, getAllActivationsRegionalManager, getTimeSheetReport,
+             getAllActivationsManager, getAllTasksLocation, getAllTrainingMaterial,recordUserOpenedFile, submitTrainingMaterial,allActivations,
              deleteTrainingMaterial, getAllActivationsPromoter, getAllActivationsSupplier, getAllActivationByRegionId,getActivationReport
             }
   })

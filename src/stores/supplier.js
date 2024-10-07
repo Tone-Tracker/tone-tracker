@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
+import { ref } from 'vue';
 
 export const useSupplier = defineStore('supplier', () => {
+  const allSuppliers = ref([]);
 
   function submit(data, supplierId) {
     return axiosInstance.post(`/api/costs/thirdPartyId/${supplierId}`, data);
@@ -40,6 +42,10 @@ export const useSupplier = defineStore('supplier', () => {
     return axiosInstance.post(`/api/bids/${bidId}/costs`, data);
   }
 
-  return { submit, getAllSuppliers, getSignedDocuments, getThirdParties, getThirdPartyTasks, submitBid, getThirdPartyAwardedTasks, uploadSignedDocuments, submitSupplier }
+  const setAllSuppliers = (data) => {
+    allSuppliers.value = data;
+  }
+
+  return { submit,allSuppliers, setAllSuppliers, getAllSuppliers, getSignedDocuments, getThirdParties, getThirdPartyTasks, submitBid, getThirdPartyAwardedTasks, uploadSignedDocuments, submitSupplier }
 
 })  

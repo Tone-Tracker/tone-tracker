@@ -82,17 +82,21 @@ const createClient = async () => {
 
 const getAllClients = () => {
   showLoading.value = true;
-  clientStore.getClients().then(function (response) {
-    showLoading.value = false;
-    clients.value = response.data.content.map(client => ({ ...client, isEditing: false }));
-    totalRecords.value = clients.value.length;
-    updatePaginatedClients();
-  }).catch(function (error) {
-    toaster.error("Error fetching users");
-    console.log(error);
-  }).finally(function () {
-    showLoading.value = false;
-  });
+  clientStore.getClients()
+    .then((response) => {
+      showLoading.value = false;
+      // Use the store's `setClients` to update `allClients`
+      clientStore.setClients(response.data.content.map(client => ({ ...client, isEditing: false })));
+      totalRecords.value = clientStore.allClients.length; // Update total records based on store's clients
+      updatePaginatedClients();
+    })
+    .catch((error) => {
+      toaster.error('Error fetching clients');
+      console.error(error);
+    })
+    .finally(() => {
+      showLoading.value = false;
+    });
 };
 
 const onPageChange = (event) => {
@@ -271,7 +275,7 @@ const items = (client) => [
                           </tr>
                         </thead>
                         <tbody>
-                          <tr v-if="paginatedClients.length > 0" v-for="(client, index) in paginatedClients" :key="client.id">
+                          <tr v-if="clientStore.allClients.length > 0" v-for="(client, index) in clientStore.allClients" :key="client.id">
                             <td> <Badge :value="index + 1 " size="large" :style="{'background-color': '#'+ client.color}" ></Badge></td>
                             <td>{{ client.name }}</td>
                             <td>{{ 

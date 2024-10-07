@@ -5,6 +5,8 @@ import router from '@/router';
 import axios from 'axios';
 
 export const useAuth = defineStore('auth', () => {
+
+  const allRoles = ref([]);
    
     function attempt(form) { 
       return axiosInstance.post(`/authenticate`,form,);  
@@ -39,10 +41,15 @@ export const useAuth = defineStore('auth', () => {
     const sendEmailPassword = (email) => {
       return axios.post(`${import.meta.env.VITE_SERVER_URL}/api/users/send/email?email=${email}`);
     }
+
+    const setAllRoles = (data) => {
+      allRoles.value = data
+    }
+
     const resetPassword = (data) => {
       // form should include `token` and `password`
       return axiosInstance.post(`/api/users/reset/update-password?token=${data.token}&password=${data.password}`
      );
   };
-    return { attempt, logout, token, user, client, getRoles,sendEmailPassword,resetPassword }
+    return { attempt, setAllRoles, logout, token, allRoles, user, client, getRoles,sendEmailPassword,resetPassword }
   })

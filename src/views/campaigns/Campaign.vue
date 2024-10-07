@@ -47,7 +47,7 @@ const form = reactive({
 });
 
 onMounted(() => {
-  getClientName();
+//   getClientName();
   getCampaignsByClientId();
 });
 
@@ -123,7 +123,8 @@ const getCampaignsByClientId = async () => {
     isFecthing.value = true;
     campaignStore.getCampaignsByClientId(clientId.value).then(function (response) {
         isFecthing.value = false;
-        campaigns.value = response.data;
+        campaignStore.setCampaigns(response.data);
+        campaigns.value = campaignStore.allCampaigns;
     }).catch(function (error) {
         isFecthing.value = false;
         toaster.error("Error fetching campaigns");
@@ -261,7 +262,7 @@ const onInput = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-if="campaigns.length > 0" v-for="(campaign, index) in campaigns" :key="campaign.id">
+                                                    <tr v-if="campaignStore?.allCampaigns.length > 0" v-for="(campaign, index) in campaignStore?.allCampaigns" :key="campaign.id">
                                                         <td>
                                                             <Avatar v-if="campaign.path" :image="envPath + campaign.path" 
                                                             :style="{ background: clientColorStyles?.background }" 

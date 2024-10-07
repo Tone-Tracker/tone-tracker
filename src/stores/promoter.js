@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
+import { ref } from 'vue';
 
 export const usePromoter = defineStore('promoter', () => {
 
-  
+  const allPromoters = ref([]);
     function submitPromoter(form) {
       return axiosInstance.post(`/api/promoters`,form,{
         useMultipartFormData: false
@@ -61,6 +62,10 @@ export const usePromoter = defineStore('promoter', () => {
       return axiosInstance.post(`/api/promoters/experiences`,data);
     }
 
-    return { checkIn, addExperience,submitPromoter, getPromoters,getImages, updatePromoter, deletePromoter, submitRating, uploadSingleImage,
+    const setAllPromoters = (data) => {
+      allPromoters.value = data
+    }
+
+    return { checkIn,allPromoters, setAllPromoters, addExperience,submitPromoter, getPromoters,getImages, updatePromoter, deletePromoter, submitRating, uploadSingleImage,
       uploadImages ,getTalentByTalentId,getTalentByUserId, submitUser, getOtherPromotersByTaskId}
   })

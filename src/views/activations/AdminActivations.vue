@@ -192,7 +192,8 @@ const onInput = () => {
 		
         // Fetch activations
         const response = await activation.getAllActivations(userRole, id);
-        activations.value = response.data.content;
+		activation.setAllActivations(response.data.content);
+        activations.value = activation.allActivations;
 		console.log("test", activations);
 		if(activations.value.length > 0){
 				campaignDetails = activations.value[0].campaignDTO
@@ -423,7 +424,7 @@ const onUserChange = (event) => {
 									</tr>
 								</thead>
 								<tbody > 
-									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
+									<tr v-if="activation.allActivations?.length > 0" v-for="activation in activation.allActivations" :key="activation.id">
 										<td>{{activation.name}}</td>
 										<td>{{ activation.campaignDTO.name }}</td>
 										<td>{{ activation.regionName }}</td>  

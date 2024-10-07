@@ -1,4 +1,4 @@
-vi<script setup>
+<script setup>
 import { useRoute } from "vue-router";
 import { onMounted, ref, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
@@ -31,7 +31,7 @@ const staff = useStaff();
 
 const regionQueryName = ref(route.query.name);
 const regionId = ref(route.params.id);
-let warehouses = ref([]);
+const warehouses = ref([...warehouseStore.allWarehouses]);
 let staffMembers = ref([]);
 const visible = ref(false);
 const position = ref('top');
@@ -104,6 +104,8 @@ const getRegionalManagers = async () => {
 const getWarehouses = async () => {
     try {
         const response = await warehouseStore.getWarehousesByRegionId(regionId.value);
+        warehouseStore.setAllWarehouses(response.data);
+        warehouses.value = [...warehouseStore.allWarehouses];
         warehouses.value = response.data;
     } catch (error) {
         toaster.error("Error fetching regions");
@@ -249,7 +251,7 @@ const onInput = () => {
       );
     });
   } else {
-    getWarehouses(); 
+    warehouses.value = [...warehouseStore.allWarehouses];
   }
 };
 
@@ -391,7 +393,7 @@ const viewUnits = async (warehouse) => {
 
                                                     </tr>
                                                     <tr v-else>
-                                                        <td colspan="7" class="text-center text-danger">No regions found.</td>
+                                                        <td colspan="7" class="text-center text-danger">No warehouses found.</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { type } from 'jquery';
 
 export const useUserStore = defineStore('useUserStore', () => {
+
+  const allUsers = ref([]);
   /**
    * Generates a random password of length 8 using a predefined character set.
    *
@@ -76,9 +78,12 @@ export const useUserStore = defineStore('useUserStore', () => {
     }
 
     const updatePasswordInternal = (userId, password) => {
-      return axiosInstance.post(`/api/users/update?userId=${userId}&password=${password}`);
-      
+      return axiosInstance.post(`/api/users/update?userId=${userId}&password=${password}`);      
+    }
+
+    const setAllUsers = (data) => {
+      allUsers.value = data;
     }
       
-    return { updateProfile,updatePasswordInternal,submitUser,createStaffMember,getUsers,updateUser,deleteUser,getUser,getUserByRole,updatePassword,submitContact }
+    return { updateProfile,setAllUsers,allUsers,updatePasswordInternal,submitUser,createStaffMember,getUsers,updateUser,deleteUser,getUser,getUserByRole,updatePassword,submitContact }
   })

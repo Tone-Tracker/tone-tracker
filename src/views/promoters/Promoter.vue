@@ -23,7 +23,7 @@ const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const uploader = JSON.parse(auth.user);
 
 let sizes = ref([]);
-let promoters = ref([]);
+const promoters = ref([...promoterStore.allPromoters]);
 let paginatedPromoters = ref([]);
 let showLoading = ref(false);
 let searchInput = ref('');
@@ -118,9 +118,9 @@ const onGenderChange = (event) => {
   let selectedGender = event.target.value.toLowerCase();
   
   if (selectedGender === 'all') {
-    promoters.value = [...originalPromoters.value];
+    promoters.value = [...promoterStore.allPromoters];
   } else {
-    promoters.value = originalPromoters.value.filter((promoter) => {
+    promoters.value = promoterStore.allPromoters?.filter((promoter) => {
       return promoter.gender?.toLowerCase() === selectedGender.toLowerCase();
     });
   }
@@ -131,7 +131,7 @@ const onGenderChange = (event) => {
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
-    promoters.value = originalPromoters.value.filter((promoter) => {
+    promoters.value = promoterStore.allPromoters?.filter((promoter) => {
       const userDetails = promoter.userDetails;
       const experiences = promoter.experiences.map(exp => `${exp.name} ${exp.description} ${exp.duration}`).join(" ");
       return (
@@ -148,7 +148,7 @@ const onInput = () => {
       );
     });
   } else {
-    promoters.value = [...originalPromoters.value];
+    promoters.value = [...promoterStore.allPromoters];
   }
 
   updatePaginatedPromoters();
@@ -160,9 +160,9 @@ const getAllPromoters = async () => {
   showLoading.value = true;
   promoterStore.getPromoters().then(response => {
     showLoading.value = false;
-    originalPromoters.value = response.data.content;
-    promoters.value = [...originalPromoters.value];
-    totalRecords.value = promoters.value.length;
+    promoterStore.setAllPromoters(response.data.content);
+    promoters.value = [...promoterStore.allPromoters];
+    totalRecords.value = promoterStore.allPromoters.length;
     updatePaginatedPromoters();
   }).catch(error => {
     toaster.error("Error fetching promoters");
@@ -175,7 +175,7 @@ const getAllPromoters = async () => {
 const updatePaginatedPromoters = () => {
   const start = (currentPage.value - 1) * rowsPerPage.value;
   const end = start + rowsPerPage.value;
-  paginatedPromoters.value = promoters.value.slice(start, end);
+  paginatedPromoters.value = promoterStore.allPromoters.slice(start, end);
 };
 
 const onPageChange = (event) => {
@@ -188,9 +188,10 @@ const originalSizes = ref([]);
 const getAllSizes = async () => {
   showLoading.value = true;
   sizeStore.getSizes().then(response => {
-    sizes.value = response.data;
-    originalSizes.value = response.data;
-    sizes.value = originalSizes.value.map(size => ({
+    sizeStore.setAllSizes(response.data);
+    sizes.value = sizeStore.allSizes;
+    originalSizes.value = sizeStore.allSizes;
+    sizes.value = sizeStore.allSizes.map(size => ({
     value: size.toUpperCase(),
     text: size.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
   }));
@@ -315,7 +316,7 @@ const formatSize = (bytes) => {
             </div>
             
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
-              <div class="col" v-for="promoter in paginatedPromoters" :key="promoter.id">
+              <div class="col" v-for="promoter in promoters" :key="promoter.id">
                 <div class="card radius-15">
                   <div class="card-body text-center">
                     <div class="p-4 border radius-15">
@@ -341,7 +342,7 @@ const formatSize = (bytes) => {
               </div>
             </div>
 
-            <Paginator
+            <Paginator v-if="totalRecords > 0 && !showLoading"
               :first="(currentPage - 1) * rowsPerPage"
               :rows="rowsPerPage"
               :totalRecords="totalRecords"
