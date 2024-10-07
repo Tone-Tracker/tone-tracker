@@ -30,18 +30,20 @@ function onFileChange(event) {
 
 function onDrop(event) {  
   const droppedFiles = event.dataTransfer.files;
-  console.log(event);
   if (droppedFiles.length === 0) {
     return;
   }
-  const droppedFile = droppedFiles[0];
-  //if its not image 
-  if (props.fileType === 'image' && !droppedFile.type.includes("image")) {
-    files.value = null;
-    toaster.error("Only image files are allowed");
-    return;
+
+  for (let i = 0; i < droppedFiles.length; i++) {
+    if (props.fileType === 'image' && !droppedFiles[i].type.includes("image")) {
+      toaster.error("File skipped as it is not an image");
+      continue;
+    }
+    //get images only
+    if (props.fileType === 'image' && droppedFiles[i].type.includes("image")) {
+      files.value.push(droppedFiles[i]);
+    }
   }
-  files.value = droppedFile;
   emit('fileDropped', event.dataTransfer.files);
   isDragging.value = false;
 }

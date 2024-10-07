@@ -109,7 +109,7 @@ Date: 04/06/2024
                                                      accept="image/*" 
                                                      fileType="image" 
                                                      @fileUploaded="onFileChange"
-                                                     @fileDropped="onfileDropped"
+                                                     @fileDropped="onMultipleFilesDropped"
                                                     />
                                                 </div>
 
@@ -765,6 +765,12 @@ const uploadInput = ref(null)
        onProfilePicSelect(dropedFile[0]);
     };
 
+    const onMultipleFilesDropped = (e) => {
+        console.log('e', e);
+        files.value = e
+    };
+
+
 const onProfilePicSelect = (event) => {
 
       // Reset last selection and results
@@ -973,7 +979,6 @@ const isMyProfile = () => {
 
 let showModal = ref(false);
 const onSubmit = () => {
-    console.log(files.vale);return;
     if(!files.value.length){
       toaster.error("Please select at least one image");
       return
@@ -994,8 +999,7 @@ const onSubmit = () => {
     useMultipartFormData: true // Add this flag to the request config
 };
     promoterStore.uploadImages(formData, config).then(function (response) {
-        showModal = false;
-        document.querySelector('.modal-backdrop').remove();
+        showModal.value = false;
         showLoading.value = false;
         files.value = [];
         getImages();

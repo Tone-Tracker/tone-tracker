@@ -203,20 +203,21 @@ const items = (client) => [
           openModal(client)
         }
     },
-	{
-        label: 'View Contacts',
-        icon: 'bx bx-user fs-4 maz-gradient-txt',
-        command: () => {
-            viewContacts(client)
-        }
-    },
+	
     {
-        label: 'View Campaign',
+        label: 'View Campaigns',
         icon: 'bx bx-building-house fs-4 maz-gradient-txt',
         command: () => {
           localStorage.removeItem('clientColor');
           localStorage.setItem('clientColor', JSON.stringify(client));
           redirectToCampaign(client)
+        }
+    },
+    {
+        label: 'View Contacts',
+        icon: 'bx bx-user fs-4 maz-gradient-txt',
+        command: () => {
+            viewContacts(client)
         }
     },
     {
