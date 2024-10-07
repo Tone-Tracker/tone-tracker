@@ -386,58 +386,58 @@ Date: 04/06/2024
 
                                                 
 
-        <Accordion :value="['maz']">
-            <AccordionPanel value="maz">
-                <AccordionHeader><h4 class="mb-2 text-center mt-2">Change Password</h4></AccordionHeader>
-                <AccordionContent>
-                    <div class="card-body p-4">
-                       
-                            <div class="row mb-3 mt-2">
-                                <label for="password" class="col-sm-3 col-form-label">New Password</label>
-                                <div class="col-sm-9">
-                                    <div class="position-relative input-icon">
-                                        <input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
-                                        <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-                                    </div>
-                                    <div
-                                    class="input-errors"
-                                    v-for="error of vv$.password.$errors"
-                                    :key="error.$uid">
-                                    <div class="text-danger">Password is required</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
-                                <div class="col-sm-9">
-                                    <div class="position-relative input-icon">
-                                        <input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
-                                        <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
-                                    </div>
-                                    <div
-                                    class="input-errors"
-                                    v-for="error of vv$.confirmPassword.$errors"
-                                    :key="error.$uid">
-                                    <div class="text-danger">Please confirm your password</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" v-if="canUpdate()">
-                                <label class="col-sm-3 col-form-label"></label>
-                                <div class="col-sm-9">
-                                    <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
-                                        <button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
-                                            <div v-if="showPasswordLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
-                                            </div>
-                                            {{ showPasswordLoading ?  '' : 'Update Password' }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </AccordionContent>
-            </AccordionPanel>
-        </Accordion>
+                                            <Accordion :value="['maz']">
+                                                <AccordionPanel value="maz">
+                                                    <AccordionHeader><h4 class="mb-2 text-center mt-2">Change Password</h4></AccordionHeader>
+                                                    <AccordionContent>
+                                                        <div class="card-body p-4">
+                                                        
+                                                                <div class="row mb-3 mt-2">
+                                                                    <label for="password" class="col-sm-3 col-form-label">New Password</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
+                                                                            <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+                                                                        </div>
+                                                                        <div
+                                                                        class="input-errors"
+                                                                        v-for="error of vv$.password.$errors"
+                                                                        :key="error.$uid">
+                                                                        <div class="text-danger">Password is required</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="position-relative input-icon">
+                                                                            <input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
+                                                                            <span class="position-absolute top-50 translate-middle-y"><i class='bx bx-lock-alt'></i></span>
+                                                                        </div>
+                                                                        <div
+                                                                        class="input-errors"
+                                                                        v-for="error of vv$.confirmPassword.$errors"
+                                                                        :key="error.$uid">
+                                                                        <div class="text-danger">Please confirm your password</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row" v-if="canUpdate()">
+                                                                    <label class="col-sm-3 col-form-label"></label>
+                                                                    <div class="col-sm-9">
+                                                                        <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
+                                                                            <button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
+                                                                                <div v-if="showPasswordLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                                                                                </div>
+                                                                                {{ showPasswordLoading ?  '' : 'Update Password' }}
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                    </AccordionContent>
+                                                </AccordionPanel>
+                                            </Accordion>
 
                                                
                                             </div>
