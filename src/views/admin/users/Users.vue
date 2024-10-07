@@ -254,7 +254,7 @@ const onSubmit = async () => {
 							</div>
 						  <div class="ms-auto">
 							<a @click="toggleModal" href="javascript:;"  class="btn maz-gradient-btn mt-2 mt-lg-0">
-							<i class="bx bxs-plus-square"></i>Add User</a>
+							<i class="bx bxs-plus-square"></i>Add Staff</a>
 						  </div>
 						</div>
 					
@@ -299,7 +299,7 @@ const onSubmit = async () => {
 				:modalData="modalData"
 				@closeModal="hideModal()"
 				/> -->
-				<Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit User' : 'Add User'" :style="{ width: '45rem' }">
+				<Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit User' : 'Add Staff Member'" :style="{ width: '45rem' }">
 					<div class="row">
 						<div class="col-lg-12">
 						  <div class="border border-3 p-4 rounded">

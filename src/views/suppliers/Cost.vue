@@ -107,11 +107,11 @@
               <div class="d-lg-flex mt-3 align-items-center mb-4 gap-3">
                 <div class="ms-auto">
                   <button 
-  v-if="rows.length > 0" 
-  @click="previewInvoice" 
-  class="btn radius-30 mt-2 mt-lg-0 maz-gradient-btn">
-  Preview
-</button>
+                    v-if="rows.length > 0" 
+                    @click="previewInvoice" 
+                    class="btn radius-30 mt-2 mt-lg-0 maz-gradient-btn">
+                    Preview
+                  </button>
 
                 </div>
               </div>
