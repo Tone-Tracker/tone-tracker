@@ -69,13 +69,13 @@ const getWarehouse = () => {
 const unitName = ref(null);
 const viewedUnit = ref(null);
 const onUnitChange = (event) => {
-	unitId.value = null;     // reset the unit
+	// unitId.value = null;     // reset the unit
 	unitId.value = event.target.value;
 	stockForm.unit = event.target.value;
-	unitName.value = warehouse.value?.unitsList?.filter((unit) => unit.id == event.target.value)[0]?.name;
+	unitName.value = warehouse.value?.unitsList?.find((unit) => unit.id == event.target.value)[0]?.name;
 	viewedUnit.value= null;
-	viewedUnit.value = warehouse.value?.unitsList?.filter((unit) => unit.id == event.target.value)[0];
-	unitVisible.value = true; // Show the modal after unit selection
+	viewedUnit.value = warehouse.value?.unitsList?.find((unit) => unit.id == event.target.value)[0];
+	// unitVisible.value = true; // Show the modal after unit selection
 
 	console.log(viewedUnit.value);
 	getStock();
@@ -279,6 +279,40 @@ loading.value = true;
 		loading.value = false;
 	})
 };
+//////////////modal icon/////////////
+const unitForm = reactive({
+    name: '',
+    capacity: null
+});
+
+const unitRules = {
+    name: { required },
+    capacity: { required }
+};
+
+const unitV$ = useVuelidate(unitRules, unitForm);
+// const loading = ref(false);
+
+const onSubmitUnit = async () => {
+    const isFormValid = await unitV$.value.$validate();
+    if (!isFormValid) return;
+    
+    loading.value = true;
+    
+    try {
+        // Call API to save the unit information
+        // Example: await saveUnitData(unitForm);
+        toaster.success("Unit updated successfully");
+        unitVisible.value = false;
+    } catch (error) {
+        toaster.error("Error updating unit");
+        console.error(error);
+    } finally {
+        loading.value = false;
+    }
+};
+
+//////////////modal icon/////////////
 
 
 </script>
