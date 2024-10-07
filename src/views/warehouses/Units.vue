@@ -78,9 +78,10 @@ const onUnitChange = (event) => {
 	viewedUnit.value= null;
 	viewedUnit.value = warehouse.value?.unitsList?.find((unit) => unit.id == event.target.value);
 	// unitVisible.value = true; // Show the modal after unit selection
-
+console.log(viewedUnit.value)
 	unitForm.name = viewedUnit.value?.name;
 	unitForm.capacity = viewedUnit.value?.capacity;
+	unitForm.warehouse = viewedUnit.value?.warehouse;
 	unitForm.id = viewedUnit.value?.id;
 	getStock();
 }
