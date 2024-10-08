@@ -4,6 +4,12 @@ import { useOnline } from '@vueuse/core'
 import LocationButton from '../LocationButton.vue';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useAuth } from '@/stores/auth';
+
+const auth = useAuth();
+const logout = () => {
+    auth.logout();
+}
 
 const currentRoute = useRoute();
 const online = useOnline()
@@ -50,11 +56,13 @@ const getRoleName = () => {
                             <li><router-link to="/supplier-dashboard"><span class="icon ps-3"><i class='bx bx-chat'></i></span> All</router-link></li>
                             <li :class="{ 'active': currentRoute.path === '/supplier-profile' || currentRoute.path === `/supplier-profile/${user.activeUserId}/${user.id}`}">
                                 <router-link  :to="{ path: `/supplier-profile/${user.activeUserId}/${user.id}` }"><span class="icon ps-3"><i class='bx bx-user-pin'></i></span> Profile </router-link></li>
-                            <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pe-3'></i> Learning & Teaching</router-link></li>
+                            <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pec-3'></i> Learning & Teaching</router-link></li>
                             <li><router-link to="/crm"><span class="icon ps-3"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
                             <li><router-link to="/supplier-awarded-tasks"><span class="icon ps-3"><i class='bx bx-calendar-check'></i></span> Task Awards</router-link></li>
+                            <li @click="logout" class="cursor-pointer d-flex justify-content-start align-items-center ps-3"><span class="icon"><i class='bx bx-log-out fs-4'></i></span><span>Logout</span></li>                              
+
                         </ul>
-                       
+
                     </div>
                 </div>
             </div>
@@ -342,6 +350,10 @@ export default {
 
 .active{
     background-color: #333333 !important; /* Adjust this color to match your hover color */
+}
+
+.pec-3{
+    padding-right: 10px !important;
 }
 
 
