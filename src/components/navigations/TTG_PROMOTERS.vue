@@ -5,6 +5,13 @@ import LocationButton from '../LocationButton.vue';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { useAuth } from '@/stores/auth';
+
+const auth = useAuth();
+const logout = () => {
+    auth.logout();
+}
+
 //////////active///////////
 const isExpanded = ref(false);
 const activeItem = ref('');
@@ -60,6 +67,8 @@ const getRoleName = () => {
                             <li><router-link to="/crm"><span class="icon ps-3"><i class='bx bx-briefcase'></i></span> CRM</router-link></li>
                          
                             <li class="d-flex align-items-center justify-content-start"><span class="icon ps-3"><i class='bx bx-map' ></i></span><LocationButton class="p-0"/></li>
+                            <li @click="logout" class="cursor-pointer d-flex justify-content-start align-items-center ps-3"><span class="icon"><i class='bx bx-log-out fs-4'></i></span><span>Logout</span></li>                              
+
                         </ul>
                        
                     </div>
