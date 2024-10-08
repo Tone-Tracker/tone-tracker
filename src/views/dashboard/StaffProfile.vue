@@ -193,7 +193,7 @@ Date: 04/06/2024
 
                     <div class="row justify-content-start">
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                            <div class="accordion outline-0" id="passwordAccordion">
+                            <div class="accordion outline-0 pc-3" id="passwordAccordion">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="headingPassword">
                                         <button class="accordion-button collapsed mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePassword" aria-expanded="false" aria-controls="collapsePassword">
@@ -232,7 +232,7 @@ Date: 04/06/2024
                                                         <label class="col-sm-3 col-form-label"></label>
                                                         <div class="col-sm-9">
                                                             <div class="d-md-flex justify-content-center align-items-center d-grid align-items-center gap-3">
-                                                                <button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4">
+                                                                <button @click="updatePassword" type="button" class="btn maz-gradient-btn w-100 px-4 mt-4">
                                                                     <div v-if="showPasswordLoading" class="spinner-border text-white" role="status">
                                                                         <span class="visually-hidden">Loading...</span>
                                                                     </div>
@@ -735,5 +735,10 @@ div.desc {
 .edit-icon i {
     font-size: 20px; 
     color: #fff;
+}
+
+.pc-3 {
+    padding-left: 12px;
+    padding-right: 12px;
 }
 </style>
