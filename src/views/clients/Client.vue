@@ -437,6 +437,10 @@ const items = (client) => [
   outline: none;
 }
 
+.table td, .table th {
+    vertical-align: middle;
+}
+
 
 
 

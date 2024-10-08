@@ -5152,3 +5152,12 @@ form select.error:focus {
 		padding: 1.5rem 1.5rem 1.5rem 0rem !important;
 	}
 }
+
+.table td,
+.table th {
+	vertical-align: middle;
+}
+
+.p-splitbutton {
+	height: 36px !important;
+}
