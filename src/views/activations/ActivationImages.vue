@@ -2,19 +2,21 @@
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
 import { onMounted, ref } from 'vue';
-import { usePrimeVue } from 'primevue/config';
-import { useClientStore } from '@/stores/useClient';
 import { useActivation } from '@/stores/activation';
 import { useRoute } from 'vue-router';
-import Image from 'primevue/image';
-import FileUpload from 'primevue/fileupload';
-import Badge from 'primevue/badge';
-import Button from 'primevue/button';
 import { useAuth } from '@/stores/auth';
+import MultipleFileUpload from '../upload/MultipleFileUpload.vue';
+import useToaster from '@/composables/useToaster';
+import Image from 'primevue/image';
+import Accordion from 'primevue/accordion';
+import AccordionPanel from 'primevue/accordionpanel';
+import AccordionHeader from 'primevue/accordionheader';
+import AccordionContent from 'primevue/accordioncontent';
+
+const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
 
-
-const $primevue = usePrimeVue();
+const toaster = useToaster();
 const route = useRoute();
 const activationStore = useActivation();
 const activationId = ref(route.query.activation);
@@ -22,56 +24,49 @@ const activationData = ref({});
 const authStore = useAuth();
 const user = JSON.parse(authStore.user);
 
-const totalSize = ref(0);
-const totalSizePercent = ref(0);
+const isLoading = ref(false);
+const imagesLoading = ref(false);
+const images = ref([]);
 const files = ref([]);
 
 onMounted(() => {
     getActivationById();
 });
 
-const getActivationById = async () => {
-    activationStore.getActivationById(activationId.value).then(function (response) {
-        console.log(response.data);
-        activationData.value = response.data;
-        
+const getActivationImages = async () => {
+    activationStore.getActivationImages(activationId.value).then(function (response) {
+      imagesLoading.value = true;
+      images.value = response.data.content;
+        // activationData.value = response.data;
+    }).catch(error => {
+      imagesLoading.value = false;
     })
 }
 
+const getActivationById = async () => {
+    activationStore.getActivationById(activationId.value).then(function (response) {
+      console.log(response.data);
+        activationData.value = response.data;
+        getActivationImages();
+    }).catch(error => {
+      console.log(error);
+      
+    })
+}
 
-//get images from db
+const onFileChange = (filesArr) => {
+    console.log(filesArr)
+  files.value = filesArr
+}
 
-const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
-    removeFileCallback(index);
-    totalSize.value -= parseInt(formatSize(file.size));
-    totalSizePercent.value = totalSize.value / 10;
-};
-
-
-const onSelectedFiles = (event) => {
-    files.value = event.files;
-    files.value.forEach((file) => {
-        totalSize.value += parseInt(formatSize(file.size));
-    });
-};
-
-const uploadEvent = (callback) => {
-    totalSizePercent.value = totalSize.value / 10;
-    callback();
-};
+const onMultipleFilesDropped = (e) => {
+        console.log('e', e);
+        files.value = e
+    };
 
 const onSubmit = () => {
-    console.log(files.value);
-
-    const imageDTO = {
-  entity: "activations",
-  entityId: activationId.value,
-
-};
-
-console.log(imageDTO);
-    const formData = new FormData();
-    
+    isLoading.value = true;
+    const formData = new FormData();  
 
     for (let i = 0; i < files.value.length; i++) {
         formData.append('imageFiles', files.value[i]);
@@ -84,27 +79,15 @@ console.log(imageDTO);
         useMultipartFormData: true // Add this flag to the request config
          };
     activationStore.uploadImages(formData, config).then(function (response) {
-        console.log(response.data);
+      toaster.success("Images uploaded successfully");
+      files.value = [];
+      isLoading.value = false;
+    }).catch(error => {
+      toaster.error("Error uploading images");
+      console.log(error);
+      isLoading.value = false;
     })
 };
-
-const formatSize = (bytes) => {
-    const k = 1024;
-    const dm = 3;
-    const sizes = $primevue.config.locale.fileSizeTypes;
-
-    if (bytes === 0) {
-        return `0 ${sizes[0]}`;
-    }
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-    return `${formattedSize} ${sizes[i]}`;
-};
-
-
-
 
 </script>
 <template>
@@ -113,82 +96,63 @@ const formatSize = (bytes) => {
     <div class="page-wrapper">
       <div class="page-content">
         <BreadCrumb :title="activationData.name" icon="bx bx-line-chart" />
-      
         <div class="row mt-6 row-cols-xl-9 gap-4">
-          <div class="col-img ">
-            <div class="gallery">
-              <router-link to="/profile">
-                <img src="#" alt="Cinque Terre" class="img-fluid">
-              </router-link>
-              <!-- <div class="checkbox">
-                <input type="checkbox" id="select">
-                <span>&#x2713;</span>
-              </div> -->
-              <div>
-                <div><button class="btn btn-danger rounded-0 w-100 maz-gradient-btn"><i class='bx bx-trash'></i><span class="mt-2">Remove</span></button></div>
-              </div>
+          <div class="">
+            <h4 class="mb-2 ml-2">{{ activationData?.name }} Images</h4>
+          </div>
+          <div v-if="images?.length > 0" v-for="image in images" :key="image.id" class="col-img">
+            <div  class="gallery">
+            
+                <div class="card flex justify-center">
+                  <Image alt="Image" preview>
+                      <template #previewicon>
+                        <i class='bx bx-search-alt-2' ></i>
+                      </template>
+                      <template #image>
+                          <img :src="envPath + image.path" alt="image" width="250" />
+                      </template>
+                      <template #preview="slotProps">
+                          <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                      </template>
+                  </Image>
+                  </div>
             </div>
           </div>
-        </div>
-<img src="https://ttg-dev-bucket.s3.amazonaws.com/images/activations/7/images+(3).jpeg" alt="">
 
-        <div class="card">
-            
-            <FileUpload name="demo[]" url="/api/upload" :multiple="true" accept="image/*" @select="onSelectedFiles">
-                <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center flex-grow-1 gap-4">
-                        <div class="d-flex gap-2">
-                            <Button @click="chooseCallback()" icon="bx bx-images" class="btn btn-outline-secondary text-white rounded maz-gradient-btn"></Button>
-                            <Button @click="clearCallback()" icon="bx bx-x" class="btn btn-outline-danger rounded maz-gradient-btn" :disabled="!files || files.length === 0"></Button>
-                        </div>
-                    </div>
-                </template>
-                <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
-                    <div class="d-flex flex-column gap-4 pt-4">
-                        <div v-if="files.length > 0">
-                            <div class="d-flex flex-wrap gap-4">
-                                <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="p-4 rounded border d-flex flex-column border-secondary align-items-center gap-2">
-                                    <div>
-                                        <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                                    </div>
-                                    <span class="font-weight-bold text-truncate w-75">{{ file.name }}</span>
-                                    <div>{{ formatSize(file.size) }}</div>
-                                    <Button icon="bx bx-x" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" class="btn btn-outline-danger rounded maz-gradient-btn" />
-                                </div>
-                            </div>
-                        </div>
+          <div v-else class="text-center text-danger">{{ imagesLoading ? 'Loading...' : 'No images found.' }}</div>
     
-                        <div v-if="uploadedFiles.length > 0">
-                            <div class="d-flex flex-wrap gap-4">
-                                <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="p-4 rounded border d-flex flex-column border-secondary align-items-center gap-2">
-                                    <div>
-                                        <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                                    </div>
-                                    <span class="font-weight-bold text-truncate w-75">{{ file.name }}</span>
-                                    <div>{{ formatSize(file.size) }}</div>
-                                    <Badge value="Completed" class="mt-4 badge bg-success" />
-                                    <Button icon="bx bx-x" @click="removeUploadedFileCallback(index)" class="btn btn-outline-danger rounded maz-gradient-btn" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-                <template #empty>
-                    <div class="d-flex align-items-center justify-content-center flex-column">
-                        <i class="bx bx-cloud-upload border border-2 rounded-circle p-4 fs-6 text-muted" />
-                        <p class="mt-3 mb-0">Drag and drop files to here to upload.</p>
-                    </div>
-                </template>
-            </FileUpload>
+         
         </div>
-            <div class="d-grid">
-              <button @click="onSubmit" class="btn maz-gradient-btn d-flex justify-content-center align-items-center" type="button"> 
-                  Submit
-              </button>
-            </div>
-     
 
-     
+
+        <Accordion value="0">
+          <AccordionPanel value="1">
+              <AccordionHeader>
+                  <h5>Upload Images</h5>
+              
+              </AccordionHeader>
+              <AccordionContent>
+                <div class="card">
+            
+                  <MultipleFileUpload
+                  :showFilePreview="true" 
+                   accept="image/*" 
+                   fileType="image" 
+                   @fileUploaded="onFileChange"
+                   @fileDropped="onMultipleFilesDropped"
+                  />
+        
+                </div>
+                    <div class="d-grid mx-auto" style="width: 83%;">
+                      <button @click="onSubmit" class="btn maz-gradient-btn d-flex justify-content-center align-items-center" type="button"> 
+                        <div v-if="isLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
+                        </div>
+                        {{ isLoading ?  '' : 'Upload' }}
+                      </button>
+                    </div>
+              </AccordionContent>
+          </AccordionPanel>
+      </Accordion>
       </div>
 
  

@@ -47,7 +47,7 @@ const region = useRegion();
 const campaignStore = useCampaignStore();
 
 const searchInput = ref('');
-const activations = ref([]);
+const activations = ref([...activation.allActivations]);
 let users = ref([]);
 let mappedUsers = ref([]);
 let staffMembers = ref([]);
@@ -424,7 +424,7 @@ const onUserChange = (event) => {
 									</tr>
 								</thead>
 								<tbody > 
-									<tr v-if="activation.allActivations?.length > 0" v-for="activation in activation.allActivations" :key="activation.id">
+									<tr v-if="activations?.length > 0" v-for="activation in activations" :key="activation.id">
 										<td>{{activation.name}}</td>
 										<td>{{ activation.campaignDTO.name }}</td>
 										<td>{{ activation.regionName }}</td>  

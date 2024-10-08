@@ -35,7 +35,7 @@ let searchInput = ref('');
 let clients = ref([]);
 const showFilePreview = ref(true);
 const clientName = ref('');
-let campaigns = ref([]);
+let campaigns = ref([...campaignStore.allCampaigns]);
 const img = ref(null);
 const loading = ref(false);
 const isFecthing = ref(false);
@@ -216,7 +216,7 @@ const onInput = () => {
       );
     });
   } else {
-    getCampaignsByClientId(); 
+    campaigns.value = campaignStore.allCampaigns;
   }
 };
 </script>
@@ -262,7 +262,7 @@ const onInput = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-if="campaignStore?.allCampaigns.length > 0" v-for="(campaign, index) in campaignStore?.allCampaigns" :key="campaign.id">
+                                                    <tr v-if="campaigns?.length > 0" v-for="(campaign, index) in campaigns" :key="campaign.id">
                                                         <td>
                                                             <Avatar v-if="campaign.path" :image="envPath + campaign.path" 
                                                             :style="{ background: clientColorStyles?.background }" 
