@@ -66,7 +66,7 @@ const filteredSuggestions = ref([]);
 let debounceTimeout = null; // To hold the debounce timer
 
 const redirectToProfile = () => {
-  if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'REGIONAL_MANAGER' || user.role == 'ACTIVATION_MANAGER'){
+  if(user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_HEAD_ADMIN' || user.role == 'TTG_REGIONAL_MANAGER' || user.role == 'TTG_ACTIVATION_MANAGER'){
     router.push({ path: `/staff-profile/${user?.activeUserId}/${user?.id}` });
   }else if(user.role == 'TTG_TALENT'){
     // return console.log('hhh',user)

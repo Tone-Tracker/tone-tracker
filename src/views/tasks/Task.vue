@@ -399,7 +399,7 @@ const taskItems = (task) => {
         ,
     
     {
-        label: 'Add  Images',
+        label: 'Add/View Images',
         icon: 'bx bx-images maz-gradient-txt fs-3',
         command: () => {
 			URLrouter.push(`/activation-images?activation=${task.id}`);
@@ -522,7 +522,7 @@ const clientColor = JSON.parse(localStorage.getItem('clientColor'));
                                             <td>{{task.completion}}</td>
                                             <td>
                                                 <div class="d-flex order-actions">
-                                                    <SplitButton class="text-white" label="Actions" 
+                                                    <SplitButton class="text-white" label="" 
 													icon="bx bx-cog fs-4" 
 													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
 													:model="taskItems(task)"/>

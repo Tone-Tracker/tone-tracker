@@ -141,12 +141,11 @@ const submitFile = () => {
 </template>
 <style scoped>
 .file-drop-zone {
-    border: 2px dashed #007bff;
-    border-radius: 10px;
-    padding: 50px 20px;
-    background-color: #f8f9fa;
-    transition: background-color 0.3s, border-color 0.3s;
-  }
+  border: 3px dashed #9A3AB1;
+  border-radius: 10px;
+  padding: 50px 20px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
   
   .file-drop-zone-active {
     background-color: #e2efff;

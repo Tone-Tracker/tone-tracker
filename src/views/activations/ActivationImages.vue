@@ -79,6 +79,7 @@ const onSubmit = () => {
         useMultipartFormData: true // Add this flag to the request config
          };
     activationStore.uploadImages(formData, config).then(function (response) {
+      getActivationImages();
       toaster.success("Images uploaded successfully");
       files.value = [];
       isLoading.value = false;

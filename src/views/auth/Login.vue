@@ -110,7 +110,8 @@ export default {
         user.role == "TTG_ACTIVATION_MANAGER" ||
         user.role == "TTG_REGIONAL_MANAGER"
       ) {
-        router.push("/activations-dashboard");
+        router.push("/admin-activations");
+        // router.push("/activations-dashboard");
       } else if (user.role == "CLIENT") {
         getCampaignsByClientId(user.activeUserId);
         router.push("/client-campaigns");

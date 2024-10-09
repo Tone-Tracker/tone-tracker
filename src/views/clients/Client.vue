@@ -18,8 +18,8 @@ const toaster = useToaster();
 const clientStore = useClientStore();
 const confirm = useConfirm();
 
-let clients = ref([]);
-const paginatedClients = ref([]);
+let clients = ref([...clientStore.allClients]);
+const paginatedClients = ref([...clientStore.allClients]);
 
 const rowsPerPage = ref(10); // Rows per page
 const totalRecords = ref(0); // Total number of records
@@ -87,6 +87,8 @@ const getAllClients = () => {
       showLoading.value = false;
       // Use the store's `setClients` to update `allClients`
       clientStore.setClients(response.data.content.map(client => ({ ...client, isEditing: false })));
+      clients.value = clientStore.allClients;
+      paginatedClients.value = [...clientStore.allClients];
       totalRecords.value = clientStore.allClients.length; // Update total records based on store's clients
       updatePaginatedClients();
     })
@@ -133,7 +135,7 @@ const onInput = () => {
       );
     });
   } else {
-    getAllClients(); 
+    paginatedClients.value = [...clientStore.allClients];
   }
 };
 
@@ -276,7 +278,7 @@ const items = (client) => [
                           </tr>
                         </thead>
                         <tbody>
-                          <tr v-if="clientStore.allClients.length > 0" v-for="(client, index) in clientStore.allClients" :key="client.id">
+                          <tr v-if="paginatedClients.length > 0" v-for="(client, index) in paginatedClients" :key="client.id">
                             <td> <Badge :value="index + 1 " size="large" :style="{'background-color': '#'+ client.color}" ></Badge></td>
                             <td>{{ client.name }}</td>
                             <td>{{ 
