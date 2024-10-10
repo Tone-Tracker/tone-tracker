@@ -184,7 +184,7 @@ const toggleCampaignSearch = (event) => {
         </router-link>
       </li>
 
-      <li v-tooltip="'Warehouse'" class="side-nav__item">
+      <li v-tooltip="'Warehouse'" class="side-nav__item d-none">
         <router-link to="/warehouse">
           <div class="side-nav__link">
             <Warehouse />
