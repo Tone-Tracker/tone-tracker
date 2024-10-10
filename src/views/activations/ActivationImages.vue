@@ -351,8 +351,9 @@ html.dark-theme .table th {
 .image-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  gap: 6rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .image-container {
