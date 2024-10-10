@@ -194,7 +194,7 @@ Date: 04/06/2024
                     <div class="row justify-content-start">
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                             <div class="accordion outline-0 pc-3" id="passwordAccordion">
-                                <div class="accordion-item">
+                                <div class="accordion-item backcolor">
                                     <h2 class="accordion-header" id="headingPassword">
                                         <button class="accordion-button collapsed mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePassword" aria-expanded="false" aria-controls="collapsePassword">
                                             Change Password
@@ -205,7 +205,7 @@ Date: 04/06/2024
                                             <div class="card">
                                                 <div class="card-body p-4">
                                                     <div class="row mb-3">
-                                                        <label for="password" class="col-sm-3 col-form-label">New Password</label>
+                                                        <label for="password" class="col-sm-3 col-form-label pd-start">New Password</label>
                                                         <div class="col-sm-9">
                                                             <div class="position-relative input-icon">
                                                                 <input type="text" class="form-control" id="password" placeholder="New Password" v-model="password">
@@ -217,7 +217,7 @@ Date: 04/06/2024
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
-                                                        <label for="password-confirm" class="col-sm-3 col-form-label">Confirm Password</label>
+                                                        <label for="password-confirm" class="col-sm-3 col-form-label pd-start">Confirm Password</label>
                                                         <div class="col-sm-9">
                                                             <div class="position-relative input-icon">
                                                                 <input type="text" class="form-control" id="password-confirm" placeholder="Confirm Password" v-model="confirmPassword">
@@ -741,4 +741,13 @@ div.desc {
     padding-left: 12px;
     padding-right: 12px;
 }
+
+.backcolor {
+    background-color: #0000 !important;
+}
+
+.pd-start {
+    padding-left: 20px !important;
+}
 </style>
+ 
