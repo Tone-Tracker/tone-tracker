@@ -98,30 +98,31 @@ const onSubmit = () => {
       <div class="page-content">
         <BreadCrumb :title="activationData.name" icon="bx bx-line-chart" />
         <div class="row mt-6 row-cols-xl-9 gap-4">
+          <div class="mt-6">
           <div class="">
             <h4 class="mb-2 ml-2">{{ activationData?.name }} Images</h4>
           </div>
-          <div v-if="images?.length > 0" v-for="image in images" :key="image.id" class="col-img">
-            <div  class="gallery">
-            
-                <div class="card flex justify-center">
-                  <Image alt="Image" preview>
-                      <template #previewicon>
-                        <i class='bx bx-search-alt-2' ></i>
-                      </template>
-                      <template #image>
-                          <img :src="envPath + image.path" alt="image" width="250" />
-                      </template>
-                      <template #preview="slotProps">
-                          <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                      </template>
-                  </Image>
-                  </div>
+          <div v-if="images?.length > 0" class="image-gallery">
+            <div v-for="image in images" :key="image.id" class="image-container">
+              <div class="card">
+                <Image alt="Image" preview class="gallery-image">
+                  <template #previewicon>
+                    <i class='bx bx-search-alt-2'></i>
+                  </template>
+                  <template #image>
+                    <img :src="envPath + image.path" alt="image" />
+                  </template>
+                  <template #preview="slotProps">
+                    <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                  </template>
+                </Image>
+              </div>
             </div>
           </div>
 
           <div v-else class="text-center text-danger">{{ imagesLoading ? 'Loading...' : 'No images found.' }}</div>
-    
+        </div>
+          
          
         </div>
 
@@ -344,4 +345,40 @@ html.dark-theme .table th {
                 max-width: 100%;
             }
         }
+
+
+/* image fluid */
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.image-container {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.card {
+  height: 100%;
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+}
+
+.gallery-image :deep(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-image:hover :deep(img) {
+  transform: scale(1.05);
+}
+
+/* image fluid */
 </style>
