@@ -274,7 +274,7 @@ const onInput = () => {
                                                         </td>
                                                         <td v-if="!campaign.isEditing" class="pt-4">{{ campaign.name }}</td>
                                                         <td v-else class="pt-4">
-                                                            <input v-focus type="text" v-model="campaign.name" @blur="updateCampaign(campaign)" @keyup.enter="updateCampaign(campaign)" class="no-border-input"/>
+                                                            <input v-focus type="text" v-model="campaign.name" @blur="updateCampaign(campaign)" @keyup.enter="updateCampaign(campaign)" class="no-border-input form-control"/>
                                                         </td>
                                                         <td class="pt-4">{{ clientName }}</td>
                                                         <td class="pt-3">

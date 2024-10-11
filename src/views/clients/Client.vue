@@ -158,7 +158,8 @@ const visible = ref(false);
 
 const editForm = reactive({ 
   name: '',
-  color: '#007bff'
+  color: '#007bff',
+  users:[]
 });
 onMounted(() => {
   getAllClients();
@@ -181,14 +182,25 @@ const openModal = (client) => {
     editForm.phone = client?.users[0]?.phone;
     editForm.role = client?.users[0]?.role;
     editForm.color = client.color;
+    editForm.users = client.users;
 };
 
 const updateClient = () => {
   loading.value = true;
   clientStore.updateClient(editForm.id,editForm).then(response => {
     loading.value = false;
+    //filter clients to get the index of the editForm and update the object where the id is equal to the id of the client
+     const updatedClient = clientStore.allClients.filter((client) => client.id === editForm.id);
+
+    const index = clientStore.allClients.indexOf(updatedClient[0]);
+
+    if (index !== -1) {
+      clientStore.allClients[index] = editForm;
+    }
+    //now update clientStore.allClients
+    clientStore.setClients(clientStore.allClients);
+    paginatedClients.value = [...clientStore.allClients];
     toaster.success("Client updated successfully");
-    getAllClients(); // Refetch clients after updating
     visible.value = false;
   }).catch(error => {
     toaster.error("Error updating client");
