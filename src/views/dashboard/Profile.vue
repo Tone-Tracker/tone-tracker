@@ -66,26 +66,26 @@ Date: 04/06/2024
                                     </div>
 
                                     <div class="profile-imgs mb-4">
-    <div class="image-gallery">
-        <div v-if="images?.length > 0" class="image-flex-container">
-            <div v-for="image in images" :key="image.id" class="image-item">
-                <div class="card flex justify-center">
-                    <Image alt="Image" preview>
-                        <template #previewicon>
-                            <i class='bx bx-search-alt-2'></i>
-                        </template>
-                        <template #image>
-                            <img :src="envPath + image.path" alt="image" />
-                        </template>
-                        <template #preview="slotProps">
-                            <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
-                        </template>
-                    </Image>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                                        <div class="image-gallery">
+                                            <div v-if="images?.length > 0" class="image-flex-container">
+                                                <div v-for="image in images" :key="image.id" class="image-item">
+                                                    <div class="card flex justify-center">
+                                                        <Image alt="Image" preview>
+                                                            <template #previewicon>
+                                                                <i class='bx bx-search-alt-2'></i>
+                                                            </template>
+                                                            <template #image>
+                                                                <img :src="envPath + image.path" alt="image" />
+                                                            </template>
+                                                            <template #preview="slotProps">
+                                                                <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                                                            </template>
+                                                        </Image>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="mb-4">
                                         <button v-if="canUpdate()" 
                                             @click="showModal = true"
@@ -273,10 +273,10 @@ Date: 04/06/2024
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="row mb-3" >
                                             <label for="description" class="col-sm-3 col-form-label">Bio</label>
                                             <div class="col-sm-9">
-                                                <textarea class="form-control" id="description" rows="3" v-model="profileForm.description" 
+                                                <textarea class="form-control" id="description" rows="3" v-model="profileForm.bio" 
                                                 placeholder="Your Bio"></textarea>
                                             </div>
                                         </div>
@@ -902,6 +902,7 @@ const getUser = () => {
             phone: response.data.phone,
             email: response.data.email,
             role: response.data.role,
+            bio: response.data.bio,
         })
   }).catch(function (error) {
     toaster.error("Error fetching profile");
@@ -937,9 +938,10 @@ const getPromoterDetails = () => {
             dob: response.data.dob,
             dressSize: response.data.dressSize,
             height: response.data.height,
-            gender: response.data.gender
+            gender: response.data.gender,
+            bio: response.data.bio,
         })
-        myBio.value = response.data.bio;
+        
         
   }).catch(function (error) {
     toaster.error("Error fetching profile");
