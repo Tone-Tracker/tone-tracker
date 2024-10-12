@@ -142,7 +142,7 @@ Date: 04/06/2024
                                             <!-- start comments -->
                                             <div v-for="rating in promoterData.ratings" :key="rating.id" class="comment">
                                                     <div class="user">
-                                                        <img :src="envPath + userInfo?.path" alt="User avatar">
+                                                        <img :src="envPath + rating.path" alt="User avatar">
                                                         <div>
                                                             <div class="user-name">{{ rating.firstName + " "+ rating.lastName }}</div>
                                                             <Rating v-model="rating.rating" />
@@ -718,7 +718,7 @@ const commentForm = reactive({
     rating: null,
     comment: null,
     user: user.id,
-    promoter: promoterId.value ? parseInt(promoterId.value, 10) : null
+    promoter: parseInt(userIdParam.value, 10),
 });
 
 const pic = ref('');
@@ -729,6 +729,8 @@ const uploadInput = ref(null)
     })
 
     const submitComment = () => {
+
+        
         
         if( !commentForm.rating || !commentForm.user || !commentForm.promoter) return
         
@@ -753,7 +755,7 @@ const uploadInput = ref(null)
 
     const deleteComment = (id) => {
         if(!confirm('Are you sure you want to delete this comment?')) return
-        commentStore.delete(id).then(function (response) {
+        commentStore.deleteComment(id).then(function (response) {
             toaster.success("Comment deleted successfully");
         }).catch(function (error) {
             toaster.error("Error deleting comment");
