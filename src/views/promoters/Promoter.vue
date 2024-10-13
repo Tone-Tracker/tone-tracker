@@ -8,16 +8,17 @@ import { useVuelidate } from '@vuelidate/core';
 import { email, required } from '@vuelidate/validators';
 import { usePromoter } from '@/stores/promoter';
 import useToaster from '@/composables/useToaster';
-import { usePrimeVue } from 'primevue/config';
 import { useSizes } from '@/stores/sizes';
 import Select from 'primevue/select';
-import Paginator from 'primevue/paginator';
+import Paginator from '@/components/Paginator.vue';
 import { useAuth } from '@/stores/auth';
 
 const promoterStore = usePromoter();
 const toaster = useToaster();
 const sizeStore = useSizes();
 const auth = useAuth();
+
+const allData = ref([]); //for pagination
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const uploader = JSON.parse(auth.user);
@@ -27,7 +28,6 @@ const promoters = ref([...promoterStore.allPromoters]);
 let paginatedPromoters = ref([]);
 let showLoading = ref(false);
 let searchInput = ref('');
-const filteredPromoters = ref([]);
 
 // Pagination Variables
 const currentPage = ref(1);
@@ -151,10 +151,8 @@ const onInput = () => {
     promoters.value = [...promoterStore.allPromoters];
   }
 
-  updatePaginatedPromoters();
 };
 
-let originalPromoters = ref([]);
 
 const getAllPromoters = async () => {
   showLoading.value = true;
@@ -162,26 +160,13 @@ const getAllPromoters = async () => {
     showLoading.value = false;
     promoterStore.setAllPromoters(response.data.content);
     promoters.value = [...promoterStore.allPromoters];
-    totalRecords.value = promoterStore.allPromoters.length;
-    updatePaginatedPromoters();
+    allData.value = response.data;
   }).catch(error => {
     toaster.error("Error fetching promoters");
     console.log(error);
   }).finally(() => {
     showLoading.value = false;
   });
-};
-
-const updatePaginatedPromoters = () => {
-  const start = (currentPage.value - 1) * rowsPerPage.value;
-  const end = start + rowsPerPage.value;
-  paginatedPromoters.value = promoterStore.allPromoters.slice(start, end);
-};
-
-const onPageChange = (event) => {
-  currentPage.value = event.page + 1;
-  rowsPerPage.value = event.rows;
-  updatePaginatedPromoters();
 };
 
 const originalSizes = ref([]);
@@ -266,22 +251,14 @@ const genderChange = (event) => {
   form.gender = event.value.code;
 };
 
-const $primevue = usePrimeVue();
-
-const formatSize = (bytes) => {
-  const k = 1024;
-  const dm = 3;
-  const sizes = $primevue.config.locale.fileSizeTypes;
-
-  if (bytes === 0) {
-    return `0 ${sizes[0]}`;
-  }
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-  return `${formattedSize} ${sizes[i]}`;
+const handlePageChange = (newPage) => {
+  promoterStore.getPromoters(newPage).then(function (response) {
+    promoterStore.setAllPromoters(response.data.content);
+    promoters.value = [...promoterStore.allPromoters];
+  });
 };
+
+
 </script>
 
 <template>
@@ -342,13 +319,7 @@ const formatSize = (bytes) => {
               </div>
             </div>
 
-            <Paginator v-if="totalRecords > 0 && !showLoading"
-              :first="(currentPage - 1) * rowsPerPage"
-              :rows="rowsPerPage"
-              :totalRecords="totalRecords"
-              :rowsPerPageOptions="[5, 10, 20, 30]"
-              @page="onPageChange"
-            />
+            <Paginator :page="allData?.page" @changePage="handlePageChange" />
           </div>
         </div>
       </div>

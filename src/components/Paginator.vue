@@ -14,7 +14,7 @@ const currentPage = ref(props?.page?.number + 1);
 const goToPage = (pageNumber) => {
   if (pageNumber >= 1 && pageNumber <= totalPages.value) {
     currentPage.value = pageNumber;
-    emit('changePage', pageNumber - 1); // Emitted event back to parent as i dont want this component to handle any server related stuff (adjust to 0-indexed)
+    emit('changePage', pageNumber - 1); // Emitted event back to parent as i dont want this component to handle any server related stuff.
   }
 };
 

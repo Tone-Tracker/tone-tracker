@@ -298,7 +298,7 @@ const onInput = () => {
                                                         </td>
                                                     </tr>
                                                     <tr v-else>
-                                                        <td colspan="7" class="text-center text-danger">{{ isFecthing ? 'Loading...' : clientName + 'has no campaigns.'}}</td>
+                                                        <td colspan="7" class="text-center text-danger">{{ isFecthing ? 'Loading...' : 'No campaigns found.'}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

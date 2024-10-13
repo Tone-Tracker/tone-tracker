@@ -7,9 +7,8 @@ import Dialog from 'primevue/dialog';
 import { useVuelidate } from '@vuelidate/core';
 import { email, required } from '@vuelidate/validators';
 import useToaster from '@/composables/useToaster';
-import { usePrimeVue } from 'primevue/config';
 import { useSizes } from '@/stores/sizes';
-import Paginator from 'primevue/paginator';
+import Paginator from '@/components/Paginator.vue';
 import { useSupplier } from '@/stores/supplier';
 import { useUserStore } from '@/stores/userStore';
 
@@ -19,17 +18,13 @@ const toaster = useToaster();
 const sizeStore = useSizes();
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
+const allData = ref([]); //for pagination
+
+
 let sizes = ref([]);
 const promoters = ref([...supplierStore.allSuppliers]);
-let paginatedPromoters = ref([]); // This will store the promoters to be displayed on the current page
 let showLoading = ref(false);
 let searchInput = ref('');
-const filteredPromoters = ref([]);
-
-// Pagination Variables
-const currentPage = ref(1); // Current page
-const rowsPerPage = ref(10); // Rows per page
-const totalRecords = ref(0); // Total number of records
 
 const form = reactive({
   firstName: null,
@@ -76,8 +71,7 @@ const onSubmit = async () => {
     } else {
       supplierStore.submitSupplier(form).then(function (response) {
       getSuppliers();
-      closeDialog(); // Close the modal
-
+      closeDialog();
       toaster.success("Supplier created successfully");
 
       }).catch(function (error) {
@@ -95,33 +89,22 @@ const onSubmit = async () => {
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
-    promoters.value = originalPromoters.value.filter((promoter) => {
-      return (
-        promoter.bio?.toLowerCase().includes(searchTerm) ||
-        promoter.firstName?.toLowerCase().includes(searchTerm) ||
-        promoter.lastName?.toLowerCase().includes(searchTerm) ||
-        promoter.email?.toLowerCase().includes(searchTerm) ||
-        promoter.phone?.toLowerCase().includes(searchTerm)
-      );
-    });
+    //will go to server
+   
   } else {
-    promoters.value = [...originalPromoters.value]; // Reset to original full list if no search term
+    promoters.value = [...supplierStore.allSuppliers]; // Reset to original full list if no search term
   }
 
-  updatePaginatedPromoters(); // Ensure the list is paginated after search
 };
 
-let originalPromoters = ref([]); // Store the original unfiltered list
 
-// Fetch all promoters and store them in both originalPromoters and promoters.value
 const getSuppliers = async () => {
   showLoading.value = true;
   supplierStore.getAllSuppliers().then(response => {
     showLoading.value = false;
-    originalPromoters.value = response.data.content; // Store original list
-    promoters.value = [...originalPromoters.value]; // Set the current promoters list
-    totalRecords.value = promoters.value.length;
-    updatePaginatedPromoters(); // Update paginated data after fetching promoters
+    supplierStore.setAllSuppliers(response.data.content);
+    allData.value = response.data;
+    promoters.value = [...supplierStore.allSuppliers]; 
   }).catch(error => {
     toaster.error("Error fetching suppliers");
     console.log(error);
@@ -130,18 +113,6 @@ const getSuppliers = async () => {
   });
 };
 
-const updatePaginatedPromoters = () => {
-  const start = (currentPage.value - 1) * rowsPerPage.value;
-  const end = start + rowsPerPage.value;
-  paginatedPromoters.value = promoters.value.slice(start, end);
-};
-
-// Handle page change in pagination
-const onPageChange = (event) => {
-  currentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
-  rowsPerPage.value = event.rows;
-  updatePaginatedPromoters(); // Update paginated data when the page changes
-};
 
 const getAllSizes = async () => {
   showLoading.value = true;
@@ -160,7 +131,6 @@ let isEdit = ref(false);
 let supplierId = ref(null);
 
 const position = ref('top');
-const dropdownItems = ref([]);
 
 const openPosition = (pos, promoter) => {
   if (promoter) {
@@ -193,7 +163,6 @@ const openPosition = (pos, promoter) => {
   visible.value = true;
 };
 
-const $primevue = usePrimeVue();
 
 const closeDialog = () => {
   visible.value = false;
@@ -207,6 +176,13 @@ const toggleModal = () => {
   form.phone = null;
   form.description = null;
   visible.value = true; // Show modal
+};
+
+const handlePageChange = (newPage) => {
+  supplierStore.getPromoters(newPage).then(function (response) {
+    supplierStore.setAllPromoters(response.data.content);
+    promoters.value = [...supplierStore.allPromoters];
+  });
 };
 
 </script>
@@ -233,7 +209,7 @@ const toggleModal = () => {
             </div>
 
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
-              <div class="col" v-for="promoter in paginatedPromoters" :key="promoter.id">
+              <div class="col" v-for="promoter in promoters" :key="promoter.id">
                 <div class="card radius-15">
                   <div class="card-body text-center">
                     <div class="p-4 border radius-15">
@@ -255,14 +231,7 @@ const toggleModal = () => {
               </div>
             </div>
 
-            <!-- Pagination -->
-            <Paginator
-              :first="(currentPage - 1) * rowsPerPage"
-              :rows="rowsPerPage"
-              :totalRecords="totalRecords"
-              :rowsPerPageOptions="[5, 10, 20, 30]"
-              @page="onPageChange"
-            />
+            <Paginator :page="allData?.page" @changePage="handlePageChange" v-if="!showLoading" />
           </div>
         </div>
       </div>
