@@ -12,6 +12,7 @@ import SplitButton from 'primevue/splitbutton';
 import Dialog from 'primevue/dialog';
 import Badge from 'primevue/badge';
 import Paginator from '@/components/Paginator.vue';
+import { get } from 'jquery';
 
 const toaster = useToaster();
 const clientStore = useClientStore();
@@ -110,14 +111,14 @@ const deleteClient = (client) => {
 
 
 const onInput = () => {
-  if (searchInput.value) {
+  if (searchInput.value && searchInput.value.length >= 3) {
     const searchTerm = searchInput.value.toLowerCase();
-    clients.value = clients.value.filter((client) => {
-      const name = client.name?.toLowerCase() || '';
-      return (
-        name.includes(searchTerm) 
-      );
-    });
+    //go to server with search term
+    // getClients(page=null,searchTerm);
+    clientStore.getClients(undefined,searchTerm).then(function (response) {
+      clients.value = response.data.content.map(client => ({ ...client, isEditing: false }));
+      // clients.value = clientStore.allClients;
+    })
   } else {
     clients.value = [...clientStore.allClients];
   }
