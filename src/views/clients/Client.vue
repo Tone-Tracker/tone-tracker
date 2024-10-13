@@ -117,7 +117,7 @@ const onInput = () => {
     // getClients(page=null,searchTerm);
     clientStore.getClients(undefined,searchTerm).then(function (response) {
       clients.value = response.data.content.map(client => ({ ...client, isEditing: false }));
-      // clients.value = clientStore.allClients;
+      allData.value = response.data//update pagination too
     })
   } else {
     clients.value = [...clientStore.allClients];
