@@ -6,24 +6,20 @@ import Layout from '@/views/shared/Layout.vue';
 import BreadCrumb from '@/components/BreadCrumb.vue';
 import useToaster from '@/composables/useToaster';
 import { useClientStore } from '@/stores/useClient';
-import { useConfirm } from "primevue/useconfirm";
 import ColorPicker from 'primevue/colorpicker';
 import router from "@/router";
 import SplitButton from 'primevue/splitbutton';
 import Dialog from 'primevue/dialog';
 import Badge from 'primevue/badge';
-import Paginator from 'primevue/paginator';
+import Paginator from '@/components/Paginator.vue';
 
 const toaster = useToaster();
 const clientStore = useClientStore();
-const confirm = useConfirm();
 
 let clients = ref([...clientStore.allClients]);
-const paginatedClients = ref([...clientStore.allClients]);
+const totalRecords = ref(0);
 
-const rowsPerPage = ref(10); // Rows per page
-const totalRecords = ref(0); // Total number of records
-const currentPage = ref(1); // Current page
+const allData = ref([]); 
 
 
 let showLoading = ref(false);
@@ -86,11 +82,10 @@ const getAllClients = () => {
     .then((response) => {
       showLoading.value = false;
       // Use the store's `setClients` to update `allClients`
+      allData.value = response.data
       clientStore.setClients(response.data.content.map(client => ({ ...client, isEditing: false })));
       clients.value = clientStore.allClients;
-      paginatedClients.value = [...clientStore.allClients];
-      totalRecords.value = clientStore.allClients.length; // Update total records based on store's clients
-      updatePaginatedClients();
+      totalRecords.value = clientStore.allClients.length;
     })
     .catch((error) => {
       toaster.error('Error fetching clients');
@@ -101,17 +96,6 @@ const getAllClients = () => {
     });
 };
 
-const onPageChange = (event) => {
-  currentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
-  rowsPerPage.value = event.rows;
-  updatePaginatedClients();
-};
-
-const updatePaginatedClients = () => {
-  const start = (currentPage.value - 1) * rowsPerPage.value;
-  const end = start + rowsPerPage.value;
-  paginatedClients.value = clients.value.slice(start, end);
-};
 
 const deleteClient = (client) => {
   if(!window.confirm("Are you sure you want to delete this client?")){ return; }
@@ -128,14 +112,14 @@ const deleteClient = (client) => {
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
-    paginatedClients.value = clients.value.filter((client) => {
+    clients.value = clients.value.filter((client) => {
       const name = client.name?.toLowerCase() || '';
       return (
         name.includes(searchTerm) 
       );
     });
   } else {
-    paginatedClients.value = [...clientStore.allClients];
+    clients.value = [...clientStore.allClients];
   }
 };
 
@@ -199,7 +183,6 @@ const updateClient = () => {
     }
     //now update clientStore.allClients
     clientStore.setClients(clientStore.allClients);
-    paginatedClients.value = [...clientStore.allClients];
     toaster.success("Client updated successfully");
     visible.value = false;
   }).catch(error => {
@@ -242,6 +225,13 @@ const items = (client) => [
         }
     }
 ];
+
+const handlePageChange = (newPage) => {
+  clientStore.getClients(newPage).then(function (response) {
+  clientStore.setClients(response.data.content);
+	clients.value = clientStore.allClients;
+  });
+};
 
 </script>
 
@@ -290,7 +280,7 @@ const items = (client) => [
                           </tr>
                         </thead>
                         <tbody>
-                          <tr v-if="paginatedClients.length > 0" v-for="(client, index) in paginatedClients" :key="client.id">
+                          <tr v-if="clients.length > 0" v-for="(client, index) in clients" :key="client.id">
                             <td> <Badge :value="index + 1 " size="large" :style="{'background-color': '#'+ client.color}" ></Badge></td>
                             <td>{{ client.name }}</td>
                             <td>{{ 
@@ -311,14 +301,8 @@ const items = (client) => [
                         </tbody>
                       </table>
                     </div>
-                    <div class="card mt-4">
-                      <Paginator v-if="totalRecords> 0"
-                        :first="(currentPage - 1) * rowsPerPage"
-                        :rows="rowsPerPage"
-                        :totalRecords="totalRecords"
-                        :rowsPerPageOptions="[10, 20, 30]"
-                        @page="onPageChange"
-                      ></Paginator>
+                    <div class="card mt-4" v-if="!showLoading">
+                      <Paginator :page="allData?.page" @changePage="handlePageChange" />
                     </div>
                   </div>
                 </div>

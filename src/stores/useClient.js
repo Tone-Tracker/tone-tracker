@@ -10,8 +10,8 @@ export const useClientStore = defineStore('useClientStore', () => {
       return axiosInstance.post(`/api/clients`,form);
     }
 
-    const getClients = () => {
-      return axiosInstance.get(`/api/clients`);
+    const getClients = (page=null) => {
+      return axiosInstance.get(`/api/clients?page=${page}`);
     }
 
     const updateClient = (clientId,clientData) => {

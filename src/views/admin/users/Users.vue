@@ -9,7 +9,7 @@ import useToaster from '@/composables/useToaster';
 import { useAuth } from '@/stores/auth';
 import { useConfirm } from "primevue/useconfirm";
 import router from '@/router';
-import Paginator from 'primevue/paginator';
+import Paginator from '@/components/Paginator.vue';
 import Dialog from 'primevue/dialog';
 import SizeAndHeightForm from '@/components/SizeAndHeightForm.vue';
 import Textarea from 'primevue/textarea';
@@ -32,7 +32,7 @@ const currentPage = ref(1); // Current page
 
 const users = ref([...userStore.allUsers]);
 let modalData = reactive({});
-
+const allData = ref([]); //for pagination
 const ROLES = ref([]);
 const sizes = ref(["X_SMALL", "SMALL", "MEDIUM", "LARGE", "X_LARGE", "XX_LARGE"]);
 
@@ -149,7 +149,7 @@ const getAllUsers = async () => {
   try {
     const response = await userStore.getUsers();
 	userStore.setAllUsers(response.data.content);
-	//get users which have role = TTG_ADMIN, TTG_SUPER_ADMIN, TTG_ACTIVATION_MANAGER, TTG_REGIONAL_MANAGER only
+	allData.value = response.data;
 	users.value = userStore.allUsers?.filter(user => user.role == 'TTG_ADMIN' || user.role == 'TTG_SUPER_ADMIN' || user.role == 'TTG_ACTIVATION_MANAGER' || user.role == 'TTG_REGIONAL_MANAGER');
    
     totalRecords.value =userStore.allUsers.length;
@@ -240,6 +240,13 @@ const onSubmit = async () => {
       });
   }
 };
+
+const handlePageChange = (newPage) => {
+  userStore.getUsers(newPage).then(function (response) {
+	userStore.setAllUsers(response.data.content);
+	users.value = userStore.allUsers;
+  });
+};
 </script>
 <template>
     <Layout>
@@ -283,14 +290,8 @@ const onSubmit = async () => {
 							  </div>
 							</div>
 						  </div>
-						<div class="card">
-							<Paginator v-if="totalRecords > 0"
-								:first="(currentPage - 1) * rowsPerPage"
-								:rows="rowsPerPage"
-								:totalRecords="totalRecords"
-								:rowsPerPageOptions="[10, 20, 30]"
-								@page="onPageChange"
-							></Paginator>
+						<div class="card" v-if="!showLoading">
+							<Paginator :page="allData?.page" @changePage="handlePageChange" />
 						</div>
 					</div>
 				</div>

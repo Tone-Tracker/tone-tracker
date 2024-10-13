@@ -47,8 +47,8 @@ export const useUserStore = defineStore('useUserStore', () => {
       return axiosInstance.post(`/api/users`,form);
     }
 
-    const getUsers = () => {
-      return axiosInstance.get(`/api/users`);
+    const getUsers = (page=null) => {
+      return axiosInstance.get(`/api/users?page=${page}`);
     }
 
     const  getUser = (id) => {
