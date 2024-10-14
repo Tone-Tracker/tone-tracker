@@ -206,17 +206,14 @@ const vFocus = {
 };
 
 const onInput = () => {
-  if (searchInput.value) {
-    const searchTerm = searchInput.value.toLowerCase();
-    campaigns.value = campaigns.value.filter((campaign) => {
-      const name = campaign.name?.toLowerCase() || '';
-      
-      return (
-        name.includes(searchTerm) 
-      );
-    });
+    if (searchInput.value && searchInput.value.length >= 3) {
+    // const searchTerm = searchInput.value.toLowerCase();
+    //    campaignStore.getCampaignsByClientId(clientId.value, searchTerm).then(function (response) {
+    //     campaignStore.setCampaigns(response.data);
+    //     campaigns.value = campaignStore.allCampaigns;
+    // })
   } else {
-    campaigns.value = campaignStore.allCampaigns;
+    campaigns.value = [...campaignStore.allCampaigns];
   }
 };
 </script>

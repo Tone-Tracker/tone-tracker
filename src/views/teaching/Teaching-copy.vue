@@ -26,8 +26,7 @@ const visible = ref(false);
 const docName = ref('');
 const filePath = ref(null);
 const showAddingModal = ref(false);
-const title = ref('');  // Track the title input
-const showFilePreview = ref(false);
+const title = ref('');  
 const selectedFile = ref(null);
 
 watch(() => route.params.id, (newId) => {
@@ -85,6 +84,7 @@ const onFileChange = (uploadedFile) => {
 }
 
 const onSubmitTrainingMaterial = () => {
+    showLoading.value = true;
   const trainingMaterial = new FormData();
   trainingMaterial.append("file", selectedFile.value);
   trainingMaterial.append("activation", activationId.value);
@@ -96,12 +96,14 @@ const onSubmitTrainingMaterial = () => {
   }
 
   activationStore.submitTrainingMaterial(trainingMaterial,config).then(response => {
+    showLoading.value = false;
     toaster.success("Training Material submitted successfully");
     getAllTrainingMaterial(activationId.value);
     addTrainingMaterial.value = false;
     selectedFile.value = null;
     title.value = '';
   }).catch(error => {
+    showLoading.value = false;
     toaster.error("Error submitting Training Material Document");
     console.log(error);
     addTrainingMaterial.value = false;
@@ -220,7 +222,7 @@ const canAddMaterial = () => {
             </div>
             <!-- File Upload -->
             <FileUploadGeneric 
-                :showFilePreview="showFilePreview" 
+                :showFilePreview="true" 
                 accept="application/pdf" 
                 fileType="pdf" 
                 @fileUploaded="onFileChange"
