@@ -12,7 +12,7 @@ export const useClientStore = defineStore('useClientStore', () => {
 
     const getClients = (page=null,filter=null) => {
       if(filter){
-        return axiosInstance.get(`/api/clients?filter=${filter}`);
+        return axiosInstance.get(`/api/clients?searchKeyword=${filter}`);
       }
       return axiosInstance.get(`/api/clients?page=${page}`);
     }
