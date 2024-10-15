@@ -324,7 +324,7 @@ const items = (region) => [
                                                         <td>{{ index + 1 }}</td>
                                                         <td v-if="!region.isEditing">{{ region.name }}</td>
                                                         <td v-else>
-                                                            <input v-focus type="text" v-model="region.name" @blur="update(region)" @keyup.enter="update(region)" class="no-border-input"/>
+                                                            <input v-focus type="text" v-model="region.name" @blur="update(region)" @keyup.enter="update(region)" class="form-control no-border-input"/>
                                                         </td>
                                                         <td>
                                                             {{ region.firstName ? region.firstName + ' ' + region.lastName : '' }}
