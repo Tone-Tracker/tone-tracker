@@ -1,14 +1,16 @@
 <template>
   <header>
-    <div class="topbar d-flex align-items-center justify-content-between">
+    <div class="topbar d-flex align-items-center">
       <nav class="navbar navbar-expand-lg flex justify-content-between flex-direction-row w-100">
         <DarkThemeNavbarToggle />
-
+        <!-- <div class="d-flex align-items-center justify-content-between">
+          
+        </div> -->
         <div class="logo-container">
           <img class="logo" src="/src/assets/images/logo/white-logo.png" alt="Logo" />
         </div>
 
-        <div class="search-bar-container d-none text-center d-lg-flex w-100 justify-content-center">
+        <div class="search-bar-container text-center d-lg-flex w-100 justify-content-center">
           <div class="input-group custom-width-70">
             <span class="input-group-text" id="addon-wrapping"><i class='bx bx-search'></i></span>
             <input
@@ -254,11 +256,11 @@ html.dark-theme .input-group-text {
     justify-content: flex-start;
   }
   .user-box {
-    order: -1;
+    /* order: -1; */
   }
   .navbar {
-    flex-direction: column;
-    align-items: start;
+    /* flex-direction: column; */
+    /* align-items: start; */
   }
   .logo {
     width: 150px;
