@@ -38,7 +38,7 @@ const displayedPages = computed(() => {
 </script>
 
 <template>
-  <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+  <nav aria-label="Page navigation" class="d-flex justify-content-center">
     <ul class="pagination">
       <li :class="['page-item', { disabled: currentPage === 1 }]">
         <button class="page-link" @click="prevPage" :disabled="currentPage === 1">
