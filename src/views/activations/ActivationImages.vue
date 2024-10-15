@@ -34,8 +34,9 @@ onMounted(() => {
 });
 
 const getActivationImages = async () => {
+  imagesLoading.value = true;
     activationStore.getActivationImages(activationId.value).then(function (response) {
-      imagesLoading.value = true;
+      imagesLoading.value = false;
       images.value = response.data.content;
         // activationData.value = response.data;
     }).catch(error => {

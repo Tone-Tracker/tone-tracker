@@ -113,8 +113,6 @@ const deleteClient = (client) => {
 const onInput = () => {
   if (searchInput.value && searchInput.value.length >= 3) {
     const searchTerm = searchInput.value.toLowerCase();
-    //go to server with search term
-    // getClients(page=null,searchTerm);
     clientStore.getClients(undefined,searchTerm).then(function (response) {
       clients.value = response.data.content.map(client => ({ ...client, isEditing: false }));
       allData.value = response.data//update pagination too
