@@ -121,23 +121,21 @@ const onSubmit = () => {
               </div>
             </div>
           </div> -->
-          <div v-if="images?.length > 0" class="row flex-row">
-    <div v-for="image in images" :key="image.id" class="col d-flex justify-content-start">
-      <div class="gallery">
-        <div class="asc py-3">{{ image.title || 'Image Title' }}</div>
-        <div class="card">
-          <Image alt="Image" preview class="gallery-image">
-            <template #previewicon>
-              <i class='bx bx-search-alt-2'></i>
-            </template>
-            <template #image>
-              <img :src="envPath + image.path" :alt="image.title || 'image'" class="img-fluid">
-            </template>
-            <template #preview="slotProps">
-              <img :src="envPath + image.path" :alt="image.title || 'preview'" :style="slotProps.style" @click="slotProps.onClick" class="img-fluid">
-            </template>
-          </Image>
-        </div>
+          <div v-if="images?.length > 0" class="gallery-container">
+    <div v-for="image in images" :key="image.id" class="gallery">
+      <div class="asc py-3">{{ image.title || 'Image Title' }}</div>
+      <div class="card">
+        <Image alt="Image" preview class="gallery-image">
+          <template #previewicon>
+            <i class='bx bx-search-alt-2'></i>
+          </template>
+          <template #image>
+            <img :src="envPath + image.path" :alt="image.title || 'image'" class="img-fluid">
+          </template>
+          <template #preview="slotProps">
+            <img :src="envPath + image.path" :alt="image.title || 'preview'" :style="slotProps.style" @click="slotProps.onClick" class="img-fluid">
+          </template>
+        </Image>
       </div>
     </div>
   </div>
@@ -433,30 +431,47 @@ html.dark-theme .table th {
 
 /* image fluid */
 
+.gallery-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 20px 0;
+}
+
 .gallery {
-  margin: 10px;
-  border: 1px solid #ccc;
-  float: left;
+  flex: 0 0 auto;
   width: 180px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease;
 }
 
 .gallery:hover {
-  border: 1px solid #777;
+  border-color: #777;
 }
 
-.gallery img {
+.card {
+  height: 180px;
+  overflow: hidden;
+}
+
+.gallery-image {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
 }
 
 .asc {
   padding: 15px;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .img-fluid {
   max-width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
 }
 
 
