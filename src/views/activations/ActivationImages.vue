@@ -103,6 +103,46 @@ const onSubmit = () => {
           <div class="">
             <h4 class="mb-2 ml-2">{{ activationData?.name }} Images</h4>
           </div>
+
+          <!-- <div v-if="images?.length > 0" class="image-gallery">
+            <div v-for="image in images" :key="image.id" class="image-container">
+              <div class="card">
+                <Image alt="Image" preview class="gallery-image">
+                  <template #previewicon>
+                    <i class='bx bx-search-alt-2'></i>
+                  </template>
+                  <template #image>
+                    <img :src="envPath + image.path" alt="image" />
+                  </template>
+                  <template #preview="slotProps">
+                    <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                  </template>
+                </Image>
+              </div>
+            </div>
+          </div> -->
+          <div v-if="images?.length > 0" class="row flex-row">
+    <div v-for="image in images" :key="image.id" class="col d-flex justify-content-start">
+      <div class="gallery">
+        <div class="asc py-3">{{ image.title || 'Image Title' }}</div>
+        <div class="card">
+          <Image alt="Image" preview class="gallery-image">
+            <template #previewicon>
+              <i class='bx bx-search-alt-2'></i>
+            </template>
+            <template #image>
+              <img :src="envPath + image.path" :alt="image.title || 'image'" class="img-fluid">
+            </template>
+            <template #preview="slotProps">
+              <img :src="envPath + image.path" :alt="image.title || 'preview'" :style="slotProps.style" @click="slotProps.onClick" class="img-fluid">
+            </template>
+          </Image>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- 
+          
           <div v-if="images?.length > 0" class="image-gallery">
             <div v-for="image in images" :key="image.id" class="image-container">
               <div class="card">
@@ -119,6 +159,15 @@ const onSubmit = () => {
                 </Image>
               </div>
             </div>
+          </div> -->
+
+          <div class="col" v-if="activation?.team?.length > 0" v-for="team in activation?.team" :key="team.id">
+              <div class="gallery">
+                <div class="asc py-3">{{ team.firstName }} {{ team.lastName }}</div>
+                <router-link :to="`${ team.staff ? '/staff-profile/' + team.staff + '/' + team?.id : '#!' }`">
+                  <img :src="team.path ? envPath + team.path : `https://ui-avatars.com/api/?name=${ team.firstName + ' ' + team.lastName }&background=random`" alt="Cinque Terre" class="img-fluid">
+                </router-link>
+              </div>
           </div>
 
           <div v-else class="text-center text-danger">{{ imagesLoading ? 'Loading...' : 'No images found.' }}</div>
@@ -383,4 +432,33 @@ html.dark-theme .table th {
 }
 
 /* image fluid */
+
+.gallery {
+  margin: 10px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 180px;
+}
+
+.gallery:hover {
+  border: 1px solid #777;
+}
+
+.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+.asc {
+  padding: 15px;
+  text-align: center;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+
+
 </style>
