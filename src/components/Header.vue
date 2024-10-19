@@ -86,11 +86,7 @@ import { updateProfileHeader } from '@/stores/updateProfileHeader';
 
 const { profilePicture, setProfilePicture } = updateProfileHeader();
 
-//if profilePicture changes re-render
-watch(profilePicture, (newValue, oldValue) => {
-  console.log('Profile picture changed:', newValue);
-  // Add logic here to rerender or perform any action when profilePicture changes
-});
+
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 

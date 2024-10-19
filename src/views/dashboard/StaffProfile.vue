@@ -352,7 +352,6 @@ const uploadInput = ref(null)
     const showFilePreview = ref(true);
 
 const onProfilePicSelect = (event) => {
-    console.log('event', event)
       // Reset last selection and results
       pic.value = ''
       result.dataURL = ''
@@ -364,7 +363,6 @@ const onProfilePicSelect = (event) => {
 
       // Convert to dataURL and pass to the cropper component
       const file = files[0];
-      console.log('filesSelect', files)
       const reader = new FileReader()
       reader.readAsDataURL(file)
       reader.onload = () => {
@@ -389,7 +387,6 @@ const onProfilePicSelect = (event) => {
 };
 
 const onfileDropped = (dropedFile) => {
-   console.log('dropedFile', dropedFile)
       // Reset last selection and results
       pic.value = ''
       result.dataURL = ''
@@ -397,7 +394,6 @@ const onfileDropped = (dropedFile) => {
 
       // Get selected files
       const files = dropedFile;
-      console.log('filesDrop', files)
       if (!files || !files.length) return
 
       // Convert to dataURL and pass to the cropper component
@@ -495,7 +491,6 @@ const form = ref({
 
 const getUser = () => {
     userStore.getUser(userIdParam.value).then(function (response) {
-        console.log('userInfo',response);
         userInfo.value = response.data;
         if(isMyProfile()) {
             setProfilePicture(response.data?.path);
