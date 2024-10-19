@@ -76,11 +76,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import DarkThemeNavbarToggle from './DarkThemeNavbarToggle.vue';
 import axios from 'axios';
 import { useAuth } from '@/stores/auth';
 import router from '@/router';
+import { updateProfileHeader } from '@/stores/updateProfileHeader';
+
+
+const { profilePicture, setProfilePicture } = updateProfileHeader();
+
+//if profilePicture changes re-render
+watch(profilePicture, (newValue, oldValue) => {
+  console.log('Profile picture changed:', newValue);
+  // Add logic here to rerender or perform any action when profilePicture changes
+});
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 

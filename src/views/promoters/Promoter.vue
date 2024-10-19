@@ -165,11 +165,12 @@ const onInput = () => {
 const getAllPromoters = async () => {
   showLoading.value = true;
   promoterStore.getPromoters().then(response => {
-    showLoading.value = false;
     promoterStore.setAllPromoters(response.data.content);
     promoters.value = [...promoterStore.allPromoters];
     allData.value = response.data;
+    showLoading.value = false;
   }).catch(error => {
+    showLoading.value = false;
     toaster.error("Error fetching promoters");
     console.log(error);
   }).finally(() => {
@@ -186,7 +187,7 @@ const getAllSizes = async () => {
     originalSizes.value = sizeStore.allSizes;
     sizes.value = sizeStore.allSizes.map(size => ({
     value: size.toUpperCase(),
-    text: size.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
+    label: size.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
   }));
   }).catch(error => {
     console.log(error);
@@ -326,7 +327,7 @@ const redirectToProfile = (user) => {
 						       </Card>
 							</Column>
             </Row>
-            <Paginator :page="allData?.page" @changePage="handlePageChange" />
+            <Paginator v-if="!showLoading" :page="allData?.page" @changePage="handlePageChange" />
           </CardBody>
         </Card>
       </div>

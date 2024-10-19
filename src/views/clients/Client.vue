@@ -311,7 +311,6 @@ const handlePageChange = (newPage) => {
               </Column>
               <div class="col-4 col-lg-4 col-xl-4 d-flex">
                 <div class=" w-100 radius-10">
-
                       <Column classes="col-md-12">
                         <InputLabel labelText="Client Name" classes="form-label" htmlFor="name"/>
                         <Input v-model="form.name" type="text" classes="form-control" id="name" placeholder="" />

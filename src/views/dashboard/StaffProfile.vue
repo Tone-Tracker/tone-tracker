@@ -46,78 +46,6 @@ Date: 04/06/2024
                                     <h4 class="text- ">{{ getFullName() }} </h4>
                                 </div>
 
-                             
-                                <!-- Add Profile picture modal -->
-                                <div v-if="showModal" class="modal fade" id="addProfilePicModal" tabindex="-1" aria-labelledby="addModalLabel"
-                                aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addModalLabel">Update Profile Picture</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                                
-                                        </div>
-                                        <div class="modal-body">
-                                            <!-- <input accept="image/*" @change="onProfilePicSelect($event)" type="file" name="prof-pic-upload" id="prof-pic-upload" hidden />
-                                           <label  for="prof-pic-upload" class="w-100 btn btn-lg btn-success px-5"><i class='bx bx-image-add fs-3' ></i>Upload</label> -->
-                                           <FileUploadForCropper
-                                           :showFilePreview="showFilePreview" 
-                                            accept="image/*" 
-                                            fileType="image" 
-                                            @fileUploaded="onProfilePicSelect"
-                                            @fileDropped="onfileDropped"
-                                         />
-                                          
-                                          <VuePictureCropper
-                                          :boxStyle="{
-                                            width: '100%',
-                                            height: '100%',
-                                            backgroundColor: '#f8f8f8',
-                                            margin: 'auto',
-                                          }"
-                                          :img="pic"
-                                          :options="{
-                                            viewMode: 1,
-                                            dragMode: 'move',
-                                            aspectRatio: 1,
-                                            cropBoxResizable: false,
-                                          }"
-                                          :presetMode="{
-                                            mode: 'fixedSize',
-                                            width: 300,
-                                            height: 400,
-                                          }"
-                                          @ready="ready"
-                                          class="mt-3"
-                                        />
-                                          
-                                        <div class="tools" v-if="showTools">
-                                            <button class="btn" data-bs-dismiss="modal">
-                                              Cancel
-                                            </button>
-                                            <!-- <button class="btn" @click="clear">
-                                              Clear
-                                            </button> -->
-                                            <button class="btn" @click="reset">
-                                              Reset
-                                            </button>
-                                          </div>
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <div class="col-12 mt-4">
-                                                <div class="d-grid">
-                                                    <button @click="getResult" class="btn maz-gradient-btn"
-                                                        type="button">
-                                                        Save
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             </div>
                            
@@ -255,6 +183,67 @@ Date: 04/06/2024
 
             </div>
         </div>
+        <Dialog v-model:visible="showModal" header="Update Profile Picture" :style="{ width: '30rem' }" position="top" :modal="true" :draggable="false">
+        
+                    <div class="modal-body">
+                       <FileUploadForCropper
+                       :showFilePreview="showFilePreview" 
+                        accept="image/*" 
+                        fileType="image" 
+                        @fileUploaded="onProfilePicSelect"
+                        @fileDropped="onfileDropped"
+                     />
+                      
+                      <VuePictureCropper
+                      :boxStyle="{
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: '#f8f8f8',
+                        margin: 'auto',
+                      }"
+                      :img="pic"
+                      :options="{
+                        viewMode: 1,
+                        dragMode: 'move',
+                        aspectRatio: 1,
+                        cropBoxResizable: false,
+                      }"
+                      :presetMode="{
+                        mode: 'fixedSize',
+                        width: 300,
+                        height: 400,
+                      }"
+                      @ready="ready"
+                      class="mt-3"
+                    />
+                      
+                    <div class="tools" v-if="showTools">
+                        <Button @click="showModal = false" classes="btn" type="button" :disabled="showLoading">
+                            <template #content>
+                                Cancel
+                            </template>		
+                          </Button>
+                          
+                          <Button @click="reset" classes="btn" type="button" :disabled="showLoading">
+                            <template #content>
+                                Reset
+                            </template>		
+                          </Button>
+                      </div>
+                    </div>
+
+                    
+                        <div class="col-12 mt-4">
+                            <div class="d-grid">
+                                <Button @click="getResult" classes="btn maz-gradient-btn" type="button" :disabled="showLoading">
+                                    <template #content>
+                                    {{ showLoading ? 'Saving...' : 'Save' }}
+                                    </template>									  
+                                    <Spinner v-if="showLoading" class="spinner-border spinner-border-sm" />
+                                  </Button>
+                            </div>
+                        </div>
+        </Dialog>
     </Layout>
 </template>
 <script setup>
@@ -271,6 +260,13 @@ import { required, sameAs } from "@vuelidate/validators";
 import { useUserStore } from '@/stores/userStore';
 import FileUploadForCropper from '../upload/FileUploadForCropper.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
+import Dialog from 'primevue/dialog';
+import { updateProfileHeader } from '@/stores/updateProfileHeader';
+import Spinner from '@/components/buttons/Spinner.vue';
+import Button from '@/components/buttons/Button.vue';
+
+
+const { profilePicture, setProfilePicture } = updateProfileHeader();
 
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
@@ -285,7 +281,6 @@ const toaster = useToaster();
 const userStore = useUserStore();
 const promoterId = ref(route.params.id);
 const userIdParam = ref(route.params.userId);
-const activeUserId = ref(route.params.id);
 const totalSizePercent = ref(0);
 
 
@@ -430,7 +425,7 @@ const onfileDropped = (dropedFile) => {
 };
 
 
-const showModal = ref(true);
+const showModal = ref(false);
 
 async function getResult() {
       if (!cropper) return
@@ -441,8 +436,7 @@ async function getResult() {
       const file = await cropper.getFile({
         fileName: `${userInfo.value.firstName}_${userInfo.value.lastName}`
       })
-
-      console.log({ base64, blob, file })
+      showLoading.value = true
       result.dataURL = base64
       result.blobURL = URL.createObjectURL(blob)
       const formData = new FormData();
@@ -451,13 +445,13 @@ async function getResult() {
         useMultipartFormData: true // Add this flag to the request config
         };
         promoterStore.uploadSingleImage(user.id,formData, config).then(function (response) {
-            console.log('response', response);
             toaster.success('Profile picture updated successfully');
             getUser();
-            showModal.value = false;
-            document.querySelector('.modal-backdrop').remove();
+            showLoading.value = false;
+            showModal.value = false;           
             
         }).catch(function (error) {
+            showLoading.value = false;
             toaster.error('Ooops! Something went wrong');
             console.log(error)
         })
@@ -498,11 +492,15 @@ const form = ref({
     description: null,
     role:null
 });
-console.log('Form',form)
+
 const getUser = () => {
     userStore.getUser(userIdParam.value).then(function (response) {
         console.log('userInfo',response);
         userInfo.value = response.data;
+        if(isMyProfile()) {
+            setProfilePicture(response.data?.path);
+        }
+        
         Object.assign(form.value, {
             firstName: response.data.firstName,
             lastName: response.data.lastName,
@@ -520,14 +518,8 @@ const getUser = () => {
 
 
 const isMyProfile = () => {
-    console.log(promoterId.value, user.activeUserId)
     return promoterId.value == user.activeUserId;
 }
-const uploadEvent = (callback) => {
-    totalSizePercent.value = totalSize.value / 10;
-    callback();
-};
-
 
 const getFullName = () => {
     if(!userInfo.value) {
