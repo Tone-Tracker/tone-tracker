@@ -305,7 +305,7 @@ const redirectToProfile = (user) => {
               </Row>
               <div class="ms-auto">
 
-                <Button @click="toggleModal" classes="btn maz-gradient-btn mt-2 mt-lg-0" type="button" text="Submit">
+                <Button @click="toggleModal" classes="btn maz-gradient-btn mt-2 mt-lg-0" type="button">
                   <template #content>
                     Add Promoter
                   </template>									  
@@ -354,7 +354,7 @@ const redirectToProfile = (user) => {
 
           <Column classes="col-md-6">
           <InputLabel labelText="Phone Number" classes="form-label" htmlFor="cell"/>
-          <InputNumber v-model="form.phone" classes="form-control" id="email" placeholder="" />
+          <InputNumber v-model="form.phone" classes="form-control" id="cell" placeholder="" />
           <InputError classes="input-errors" :errors="v$.phone.$errors" message="Phone Number is required" />
           </Column>
         
@@ -394,7 +394,7 @@ const redirectToProfile = (user) => {
 
       <Column class="col-12 mt-4">
         <div class="d-grid">
-          <Button @click="onSubmit" classes="btn maz-gradient-btn" type="button" text="Submit">
+          <Button @click="onSubmit" classes="btn maz-gradient-btn" type="button" :disabled="showLoading">
             <template #content>
             {{ isEdit ? showLoading ? '' : 'Update' : showLoading ? '' : 'Submit' }}
             </template>									  

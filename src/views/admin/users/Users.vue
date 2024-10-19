@@ -299,7 +299,7 @@ const handlePageChange = (newPage) => {
 		  
 							<Column class="col-12 mt-3">
 							  <div class="d-grid">
-									<Button @click="onSubmit" classes="btn maz-gradient-btn" type="button" text="Submit">
+									<Button @click="onSubmit" classes="btn maz-gradient-btn" type="button" text="Submit" :disabled="showLoading">
 									  <template #content>
 										{{ modalData.value?.id ? showLoading ? '' : 'Update' : showLoading ? '' : 'Submit' }}
 									  </template>									  

@@ -11,6 +11,20 @@ import { useSizes } from '@/stores/sizes';
 import Paginator from '@/components/Paginator.vue';
 import { useSupplier } from '@/stores/supplier';
 import { useUserStore } from '@/stores/userStore';
+import Button from '@/components/buttons/Button.vue';
+import Spinner from '@/components/buttons/Spinner.vue';
+import Row from '@/components/general/Row.vue';
+import Column from '@/components/general/Column.vue';
+import InputLabel from '@/components/form-components/InputLabel.vue';
+import Input from '@/components/form-components/Input.vue';
+import InputError from '@/components/form-components/InputError.vue';
+import InputNumber from '@/components/form-components/InputNumber.vue';
+import Card from '@/components/general/Card.vue';
+import CardBody from '@/components/general/CardBody.vue';
+import PromoterCard from '@/components/PromoterCard.vue';
+import SupplierCard from '@/components/SupplierCard.vue';
+import router from '@/router';
+import SearchInput from '@/components/form-components/SearchInput.vue';
 
 const supplierStore = useSupplier();
 const userStore = useUserStore();
@@ -63,18 +77,21 @@ const v$ = useVuelidate(rules, form);
 const onSubmit = async () => {
   const isFormValid = await v$.value.$validate();
   if (!isFormValid) return; // Stop if the form is not valid
-
+   showLoading.value = true;
   try {
     if (isEdit.value) {
       await userStore.updateUser(supplierId.value, form);
       toaster.success("Supplier updated successfully");
+      showLoading.value = false;
     } else {
       supplierStore.submitSupplier(form).then(function (response) {
       getSuppliers();
-      closeDialog();
+      showLoading.value = false;
+      visible.value = false;
       toaster.success("Supplier created successfully");
 
       }).catch(function (error) {
+        showLoading.value = false;
         toaster.error("Error creating supplier");
         console.log(error);
       });
@@ -130,9 +147,7 @@ const visible = ref(false);
 let isEdit = ref(false);
 let supplierId = ref(null);
 
-const position = ref('top');
-
-const openPosition = (pos, promoter) => {
+const openPosition = (promoter) => {
   if (promoter) {
     isEdit.value = true;
     supplierId.value = promoter.id;
@@ -159,14 +174,9 @@ const openPosition = (pos, promoter) => {
       description: null,
     });
   }
-  position.value = pos;
   visible.value = true;
 };
 
-
-const closeDialog = () => {
-  visible.value = false;
-};
 
 const toggleModal = () => {
   isEdit.value = false; // Reset edit mode
@@ -185,6 +195,13 @@ const handlePageChange = (newPage) => {
   });
 };
 
+const redirectToProfile = (user) => {
+	if(!user) return
+  router.push({
+    path: `/supplier-profile/${user?.activeUserId}/${user?.id}`
+  });
+};
+
 </script>
 
 <template>
@@ -196,39 +213,40 @@ const handlePageChange = (newPage) => {
           <div class="card-body">
             <div class="d-lg-flex align-items-center mb-4 gap-1">
               <div class="position-relative">
-                <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5" placeholder="Search">
-                <span class="position-absolute top-50 product-show translate-middle-y">
-                  <i class="bx bx-search"></i>
-                </span>
+                <SearchInput 
+                  placeholder="Search" 
+                  id="searchInput"
+                  v-model="searchInput" @input="onInput" classes="form-control ps-5" type="search">
+                  <template #search>
+                    <span class="position-absolute top-50 product-show translate-middle-y">
+                      <i class="bx bx-search"></i>
+                    </span>
+                  </template>
+								</SearchInput>
               </div>
               <div class="ms-auto">
-                <a @click="toggleModal" href="javascript:;" class="btn maz-gradient-btn mt-2 mt-lg-0">
-                  <i class="bx bxs-plus-square"></i>Add Supplier
-                </a>
+                <Button @click="toggleModal" classes="btn maz-gradient-btn mt-2 mt-lg-0" type="button">
+                  <template #content>
+                    Add Supplier
+                  </template>									  
+                </Button>
               </div>
             </div>
 
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
-              <div class="col" v-for="promoter in promoters" :key="promoter.id">
-                <div class="card radius-15">
-                  <div class="card-body text-center">
-                    <div class="p-4 border radius-15">
-                      <img v-if="promoter.path" :src="`${envPath}${promoter.path}`" width="110" height="110" class="rounded-circle shadow" alt="">
-                      <img v-else src="../../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
-                      <h5 class="mb-0 mt-5">{{ promoter.firstName }} {{ promoter.lastName }}</h5>
-                      <p class="mb-3">{{ promoter.email }}</p>
-                      <div class="list-inline contacts-social mt-3 mb-3">
-                        <a v-tooltip.right="'Edit'" @click="openPosition('top', promoter)" href="javascript:;" class="list-inline-item maz-gradient-btn text-white border-0">
-                          <i class="bx bxs-edit"></i>
-                        </a>
-                      </div>
-                      <div class="d-grid">
-                        <router-link :to="{ path: `/supplier-profile/${promoter?.activeUserId}/${promoter?.id}` }" class="btn btn-outline-primary radius-15">View Profile</router-link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
+              <Column class="col" v-if="promoters?.length > 0" v-for="promoter in promoters" :key="promoter.id">
+								<Card classes="radius-15">
+									<CardBody class="text-center">
+							         <SupplierCard 
+                          :promoter="promoter" 
+                          classes="p-4 border radius-15" 
+                          @gotToProfile="redirectToProfile" 
+                          @edit="openPosition"
+                      />
+                   </CardBody>
+						       </Card>
+							</Column>
             </div>
 
             <Paginator :page="allData?.page" @changePage="handlePageChange" v-if="!showLoading" />
@@ -237,56 +255,54 @@ const handlePageChange = (newPage) => {
       </div>
     </div>
 
-    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Supplier' : 'Add Supplier'" :style="{ width: '50rem' }" @hide="closeDialog">
-      <div class="row g-3">
-        <!-- Existing form fields -->
-        <div class="col-md-6">
-          <label for="firstName" class="form-label">First Name</label>
-          <input v-model="form.firstName" type="text" class="form-control" id="firstName">
-          <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
-            <div class="text-danger">First Name is required</div>
-          </div>
-        
-        </div>
-        <div class="col-md-6">
-          <label for="lastName" class="form-label">Last Name</label>
-          <input v-model="form.lastName" type="text" class="form-control" id="lastName">
-          <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
-            <div class="text-danger">Last Name is required</div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="email" class="form-label">Email</label>
-          <input v-model="form.email" type="email" class="form-control" id="email">
-          <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-            <div class="text-danger">Email is required</div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="cell" class="form-label">Phone Number</label>
-          <input v-model="form.phone" type="text" class="form-control" id="cell">
-          <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
-            <div class="text-danger">Cell Number is required</div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <label for="name" class="form-label">Name</label>
-          <input v-model="form.name" type="text" class="form-control" id="name">
-        </div>
-        <div class="col-md-12">
-          <label for="description" class="form-label">Description</label>
-          <Textarea v-model="form.description" autoResize rows="5" cols="91"/>
-        </div>
-         
-      </div>
+    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Supplier' : 'Add Supplier'" :style="{ width: '50rem' }">
+      <Row class="g-3">        
+        <Column classes="col-md-6">
+          <InputLabel labelText="First Name" classes="form-label" htmlFor="firstName"/>
+          <Input v-model="form.firstName" type="text" classes="form-control" id="firstName" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.firstName.$errors" message="First Name is required" />
+        </Column>
 
-      <div class="col-12 mt-4">
+        <Column classes="col-md-6">
+          <InputLabel labelText="Last Name" classes="form-label" htmlFor="lastName"/>
+          <Input v-model="form.lastName" type="text" classes="form-control" id="lastName" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.lastName.$errors" message="Last Name is required" />
+          </Column>
+
+          <Column classes="col-md-6">
+          <InputLabel labelText="Email" classes="form-label" htmlFor="email"/>
+          <Input v-model="form.email" type="email" classes="form-control" id="email" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.email.$errors" message="Email is required" />
+          </Column>
+
+          <Column classes="col-md-6">
+          <InputLabel labelText="Phone Number" classes="form-label" htmlFor="cell"/>
+          <InputNumber v-model="form.phone" classes="form-control" id="cell" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.phone.$errors" message="Phone Number is required" />
+          </Column>
+
+          <Column classes="col-md-12">
+            <InputLabel labelText="Name" classes="form-label" htmlFor="name"/>
+            <Input v-model="form.name" type="text" classes="form-control" id="name" placeholder="" />
+          </Column>
+       
+        <Column class="col-md-12">
+          <InputLabel labelText="Description" classes="form-label" htmlFor="description"/>
+          <Textarea v-model="form.description" id="description" autoResize rows="5" cols="91"/>
+        </Column>
+         
+      </Row>
+
+      <Column class="col-12 mt-4">
         <div class="d-grid">
-          <button @click="onSubmit" class="btn maz-gradient-btn" type="button">
-            {{ isEdit ? 'Update' : 'Submit' }}
-          </button>
+          <Button @click="onSubmit" classes="btn maz-gradient-btn" type="button" text="Submit">
+            <template #content>
+            {{ isEdit ? showLoading ? '' : 'Update' : showLoading ? '' : 'Submit' }}
+            </template>									  
+            <Spinner v-if="showLoading" class="spinner-border spinner-border-sm" />
+          </Button>
         </div>
-      </div>
+      </Column>
     </Dialog>
   </Layout>
 </template>
