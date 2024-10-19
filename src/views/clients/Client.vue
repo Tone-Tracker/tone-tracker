@@ -12,7 +12,6 @@ import SplitButton from 'primevue/splitbutton';
 import Dialog from 'primevue/dialog';
 import Badge from 'primevue/badge';
 import Paginator from '@/components/Paginator.vue';
-import { get } from 'jquery';
 import SearchInput from '@/components/form-components/SearchInput.vue';
 import Button from '@/components/buttons/Button.vue';
 import Spinner from '@/components/buttons/Spinner.vue';
@@ -283,7 +282,7 @@ const handlePageChange = (newPage) => {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr v-if="clients.length > 0" v-for="(client, index) in clients" :key="client.id">
+                          <tr v-if="clients?.length > 0" v-for="(client, index) in clients" :key="client.id">
                             <td> <Badge :value="index + 1 " size="large" :style="{'background-color': '#'+ client.color}" ></Badge></td>
                             <td>{{ client.name }}</td>
                             <td>{{ 
@@ -322,7 +321,7 @@ const handlePageChange = (newPage) => {
                       <Column classes="col-md-12 mt-2">
                         <InputLabel labelText="First Name" classes="form-label" htmlFor="firstname"/>
                         <Input v-model="form.firstName" type="text" classes="form-control" id="firstname" placeholder="" />
-                        <InputError classes="input-errors" :errors="v$.firstname.$errors" message="First Name is required" />
+                        <InputError classes="input-errors" :errors="v$.firstName.$errors" message="First Name is required" />
                       </Column>
 
                       <Column classes="col-md-12 mt-2">
@@ -343,17 +342,17 @@ const handlePageChange = (newPage) => {
                         <InputError classes="input-errors" :errors="v$.email.$errors" message="Email is required" />
                       </Column>
                     
-                        <Column class="col-12">
+                        <Column class="col-12 mt-3">
                           <div class="color-picker-container">
                             <ColorPicker v-model="form.color" inline class="w-100" />
                             <InputError classes="input-errors" :errors="v$.color.$errors" message="Client color is required" />
                         </div>
                       </Column>
-                        <span class="badge" :style="`color: #fff; background-color: #${form.color}`">Sample Background</span>             
+                        <span class="badge w-100" :style="`color: #fff; background-color: #${form.color}`">Sample Background</span>             
 
                     
                       <div class="ms-auto mt-6">
-                        <Button @click="createClient" classes="btn maz-gradient-btn" type="button" :disabled="loading">
+                        <Button @click="createClient" classes="w-100 btn maz-gradient-btn" type="button" :disabled="loading">
                           <template #content>
                           {{ isEdit ? loading ? '' : 'Update' : loading ? '' : 'Submit' }}
                           </template>									  
@@ -390,14 +389,16 @@ const handlePageChange = (newPage) => {
             </Row>
 
           
-            <div class="ms-auto mt-6">
-              <Button @click="updateClient" classes="w-100 btn maz-gradient-btn mt-2 mt-lg-0" type="button" :disabled="loading">
-                <template #content>
-                {{ loading ? 'Updating...' : 'Update' }}
-                </template>									  
-                <Spinner v-if="loading" class="spinner-border spinner-border-sm" />
-              </Button>
-            </div>
+            <Row>
+              <div class="ms-auto mt-6 w-100">
+                <Button @click="updateClient" classes="w-100 btn maz-gradient-btn mt-2 mt-lg-0" type="button" :disabled="loading">
+                  <template #content>
+                  {{ loading ? 'Updating...' : 'Update' }}
+                  </template>									  
+                  <Spinner v-if="loading" class="spinner-border spinner-border-sm" />
+                </Button>
+              </div>
+            </Row>
       </Row>
 
 </Dialog>
@@ -416,8 +417,6 @@ const handlePageChange = (newPage) => {
 .table td, .table th {
     vertical-align: middle;
 }
-
-
 
 
 </style>
