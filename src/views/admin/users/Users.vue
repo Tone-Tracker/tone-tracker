@@ -19,6 +19,8 @@ import InputPhoneNumber from '@/components/form-components/InputPhoneNumber.vue'
 import SelectDropdown from '@/components/form-components/SelectDropdown.vue';
 import Row from '@/components/form-components/general/Row.vue';
 import userRolesTransformer from '@/utils/userRolesTransformer';
+import Spinner from '@/components/buttons/Spinner.vue';
+import Button from '@/components/buttons/Button.vue';
 
 const userStore = useUserStore();
 const toaster = useToaster();
@@ -182,16 +184,8 @@ const form = reactive({
   lastName: '',
   email: '',
   phone: '',
-  activationArea: '',
-  location: [],
   role: "",
-  topSize: null,
-  pantsSize: "",
-  dressSize: null,
-  height: "",
   bio: "",
-  description: "",
-  name: "",
 });
 
 
@@ -201,16 +195,14 @@ const rules = {
   lastName: { required },
   phone: { required },
   role: { required },
-//   name: { requiredIf: (form) => form.role === "SUPPLIER" },
-  // pantsSize: { required },
-  // topSize: { required },
-  // height: { required },
 };
 
 const v$ = useVuelidate(rules, form);
 
 const onSubmit = async () => {
+	
   const isFormValid = await v$.value.$validate();
+  
   if (!isFormValid) {
     return;
   }
@@ -274,8 +266,8 @@ const handlePageChange = (newPage) => {
 						</div>
 					
 
-						<div class="row row-cols-1 row-cols-md-3 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4"> 
-							<div class="col" v-if="users?.length > 0" v-for="user in users" :key="user.id">
+						<Row class="row row-cols-1 row-cols-md-3 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4"> 
+							<Column class="col" v-if="users?.length > 0" v-for="user in users" :key="user.id">
 							  <div class="card radius-15">
 								<div class="card-body text-center">
 								  <div class="p-4 border radius-15">
@@ -294,8 +286,8 @@ const handlePageChange = (newPage) => {
 								  </div>
 								</div>
 							  </div>
-							</div>
-						  </div>
+							</Column>
+						</Row>
 						<div class="card" v-if="!showLoading">
 							<Paginator :page="allData?.page" @changePage="handlePageChange" />
 						</div>
@@ -340,10 +332,12 @@ const handlePageChange = (newPage) => {
 		  
 							<Column class="col-12 mt-3">
 							  <div class="d-grid">
-								<button @click="onSubmit" class="btn maz-gradient-btn" type="button">
-								  <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-								  {{ modalData.value?.id ? 'Update' : 'Submit' }}
-								</button>
+									<Button @click="onSubmit" classes="btn maz-gradient-btn" type="button" text="Submit">
+									  <template #content>
+										{{ modalData.value?.id ? showLoading ? '' : 'Update' : showLoading ? '' : 'Submit' }}
+									  </template>									  
+									  <Spinner v-if="showLoading" class="spinner-border spinner-border-sm" />
+									</Button>
 							  </div>
 							</Column>
 						  </div> 
