@@ -14,21 +14,23 @@ import Dialog from 'primevue/dialog';
 import InputLabel from '@/components/form-components/InputLabel.vue';
 import Input from '@/components/form-components/Input.vue';
 import InputError from '@/components/form-components/InputError.vue';
-import Column from '@/components/form-components/general/Column.vue';
+import Column from '@/components/general/Column.vue';
 import InputPhoneNumber from '@/components/form-components/InputPhoneNumber.vue';
 import SelectDropdown from '@/components/form-components/SelectDropdown.vue';
-import Row from '@/components/form-components/general/Row.vue';
+import Row from '@/components/general/Row.vue';
 import userRolesTransformer from '@/utils/userRolesTransformer';
 import Spinner from '@/components/buttons/Spinner.vue';
 import Button from '@/components/buttons/Button.vue';
+import UserCard from '@/components/UserCard.vue';
+import Card from '@/components/general/Card.vue';
+import CardBody from '@/components/general/CardBody.vue';
+import SearchInput from '@/components/form-components/SearchInput.vue';
 
 const userStore = useUserStore();
 const toaster = useToaster();
 const auth = useAuth();
-const confirm = useConfirm();
-const currentUser = JSON.parse(auth.user);
 
-const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+
 const visible = ref(false);
 
 let paginatedUsers = ref([]); // This will store the users to be displayed on the current page
@@ -42,7 +44,6 @@ const users = ref([...userStore.allUsers]);
 let modalData = reactive({});
 const allData = ref([]); //for pagination
 const ROLES = ref([]);
-const sizes = ref(["X_SMALL", "SMALL", "MEDIUM", "LARGE", "X_LARGE", "XX_LARGE"]);
 
 onMounted(() => {
 getAllUsers();
@@ -64,12 +65,6 @@ const toggleModal = () => {
 	isEdit.value = false;
 	visible.value = true,
 	modalData.value = {}
-}
-
-const hideModal = () => {
-	showModal.value = false;
-	getAllUsers();
-	
 }
 
     const searchInput = ref('');
@@ -111,35 +106,6 @@ const onInput = () => {
 	   })	
 }
 
-const isMyProfile = (user) => {
-	return user.id === currentUser.id
-}
-
-
-
-const deleteRecord = (event, user) => {
-    confirm.require({
-        target: event.currentTarget,
-        message: 'Do you want to delete this user?',
-        // icon: 'bx bx-trash text-danger',
-		icon: '',
-        rejectProps: {
-            label: 'Cancel',
-            severity: '',
-            outlined: true
-        },
-        acceptProps: {
-            label: 'Delete',
-            severity: 'danger'
-        },
-        accept: () => {
-			deleteUser(user);
-        },
-        reject: () => {
-            //do nothing
-        }
-    });
-};
 
 const onPageChange = (event) => {
   currentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
@@ -171,13 +137,11 @@ const getAllUsers = async () => {
 };
 
 const redirectToProfile = (user) => {
+	console.log("user", user);
 	if(!user?.staff) return
   router.push({ name: "staff-profile", params: { id: user?.staff, userId: user?.id } });
   // :to="{ path: `/staff-profile/${user?.staff}/${user?.id}` }"
 };
-
-
-
 
 const form = reactive({
   firstName: '',
@@ -251,48 +215,52 @@ const handlePageChange = (newPage) => {
         <div class="page-wrapper">
 			<div class="page-content ">
                 <BreadCrumb title="TTG Staff Members" icon="bx bxs-user-badge"/>
-				<div class="card">
-					<div class="card-body">
+				<Card>
+					<CardBody class="card-body">
 						<div class="d-lg-flex align-items-center mb-4 gap-3">
 							<div class="position-relative">
-								<input v-model="searchInput" @input="onInput"
-								type="text" class="form-control ps-5" placeholder="Search"> 
-								<span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+								<SearchInput 
+								placeholder="Search" 
+								id="searchInput"
+								v-model="searchInput" @input="onInput" classes="form-control ps-5" type="search">
+									<template #search>
+										<span class="position-absolute top-50 product-show translate-middle-y">
+											<i class="bx bx-search"></i>
+										</span>
+									</template>
+								  </SearchInput>
+								
 							</div>
+
 						  <div class="ms-auto">
-							<a @click="toggleModal" href="javascript:;"  class="btn maz-gradient-btn mt-2 mt-lg-0">
-							<i class="bx bxs-plus-square"></i>Add Staff</a>
+							<Button @click="toggleModal" classes="btn maz-gradient-btn mt-2 mt-lg-0" type="button">
+								<template #content>
+									Add Staff
+								</template>			
+							  </Button>
 						  </div>
 						</div>
 					
 
-						<Row class="row row-cols-1 row-cols-md-3 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4"> 
+						<Row class="row-cols-1 row-cols-md-3 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4"> 
 							<Column class="col" v-if="users?.length > 0" v-for="user in users" :key="user.id">
-							  <div class="card radius-15">
-								<div class="card-body text-center">
-								  <div class="p-4 border radius-15">
-									<img v-if="user.path" :src="`${envPath}${user.path}`" width="110" height="110" class="rounded-circle shadow" alt="">
-									<img v-else src="../../../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
-									<h5 class="mb-0 mt-5">{{ user.firstName }} {{ user.lastName }} {{ isMyProfile(user) ? '(You)' : '' }}</h5>
-									<p class="mb-3">{{ user.email }}</p>
-									<div class="list-inline contacts-social mt-3 mb-3"> 
-									  <a v-tooltip.right="'Edit'" @click="showDetails(user)" href="javascript:;" class="list-inline-item maz-gradient-btn text-white border-0">
-									  <i class="bx bxs-edit"></i>
-									</a>
-									</div>
-									<div class="d-grid"> 
-									  <button @click="redirectToProfile(user)"  class="btn btn-outline-primary radius-15">View Profile</button>
-									</div>
-								  </div>
-								</div>
-							  </div>
+								<Card classes="radius-15">
+									<CardBody class="text-center">
+							         <UserCard 
+									 :isStaff="true"
+									 :user="user" 
+									 classes="p-4 border radius-15" 
+									 @gotToProfile="redirectToProfile" 
+									 @edit="showDetails"/>
+							       </CardBody>
+						       </Card>
 							</Column>
 						</Row>
-						<div class="card" v-if="!showLoading">
+						<Card class="card" v-if="!showLoading">
 							<Paginator :page="allData?.page" @changePage="handlePageChange" />
-						</div>
-					</div>
-				</div>
+						</Card>
+					</CardBody>
+				</Card>
 				<Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit User' : 'Add Staff Member'" :style="{ width: '45rem' }">
 					<Row>
 						<Column class="col-lg-12">
