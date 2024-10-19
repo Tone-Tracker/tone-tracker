@@ -15,7 +15,7 @@ import InputLabel from '@/components/form-components/InputLabel.vue';
 import Input from '@/components/form-components/Input.vue';
 import InputError from '@/components/form-components/InputError.vue';
 import Column from '@/components/general/Column.vue';
-import InputPhoneNumber from '@/components/form-components/InputPhoneNumber.vue';
+import InputNumber from '@/components/form-components/InputNumber.vue';
 import SelectDropdown from '@/components/form-components/SelectDropdown.vue';
 import Row from '@/components/general/Row.vue';
 import userRolesTransformer from '@/utils/userRolesTransformer';
@@ -266,7 +266,6 @@ const handlePageChange = (newPage) => {
 						<Column class="col-lg-12">
 						  <div class="border border-3 p-4 rounded">
 							<Row classes="g-3">
-
 							  <Column classes="col-md-6">
 								<InputLabel labelText="First Name" classes="form-label" htmlFor="firstName"/>
 								<Input v-model="form.firstName" type="text" classes="form-control" id="firstName" placeholder="" />
@@ -286,9 +285,9 @@ const handlePageChange = (newPage) => {
 							  </Column>
 
 							  <Column classes="col-md-6">
-								<InputLabel labelText="Cell Number" classes="form-label" htmlFor="cell"/>
-								<InputPhoneNumber v-model="form.phone" classes="form-control" id="email" placeholder="" />
-								<InputError classes="input-errors" :errors="v$.phone.$errors" message="Cell Number is required" />
+								<InputLabel labelText="Phone Number" classes="form-label" htmlFor="cell"/>
+								<InputNumber v-model="form.phone" classes="form-control" id="email" placeholder="" />
+								<InputError classes="input-errors" :errors="v$.phone.$errors" message="Phone Number is required" />
 							  </Column>
 
 							  <Column classes="col-md-6">
