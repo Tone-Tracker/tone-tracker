@@ -1,12 +1,41 @@
-html.dark-theme .switcher-wrapper {
-	 background: #12181a;
-}
+/* here are similar variations similar to navbar: #121A25 #0F161F */
+
+
 html.dark-theme body {
 	color: var(--bs-body-color);
     --bs-body-color: #e4e5e6;
-	background-color: #070d0e;
+	background-color: #0F161F;
 	
 }
+
+.p-dialog {
+	background: #0F161F !important;
+	position: relative;
+	border-radius: 12px !important;
+	padding: 1rem; /* Adjust padding to make space for pseudo-element border */
+  }
+  
+  .p-dialog::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: 12px; /* Apply same border-radius */
+	padding: 1px; /* Adjust this value to control border thickness */
+	background: linear-gradient(to right, #9A3AB1, #117AD1);
+	-webkit-mask: 
+	  linear-gradient(#fff 0 0) content-box, 
+	  linear-gradient(#fff 0 0);
+	mask: 
+	  linear-gradient(#fff 0 0) content-box, 
+	  linear-gradient(#fff 0 0);
+	mask-composite: destination-out;
+	-webkit-mask-composite: destination-out;
+  }
+  
+  
 
 html.dark-theme a {
 	color: #fff;
