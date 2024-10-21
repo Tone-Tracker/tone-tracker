@@ -12,6 +12,10 @@ import { useConfirm } from "primevue/useconfirm";
 import { useRoute } from 'vue-router';
 import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 import Avatar from 'primevue/avatar';
+import SearchInput from '@/components/form-components/SearchInput.vue';
+import InputLabel from '@/components/form-components/InputLabel.vue';
+import Input from '@/components/form-components/Input.vue';
+import InputError from '@/components/form-components/InputError.vue';
 
 const route = useRoute();
 const clientId = ref(route.query.client);
@@ -228,19 +232,18 @@ const onInput = () => {
               
 
                 <div class="position-relative">
-                  <input
-                    :style="{ borderColor: clientColorStyles?.borderColor }"
-                    v-model="searchInput"
-                    @input="onInput"
-                    type="text"
-                    class="form-control ps-5"
-                    placeholder="Search"
-                  />
-                  <span
-                    class="position-absolute top-50 product-show translate-middle-y"
-                  >
-                    <i class="bx bx-search"></i>
-                  </span>
+
+                  <SearchInput 
+                   :style="{ borderColor: clientColorStyles?.borderColor }"
+                    placeholder="Search" 
+                    id="searchInput"
+                    v-model="searchInput" classes="form-control ps-5" type="search">
+                    <template #search>
+                      <span class="position-absolute top-50 product-show translate-middle-y">
+                        <i class="bx bx-search"></i>
+                      </span>
+                    </template>
+				</SearchInput>
                 </div>
               </div>
                     <div class="card-body">
@@ -307,21 +310,19 @@ const onInput = () => {
                                 <div class="card w-100 radius-10">
                                     <div class="card-body">
                                             <form class="">
-                                                <div class="col-md-12">
-                                                    <label for="input1" class="form-label">Campaign Name</label>
-                                                    <input v-model="form.name" type="text" class="form-control" id="input1" :style="{ borderColor: clientColorStyles?.borderColor }" />
-                                                    <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-                                                        <div class="text-danger">Campaign name is required</div>
-                                                    </div>
-                                                </div>
+
+                                                <Column classes="col-md-12">
+                                                    <InputLabel labelText="Campaign Name" classes="form-label" htmlFor="campaign-name"/>
+                                                    <Input v-model="form.name" type="text" 
+                                                    :style="{ borderColor: clientColorStyles?.borderColor }"
+                                                    classes="form-control" id="campaign-name" placeholder="" />
+                                                    <InputError classes="input-errors" :errors="v$.name.$errors" message="Campaign name is required" />
+                                                  </Column>
+
+                                         
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class=" flex justify-center">  
-                                                            <!-- <input accept="image/*" ref="img" type="file" hidden id="img" @change="onFileChange($event)"/>
-                                                            <label for="img" class="btn btn-primary px-5">
-                                                                <i class="bx bx-cloud-upload mr-1"></i>
-                                                                Select File
-                                                            </label>  -->
                                                             <FileUploadGeneric 
                                                             :showFilePreview="showFilePreview" 
                                                             accept="image/*" 

@@ -1,5 +1,6 @@
 <template>
   <input 
+    :style="style"
     :value="modelValue" 
     @input="$emit('update:modelValue', $event.target.value)" 
     :type="type" 
@@ -36,6 +37,10 @@ const props = defineProps({
   placeholder: {
     type: String,
     default: ''
+  },
+  style: {
+    type: Object,
+    default: () => ({})
   }
 });
 

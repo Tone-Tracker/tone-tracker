@@ -1,7 +1,8 @@
 <template>
     <label 
-    :for="htmlFor"
-     :class="classes">
+     :for="htmlFor"
+     :class="classes"
+     >
       {{ labelText }}
     </label>
   </template>
