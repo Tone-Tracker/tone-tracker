@@ -140,13 +140,45 @@ const getRoleName = () => {
     color: #fff;
     width: 308px;
     text-transform: uppercase;
-    border-right: solid 2px #9c27b0;
+    /* border-right: solid 2px #9c27b0; */
+  }
+
+
+  /* //////to make the border gradient////// */
+  .side-nav-wrapper {
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #1e1e1e;
+    color: #fff;
+    width: 308px;
+    text-transform: uppercase;
+    position: relative; /* Ensure the pseudo-element is positioned relative to this element */
+}
+
+.side-nav-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px; /* Thickness of the border */
+    height: 100%; /* Full height */
+    background: linear-gradient(to bottom,#9A3AB1, #117AD1 ); /* Gradient going from top to bottom */
+}
+  /* //////to make the border gradient////// */
+
+
+  .side-nav-wrapper span{
+    font-size: 17px;
   }
   
   .side-nav {
     padding: 20px;
     padding-left: 0px;
+    border-bottom: solid 2px #9c27b0;
+
   }
+
+  
   
   .nav-header {
     font-size: 16px;
