@@ -59,7 +59,7 @@ const getRoleName = () => {
           </ul>
         </div>
         <div class="nav-section">
-          <h3 class="nav-header">Reports</h3>
+          <!-- <h3 class="nav-header">Reports</h3> -->
           <ul class="nav-list">
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/activations-report' }">
               <a href="/activations-report">
@@ -82,7 +82,7 @@ const getRoleName = () => {
           </ul>
         </div>
         <div class="nav-section">
-          <h3 class="nav-header">Resources</h3>
+          <!-- <h3 class="nav-header">Resources</h3> -->
           <ul class="nav-list">
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/warehouse' }">
               <a href="/warehouse">
@@ -139,10 +139,13 @@ const getRoleName = () => {
     background-color: #1e1e1e;
     color: #fff;
     width: 308px;
+    text-transform: uppercase;
+    border-right: solid 2px #9c27b0;
   }
   
   .side-nav {
     padding: 20px;
+    padding-left: 0px;
   }
   
   .nav-header {
@@ -166,8 +169,9 @@ const getRoleName = () => {
     align-items: center;
     color: #fff;
     text-decoration: none;
-    padding: 8px 12px;
+    padding: 0px 12px;
     border-radius: 4px;
+    padding-left: 40px;
   }
   
   .nav-item .icon {
