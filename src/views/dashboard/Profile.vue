@@ -363,7 +363,7 @@ Date: 04/06/2024
                         <div class="col-xl-4 col-lg-12 col-sm-12">
                         <div class=" mb-3">
                             <div class="card-body p-4">
-                                <h4 class="mb-2 text-center mt-2">Experience</h4>
+                                <h4 class="mb-2 text-center mt-2">Brand Experience</h4>
                                 <div class="row mb-3">
                                     <div v-if="promoterData?.experiences?.length" v-for="experience in promoterData?.experiences" :key="experience?.id" class="row mb-3">
                                         <div>
@@ -376,7 +376,7 @@ Date: 04/06/2024
                                 </div>
                                 <div class="row" v-if="canUpdate()">
                                     <div class="col-12 text-end">
-                                        <button @click="showExperienceModal=true" type="button" class="btn maz-gradient-btn">Add Experience</button>
+                                        <button @click="showExperienceModal=true" type="button" class="btn maz-gradient-btn">Add Brand Experience</button>
                                     </div>
                                                     </div>
                                                 </div>

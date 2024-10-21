@@ -286,10 +286,14 @@ const onInput = () => {
                                                                     <i class='bx bx-check ' 
                                                                     v-tooltip.bottom="'Edit'" ></i>
                                                                 </a>
-                                                                <router-link :to="`/admin-activations?campaign=${campaign.id}`" 
-                                                                v-tooltip.bottom="'View Activations'" class="ms-3">
+                                                                <router-link :to="`/view-campaign?campaign=${campaign.id}`" 
+                                                                v-tooltip.bottom="'View Campaign'" class="ms-3">
                                                                     <i class='bx bx-show '></i>
                                                                 </router-link>
+                                                                <!-- <router-link :to="`/admin-activations?campaign=${campaign.id}`" 
+                                                                v-tooltip.bottom="'View Activations'" class="ms-3">
+                                                                    <i class='bx bx-show '></i>
+                                                                </router-link> -->
                                                                 <a @click="deleteRecord($event,campaign)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash text-danger' v-tooltip.bottom="'Delete'"></i>
                                                                 </a>
