@@ -28,343 +28,155 @@ const getRoleName = () => {
 </script>
 <template>
     <div class="side-nav-wrapper">
-        <div class="accordion" id="accordionPanelsStayOpenExample">
-            <div class="side-nav side-nav--remove">
-                <div class="accordion-item">
-                    <div class="accordion-header profile">
-                        <button class="d-flex align-items-center justify-content-between accordion-button" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                            aria-controls="panelsStayOpen-collapseOne">
-                            <div class="profile-info">
-                                <span class="name">{{user.firstName}} {{user.lastName}}</span>
-                                <span class="status">
-                                    <span class="round-guest" :class="{'online': isOnline, 'offline': !isOnline}"></span>
-                                    {{ getRoleName() }}
-                                </span>
-                            </div>
-                            <span class="edit-profile">
-                                <button class="edit-profile-btn">
-                                    <i class='bx bx-edit-alt'></i>
-                                </button>
-                            </span>
-                        </button>
-                    </div>
-
-                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                        data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <ul class="nav-list pt-2">
-                                <li :class="{ 'active': currentRoute.path === '/activations' }"><router-link to="/activations"><span class="icon"><i class='bx bx-chat ps-3'></i></span> Map</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='ps-3 bx bx-user-circle'></i></span> Clients</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Staff</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/promoters' }"><router-link to="/promoters"><span class="icon"><i class='bx bx-group ps-3'></i> </span>Promoters</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/suppliers' }"><router-link to="/suppliers"><span class="icon"><i class='bx bxs-user-detail ps-3'></i></span>Suppliers</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>
-                                <!-- <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pe-3'></i> Learning & Teaching</router-link></li> -->
-                                <li :class="{ 'active': currentRoute.path === '/regions'}"><router-link to="/regions"><span class="icon"><i class='bx bx-map ps-3'></i></span> Regions</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase ps-3'></i></span> CRM</router-link></li>
-                                <!-- <li><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li> -->
-                                <li :class="{ 'active': currentRoute.path === '/upload' }" ><router-link to="/upload"><span class="icon"><i class='bx bx-upload ps-3'></i></span> Upload contract</router-link></li>
-                                <!-- <li :class="{ 'active': currentRoute.path === `/staff-profile/${user?.activeUserId}/${user?.id}` }">
-                                    <router-link  :to="{ path: `/staff-profile/${user?.activeUserId}/${user?.id}` }">
-                                        <span class="icon ps-3"><i class='bx bx-user-pin'></i></span> Profile </router-link>
-                                </li> -->
-                            </ul>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item d-none">
-                    <h2 class="accordion-header">
-                        <button class="d-flex gap-2 justify-content-end flex-row-reverse accordion-button w-0 collapsed "
-                            type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo"
-                            aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                            Show more
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <div class="sidebar">
-                                <div class="menu-section">
-                                    <h3>Projects</h3>
-                                    <ul>
-                                        <li># Joburg Activations</li>
-                                        <li># Durban Activations</li>
-                                        <li># Cape Town Activations</li>
-                                    </ul>
-                                </div>
-                                <div class="menu-section">
-                                    <h3>Channels</h3>
-                                    <ul>
-                                        <li># Marketing-team</li>
-                                        <li># Competitive</li>
-                                        <li># Announcements</li>
-                                        <li># Quarterly planning</li>
-                                    </ul>
-                                </div>
-                                <div class="menu-section">
-                                    <h3>Direct Messages</h3>
-                                    <ul>
-                                        <li class="active">• Guest (You)</li>
-                                        <li>• Brandley Thomas</li>
-                                        <li>• Michael John</li>
-                                    </ul>
-                                </div>
-                                <div class="menu-section">
-                                    <h3>Communities</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+      <div class="side-nav">
+        <div class="nav-section">
+          <!-- <h3 class="nav-header">Main</h3> -->
+          <ul class="nav-list">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/budget' }">
+              <a href="/budget">
+                <i class="icon bx bx-wallet"></i>
+                <span>BUDGET</span>
+              </a>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/crm' }">
+              <a href="/crm">
+                <i class="icon bx bx-grid-alt"></i>
+                <span>CRM</span>
+              </a>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/campaign-status' }">
+              <a href="/campaign-status">
+                <i class="icon bx bx-line-chart"></i>
+                <span>Campaign Status</span>
+              </a>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/brands' }">
+              <a href="/brands">
+                <i class="icon bx bx-purchase-tag"></i>
+                <span>Brands</span>
+              </a>
+            </li>
+          </ul>
         </div>
-    </div>    
-</template>
-
-<script>
-export default {
+        <div class="nav-section">
+          <h3 class="nav-header">Reports</h3>
+          <ul class="nav-list">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/activations-report' }">
+              <a href="/activations-report">
+                <i class="icon bx bx-bar-chart-alt-2"></i>
+                <span>Activations Report</span>
+              </a>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/live-activations' }">
+              <a href="/live-activations">
+                <i class="icon bx bx-calendar-event"></i>
+                <span>Live Activations</span>
+              </a>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/briefs' }">
+              <a href="/briefs">
+                <i class="icon bx bx-file"></i>
+                <span>Briefs</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="nav-section">
+          <h3 class="nav-header">Resources</h3>
+          <ul class="nav-list">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/warehouse' }">
+              <a href="/warehouse">
+                <i class="icon bx bx-package"></i>
+                <span>Warehouse</span>
+              </a>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/staff' }">
+              <a href="/staff">
+                <i class="icon bx bx-user"></i>
+                <span>Staff</span>
+              </a>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/promoters' }">
+              <a href="/promoters">
+                <i class="icon bx bx-group"></i>
+                <span>Promoters</span>
+              </a>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/suppliers' }">
+              <a href="/suppliers">
+                <i class="icon bx bxs-user-detail"></i>
+                <span>Suppliers</span>
+              </a>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/downloads' }">
+              <a href="/downloads">
+                <i class="icon bx bx-download"></i>
+                <span>Downloads</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  import { useRoute } from 'vue-router';
+  
+  export default {
     name: 'SideNav',
-};
-</script>
-
-<style scoped>
-.profile .accordion-button::after {
-    /* margin-bottom: 10px; */
-}
-
-.accordion-button::after {
-    margin: 0 !important;
-}
-
-.side-nav {
-    width: 240px;
-    background-color: #000;
-    color: #fff;
-    /* padding: 20px; */
-    /* font-family: Arial, sans-serif; */
-}
-
-.profile {
-    /* padding: 20px; */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.profile-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.name {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.round-guest {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 7px;
-}
-.online{
-    background-color: #15ca20 !important
-}
-.offline{
-    background-color: #fd3550!important
-}
-
-.status {
-    font-size: 14px;
-}
-
-.edit-profile-btn {
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    font-size: 20px;
-}
-
-.nav-list {
-    list-style: none;
-    padding: 0;
-}
-
-.nav-list li {
-    /* margin: 15px 0; */
-}
-
-.nav-list a {
-    color: #fff;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-}
-
-.nav-list .icon {
-    margin-right: 10px;
-}
-
-.nav-list a:hover {
-    /* text-decoration: underline; */
-    background-color: #1f1e1e
-}
-
-/* //////////////////// */
-.menu-section {
-    margin-bottom: 20px;
-}
-
-.menu-section h3 {
-    padding-left: 20px;
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    color: #ccc;
-}
-
-.menu-section ul {
-    list-style: none;
-    padding: 0 25px;
-}
-
-.menu-section ul li {
-    padding: 0, 10px;
-    font-size: 1em;
-    color: #bbb;
-}
-
-
-/* color: #b06fcd; */
-
-
-.menu-section ul li:hover {
-    color: #fff;
-}
-
-.nav-list i {
-    font-size: 1.5rem; /* Adjust this value as needed */
-}
-
-/* //////////////////// */
-
-/* header section */
-.accordion-header.profile {
+    setup() {
+      const currentRoute = useRoute();
+      return { currentRoute };
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .side-nav-wrapper {
+    height: 100vh;
+    overflow-y: auto;
     background-color: #1e1e1e;
-}
-
-.accordion-button {
-    background-color: transparent;
-    box-shadow: none;
-    padding: 10px 15px;
-    width: 100% !important;
-    
-}
-
-.accordion-button::after {
-    display: none;
-}
-
-.profile-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.name {
+    color: #fff;
+    width: 308px;
+  }
+  
+  .side-nav {
+    padding: 20px;
+  }
+  
+  .nav-header {
     font-size: 16px;
     font-weight: bold;
-    color: #ffffff;
-}
-
-.status {
-    font-size: 12px;
+    margin-bottom: 10px;
     color: #a0a0a0;
+  }
+  
+  .nav-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .nav-item {
+    margin-bottom: 10px;
+  }
+  
+  .nav-item a {
     display: flex;
     align-items: center;
-}
-
-.round-guest {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 5px;
-}
-
-.online {
-    background-color: #ff3b30;
-}
-
-.offline {
-    background-color: #a0a0a0;
-}
-
-.edit-profile-btn {
-    background: none;
-    border: none;
-    color: #a0a0a0;
-    cursor: pointer;
-    font-size: 18px;
-    padding: 0;
-}
-
-.edit-profile-btn:hover {
-    color: #ffffff;
-}
-.accordion-button:not(.collapsed) {
-    margin-bottom: 0px;
-}
-
-/* /////////////////// */
-.side-nav-wrapper {
-  height: 100vh; /* Full viewport height */
-  overflow-y: auto; /* Enable vertical scrolling */
-}
-
-.side-nav {
-  width: 240px;
-  background-color: #000;
-  color: #fff;
-  /* Remove any fixed height if present */
-}
-
-/* Add some padding to the bottom to ensure last items are visible when scrolled */
-.accordion-item:last-child {
-  /* padding-bottom: 20px; */
-}
-
-/* Optional: Customize the scrollbar */
-.side-nav-wrapper::-webkit-scrollbar {
-  width: 6px;
-}
-
-.side-nav-wrapper::-webkit-scrollbar-thumb {
-  background-color: #4a4a4a;
-  border-radius: 3px;
-}
-
-.side-nav-wrapper::-webkit-scrollbar-track {
-  background-color: #1e1e1e;
-}
-
-/* ////////Active////////// */
-.side-nav__item.active,
-.side-nav__item:hover {
-  background-color: #333333 !important; /* Adjust this color to match your hover color */
-}
-
-.active{
-    background-color: #333333 !important; /* Adjust this color to match your hover color */
-}
-
-.pec-3{
-    padding-right: 9px !important;
-}
-
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+  }
   
-
-
-</style>
+  .nav-item .icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  
+  .nav-item.active,
+  .nav-item:hover {
+    background-color: #9c27b0;
+  }
+  </style>
