@@ -229,6 +229,7 @@ html.dark-theme .input-group-text {
   background-color: #1C1C1C !important;
   border: 2px solid #ffff;
   border-radius: 0;
+  border-right: 0px;
 }
 
 .btn {
