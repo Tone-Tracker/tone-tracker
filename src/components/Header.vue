@@ -38,12 +38,15 @@
           </div>
         </div>
 
-        <div class="user-box dropdown px-3">
-          <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
+        <div class="user-box dropdown px-3 d-flex align-items-center justify-content-center gap-5">
+          <div class="d-flex justify-content-center align-items-center justify-content-center gap-2">
+            <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
             <img :src="user.path ? envPath + user.path : '../assets/images/placeholder.jpg'" class="user-img" :alt="user.firstName + ' ' + user.lastName" />
-          </a>
-          <a @click="redirectToProfile" class="profile-link">My Profile</a>
-          <a @click="logout" class="logout-link"><i class="bx bx-log-out"></i> Logout</a>
+            </a>
+            <a @click="redirectToProfile" class="profile-link"><span class="fs-5">MY PROFILE</span></a>
+          </div>
+          
+          <a @click="logout" class="logout-link fs-6 d-flex align-items-center justify-content-center gap-1"><i class="bx bx-log-out fs-1"></i><span class="fs-5">LOGOUT</span></a>
         </div>
 
           <!-- User Profile Section -->
@@ -197,6 +200,11 @@ onMounted(() => {
   max-width: 1100px;
 }
 
+.search-bar-container .user-box span {
+  letter-spacing: 4px;
+
+}
+
 .search-bar-container button {
   letter-spacing: 4px;
 }
@@ -206,8 +214,8 @@ onMounted(() => {
 }
 
 .user-img {
-  width: 58px;
-  height: 58px;
+  width: 51px;
+  height: 51px;
   border: none !important;
 }
 
@@ -267,7 +275,9 @@ html.dark-theme .input-group-text {
     width: 100%;
     /* height: 60px; */
     padding-left: 2.5rem;
-    padding-right: 1.5rem;
+    padding-right: 2.5rem;
+    padding-top: 1.3rem;
+    padding-bottom: 1.3rem;
     border: none !important;
 }
 @media (max-width: 991.98px) {
