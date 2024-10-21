@@ -174,7 +174,7 @@ const getRoleName = () => {
   .side-nav {
     padding: 20px;
     padding-left: 0px;
-    border-bottom: solid 2px #9c27b0;
+    /* border-bottom: solid 2px #9c27b0; */
 
   }
 
@@ -213,6 +213,6 @@ const getRoleName = () => {
   
   .nav-item.active,
   .nav-item:hover {
-    background-color: #9c27b0;
+    background-color: #9d4dcb;
   }
   </style>

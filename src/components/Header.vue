@@ -15,14 +15,14 @@
             <span class="input-group-text" id="addon-wrapping"><i class='bx bx-search'></i></span>
             <input
               type="text"
-              class="form-control"
+              class="form-control me-4"
               aria-label="Text input with dropdown suggestions"
               placeholder="Search For Activation..."
               v-model="query"
               @input="onInput"
               @keydown.enter="selectFirstSuggestion"
             />
-            <button class="btn btn-outline-secondary w-20 maz-gradient-btn" @click="search">Search</button>
+            <button class="btn btn-outline-secondary w-20 maz-gradient-btn ps-4 pe-4" @click="search">SEARCH</button>
 
             <ul v-if="filteredSuggestions.length" class="suggestions-list">
               <li
@@ -42,35 +42,18 @@
           <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
             <img :src="user.path ? envPath + user.path : '../assets/images/placeholder.jpg'" class="user-img" :alt="user.firstName + ' ' + user.lastName" />
           </a>
+          <a @click="redirectToProfile" class="profile-link">My Profile</a>
+          <a @click="logout" class="logout-link"><i class="bx bx-log-out"></i> Logout</a>
         </div>
-      </nav>
-      <!-- <div class="search-bar-containe text-center d-lg-flex w-100 justify-content-center">
-          <div class="input-group custom-width-70">
-            <span class="input-group-text" id="addon-wrapping"><i class='bx bx-search'></i></span>
-            <input
-              type="text"
-              class="form-control"
-              aria-label="Text input with dropdown suggestions"
-              placeholder="Search For Activation..."
-              v-model="query"
-              @input="onInput"
-              @keydown.enter="selectFirstSuggestion"
-            />
-            <button class="btn btn-outline-secondary w-20 maz-gradient-btn" @click="search">Search</button>
 
-            <ul v-if="filteredSuggestions.length" class="suggestions-list">
-              <li
-                v-for="(suggestion, index) in filteredSuggestions"
-                :key="index"
-                @click="selectSuggestion(suggestion)"
-              >
-              <router-link :to="`/report?activation=${suggestion.id}`">
-                {{ suggestion.name }} 
-              </router-link>
-              </li>
-            </ul>
-          </div>
-        </div> -->
+          <!-- User Profile Section -->
+      <!-- <div class="user-box">
+        <img :src="user.path ? envPath + user.path : '../assets/images/placeholder.jpg'" class="user-img" :alt="user.firstName + ' ' + user.lastName" />
+        <a @click="redirectToProfile" class="profile-link">My Profile</a>
+        <a @click="logout" class="logout-link"><i class="bx bx-log-out"></i> Logout</a>
+      </div> -->
+      </nav>
+
     </div>
   </header>
 </template>
@@ -191,9 +174,9 @@ onMounted(() => {
   border-left: 0 !important;
   border-top-left-radius: 0;
   /* border: 1px solid #000000 !important; */
-  border-top: 1px solid #000000 !important;
-  border-bottom: 1px solid #000000 !important;
-  border-right: 1px solid #000000 !important;
+  border-top: 2px solid #ffff !important;
+  border-bottom: 2px solid #ffff !important;
+  border-right: 2px solid #ffff !important;
   text-align: center;
   color: white !important;
 }
@@ -214,6 +197,10 @@ onMounted(() => {
   max-width: 1100px;
 }
 
+.search-bar-container button {
+  letter-spacing: 4px;
+}
+
 .custom-width-70 {
   width: 70%;
 }
@@ -232,7 +219,7 @@ html.dark-theme .user-box {
 html.dark-theme .input-group-text {
   color: #d1d7de;
   background-color: #1C1C1C !important;
-  border: 1px solid #000000;
+  border: 2px solid #ffff;
   border-radius: 0;
 }
 
@@ -247,7 +234,7 @@ html.dark-theme .input-group-text {
 }
 
 .logo {
-  width: 180px;
+  width: 266px;
 }
 
 .suggestions-list {
@@ -275,6 +262,14 @@ html.dark-theme .input-group-text {
   background-color: #2A2A2A;
 }
 
+
+.topbar .navbar {
+    width: 100%;
+    /* height: 60px; */
+    padding-left: 2.5rem;
+    padding-right: 1.5rem;
+    border: none !important;
+}
 @media (max-width: 991.98px) {
   .search-bar-container {
     display: none !important;
@@ -299,5 +294,8 @@ html.dark-theme .input-group-text {
     width: 150px;
   }
 }
+
+
+
 
 </style>
