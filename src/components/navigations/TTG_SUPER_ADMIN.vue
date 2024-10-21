@@ -33,51 +33,51 @@ const getRoleName = () => {
           <!-- <h3 class="nav-header">Main</h3> -->
           <ul class="nav-list">
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/budget' }">
-              <a href="/budget">
+              <router-link to="/budget">
                 <i class="icon bx bx-wallet"></i>
                 <span>BUDGET</span>
-              </a>
+              </router-link>
             </li>
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/crm' }">
-              <a href="/crm">
+              <router-link to="/crm">
                 <i class="icon bx bx-grid-alt"></i>
                 <span>CRM</span>
-              </a>
+              </router-link>
             </li>
-            <li class="nav-item" :class="{ 'active': currentRoute.path === '/campaign-status' }">
-              <a href="/campaign-status">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/status' }">
+              <router-link to="/status">
                 <i class="icon bx bx-line-chart"></i>
                 <span>Campaign Status</span>
-              </a>
+              </router-link>
             </li>
-            <li class="nav-item" :class="{ 'active': currentRoute.path === '/brands' }">
-              <a href="/brands">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/clients' }">
+              <router-link to="/clients">
                 <i class="icon bx bx-purchase-tag"></i>
                 <span>Brands</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </div>
         <div class="nav-section">
           <!-- <h3 class="nav-header">Reports</h3> -->
           <ul class="nav-list">
-            <li class="nav-item" :class="{ 'active': currentRoute.path === '/activations-report' }">
-              <a href="/activations-report">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/report' }">
+              <router-link to="/report">
                 <i class="icon bx bx-bar-chart-alt-2"></i>
                 <span>Activations Report</span>
-              </a>
+              </router-link>
             </li>
-            <li class="nav-item" :class="{ 'active': currentRoute.path === '/live-activations' }">
-              <a href="/live-activations">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/activations' }">
+              <router-link to="/activations">
                 <i class="icon bx bx-calendar-event"></i>
                 <span>Live Activations</span>
-              </a>
+              </router-link>
             </li>
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/briefs' }">
-              <a href="/briefs">
+              <router-link to="/briefs">
                 <i class="icon bx bx-file"></i>
                 <span>Briefs</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </div>
@@ -85,34 +85,34 @@ const getRoleName = () => {
           <!-- <h3 class="nav-header">Resources</h3> -->
           <ul class="nav-list">
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/warehouse' }">
-              <a href="/warehouse">
+              <router-link to="/warehouse">
                 <i class="icon bx bx-package"></i>
                 <span>Warehouse</span>
-              </a>
+              </router-link>
             </li>
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/staff' }">
-              <a href="/staff">
+              <router-link to="/staff">
                 <i class="icon bx bx-user"></i>
                 <span>Staff</span>
-              </a>
+              </router-link>
             </li>
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/promoters' }">
-              <a href="/promoters">
+              <router-link to="/promoters">
                 <i class="icon bx bx-group"></i>
                 <span>Promoters</span>
-              </a>
+              </router-link>
             </li>
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/suppliers' }">
-              <a href="/suppliers">
+              <router-link to="/suppliers">
                 <i class="icon bx bxs-user-detail"></i>
                 <span>Suppliers</span>
-              </a>
+              </router-link>
             </li>
             <li class="nav-item" :class="{ 'active': currentRoute.path === '/downloads' }">
-              <a href="/downloads">
+              <router-link to="/downloads">
                 <i class="icon bx bx-download"></i>
                 <span>Downloads</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </div>
