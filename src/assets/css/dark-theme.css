@@ -10,11 +10,8 @@ html.dark-theme body {
 
 .p-dialog {
 	background: #0F161F !important;
-	position: relative;
-	border-radius: 12px !important;
-	padding: 1rem; /* Adjust padding to make space for pseudo-element border */
   }
-  
+  /*  
   .p-dialog::before {
 	content: '';
 	position: absolute;
@@ -22,8 +19,8 @@ html.dark-theme body {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	border-radius: 12px; /* Apply same border-radius */
-	padding: 1px; /* Adjust this value to control border thickness */
+	border-radius: 12px; 
+	padding: 1px; 
 	background: linear-gradient(to right, #9A3AB1, #117AD1);
 	-webkit-mask: 
 	  linear-gradient(#fff 0 0) content-box, 
@@ -35,7 +32,7 @@ html.dark-theme body {
 	-webkit-mask-composite: destination-out;
   }
   
-  
+  */
 
 html.dark-theme a {
 	color: #fff;
