@@ -47,7 +47,7 @@ const visible = navStore.isNavVisible;
           <div class="simplebar-content-wrapper" style="height: 100%">
             <div class="simplebar-content mm-active" style="padding: 0px">
               <!--navigation-->
-              <NAV :user="user" v-if="isAdmin()" />
+              <!-- <NAV :user="user" v-if="isAdmin()" /> -->
               <!--end navigation-->
             </div>
           </div>

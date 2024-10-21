@@ -16,6 +16,12 @@ import SearchInput from '@/components/form-components/SearchInput.vue';
 import InputLabel from '@/components/form-components/InputLabel.vue';
 import Input from '@/components/form-components/Input.vue';
 import InputError from '@/components/form-components/InputError.vue';
+import CardBody from '@/components/general/CardBody.vue';
+import Button from '@/components/buttons/Button.vue';
+import Spinner from '@/components/buttons/Spinner.vue';
+import Column from '@/components/general/Column.vue';
+import Card from '@/components/general/Card.vue';
+import Row from '@/components/general/Row.vue';
 
 const route = useRoute();
 const clientId = ref(route.query.client);
@@ -227,7 +233,7 @@ const onInput = () => {
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb title="Campaigns" icon="" :style="{ color: clientColorStyles?.color }" />
-                <div class="card">
+                <Card>
              <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
               
 
@@ -245,12 +251,12 @@ const onInput = () => {
                     </template>
 				</SearchInput>
                 </div>
-              </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-8 col-lg-8 col-xl-8 d-flex">
+            </div>
+                    <CardBody>
+                        <Row>
+                            <Column classes="col-8 col-lg-8 col-xl-8 d-flex">
                                 <div class=" radius-10 w-100">
-                                    <div class="card-body">
+                                    <CardBody>
                                         <div class="table-responsive">
                                             <table class="table mb-0">
                                                 <thead class="table-light">
@@ -307,11 +313,11 @@ const onInput = () => {
                                                 </tbody>
                                             </table>
                                         </div>
-                                    </div>
+                                    </CardBody>
                                 </div>
-                            </div>
-                            <div class="col-4 col-lg-4 col-xl-4 d-flex">
-                                <div class="card w-100 radius-10">
+                            </Column>
+                            <Column classes="col-4 col-lg-4 col-xl-4 d-flex">
+                                <Card classes=" w-100 radius-10">
                                     <div class="card-body">
                                             <form class="">
 
@@ -340,19 +346,22 @@ const onInput = () => {
                                                 </div>
                                             </form>
                                             <div class="ms-auto">
-                                                <button :style="{ background: clientColorStyles?.background }" @click="createCampaign" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
-                                                    <div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
-                                                    </div>
-                                                    {{ loading ?  '' : 'Create Campaign' }}
-                                                </button>
+                                                                <Button :style="{ background: clientColorStyles?.background }" @click="createCampaign" classes="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0" type="button" :disabled="loading">
+                                        <template #content>
+                                            {{ loading ?  '' : 'Create Campaign' }}
+                                        </template>									  
+                                        <Spinner v-if="loading" class="spinner-border spinner-border-sm" />
+                                        </Button>
+                                              
+
                                             </div>
                                        
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                </Card>
+                            </Column>
+                        </Row>
+                    </CardBody>
+                </Card>
             </div>
         </div>
     </Layout>
