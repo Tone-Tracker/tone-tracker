@@ -138,7 +138,7 @@ const getRoleName = () => {
     overflow-y: auto;
     background-color: #0B1729;
     color: #fff;
-    width: 308px;
+    width: 298px;
     text-transform: uppercase;
     /* border-right: solid 2px #9c27b0; */
   }
@@ -150,7 +150,7 @@ const getRoleName = () => {
     overflow-y: auto;
     background-color: #0B1729;
     color: #fff;
-    width: 308px;
+    width: 298px;
     text-transform: uppercase;
     position: relative; /* Ensure the pseudo-element is positioned relative to this element */
 }
@@ -168,7 +168,7 @@ const getRoleName = () => {
 
 
   .side-nav-wrapper span{
-    font-size: 17px;
+    font-size: 16px;
   }
   
   .side-nav {
