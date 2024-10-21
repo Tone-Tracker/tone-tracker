@@ -136,7 +136,7 @@ const getRoleName = () => {
   .side-nav-wrapper {
     height: 100vh;
     overflow-y: auto;
-    background-color: #1e1e1e;
+    background-color: #0B1729;
     color: #fff;
     width: 308px;
     text-transform: uppercase;
@@ -148,7 +148,7 @@ const getRoleName = () => {
   .side-nav-wrapper {
     height: 100vh;
     overflow-y: auto;
-    background-color: #1e1e1e;
+    background-color: #0B1729;
     color: #fff;
     width: 308px;
     text-transform: uppercase;
