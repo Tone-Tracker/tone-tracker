@@ -372,7 +372,7 @@ Date: 04/06/2024
                                             <p>{{ experience?.description }}</p>
                                         </div>
                                     </div>
-                                    <div class="text-center text-danger" v-else>No experience added.</div>
+                                    <div class="text-center text-danger" v-else>No brand experience added.</div>
                                 </div>
                                 <div class="row" v-if="canUpdate()">
                                     <div class="col-12 text-end">
