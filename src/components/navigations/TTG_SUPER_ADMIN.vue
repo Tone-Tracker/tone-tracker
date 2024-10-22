@@ -116,6 +116,54 @@ const getRoleName = () => {
             </li>
           </ul>
         </div>
+
+        
+                <!-- Horizontal Line -->
+                <div class="horizontal-line"></div>
+
+<!-- Actions Section -->
+<div class="nav-section">
+  <h3 class="nav-header">ACTIONS</h3>
+  <ul class="nav-list">
+    <li class="nav-item" :class="{ 'active': currentRoute.path === '/campaign-budget' }">
+      <router-link to="/campaign-budget">
+        <i class="icon bx bx-spreadsheet" :class="{ 'text-muted': currentRoute.path !== '/campaign-budget' }"></i>
+        <span>Campaign Budget</span>
+      </router-link>
+    </li>
+    <li class="nav-item" :class="{ 'active': currentRoute.path === '/export-budget' }">
+      <router-link to="/export-budget">
+        <i class="icon bx bx-export" :class="{ 'text-muted': currentRoute.path !== '/export-budget' }"></i>
+        <span>Export Budget Report</span>
+      </router-link>
+    </li>
+  </ul>
+</div>
+
+<!-- Filter Section -->
+<div class="nav-section">
+  <h3 class="nav-header">FILTER BY</h3>
+  <ul class="nav-list">
+    <li class="nav-item">
+      <a href="#" @click.prevent>
+        <i class="icon bx bx-calendar"></i>
+        <span>Month</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="#" @click.prevent>
+        <i class="icon bx bx-time"></i>
+        <span>Daily</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="#" @click.prevent>
+        <i class="icon bx bx-calendar-week"></i>
+        <span>Weekly</span>
+      </a>
+    </li>
+  </ul>
+</div>
       </div>
     </div>
   </template>
@@ -215,4 +263,11 @@ const getRoleName = () => {
   .nav-item:hover {
     background-color: #9d4dcb;
   }
+
+  /* New styles for horizontal line */
+.horizontal-line {
+    height: 2px;
+    margin: 20px 20px;
+    background: linear-gradient(to right, #9A3AB1, #117AD1);
+}
   </style>
