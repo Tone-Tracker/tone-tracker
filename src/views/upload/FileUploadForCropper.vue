@@ -87,23 +87,22 @@ function removeFile() {
 </template>
 <style scoped>
 .file-drop-zone {
-    border: 3px dashed #9A3AB1;
-    border-radius: 10px;
-    padding: 50px 20px;
-    background-color: #f8f9fa;
-    transition: background-color 0.3s, border-color 0.3s;
-  }
-  
-  .file-drop-zone-active {
-    background-color: #e2efff;
-    border-color: #0056b3;
-  }
-  
-  .file-details {
-    background-color: #333;
-  }
-  
-  .file-icon svg {
-    color: #ff4d6d;
-  }
+  border: 3px dashed #9A3AB1;
+  border-radius: 10px;
+  padding: 50px 20px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.file-drop-zone-active {
+  background-color: #e2efff;
+  border-color: #0056b3;
+}
+
+.file-details {
+  background-color: #333;
+}
+
+.file-icon svg {
+  color: #ff4d6d;
+}
 </style>

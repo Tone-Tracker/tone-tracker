@@ -28,343 +28,298 @@ const getRoleName = () => {
 </script>
 <template>
     <div class="side-nav-wrapper">
-        <div class="accordion" id="accordionPanelsStayOpenExample">
-            <div class="side-nav side-nav--remove">
-                <div class="accordion-item">
-                    <div class="accordion-header profile">
-                        <button class="d-flex align-items-center justify-content-between accordion-button" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                            aria-controls="panelsStayOpen-collapseOne">
-                            <div class="profile-info">
-                                <span class="name">{{user.firstName}} {{user.lastName}}</span>
-                                <span class="status">
-                                    <span class="round-guest" :class="{'online': isOnline, 'offline': !isOnline}"></span>
-                                    {{ getRoleName() }}
-                                </span>
-                            </div>
-                            <span class="edit-profile">
-                                <button class="edit-profile-btn">
-                                    <i class='bx bx-edit-alt'></i>
-                                </button>
-                            </span>
-                        </button>
-                    </div>
-
-                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                        data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <ul class="nav-list pt-2">
-                                <li :class="{ 'active': currentRoute.path === '/activations' }"><router-link to="/activations"><span class="icon"><i class='bx bx-chat ps-3'></i></span> Map</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/clients' }"><router-link to="/clients"><span class="icon"><i class='ps-3 bx bx-user-circle'></i></span> Clients</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/users' }" ><router-link to="/users"><span class="icon"><i class='bx bx-user ps-3'></i></span> Staff</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/promoters' }"><router-link to="/promoters"><span class="icon"><i class='bx bx-group ps-3'></i> </span>Promoters</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/suppliers' }"><router-link to="/suppliers"><span class="icon"><i class='bx bxs-user-detail ps-3'></i></span>Suppliers</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/briefs' }"><router-link to="/briefs"><span class="icon"><i class='bx bx-file ps-3'></i></span> Briefs</router-link></li>
-                                <!-- <li :class="{ 'active': currentRoute.path === '/teaching' }"><router-link to="/teaching"><i class='bx bx-book-open ps-3 pe-3'></i> Learning & Teaching</router-link></li> -->
-                                <li :class="{ 'active': currentRoute.path === '/regions'}"><router-link to="/regions"><span class="icon"><i class='bx bx-map ps-3'></i></span> Regions</router-link></li>
-                                <li :class="{ 'active': currentRoute.path === '/crm'}"><router-link to="/crm"><span class="icon"><i class='bx bx-briefcase ps-3'></i></span> CRM</router-link></li>
-                                <!-- <li><router-link to="/jobs"><span class="icon"><i class='bx bx-file'></i></span> Jobs</router-link></li> -->
-                                <li :class="{ 'active': currentRoute.path === '/upload' }" ><router-link to="/upload"><span class="icon"><i class='bx bx-upload ps-3'></i></span> Upload contract</router-link></li>
-                                <!-- <li :class="{ 'active': currentRoute.path === `/staff-profile/${user?.activeUserId}/${user?.id}` }">
-                                    <router-link  :to="{ path: `/staff-profile/${user?.activeUserId}/${user?.id}` }">
-                                        <span class="icon ps-3"><i class='bx bx-user-pin'></i></span> Profile </router-link>
-                                </li> -->
-                            </ul>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item d-none">
-                    <h2 class="accordion-header">
-                        <button class="d-flex gap-2 justify-content-end flex-row-reverse accordion-button w-0 collapsed "
-                            type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo"
-                            aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                            Show more
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <div class="sidebar">
-                                <div class="menu-section">
-                                    <h3>Projects</h3>
-                                    <ul>
-                                        <li># Joburg Activations</li>
-                                        <li># Durban Activations</li>
-                                        <li># Cape Town Activations</li>
-                                    </ul>
-                                </div>
-                                <div class="menu-section">
-                                    <h3>Channels</h3>
-                                    <ul>
-                                        <li># Marketing-team</li>
-                                        <li># Competitive</li>
-                                        <li># Announcements</li>
-                                        <li># Quarterly planning</li>
-                                    </ul>
-                                </div>
-                                <div class="menu-section">
-                                    <h3>Direct Messages</h3>
-                                    <ul>
-                                        <li class="active">• Guest (You)</li>
-                                        <li>• Brandley Thomas</li>
-                                        <li>• Michael John</li>
-                                    </ul>
-                                </div>
-                                <div class="menu-section">
-                                    <h3>Communities</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+      <div class="side-nav">
+        <div class="nav-section">
+          <!-- <h3 class="nav-header">Main</h3> -->
+          <ul class="nav-list">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/budget' }">
+              <router-link to="/budget">
+                <i class="icon bx bx-wallet" :class="{ 'text-muted': currentRoute.path !== '/budget' }"></i>
+                <span>BUDGET</span>
+              </router-link>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/crm' }">
+              <router-link to="/crm">
+                <i class="icon bx bx-grid-alt" :class="{ 'text-muted': currentRoute.path !== '/crm' }"></i>
+                <span>CRM</span>
+              </router-link>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/status' }">
+              <router-link to="/status">
+                <i class="icon bx bx-line-chart" :class="{ 'text-muted': currentRoute.path !== '/status' }" ></i>
+                <span>Campaign Status</span>
+              </router-link>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/clients' }">
+              <router-link to="/clients">
+                <i class="icon bx bx-purchase-tag" :class="{ 'text-muted': currentRoute.path !== '/clients' }"></i>
+                <span>Brands</span>
+              </router-link>
+            </li>
+          </ul>
         </div>
-    </div>    
-</template>
+        <div class="nav-section">
+          <!-- <h3 class="nav-header">Reports</h3> -->
+          <ul class="nav-list">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/report' }">
+              <router-link to="/report">
+                <i class="icon bx bx-bar-chart-alt-2" :class="{ 'text-muted': currentRoute.path !== '/report' }"></i>
+                <span>Activations Report</span>
+              </router-link>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/activations' }">
+              <router-link to="/activations">
+                <i class="icon bx bx-calendar-event" :class="{ 'text-muted': currentRoute.path !== '/activations' }"></i>
+                <span>Live Activations</span>
+              </router-link>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/briefs' }">
+              <router-link to="/briefs">
+                <i class="icon bx bx-file" :class="{ 'text-muted': currentRoute.path !== '/briefs' }" ></i>
+                <span>Briefs</span>
+              </router-link>
+            </li>
+          </ul>
+        </div>
+        <div class="nav-section">
+          <!-- <h3 class="nav-header">Resources</h3> -->
+          <ul class="nav-list">
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/warehouse' }">
+              <router-link to="/warehouse">
+                <i class="icon bx bx-package" :class="{ 'text-muted': currentRoute.path !== '/warehouse' }"></i>
+                <span>Warehouse</span>
+              </router-link>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/staff' }">
+              <router-link to="/staff">
+                <i class="icon bx bx-user" :class="{ 'text-muted': currentRoute.path !== '/staff' }"></i>
+                <span>Staff</span>
+              </router-link>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/promoters' }">
+              <router-link to="/promoters">
+                <i class="icon bx bx-group" :class="{ 'text-muted': currentRoute.path !== '/promoters' }"></i>
+                <span>Promoters</span>
+              </router-link>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/suppliers' }">
+              <router-link to="/suppliers">
+                <i class="icon bx bxs-user-detail" :class="{ 'text-muted': currentRoute.path !== '/suppliers' }"></i>
+                <span>Suppliers</span>
+              </router-link>
+            </li>
+            <li class="nav-item" :class="{ 'active': currentRoute.path === '/downloads' }">
+              <router-link to="/downloads">
+                <i class="icon bx bx-download" :class="{ 'text-muted': currentRoute.path !== '/downloads' }"></i>
+                <span>Downloads</span>
+              </router-link>
+            </li>
+          </ul>
+        </div>
 
-<script>
-export default {
+        
+                <!-- Horizontal Line -->
+                <div class="horizontal-line"></div>
+
+                <!-- Actions Section -->
+                <div class="nav-section">
+                  <!-- <h3 class="nav-header">ACTIONS</h3> -->
+                  <ul class="nav-list">
+                    <li class="nav-item" :class="{ 'active': currentRoute.path === '/actions' }">
+                              <router-link to="/actions">
+                                <i class="icon bx bx-list-check" :class="{ 'text-muted': currentRoute.path !== '/actions' }"></i>
+                                <span>Actions</span>
+                              </router-link>
+                            </li>
+                    <li class="nav-item" :class="{ 'active': currentRoute.path === '/campaign-budget' }">
+                      <router-link to="/campaign-budget" style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-spreadsheet" :class="{ 'text-muted': currentRoute.path !== '/campaign-budget' }"></i> -->
+                        <span class="text-lowercase">Campaign Budget</span>
+                      </router-link>
+                    </li>
+                    <li class="nav-item" :class="{ 'active': currentRoute.path === '/export-budget' }">
+                      <router-link to="/export-budget" style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-export" :class="{ 'text-muted': currentRoute.path !== '/export-budget' }"></i> -->
+                        <span class="text-lowercase">Export Budget Report</span>
+                      </router-link>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="nav-section">
+                  <!-- <h3 class="nav-header">FILTER BY</h3> -->
+                  <ul class="nav-list">
+                    <li class="nav-item" :class="{ 'active': currentRoute.path === '/filters' }">
+                              <router-link to="/filters">
+                                <i class="icon bx bx-filter-alt" :class="{ 'text-muted': currentRoute.path !== '/filters' }"></i>
+                                <span>Filter By</span>
+                              </router-link>
+                            </li>
+                    <li class="nav-item">
+                      <a href="#" @click.prevent style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-calendar"></i> -->
+                        <span class="text-lowercase">Month</span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="#" @click.prevent style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-time"></i> -->
+                        <span class="text-lowercase">Daily</span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="#" @click.prevent style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-calendar-week"></i> -->
+                        <span class="text-lowercase">Weekly</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  import { useRoute } from 'vue-router';
+  
+  export default {
     name: 'SideNav',
-};
-</script>
-
-<style scoped>
-.profile .accordion-button::after {
-    /* margin-bottom: 10px; */
-}
-
-.accordion-button::after {
-    margin: 0 !important;
-}
-
-.side-nav {
-    width: 240px;
-    background-color: #000;
+    setup() {
+      const currentRoute = useRoute();
+      return { currentRoute };
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .side-nav-wrapper {
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #0B1729;
     color: #fff;
-    /* padding: 20px; */
-    /* font-family: Arial, sans-serif; */
-}
+    width: 298px;
+    text-transform: uppercase;
+    position: relative;
+    /* border-right: solid 2px #9c27b0; */
+  }
 
-.profile {
-    /* padding: 20px; */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
-.profile-info {
-    display: flex;
-    flex-direction: column;
-}
 
-.name {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.round-guest {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 7px;
-}
-.online{
-    background-color: #15ca20 !important
-}
-.offline{
-    background-color: #fd3550!important
-}
-
-.status {
-    font-size: 14px;
-}
-
-.edit-profile-btn {
-    background: none;
-    border: none;
+  /* //////to make the border gradient////// */
+  .side-nav-wrapper {
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #0B1729;
     color: #fff;
-    cursor: pointer;
-    font-size: 20px;
+    width: 298px;
+    text-transform: uppercase;
+    position: relative; /* Ensure the pseudo-element is positioned relative to this element */
 }
 
-.nav-list {
-    list-style: none;
-    padding: 0;
+.side-nav-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px; /* Thickness of the border */
+    height: 100%; /* Full height */
+    background: linear-gradient(to bottom,#9A3AB1, #117AD1 ); /* Gradient going from top to bottom */
 }
-
-.nav-list li {
-    /* margin: 15px 0; */
-}
-
-.nav-list a {
-    color: #fff;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-}
-
-.nav-list .icon {
-    margin-right: 10px;
-}
-
-.nav-list a:hover {
-    /* text-decoration: underline; */
-    background-color: #1f1e1e
-}
-
-/* //////////////////// */
-.menu-section {
-    margin-bottom: 20px;
-}
-
-.menu-section h3 {
-    padding-left: 20px;
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    color: #ccc;
-}
-
-.menu-section ul {
-    list-style: none;
-    padding: 0 25px;
-}
-
-.menu-section ul li {
-    padding: 0, 10px;
-    font-size: 1em;
-    color: #bbb;
-}
+  /* //////to make the border gradient////// */
 
 
-/* color: #b06fcd; */
-
-
-.menu-section ul li:hover {
-    color: #fff;
-}
-
-.nav-list i {
-    font-size: 1.5rem; /* Adjust this value as needed */
-}
-
-/* //////////////////// */
-
-/* header section */
-.accordion-header.profile {
-    background-color: #1e1e1e;
-}
-
-.accordion-button {
-    background-color: transparent;
-    box-shadow: none;
-    padding: 10px 15px;
-    width: 100% !important;
-    
-}
-
-.accordion-button::after {
-    display: none;
-}
-
-.profile-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.name {
+  .side-nav-wrapper span{
     font-size: 16px;
-    font-weight: bold;
-    color: #ffffff;
-}
+  }
+  
+  .side-nav {
+    padding: 20px;
+    padding-left: 0px;
+    /* border-bottom: solid 2px #9c27b0; */
 
-.status {
-    font-size: 12px;
-    color: #a0a0a0;
-    display: flex;
-    align-items: center;
-}
-
-.round-guest {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 5px;
-}
-
-.online {
-    background-color: #ff3b30;
-}
-
-.offline {
-    background-color: #a0a0a0;
-}
-
-.edit-profile-btn {
-    background: none;
-    border: none;
-    color: #a0a0a0;
-    cursor: pointer;
-    font-size: 18px;
-    padding: 0;
-}
-
-.edit-profile-btn:hover {
-    color: #ffffff;
-}
-.accordion-button:not(.collapsed) {
-    margin-bottom: 0px;
-}
-
-/* /////////////////// */
-.side-nav-wrapper {
-  height: 100vh; /* Full viewport height */
-  overflow-y: auto; /* Enable vertical scrolling */
-}
-
-.side-nav {
-  width: 240px;
-  background-color: #000;
-  color: #fff;
-  /* Remove any fixed height if present */
-}
-
-/* Add some padding to the bottom to ensure last items are visible when scrolled */
-.accordion-item:last-child {
-  /* padding-bottom: 20px; */
-}
-
-/* Optional: Customize the scrollbar */
-.side-nav-wrapper::-webkit-scrollbar {
-  width: 6px;
-}
-
-.side-nav-wrapper::-webkit-scrollbar-thumb {
-  background-color: #4a4a4a;
-  border-radius: 3px;
-}
-
-.side-nav-wrapper::-webkit-scrollbar-track {
-  background-color: #1e1e1e;
-}
-
-/* ////////Active////////// */
-.side-nav__item.active,
-.side-nav__item:hover {
-  background-color: #333333 !important; /* Adjust this color to match your hover color */
-}
-
-.active{
-    background-color: #333333 !important; /* Adjust this color to match your hover color */
-}
-
-.pec-3{
-    padding-right: 9px !important;
-}
+  }
 
   
+  
+  .nav-header {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #a0a0a0;
+  }
+  
+  .nav-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .nav-item {
+    margin-bottom: 10px;
+    position: relative;
+  overflow: hidden;
+  }
 
+  .nav-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #9A3AB1, #117AD1);
+  transition: left 0.3s ease;
+  z-index: 0;
+}
 
-</style>
+.nav-item:hover::before,
+.nav-item.active::before {
+  left: 0;
+}
+  
+  .nav-item a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    padding: 0px 12px;
+    border-radius: 4px;
+    padding-left: 40px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .nav-item .icon {
+    margin-right: 10px;
+    font-size: 20px;
+    transition: color 0.3s ease; /* Smooth transition for color change */
+
+  }
+  
+  .nav-item.active,
+  .nav-item:hover {
+    background-color: #9d4dcb;
+  }
+
+  /* Make text-muted icons slightly dimmed by default */
+.nav-item .icon.text-muted {
+  color: rgba(255, 255, 255, 0.5);
+}
+/* Turn icon white on hover */
+.nav-item:hover .icon,
+.nav-item.active .icon {
+  color: #fff !important; /* Use !important to override text-muted */
+}
+
+.nav-item.active,
+.nav-item:hover {
+  background-color: #9d4dcb;
+}
+
+  /* New styles for horizontal line */
+.horizontal-line {
+    height: 2px;
+    margin: 20px 0px 20px 20px;
+    background: linear-gradient(to right, #9A3AB1, #117AD1);
+}
+  </style>

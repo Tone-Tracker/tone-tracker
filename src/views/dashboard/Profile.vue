@@ -376,7 +376,7 @@ Date: 04/06/2024
                                 </div>
                                 <div class="row" v-if="canUpdate()">
                                     <div class="col-12 text-end">
-                                        <button @click="showExperienceModal=true" type="button" class="btn maz-gradient-btn">Add Experience</button>
+                                        <button @click="showExperienceModal=true" type="button" class="btn maz-gradient-btn">Add Brand Experience</button>
                                     </div>
                                                     </div>
                                                 </div>
@@ -534,12 +534,13 @@ Date: 04/06/2024
                                             <div class="modal-footer">
                                                 <div class="col-12 mt-4">
                                                     <div class="ms-auto">
-                                                        <button @click="getResult" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
-                                                            <div v-if="showLoading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
-                                                            </div>
-                                                            <i v-if="!showLoading" class="bx bxs-plus-square"></i>
-                                                            {{ showLoading ?  '' : 'Save' }}
-                                                        </button>
+                                                        <Button @click="getResult" 
+                                                        classes="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0" type="button" :disabled="showLoading">
+                                                            <template #content>
+                                                            {{ showLoading ? 'Updating...' : 'Update' }}
+                                                            </template>									  
+                                                            <Spinner v-if="showLoading" class="spinner-border spinner-border-sm" />
+                                                          </Button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -557,9 +558,6 @@ import { usePromoter} from '@/stores/promoter';
 import useToaster from '@/composables/useToaster';
 import { useRoute } from 'vue-router';
 import { usePrimeVue } from 'primevue/config';
-import FileUpload from 'primevue/fileupload';
-import Button from 'primevue/button';
-import Badge from 'primevue/badge';
 import { useAuth } from '@/stores/auth';
 import Image from 'primevue/image';
 import Accordion from 'primevue/accordion';
@@ -575,6 +573,8 @@ import { useUserStore } from '@/stores/userStore';
 import BreadCrumb from '../../components/BreadCrumb.vue';
 import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 import MultipleFileUpload from '../upload/MultipleFileUpload.vue';
+import Button from '@/components/buttons/Button.vue';
+import Spinner from '@/components/buttons/Spinner.vue';
 
 
 
@@ -819,22 +819,14 @@ async function getResult() {
       const file = await cropper.getFile({
         fileName: `${userInfo.value.firstName}_${userInfo.value.lastName}`
       })
-
-      console.log({ base64, blob, file })
-      
       result.dataURL = base64
       result.blobURL = URL.createObjectURL(blob)
-      //isShowModal.value = false
       const formData = new FormData();
         formData.append('profilePicture',  file);
-        // formData.append('entity', "promoters");
-        // formData.append('entityId', promoterId.value);
-        // formData.append('uploaderId', user.activeUserId);
         const config = {
-        useMultipartFormData: true // Add this flag to the request config
+        useMultipartFormData: true 
         };
-        console.log(formData)
-        // return
+        showLoading.value = true
 
         promoterStore.uploadSingleImage(isMyProfile.value ? user.id : promoterId.value,formData, config).then(function (response) {
             console.log(response);

@@ -8,18 +8,32 @@ import { useVuelidate } from '@vuelidate/core';
 import { email, required } from '@vuelidate/validators';
 import { usePromoter } from '@/stores/promoter';
 import useToaster from '@/composables/useToaster';
-import { usePrimeVue } from 'primevue/config';
 import { useSizes } from '@/stores/sizes';
-import Select from 'primevue/select';
-import Paginator from 'primevue/paginator';
+import Paginator from '@/components/Paginator.vue';
 import { useAuth } from '@/stores/auth';
+import Row from '@/components/general/Row.vue';
+import InputLabel from '@/components/form-components/InputLabel.vue';
+import Input from '@/components/form-components/Input.vue';
+import InputError from '@/components/form-components/InputError.vue';
+import InputNumber from '@/components/form-components/InputNumber.vue';
+import Column from '@/components/general/Column.vue';
+import SelectDropdown from '@/components/form-components/SelectDropdown.vue';
+import Button from '@/components/buttons/Button.vue';
+import SearchInput from '@/components/form-components/SearchInput.vue';
+import Spinner from '@/components/buttons/Spinner.vue';
+import CardBody from '@/components/general/CardBody.vue';
+import router from '@/router';
+import PromoterCard from '@/components/PromoterCard.vue';
+import Card from '@/components/general/Card.vue';
 
 const promoterStore = usePromoter();
 const toaster = useToaster();
 const sizeStore = useSizes();
 const auth = useAuth();
 
-const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
+const allData = ref([]); //for pagination
+
+
 const uploader = JSON.parse(auth.user);
 
 let sizes = ref([]);
@@ -27,12 +41,6 @@ const promoters = ref([...promoterStore.allPromoters]);
 let paginatedPromoters = ref([]);
 let showLoading = ref(false);
 let searchInput = ref('');
-const filteredPromoters = ref([]);
-
-// Pagination Variables
-const currentPage = ref(1);
-const rowsPerPage = ref(10);
-const totalRecords = ref(0);
 
 onMounted(() => {
   getAllPromoters();
@@ -151,37 +159,23 @@ const onInput = () => {
     promoters.value = [...promoterStore.allPromoters];
   }
 
-  updatePaginatedPromoters();
 };
 
-let originalPromoters = ref([]);
 
 const getAllPromoters = async () => {
   showLoading.value = true;
   promoterStore.getPromoters().then(response => {
-    showLoading.value = false;
     promoterStore.setAllPromoters(response.data.content);
     promoters.value = [...promoterStore.allPromoters];
-    totalRecords.value = promoterStore.allPromoters.length;
-    updatePaginatedPromoters();
+    allData.value = response.data;
+    showLoading.value = false;
   }).catch(error => {
+    showLoading.value = false;
     toaster.error("Error fetching promoters");
     console.log(error);
   }).finally(() => {
     showLoading.value = false;
   });
-};
-
-const updatePaginatedPromoters = () => {
-  const start = (currentPage.value - 1) * rowsPerPage.value;
-  const end = start + rowsPerPage.value;
-  paginatedPromoters.value = promoterStore.allPromoters.slice(start, end);
-};
-
-const onPageChange = (event) => {
-  currentPage.value = event.page + 1;
-  rowsPerPage.value = event.rows;
-  updatePaginatedPromoters();
 };
 
 const originalSizes = ref([]);
@@ -193,7 +187,7 @@ const getAllSizes = async () => {
     originalSizes.value = sizeStore.allSizes;
     sizes.value = sizeStore.allSizes.map(size => ({
     value: size.toUpperCase(),
-    text: size.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
+    label: size.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
   }));
   }).catch(error => {
     console.log(error);
@@ -234,7 +228,7 @@ const toggleModal = () => {
   });
 };
 
-const openPosition = (pos, promoter) => {
+const openPosition = (promoter) => {
   if (promoter) {
     isEdit.value = true;
     promoterId.value = promoter.userDetails?.id;
@@ -257,31 +251,27 @@ const openPosition = (pos, promoter) => {
 };
 
 const genders = ref([
-  { name: 'MALE', code: 'MALE' },
-  { name: 'FEMALE', code: 'FEMALE' },
+  { value: 'MALE', label: 'MALE' },
+  { value: 'FEMALE', label: 'FEMALE' },
 ]);
-const selectedGender = ref(null);
-const genderChange = (event) => {
-  selectedGender.value = event.value;
-  form.gender = event.value.code;
+const handlePageChange = (newPage) => {
+  promoterStore.getPromoters(newPage).then(function (response) {
+    promoterStore.setAllPromoters(response.data.content);
+    promoters.value = [...promoterStore.allPromoters];
+  });
 };
 
-const $primevue = usePrimeVue();
-
-const formatSize = (bytes) => {
-  const k = 1024;
-  const dm = 3;
-  const sizes = $primevue.config.locale.fileSizeTypes;
-
-  if (bytes === 0) {
-    return `0 ${sizes[0]}`;
-  }
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-  return `${formattedSize} ${sizes[i]}`;
+const redirectToProfile = (user) => {
+	console.log("user", user);
+  // path: `/profile/${promoter.userDetails?.id}/${promoter?.id}`, 
+	if(!user) return
+  router.push({
+    path: `/profile/${user.userDetails?.id}/${user?.id}`,
+    query: { uploader: uploader?.id },
+  });
 };
+
+
 </script>
 
 <template>
@@ -289,163 +279,131 @@ const formatSize = (bytes) => {
     <div class="page-wrapper">
       <div class="page-content">
         <BreadCrumb title="Promoters" icon="bx bxs-user-badge" />
-        <div class="card">
-          <div class="card-body">
+        <Card class="card">
+          <CardBody class="card-body">
             <div class="d-lg-flex align-items-center mb-4 gap-3">
               <div class="position-relative">
-                <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5" placeholder="Search">
-                <span class="position-absolute top-50 product-show translate-middle-y">
-                  <i class="bx bx-search"></i>
-                </span>
+                <SearchInput 
+								placeholder="Search" 
+								id="searchInput"
+								v-model="searchInput" @input="onInput" classes="form-control ps-5" type="search">
+									<template #search>
+										<span class="position-absolute top-50 product-show translate-middle-y">
+											<i class="bx bx-search"></i>
+										</span>
+									</template>
+								  </SearchInput>
               </div>
-              <div class="row">
-                <div class="col-lg-3 col-md-6">
+              <Row class="row">
+                <Column class="col-lg-3 col-md-6">
                   <select @change="onGenderChange" class="form-select form-select-sm bg-maz-light">
                     <option selected disabled>Filter by sex</option>
                     <option value="all">All</option>
                     <option value="MALE">Male</option>
                     <option value="FEMALE">Female</option>
                   </select>
-                </div>
-              </div>
+                </Column>
+              </Row>
               <div class="ms-auto">
-                <a @click="toggleModal" href="javascript:;" class="btn maz-gradient-btn mt-2 mt-lg-0">
-                  <i class="bx bxs-plus-square"></i>Add Promoter
-                </a>
+
+                <Button @click="toggleModal" classes="btn maz-gradient-btn mt-2 mt-lg-0" type="button">
+                  <template #content>
+                    Add Promoter
+                  </template>									  
+                </Button>
               </div>
             </div>
             
-            <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
-              <div class="col" v-for="promoter in promoters" :key="promoter.id">
-                <div class="card radius-15">
-                  <div class="card-body text-center">
-                    <div class="p-4 border radius-15">
-                      <img v-if="promoter.userDetails.path" :src="`${envPath}${promoter.userDetails.path}`" width="110" height="110" class="rounded-circle shadow" alt="">
-                      <img v-else src="../../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
-                      <h5 class="mb-0 mt-5">{{ promoter.userDetails.firstName }} {{ promoter.userDetails.lastName }}</h5>
-                      <p class="mb-3">{{ promoter.userDetails.email }}</p>
-                      <div class="list-inline contacts-social mt-3 mb-3"> 
-                        <a v-tooltip.right="'Edit'" @click="openPosition('top', promoter)" href="javascript:;" class="list-inline-item maz-gradient-btn text-white border-0">
-                          <i class="bx bxs-edit"></i>
-                        </a>
-                      </div>
-                      <div class="d-grid"> 
-                        <router-link :to="{ 
-                          path: `/profile/${promoter.userDetails?.id}/${promoter?.id}`, 
-                          query: { uploader: uploader?.id } 
-                        }"
-                         class="btn btn-outline-primary radius-15">View Profile</router-link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <Paginator v-if="totalRecords > 0 && !showLoading"
-              :first="(currentPage - 1) * rowsPerPage"
-              :rows="rowsPerPage"
-              :totalRecords="totalRecords"
-              :rowsPerPageOptions="[5, 10, 20, 30]"
-              @page="onPageChange"
-            />
-          </div>
-        </div>
+            <Row class=" row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
+              <Column class="col" v-if="promoters?.length > 0" v-for="promoter in promoters" :key="promoter.id">
+								<Card classes="radius-15">
+									<CardBody class="text-center">
+							         <PromoterCard 
+                      :promoter="promoter" 
+                      classes="p-4 border radius-15" 
+                      @gotToProfile="redirectToProfile" 
+                      @edit="openPosition"/>
+                   </CardBody>
+						       </Card>
+							</Column>
+            </Row>
+            <Paginator v-if="!showLoading" :page="allData?.page" @changePage="handlePageChange" />
+          </CardBody>
+        </Card>
       </div>
     </div>
 
     <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Promoter' : 'Add Promoter'" :style="{ width: '50rem' }">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label for="firstName" class="form-label">First Name</label>
-          <input v-model="form.firstName" type="text" class="form-control" id="firstName">
-          <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
-            <div class="text-danger">First Name is required</div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="lastName" class="form-label">Last Name</label>
-          <input v-model="form.lastName" type="text" class="form-control" id="lastName">
-          <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
-            <div class="text-danger">Last Name is required</div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="email" class="form-label">Email</label>
-          <input v-model="form.email" type="email" class="form-control" id="email">
-          <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-            <div class="text-danger">Email is required</div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="phone" class="form-label">Phone Number</label>
-          <input v-model="form.phone" type="text" class="form-control" id="phone">
-          <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
-            <div class="text-danger">Phone Number is required</div>
-          </div>
-        </div>
+      <Row classes="g-3">
+        <Column classes="col-md-6">
+          <InputLabel labelText="First Name" classes="form-label" htmlFor="firstName"/>
+          <Input v-model="form.firstName" type="text" classes="form-control" id="firstName" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.firstName.$errors" message="First Name is required" />
+        </Column>
+
+          <Column classes="col-md-6">
+          <InputLabel labelText="Last Name" classes="form-label" htmlFor="lastName"/>
+          <Input v-model="form.lastName" type="text" classes="form-control" id="lastName" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.lastName.$errors" message="Last Name is required" />
+          </Column>
+
+          <Column classes="col-md-6">
+          <InputLabel labelText="Email" classes="form-label" htmlFor="email"/>
+          <Input v-model="form.email" type="email" classes="form-control" id="email" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.email.$errors" message="Email is required" />
+          </Column>
+
+          <Column classes="col-md-6">
+          <InputLabel labelText="Phone Number" classes="form-label" htmlFor="cell"/>
+          <InputNumber v-model="form.phone" classes="form-control" id="cell" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.phone.$errors" message="Phone Number is required" />
+          </Column>
         
         <div class="d-flex justify-content-between gap-1">
-          <div class="col-md-2">
-          <label for="gender" class="form-label me-2">Gender</label>
-          <Select v-model="selectedGender" :options="genders" @change="genderChange" optionLabel="name" placeholder="Select" class="w-full" />
-          <div class="input-errors" v-for="error of v$.gender.$errors" :key="error.$uid">
-            <div class="text-danger">Gender is required</div>
-          </div>
-        </div>
-          <div class="col-md-2">
-          <label for="dressSize" class="form-label">Dress Size</label>
-          <select v-model="form.dressSize" class="form-control" id="dressSize">
-            <!-- <option selected disabled :value="''">Select...</option> -->
-            <option v-for="size in sizes" :key="size?.value" :value="size?.value">{{ size.text }}</option>
-          </select>
-          <div class="input-errors" v-for="error of v$.dressSize.$errors" :key="error.$uid">
-            <div class="text-danger">Dress Size is required</div>
-          </div>
-        </div>
+          <Column classes="col-md-2">
+            <InputLabel labelText="Gender" classes="form-label me-2" htmlFor="gender"/>
+            <SelectDropdown v-model="form.gender" classes="form-control cursor-pointer" id="dressSize" :dataList="genders" placeholder="Select" />
+            <InputError classes="input-errors" :errors="v$.gender.$errors" message="Gender is required" />
+          </Column>
+          <Column classes="col-md-2">
+            <InputLabel labelText="Dress Size" classes="form-label" htmlFor="dressSize"/>
+            <SelectDropdown v-model="form.dressSize" classes="form-control cursor-pointer" id="dressSize" :dataList="sizes" placeholder="Dress Size" />
+          </Column>
 
-        <div class="col-md-2">
-          <label for="pantsSize" class="form-label">Pants Size</label>
-          <input type="number" v-model="form.pantsSize" class="form-control" id="pantsSize" />
-          <div class="input-errors" v-for="error of v$.pantsSize.$errors" :key="error.$uid">
-            <div class="text-danger">Pants Size is required</div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <label for="topSize" class="form-label">Top Size</label>
-          <select v-model="form.topSize" class="form-control" id="topSize">
-            <option v-for="size in sizes" :key="size?.value" :value="size?.value">{{ size.text }}</option>
-          </select>
-          <div class="input-errors" v-for="error of v$.topSize.$errors" :key="error.$uid">
-            <div class="text-danger">Top Size is required</div>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <label for="height" class="form-label me-2">Height<span class="text-muted text-xs p-1">(cm)</span></label>
-          <input v-model="form.height" type="number" class="form-control" id="height">
-          <div class="input-errors" v-for="error of v$.height.$errors" :key="error.$uid">
-            <div class="text-danger">Height is required</div>
-          </div>
-        </div>
+        <Column classes="col-md-2">
+          <InputLabel labelText="Pants Size" classes="form-label" htmlFor="pantsSize"/>
+          <InputNumber v-model="form.pantsSize" classes="form-control" id="pantsSize" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.pantsSize.$errors" message="Pants Size is required" />
+        </Column>
+        <Column classes="col-md-2">
+          <InputLabel labelText="Top Size" classes="form-label" htmlFor="topSize"/>
+          <SelectDropdown v-model="form.topSize" classes="form-control cursor-pointer" id="topSize" :dataList="sizes" placeholder="Top Size" />
+        </Column>
+        <Column classes="col-md-2">
+          <InputLabel labelText="Height" classes="form-label" htmlFor="height"/>
+          <InputNumber v-model="form.height" classes="form-control" id="height" placeholder="Height (cm)" />
+          <InputError classes="input-errors" :errors="v$.height.$errors" message="Height is required" />
+        </Column>
         </div>
        
-        <div class="col-12">
-          <label for="bio" class="form-label">Bio</label>
+        <Column classes="col-12">
+          <InputLabel labelText="Bio" classes="form-label" htmlFor="bio"/>
           <Textarea v-model="form.bio" autoResize rows="5" cols="30" class="w-100" />
-          <div class="input-errors" v-for="error of v$.bio.$errors" :key="error.$uid">
-            <div class="text-danger">Bio is required</div>
-          </div>
-        </div>
-      </div>
+          <InputError classes="input-errors" :errors="v$.bio.$errors" message="Bio is required" />
+        </Column>
+      </Row>
 
-      <div class="col-12 mt-4">
+      <Column class="col-12 mt-4">
         <div class="d-grid">
-          <button @click="onSubmit" class="btn maz-gradient-btn" type="button">
-            <span v-if="showLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            {{ isEdit ? 'Update' : 'Submit' }}
-          </button>
+          <Button @click="onSubmit" classes="btn maz-gradient-btn" type="button" :disabled="showLoading">
+            <template #content>
+            {{ isEdit ? showLoading ? '' : 'Update' : showLoading ? '' : 'Submit' }}
+            </template>									  
+            <Spinner v-if="showLoading" class="spinner-border spinner-border-sm" />
+          </Button>
+          
         </div>
-      </div>
+      </Column>
     </Dialog>
   </Layout>
 </template>

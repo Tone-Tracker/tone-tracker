@@ -12,6 +12,16 @@ import { useConfirm } from "primevue/useconfirm";
 import { useRoute } from 'vue-router';
 import FileUploadGeneric from '../upload/FileUploadGeneric.vue';
 import Avatar from 'primevue/avatar';
+import SearchInput from '@/components/form-components/SearchInput.vue';
+import InputLabel from '@/components/form-components/InputLabel.vue';
+import Input from '@/components/form-components/Input.vue';
+import InputError from '@/components/form-components/InputError.vue';
+import CardBody from '@/components/general/CardBody.vue';
+import Button from '@/components/buttons/Button.vue';
+import Spinner from '@/components/buttons/Spinner.vue';
+import Column from '@/components/general/Column.vue';
+import Card from '@/components/general/Card.vue';
+import Row from '@/components/general/Row.vue';
 
 const route = useRoute();
 const clientId = ref(route.query.client);
@@ -206,17 +216,14 @@ const vFocus = {
 };
 
 const onInput = () => {
-  if (searchInput.value) {
-    const searchTerm = searchInput.value.toLowerCase();
-    campaigns.value = campaigns.value.filter((campaign) => {
-      const name = campaign.name?.toLowerCase() || '';
-      
-      return (
-        name.includes(searchTerm) 
-      );
-    });
+    if (searchInput.value && searchInput.value.length >= 3) {
+    // const searchTerm = searchInput.value.toLowerCase();
+    //    campaignStore.getCampaignsByClientId(clientId.value, searchTerm).then(function (response) {
+    //     campaignStore.setCampaigns(response.data);
+    //     campaigns.value = campaignStore.allCampaigns;
+    // })
   } else {
-    campaigns.value = campaignStore.allCampaigns;
+    campaigns.value = [...campaignStore.allCampaigns];
   }
 };
 </script>
@@ -226,31 +233,30 @@ const onInput = () => {
         <div class="page-wrapper">
             <div class="page-content">
                 <BreadCrumb title="Campaigns" icon="" :style="{ color: clientColorStyles?.color }" />
-                <div class="card">
+                <Card>
              <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
               
 
                 <div class="position-relative">
-                  <input
-                    :style="{ borderColor: clientColorStyles?.borderColor }"
-                    v-model="searchInput"
-                    @input="onInput"
-                    type="text"
-                    class="form-control ps-5"
-                    placeholder="Search"
-                  />
-                  <span
-                    class="position-absolute top-50 product-show translate-middle-y"
-                  >
-                    <i class="bx bx-search"></i>
-                  </span>
+
+                  <SearchInput 
+                   :style="{ borderColor: clientColorStyles?.borderColor }"
+                    placeholder="Search" 
+                    id="searchInput"
+                    v-model="searchInput" classes="form-control ps-5" type="search">
+                    <template #search>
+                      <span class="position-absolute top-50 product-show translate-middle-y">
+                        <i class="bx bx-search"></i>
+                      </span>
+                    </template>
+				</SearchInput>
                 </div>
-              </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-8 col-lg-8 col-xl-8 d-flex">
+            </div>
+                    <CardBody>
+                        <Row>
+                            <Column classes="col-8 col-lg-8 col-xl-8 d-flex">
                                 <div class=" radius-10 w-100">
-                                    <div class="card-body">
+                                    <CardBody>
                                         <div class="table-responsive">
                                             <table class="table mb-0">
                                                 <thead class="table-light">
@@ -286,10 +292,14 @@ const onInput = () => {
                                                                     <i class='bx bx-check ' 
                                                                     v-tooltip.bottom="'Edit'" ></i>
                                                                 </a>
-                                                                <router-link :to="`/admin-activations?campaign=${campaign.id}`" 
-                                                                v-tooltip.bottom="'View Activations'" class="ms-3">
+                                                                <router-link :to="`/view-campaign?campaign=${campaign.id}`" 
+                                                                v-tooltip.bottom="'View Campaign'" class="ms-3">
                                                                     <i class='bx bx-show '></i>
                                                                 </router-link>
+                                                                <!-- <router-link :to="`/admin-activations?campaign=${campaign.id}`" 
+                                                                v-tooltip.bottom="'View Activations'" class="ms-3">
+                                                                    <i class='bx bx-show '></i>
+                                                                </router-link> -->
                                                                 <a @click="deleteRecord($event,campaign)" href="javascript:;" class="ms-3">
                                                                     <i class='bx bxs-trash text-danger' v-tooltip.bottom="'Delete'"></i>
                                                                 </a>
@@ -298,33 +308,31 @@ const onInput = () => {
                                                         </td>
                                                     </tr>
                                                     <tr v-else>
-                                                        <td colspan="7" class="text-center text-danger">{{ isFecthing ? 'Loading...' : clientName + 'has no campaigns.'}}</td>
+                                                        <td colspan="7" class="text-center text-danger">{{ isFecthing ? 'Loading...' : 'No campaigns found.'}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
-                                    </div>
+                                    </CardBody>
                                 </div>
-                            </div>
-                            <div class="col-4 col-lg-4 col-xl-4 d-flex">
-                                <div class="card w-100 radius-10">
+                            </Column>
+                            <Column classes="col-4 col-lg-4 col-xl-4 d-flex">
+                                <Card classes=" w-100 radius-10">
                                     <div class="card-body">
                                             <form class="">
-                                                <div class="col-md-12">
-                                                    <label for="input1" class="form-label">Campaign Name</label>
-                                                    <input v-model="form.name" type="text" class="form-control" id="input1" :style="{ borderColor: clientColorStyles?.borderColor }" />
-                                                    <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-                                                        <div class="text-danger">Campaign name is required</div>
-                                                    </div>
-                                                </div>
+
+                                                <Column classes="col-md-12">
+                                                    <InputLabel labelText="Campaign Name" classes="form-label" htmlFor="campaign-name"/>
+                                                    <Input v-model="form.name" type="text" 
+                                                    :style="{ borderColor: clientColorStyles?.borderColor }"
+                                                    classes="form-control" id="campaign-name" placeholder="" />
+                                                    <InputError classes="input-errors" :errors="v$.name.$errors" message="Campaign name is required" />
+                                                  </Column>
+
+                                         
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class=" flex justify-center">  
-                                                            <!-- <input accept="image/*" ref="img" type="file" hidden id="img" @change="onFileChange($event)"/>
-                                                            <label for="img" class="btn btn-primary px-5">
-                                                                <i class="bx bx-cloud-upload mr-1"></i>
-                                                                Select File
-                                                            </label>  -->
                                                             <FileUploadGeneric 
                                                             :showFilePreview="showFilePreview" 
                                                             accept="image/*" 
@@ -338,19 +346,22 @@ const onInput = () => {
                                                 </div>
                                             </form>
                                             <div class="ms-auto">
-                                                <button :style="{ background: clientColorStyles?.background }" @click="createCampaign" type="button" class="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0">
-                                                    <div v-if="loading" class="spinner-border text-white " role="status"> <span class="visually-hidden">Loading...</span>
-                                                    </div>
-                                                    {{ loading ?  '' : 'Create Campaign' }}
-                                                </button>
+                                                                <Button :style="{ background: clientColorStyles?.background }" @click="createCampaign" classes="w-100 btn d-flex justify-content-center align-items-center maz-gradient-btn radius-30 mt-lg-0" type="button" :disabled="loading">
+                                        <template #content>
+                                            {{ loading ?  '' : 'Create Campaign' }}
+                                        </template>									  
+                                        <Spinner v-if="loading" class="spinner-border spinner-border-sm" />
+                                        </Button>
+                                              
+
                                             </div>
                                        
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                </Card>
+                            </Column>
+                        </Row>
+                    </CardBody>
+                </Card>
             </div>
         </div>
     </Layout>

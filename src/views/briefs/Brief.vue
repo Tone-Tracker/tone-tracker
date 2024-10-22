@@ -15,6 +15,7 @@ import useToaster from "@/composables/useToaster";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import { useAuth } from "@/stores/auth";
+import { truncateText } from "@/helpers/helpers";
 
 const route = useRoute();
 const briefStore = useBrief();
@@ -197,7 +198,7 @@ const submitBriefFile = async () => {
           <div class="card-body">
             <div>
               <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
-                <button type="button" @click="showAddModal=true" class="btn rounded-0 btn-primary">+ New</button>
+                <!-- <button type="button" @click="showAddModal=true" class="btn rounded-0 btn-primary">+ New</button> -->
 
                 <div class="position-relative">
                   <input
@@ -217,14 +218,15 @@ const submitBriefFile = async () => {
             </div>
             <div class="row">
               <div
-                v-if="briefs.length > 0"
+                v-if="briefs?.length > 0"
                 v-for="(briefItem, index) in briefs" 
                 :key="briefItem.id"
                 class="col-md-4 col-lg-3 mb-4"
               >
                 <div class="brief-card">
-                  <h5  class="py-1 px-4 mb-0 text-center bg-black">
-                    {{ briefItem.entityName }}
+                  <h5 v-tooltip.top="briefItem.entityName" class="py-1 px-4 mb-0 text-center bg-black">
+                    {{  truncateText(briefItem.entityName, 20) }}
+                    <!-- <span v-if="briefItem.entityName?.length > 20"  style="font-size: 12px;">See more</span> -->
                   </h5>
                   
 

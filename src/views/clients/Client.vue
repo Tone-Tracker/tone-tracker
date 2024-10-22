@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref, reactive, watch } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { email, maxValue, numeric, required } from '@vuelidate/validators';
 import Layout from '@/views/shared/Layout.vue';
@@ -12,6 +12,17 @@ import SplitButton from 'primevue/splitbutton';
 import Dialog from 'primevue/dialog';
 import Badge from 'primevue/badge';
 import Paginator from '@/components/Paginator.vue';
+import SearchInput from '@/components/form-components/SearchInput.vue';
+import Button from '@/components/buttons/Button.vue';
+import Spinner from '@/components/buttons/Spinner.vue';
+import Column from '@/components/general/Column.vue';
+import Card from '@/components/general/Card.vue';
+import CardBody from '@/components/general/CardBody.vue';
+import Row from '@/components/general/Row.vue';
+import InputError from '@/components/form-components/InputError.vue';
+import InputLabel from '@/components/form-components/InputLabel.vue';
+import Input from '@/components/form-components/Input.vue';
+import InputNumber from '@/components/form-components/InputNumber.vue';
 
 const toaster = useToaster();
 const clientStore = useClientStore();
@@ -110,14 +121,12 @@ const deleteClient = (client) => {
 
 
 const onInput = () => {
-  if (searchInput.value) {
+  if (searchInput.value && searchInput.value.length >= 3) {
     const searchTerm = searchInput.value.toLowerCase();
-    clients.value = clients.value.filter((client) => {
-      const name = client.name?.toLowerCase() || '';
-      return (
-        name.includes(searchTerm) 
-      );
-    });
+    clientStore.getClients(undefined,searchTerm).then(function (response) {
+      clients.value = response.data.content.map(client => ({ ...client, isEditing: false }));
+      allData.value = response.data//update pagination too
+    })
   } else {
     clients.value = [...clientStore.allClients];
   }
@@ -191,6 +200,9 @@ const updateClient = () => {
     console.log(error);
   });
 };
+watch(searchInput, () => {
+  onInput();
+});
 
 const items = (client) => [
     {
@@ -240,35 +252,26 @@ const handlePageChange = (newPage) => {
     <div class="page-wrapper">
       <div class="page-content">
         <BreadCrumb title="Clients" icon="bx bx-user-circle"/>
-        <div class="card">
-
-         
-          <div class="card-body">
-            
-            <div class="row">
-             <div class="row p">
-              <div class="col-8 col-lg-8 col-xl-8 pl-5 d-flex ">
-                <!-- <button class="btn rounded-0 btn-primary">+ New</button> -->
-
+        <Card>         
+          <CardBody>            
+            <Row>
+              <Column classes="col-8 col-lg-8 col-xl-8 pl-5 d-flex ">
                 <div class="position-relative mb-3">
-                  <input
-                    v-model="searchInput"
-                    @input="onInput"
-                    type="text"
-                    class="form-control ps-5 ml-4"
-                    placeholder="Search"
-                  />
-                  <span
-                    class="position-absolute top-50 product-show translate-middle-y"
-                  >
-                    <i class="bx bx-search"></i>
-                  </span>
+                  <SearchInput 
+                    placeholder="Search" 
+                    id="searchInput"
+                    v-model="searchInput" classes="form-control ps-5" type="search">
+                    <template #search>
+                      <span class="position-absolute top-50 product-show translate-middle-y">
+                        <i class="bx bx-search"></i>
+                      </span>
+                    </template>
+								</SearchInput>
                 </div>
-              </div>
-             </div>
-              <div class="col-8 col-lg-8 col-xl-8 d-flex">
+              </Column>
+              <Column classes="col-8 col-lg-8 col-xl-8 d-flex">
                 <div class="radius-10 w-100">
-                  <div class="card-body">
+                  <CardBody>
                     <div class="table-responsive">
                       <table class="table mb-0">
                         <thead class="table-light">
@@ -280,7 +283,7 @@ const handlePageChange = (newPage) => {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr v-if="clients.length > 0" v-for="(client, index) in clients" :key="client.id">
+                          <tr v-if="clients?.length > 0" v-for="(client, index) in clients" :key="client.id">
                             <td> <Badge :value="index + 1 " size="large" :style="{'background-color': '#'+ client.color}" ></Badge></td>
                             <td>{{ client.name }}</td>
                             <td>{{ 
@@ -301,126 +304,102 @@ const handlePageChange = (newPage) => {
                         </tbody>
                       </table>
                     </div>
-                    <div class="card mt-4" v-if="!showLoading">
+                    <Card classes="mt-4" v-if="!showLoading">
                       <Paginator :page="allData?.page" @changePage="handlePageChange" />
-                    </div>
-                  </div>
+                    </Card>
+                  </CardBody>
                 </div>
-              </div>
+              </Column>
               <div class="col-4 col-lg-4 col-xl-4 d-flex">
                 <div class=" w-100 radius-10">
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <div class="position-relative">
-                        <label for="input1" class="form-label">Client Name</label>
-                        <input v-model="form.name" type="text" class="form-control ps-3 ">
-                        <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-                          <div class="text-danger">Client Name is required</div>
-                        </div>
-                      </div>
-                      <div class="row mt-3">
-                        <div class="col-12 mt-2">
-                          <div class="position-relative">
-                            <label for="input1" class="form-label">First Name</label>
-                            <input v-model="form.firstName" type="text" class="form-control ps-3 ">
-                            <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
-                              <div class="text-danger">First name is required</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-12 mt-2">
-                          <div class="position-relative">
-                            <label for="input1" class="form-label">Last Name</label>
-                            <input v-model="form.lastName" type="text" class="form-control ps-3 ">
-                            <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
-                              <div class="text-danger">Last name is required</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <Column classes="col-md-12">
+                        <InputLabel labelText="Client Name" classes="form-label" htmlFor="name"/>
+                        <Input v-model="form.name" type="text" classes="form-control" id="name" placeholder="" />
+                        <InputError classes="input-errors" :errors="v$.name.$errors" message="Client Name is required" />
+                      </Column>
 
-                      <div class="row mt-3">
-                        <div class="col-12 mt-2">
-                          <div class="position-relative">
-                            <label for="input1" class="form-label">Phone Number</label>
-                            <input v-model="form.phone" type="text" class="form-control ps-3 ">
-                            <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
-                              <div class="text-danger">Phone is required</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-12 mt-2">
-                          <div class="position-relative">
-                            <label for="input1" class="form-label">Email</label>
-                            <input v-model="form.email" type="email" class="form-control ps-3 ">
-                            <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-                              <div class="text-danger">Email is required</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row mt-3">
-                        <div class="col-12">
+                      <Column classes="col-md-12 mt-2">
+                        <InputLabel labelText="First Name" classes="form-label" htmlFor="firstname"/>
+                        <Input v-model="form.firstName" type="text" classes="form-control" id="firstname" placeholder="" />
+                        <InputError classes="input-errors" :errors="v$.firstName.$errors" message="First Name is required" />
+                      </Column>
+
+                      <Column classes="col-md-12 mt-2">
+                        <InputLabel labelText="Last Name" classes="form-label" htmlFor="lastName"/>
+                        <Input v-model="form.lastName" type="text" classes="form-control" id="lastName" placeholder="" />
+                        <InputError classes="input-errors" :errors="v$.lastName.$errors" message="Last Name is required" />
+                      </Column>
+                  
+                      <Column classes="col-md-12 mt-2">
+                        <InputLabel labelText="Phone Number" classes="form-label" htmlFor="cell"/>
+                        <InputNumber v-model="form.phone" classes="form-control" id="cell" placeholder="" />
+                        <InputError classes="input-errors" :errors="v$.phone.$errors" message="Phone Number is required" />
+                      </Column>
+
+                      <Column classes="col-md-12 mt-2">
+                        <InputLabel labelText="Email" classes="form-label" htmlFor="cell"/>
+                        <Input v-model="form.email" type="text" classes="form-control" id="email"/>
+                        <InputError classes="input-errors" :errors="v$.email.$errors" message="Email is required" />
+                      </Column>
+                    
+                        <Column class="col-12 mt-3">
                           <div class="color-picker-container">
                             <ColorPicker v-model="form.color" inline class="w-100" />
-                            <div class="input-errors" v-for="error of v$.color.$errors" :key="error.$uid">
-                              <div class="text-danger">Client color is required</div>
-                            </div>
+                            <InputError classes="input-errors" :errors="v$.color.$errors" message="Client color is required" />
                         </div>
-                        </div>
-                        <span class="badge" :style="`color: #fff; background-color: #${form.color}`">Sample Background</span>
-                      </div>
+                      </Column>
+                        <span class="badge w-100" :style="`color: #fff; background-color: #${form.color}`">Sample Background</span>             
 
                     
                       <div class="ms-auto mt-6">
-                        <button @click="createClient" type="button" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
-                          <span v-if="loading">Creating...</span>
-                          <span v-else>Create Client</span>
-                        </button>
+                        <Button @click="createClient" classes="w-100 btn maz-gradient-btn" type="button" :disabled="loading">
+                          <template #content>
+                          {{ isEdit ? loading ? '' : 'Update' : loading ? '' : 'Submit' }}
+                          </template>									  
+                          <Spinner v-if="loading" class="spinner-border spinner-border-sm" />
+                        </Button>
                       </div>
-                    </div>
-                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </Row>
+          </CardBody>
+        </Card>
       </div>
     </div>
     <Dialog v-model:visible="visible" position="top" modal header="Edit Client" :style="{ width: '40rem' }">
              
-      <div class="row g-3">
-        <div class="card-body">
-          <div class="table-responsive">
-            <div class="position-relative">
-              <label for="input1" class="form-label">Client Name</label>
-              <input v-model="editForm.name" type="text" class="form-control ps-3 ">
-              <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-                <div class="text-danger">Client Name is required</div>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col-12">
+      <Row class="g-3">
+
+        <Column classes="col-md-12">
+          <InputLabel labelText="Client Name" classes="form-label" htmlFor="name"/>
+          <Input v-model="editForm.name" type="text" classes="form-control" id="name" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.name.$errors" message="Client Name is required" />
+        </Column>
+
+             
+           
+            <Row class="mt-3">
+              <Column class="col-12">
                 <div class="flex justify-center">
                   <ColorPicker v-model="editForm.color" inline />
-                  <div class="input-errors" v-for="error of v$.color.$errors" :key="error.$uid">
-                    <div class="text-danger">Client color is required</div>
-                  </div>
+                  <InputError classes="input-errors" :errors="v$.color.$errors" message="Client color is required" />
               </div>
-              </div>
+            </Column>
               <span class="badge" :style="`color: #fff; background-color: #${editForm.color}`">Sample Background</span>
-            </div>
+            </Row>
 
           
-            <div class="ms-auto mt-6">
-              <button @click="updateClient" type="button" class="w-100 btn maz-gradient-btn mt-2 mt-lg-0" :disabled="loading">
-                <span v-if="loading">Updating...</span>
-                <span v-else>Update Client</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+            <Row>
+              <div class="ms-auto mt-6 w-100">
+                <Button @click="updateClient" classes="w-100 btn maz-gradient-btn mt-2 mt-lg-0" type="button" :disabled="loading">
+                  <template #content>
+                  {{ loading ? 'Updating...' : 'Update' }}
+                  </template>									  
+                  <Spinner v-if="loading" class="spinner-border spinner-border-sm" />
+                </Button>
+              </div>
+            </Row>
+      </Row>
 
 </Dialog>
   </Layout>
@@ -438,8 +417,6 @@ const handlePageChange = (newPage) => {
 .table td, .table th {
     vertical-align: middle;
 }
-
-
 
 
 </style>

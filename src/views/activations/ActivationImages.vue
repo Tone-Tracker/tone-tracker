@@ -34,8 +34,9 @@ onMounted(() => {
 });
 
 const getActivationImages = async () => {
+  imagesLoading.value = true;
     activationStore.getActivationImages(activationId.value).then(function (response) {
-      imagesLoading.value = true;
+      imagesLoading.value = false;
       images.value = response.data.content;
         // activationData.value = response.data;
     }).catch(error => {
@@ -102,6 +103,44 @@ const onSubmit = () => {
           <div class="">
             <h4 class="mb-2 ml-2">{{ activationData?.name }} Images</h4>
           </div>
+
+          <!-- <div v-if="images?.length > 0" class="image-gallery">
+            <div v-for="image in images" :key="image.id" class="image-container">
+              <div class="card">
+                <Image alt="Image" preview class="gallery-image">
+                  <template #previewicon>
+                    <i class='bx bx-search-alt-2'></i>
+                  </template>
+                  <template #image>
+                    <img :src="envPath + image.path" alt="image" />
+                  </template>
+                  <template #preview="slotProps">
+                    <img :src="envPath + image.path" alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
+                  </template>
+                </Image>
+              </div>
+            </div>
+          </div> -->
+          <div v-if="images?.length > 0" class="gallery-container">
+    <div v-for="image in images" :key="image.id" class="gallery">
+      <div class="asc py-3">{{ image.title || 'Image Title' }}</div>
+      <div class="card">
+        <Image alt="Image" preview class="gallery-image">
+          <template #previewicon>
+            <i class='bx bx-search-alt-2'></i>
+          </template>
+          <template #image>
+            <img :src="envPath + image.path" :alt="image.title || 'image'" class="img-fluid">
+          </template>
+          <template #preview="slotProps">
+            <img :src="envPath + image.path" :alt="image.title || 'preview'" :style="slotProps.style" @click="slotProps.onClick" class="img-fluid">
+          </template>
+        </Image>
+      </div>
+    </div>
+  </div>
+<!-- 
+          
           <div v-if="images?.length > 0" class="image-gallery">
             <div v-for="image in images" :key="image.id" class="image-container">
               <div class="card">
@@ -118,6 +157,15 @@ const onSubmit = () => {
                 </Image>
               </div>
             </div>
+          </div> -->
+
+          <div class="col" v-if="activation?.team?.length > 0" v-for="team in activation?.team" :key="team.id">
+              <div class="gallery">
+                <div class="asc py-3">{{ team.firstName }} {{ team.lastName }}</div>
+                <router-link :to="`${ team.staff ? '/staff-profile/' + team.staff + '/' + team?.id : '#!' }`">
+                  <img :src="team.path ? envPath + team.path : `https://ui-avatars.com/api/?name=${ team.firstName + ' ' + team.lastName }&background=random`" alt="Cinque Terre" class="img-fluid">
+                </router-link>
+              </div>
           </div>
 
           <div v-else class="text-center text-danger">{{ imagesLoading ? 'Loading...' : 'No images found.' }}</div>
@@ -382,4 +430,50 @@ html.dark-theme .table th {
 }
 
 /* image fluid */
+
+.gallery-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.gallery {
+  flex: 0 0 auto;
+  width: 180px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease;
+}
+
+.gallery:hover {
+  border-color: #777;
+}
+
+.card {
+  height: 180px;
+  overflow: hidden;
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.asc {
+  padding: 15px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+
 </style>

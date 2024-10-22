@@ -70,6 +70,7 @@ const prevPage = () => {
     background: linear-gradient(to right, #9A3AB1, #117AD1);
 	border: none !important;
 	color: white;
+  height: 1.96rem;
 	transition: background 0.3s ease-in-out;
 }
 </style>

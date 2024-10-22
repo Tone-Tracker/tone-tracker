@@ -1,4 +1,5 @@
-<script setup>
+
+    <script setup>
 import { onMounted, ref, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
@@ -14,11 +15,22 @@ import { useWarehouse } from '@/stores/warehouse';
 import { useStaff } from '@/stores/staff';
 import SplitButton from 'primevue/splitbutton';
 import InputText from 'primevue/inputtext';
+import Avatar from 'primevue/avatar';
+import Column from '@/components/general/Column.vue';
+import CardBody from '@/components/general/CardBody.vue';
+import Row from '@/components/general/Row.vue';
+import Card from '@/components/general/Card.vue';
+import Button from '@/components/buttons/Button.vue';
+import SearchInput from '@/components/form-components/SearchInput.vue';
+import InputLabel from '@/components/form-components/InputLabel.vue';
+import Input from '@/components/form-components/Input.vue';
+import InputError from '@/components/form-components/InputError.vue';
+import Spinner from '@/components/buttons/Spinner.vue';
 
 const toaster = useToaster();
 const regionStore = useRegion();
 const warehouseStore = useWarehouse();
-const confirm = useConfirm();
+const addRegion = ref(false);
 const userStore = useUserStore();
 const staff = useStaff();
 
@@ -281,33 +293,61 @@ const items = (region) => [
 </script>
 
 <template>
-    <Layout>
-        <div class="page-wrapper">
-            <div class="page-content">
-                <BreadCrumb title="Regions" icon="bx bx-map" />
-                <div class="card">
-                    <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
-
-                <div class="position-relative">
-                  <input
-                    v-model="searchInput"
-                    @input="onInput"
-                    type="text"
-                    class="form-control ps-5"
-                    placeholder="Search"
-                  />
-                  <span
-                    class="position-absolute top-50 product-show translate-middle-y"
-                  >
-                    <i class="bx bx-search"></i>
-                  </span>
-                </div>
-              </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-8 col-lg-8 col-xl-8 d-flex">
+                <Card>
+                    <CardBody>
+                        <Row>
+                            <Column class="col-8">
+                                <Card>
+                                    <CardBody>
+                                        <Row classes=" align-items-center">
+                                            <Column class="col-lg-3 col-xl-2">
+                                                <Button @click="addRegion=true" classes="btn mb-3 maz-gradient-btn mb-lg-0" type="button">
+                                                    <template #content>
+                                                    Add Region
+                                                    </template>									  
+                                                  </Button>
+                                            </Column>
+                                            <Column class="col-lg-9 col-xl-10">
+                                                <div class="float-lg-end">
+                                                    <Row classes="row-cols-lg-2 row-cols-xl-auto g-2">
+                                                        <Column classes="col">
+                                                            <div class="position-relative">
+                                                                <SearchInput 
+                                                                placeholder="Search" 
+                                                                id="searchInput"
+                                                                v-model="searchInput" classes="form-control ps-5" type="search">
+                                                                <template #search>
+                                                                <span class="position-absolute top-50 product-show translate-middle-y">
+                                                                    <i class="bx bx-search"></i>
+                                                                </span>
+                                                                 </template>
+                                                              </SearchInput>
+                                                            </div>
+                                                        </Column>
+                                                        <Column classes="col">
+                                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                                <button type="button" class="btn btn-white">Sort By</button>
+                                                                <div class="btn-group" role="group">
+                                                                  <button id="btnGroupDrop1" type="button" class="btn btn-white dropdown-toggle dropdown-toggle-nocaret px-1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="bx bx-chevron-down"></i>
+                                                                  </button>
+                                                                  <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                                                    <li><a class="dropdown-item" href="#">Date</a></li>
+                                                                    <li><a class="dropdown-item" href="#">A-Z</a></li>
+                                                                  </ul>
+                                                                </div>
+                                                              </div>
+                                                        </Column>
+                                                    </Row>
+                                                </div>
+                                            </Column>
+                                        </Row>
+                                    </CardBody>
+                                </Card>
+                            </Column>
+                            <Column class="col-8 col-lg-8 col-xl-8 d-flex">
                                 <div class=" radius-10 w-100">
-                                    <div class="card-body">
+                                    <div>
                                         <div class="table-responsive">
                                             <table class="table mb-0">
                                                 <thead class="table-light">
@@ -315,26 +355,24 @@ const items = (region) => [
                                                         <th>#</th>
                                                         <th>Region Name</th>
                                                         <th>Regional Manager</th>
-                                                        <th>Warehouses</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr v-if="regions.length > 0" v-for="(region, index) in regions" :key="region.id">
-                                                        <td>{{ index + 1 }}</td>
+                                                        <td>
+                                                            <Avatar 
+                                                            :label="region?.numberOfWarehouses ? region?.numberOfWarehouses : '0'" 
+                                                            class="mr-2" 
+                                                            :style="{ background: clientColorStyles?.background }" 
+                                                            size="" shape="circle" />
+                                                        </td>
                                                         <td v-if="!region.isEditing">{{ region.name }}</td>
                                                         <td v-else>
                                                             <input v-focus type="text" v-model="region.name" @blur="update(region)" @keyup.enter="update(region)" class="form-control no-border-input"/>
                                                         </td>
                                                         <td>
                                                             {{ region.firstName ? region.firstName + ' ' + region.lastName : '' }}
-                                                        </td>
-                                                        <td>
-                                                            <router-link :to="`/admin-view-warehouses-by-region/${region.id}?name=${region.name}`" type="button" class="btn maz-gradient-btn position-relative me-lg-5"> 
-                                                                <i class='bx bx-building-house align-middle' ></i> 
-                                                                View <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">{{region?.numberOfWarehouses}} 
-                                                                    <span class="visually-hidden">warehouses</span></span>
-                                                            </router-link>
                                                         </td>
                                                         <td>
 
@@ -355,38 +393,37 @@ const items = (region) => [
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-4 col-lg-4 col-xl-4 d-flex">
+                            </Column>
+                            <Column class="col-4 col-lg-4 col-xl-4 d-flex">
                                 <div class=" w-100 radius-10">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <form class="">
-                                                <div class="col-md-12">
-                                                    <label for="input1" class="form-label">Region Name</label>
-                                                    <input ref="nameInput" v-model="form.name" type="text" class="form-control" id="input1" />
-                                                    <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
-                                                        <div class="text-danger">Region name is required</div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                            <div class="ms-auto mt-4">
-                                                <a @click="createRegion" href="javascript:;" class="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0">
-                                                    <div v-if="loading" class="spinner-border text-white " role="status">
-                                                         <span class="visually-hidden">Loading...</span>
-                                                    </div>
-                                                    <i class="bx bxs-plus-square"></i>  {{ loading ?  '' : 'Create' }}
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   yesssss
                                 </div>
+                            </Column>
+                        </Row>
+                    </CardBody>
+                </Card>
+
+                <Dialog v-model:visible="addRegion" position="top" modal :header="`Add Region`" :style="{ width: '30rem' }">
+                    <CardBody>
+                        <Column classes="col-md-12">
+                            <InputLabel labelText="Region Name" classes="form-label" htmlFor="name"/>
+                            <Input v-model="form.name" type="text" classes="form-control" id="name" placeholder="" />
+                            <InputError classes="input-errors" :errors="v$.name.$errors" message="Region Name is required" />
+                          </Column>
+
+                            <div class="ms-auto mt-4">
+
+                                <Button @click="createRegion" classes="w-100 btn maz-gradient-btn radius-30 mt-2 mt-lg-0" type="button" :disabled="loading">
+                                    <template #content>
+                                        {{ loading ?  '' : 'Create' }}
+                                    </template>									  
+                                    <Spinner v-if="loading" class="spinner-border spinner-border-sm" />
+                                  </Button>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <Dialog v-model:visible="visible" position="top" modal :header="`Add ${regionName} Regional Manager`" :style="{ width: '25rem' }">
+                    </CardBody>
+                </Dialog>
+            
+        <Dialog v-model:visible="visible" position="top" modal :header="`Add ${regionName} Regional Manager`" :style="{ width: '30rem' }">
             <!-- <form @submit.prevent="submitRegionalManager" class="row g-3"> -->
                 <div class="col-md-12">
                     <div class="card my-card flex justify-center">
@@ -448,7 +485,6 @@ const items = (region) => [
                 
             </form>
         </Dialog>
-    </Layout>
 </template>
 
 <style scoped>
@@ -456,3 +492,4 @@ const items = (region) => [
     vertical-align: middle;
 }
 </style>
+

@@ -219,7 +219,10 @@ const onSubmit = async () => {
         showLoading.value = false;
     });
     }
-    
+
+    v$.value.$errors = [];
+    v$.value.$reset();
+
 };
 
 const onStatusChange = (event) => {
@@ -354,16 +357,43 @@ const deleteRecord = ( task) => {
 };
 
 const briefFile = ref(null);
-const onFileChange = (event) => {
-    briefFile.value = null;
-    if (!event.target.files[0].name.includes(".pdf")) {
-        toaster.error("Please upload a pdf file");
-        briefFile.value = null;
-        return
-    }
-    briefFile.value = event.target.files[0];
-    form.briefFile = event.target.files[0];
+// const onFileChange = (event) => {
+//     briefFile.value = null;
+//     if (!event.target.files[0].name.includes(".pdf")) {
+//         toaster.error("Please upload a pdf file");
+//         briefFile.value = null;
+//         return
+//     }
+//     briefFile.value = event.target.files[0];
+//     form.briefFile = event.target.files[0];
+// }
+
+
+const onFileChange = (uploadedFile) => {
+  
+  if (!uploadedFile.name.includes(".pdf")) {
+    toaster.error("Please select a pdf file");
+    return;
+  }
+    console.log('event', uploadedFile);
+    briefFile.value = uploadedFile;
 }
+
+const onfileDropped = (dropedFile) => {
+  if (!dropedFile[0].name.includes(".pdf")) {
+    toaster.error("Please select a pdf file");
+    return;
+  }
+   console.log('dropedFile', dropedFile);
+      briefFile.value = null
+
+      // Get selected files
+      const files = dropedFile;
+      if (!files) return
+      const file = files[0];
+      briefFile.value = file;
+};
+
 
 const removeFile = () => {
     briefFile.value = null;  
@@ -519,7 +549,7 @@ const clientColor = JSON.parse(localStorage.getItem('clientColor'));
                                             <td>{{task.plannedEndDate}}</td>
                                             <td>{{task.timeRecord}}</td>
                                             <td>{{ getTaskType(task.type) }}</td>
-                                            <td>{{task.completion}}</td>
+                                            <td>{{task.completion}}%</td>
                                             <td>
                                                 <div class="d-flex order-actions">
                                                     <SplitButton class="text-white" label="" 
@@ -647,17 +677,14 @@ const clientColor = JSON.parse(localStorage.getItem('clientColor'));
 
                     <template v-if="form.type == 'THIRDPARTY'">
                         <div class="col-md-12 mt-4">
-                            <div class="NDA-container">
-                                <div class="file-upload-wrapper">
-                                    <input id="bief-file-upload-input" type="file" accept="application/pdf" hidden @change="onFileChange($event)">
-                                    <label for="bief-file-upload-input" class="custom-file-upload">Click to upload brief file</label>
-                                </div>
-                            
-                                <div v-if="briefFile" id="file-preview" class="file-upload-preview mt-2">                                    
-                                    <img @click="previewBase64PDF" id="file-preview-image" src="/src/assets/images/pdf.png" alt="File Preview" class="cursor-pointer" />
-                                    <button type="button" class="file-remove-button" @click="removeFile()">×</button>
-                                </div>
-                            </div>
+                            <label for="file-upload" class="form-label">Upload Brief File</label>
+                            <FileUploadGeneric 
+                              :showFilePreview="true" 
+                              accept="application/pdf" 
+                              fileType="pdf" 
+                              @fileUploaded="onFileChange"
+                              @fileDropped="onfileDropped"
+                            />
                         </div>
                     </template>
                     <template v-if="isEdit && viewedTask?.path">

@@ -7,11 +7,24 @@ import Dialog from 'primevue/dialog';
 import { useVuelidate } from '@vuelidate/core';
 import { email, required } from '@vuelidate/validators';
 import useToaster from '@/composables/useToaster';
-import { usePrimeVue } from 'primevue/config';
 import { useSizes } from '@/stores/sizes';
-import Paginator from 'primevue/paginator';
+import Paginator from '@/components/Paginator.vue';
 import { useSupplier } from '@/stores/supplier';
 import { useUserStore } from '@/stores/userStore';
+import Button from '@/components/buttons/Button.vue';
+import Spinner from '@/components/buttons/Spinner.vue';
+import Row from '@/components/general/Row.vue';
+import Column from '@/components/general/Column.vue';
+import InputLabel from '@/components/form-components/InputLabel.vue';
+import Input from '@/components/form-components/Input.vue';
+import InputError from '@/components/form-components/InputError.vue';
+import InputNumber from '@/components/form-components/InputNumber.vue';
+import Card from '@/components/general/Card.vue';
+import CardBody from '@/components/general/CardBody.vue';
+import PromoterCard from '@/components/PromoterCard.vue';
+import SupplierCard from '@/components/SupplierCard.vue';
+import router from '@/router';
+import SearchInput from '@/components/form-components/SearchInput.vue';
 
 const supplierStore = useSupplier();
 const userStore = useUserStore();
@@ -19,17 +32,13 @@ const toaster = useToaster();
 const sizeStore = useSizes();
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 
+const allData = ref([]); //for pagination
+
+
 let sizes = ref([]);
 const promoters = ref([...supplierStore.allSuppliers]);
-let paginatedPromoters = ref([]); // This will store the promoters to be displayed on the current page
 let showLoading = ref(false);
 let searchInput = ref('');
-const filteredPromoters = ref([]);
-
-// Pagination Variables
-const currentPage = ref(1); // Current page
-const rowsPerPage = ref(10); // Rows per page
-const totalRecords = ref(0); // Total number of records
 
 const form = reactive({
   firstName: null,
@@ -68,19 +77,21 @@ const v$ = useVuelidate(rules, form);
 const onSubmit = async () => {
   const isFormValid = await v$.value.$validate();
   if (!isFormValid) return; // Stop if the form is not valid
-
+   showLoading.value = true;
   try {
     if (isEdit.value) {
       await userStore.updateUser(supplierId.value, form);
       toaster.success("Supplier updated successfully");
+      showLoading.value = false;
     } else {
       supplierStore.submitSupplier(form).then(function (response) {
       getSuppliers();
-      closeDialog(); // Close the modal
-
+      showLoading.value = false;
+      visible.value = false;
       toaster.success("Supplier created successfully");
 
       }).catch(function (error) {
+        showLoading.value = false;
         toaster.error("Error creating supplier");
         console.log(error);
       });
@@ -95,33 +106,22 @@ const onSubmit = async () => {
 const onInput = () => {
   if (searchInput.value) {
     const searchTerm = searchInput.value.toLowerCase();
-    promoters.value = originalPromoters.value.filter((promoter) => {
-      return (
-        promoter.bio?.toLowerCase().includes(searchTerm) ||
-        promoter.firstName?.toLowerCase().includes(searchTerm) ||
-        promoter.lastName?.toLowerCase().includes(searchTerm) ||
-        promoter.email?.toLowerCase().includes(searchTerm) ||
-        promoter.phone?.toLowerCase().includes(searchTerm)
-      );
-    });
+    //will go to server
+   
   } else {
-    promoters.value = [...originalPromoters.value]; // Reset to original full list if no search term
+    promoters.value = [...supplierStore.allSuppliers]; // Reset to original full list if no search term
   }
 
-  updatePaginatedPromoters(); // Ensure the list is paginated after search
 };
 
-let originalPromoters = ref([]); // Store the original unfiltered list
 
-// Fetch all promoters and store them in both originalPromoters and promoters.value
 const getSuppliers = async () => {
   showLoading.value = true;
   supplierStore.getAllSuppliers().then(response => {
     showLoading.value = false;
-    originalPromoters.value = response.data.content; // Store original list
-    promoters.value = [...originalPromoters.value]; // Set the current promoters list
-    totalRecords.value = promoters.value.length;
-    updatePaginatedPromoters(); // Update paginated data after fetching promoters
+    supplierStore.setAllSuppliers(response.data.content);
+    allData.value = response.data;
+    promoters.value = [...supplierStore.allSuppliers]; 
   }).catch(error => {
     toaster.error("Error fetching suppliers");
     console.log(error);
@@ -130,18 +130,6 @@ const getSuppliers = async () => {
   });
 };
 
-const updatePaginatedPromoters = () => {
-  const start = (currentPage.value - 1) * rowsPerPage.value;
-  const end = start + rowsPerPage.value;
-  paginatedPromoters.value = promoters.value.slice(start, end);
-};
-
-// Handle page change in pagination
-const onPageChange = (event) => {
-  currentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
-  rowsPerPage.value = event.rows;
-  updatePaginatedPromoters(); // Update paginated data when the page changes
-};
 
 const getAllSizes = async () => {
   showLoading.value = true;
@@ -159,10 +147,7 @@ const visible = ref(false);
 let isEdit = ref(false);
 let supplierId = ref(null);
 
-const position = ref('top');
-const dropdownItems = ref([]);
-
-const openPosition = (pos, promoter) => {
+const openPosition = (promoter) => {
   if (promoter) {
     isEdit.value = true;
     supplierId.value = promoter.id;
@@ -189,15 +174,9 @@ const openPosition = (pos, promoter) => {
       description: null,
     });
   }
-  position.value = pos;
   visible.value = true;
 };
 
-const $primevue = usePrimeVue();
-
-const closeDialog = () => {
-  visible.value = false;
-};
 
 const toggleModal = () => {
   isEdit.value = false; // Reset edit mode
@@ -207,6 +186,20 @@ const toggleModal = () => {
   form.phone = null;
   form.description = null;
   visible.value = true; // Show modal
+};
+
+const handlePageChange = (newPage) => {
+  supplierStore.getPromoters(newPage).then(function (response) {
+    supplierStore.setAllPromoters(response.data.content);
+    promoters.value = [...supplierStore.allPromoters];
+  });
+};
+
+const redirectToProfile = (user) => {
+	if(!user) return
+  router.push({
+    path: `/supplier-profile/${user?.activeUserId}/${user?.id}`
+  });
 };
 
 </script>
@@ -220,104 +213,96 @@ const toggleModal = () => {
           <div class="card-body">
             <div class="d-lg-flex align-items-center mb-4 gap-1">
               <div class="position-relative">
-                <input v-model="searchInput" @input="onInput" type="text" class="form-control ps-5" placeholder="Search">
-                <span class="position-absolute top-50 product-show translate-middle-y">
-                  <i class="bx bx-search"></i>
-                </span>
+                <SearchInput 
+                  placeholder="Search" 
+                  id="searchInput"
+                  v-model="searchInput" @input="onInput" classes="form-control ps-5" type="search">
+                  <template #search>
+                    <span class="position-absolute top-50 product-show translate-middle-y">
+                      <i class="bx bx-search"></i>
+                    </span>
+                  </template>
+								</SearchInput>
               </div>
               <div class="ms-auto">
-                <a @click="toggleModal" href="javascript:;" class="btn maz-gradient-btn mt-2 mt-lg-0">
-                  <i class="bx bxs-plus-square"></i>Add Supplier
-                </a>
+                <Button @click="toggleModal" classes="btn maz-gradient-btn mt-2 mt-lg-0" type="button">
+                  <template #content>
+                    Add Supplier
+                  </template>									  
+                </Button>
               </div>
             </div>
 
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
-              <div class="col" v-for="promoter in paginatedPromoters" :key="promoter.id">
-                <div class="card radius-15">
-                  <div class="card-body text-center">
-                    <div class="p-4 border radius-15">
-                      <img v-if="promoter.path" :src="`${envPath}${promoter.path}`" width="110" height="110" class="rounded-circle shadow" alt="">
-                      <img v-else src="../../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
-                      <h5 class="mb-0 mt-5">{{ promoter.firstName }} {{ promoter.lastName }}</h5>
-                      <p class="mb-3">{{ promoter.email }}</p>
-                      <div class="list-inline contacts-social mt-3 mb-3">
-                        <a v-tooltip.right="'Edit'" @click="openPosition('top', promoter)" href="javascript:;" class="list-inline-item maz-gradient-btn text-white border-0">
-                          <i class="bx bxs-edit"></i>
-                        </a>
-                      </div>
-                      <div class="d-grid">
-                        <router-link :to="{ path: `/supplier-profile/${promoter?.activeUserId}/${promoter?.id}` }" class="btn btn-outline-primary radius-15">View Profile</router-link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
+              <Column class="col" v-if="promoters?.length > 0" v-for="promoter in promoters" :key="promoter.id">
+								<Card classes="radius-15">
+									<CardBody class="text-center">
+							         <SupplierCard 
+                          :promoter="promoter" 
+                          classes="p-4 border radius-15" 
+                          @gotToProfile="redirectToProfile" 
+                          @edit="openPosition"
+                      />
+                   </CardBody>
+						       </Card>
+							</Column>
             </div>
 
-            <!-- Pagination -->
-            <Paginator
-              :first="(currentPage - 1) * rowsPerPage"
-              :rows="rowsPerPage"
-              :totalRecords="totalRecords"
-              :rowsPerPageOptions="[5, 10, 20, 30]"
-              @page="onPageChange"
-            />
+            <Paginator :page="allData?.page" @changePage="handlePageChange" v-if="!showLoading" />
           </div>
         </div>
       </div>
     </div>
 
-    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Supplier' : 'Add Supplier'" :style="{ width: '50rem' }" @hide="closeDialog">
-      <div class="row g-3">
-        <!-- Existing form fields -->
-        <div class="col-md-6">
-          <label for="firstName" class="form-label">First Name</label>
-          <input v-model="form.firstName" type="text" class="form-control" id="firstName">
-          <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
-            <div class="text-danger">First Name is required</div>
-          </div>
-        
-        </div>
-        <div class="col-md-6">
-          <label for="lastName" class="form-label">Last Name</label>
-          <input v-model="form.lastName" type="text" class="form-control" id="lastName">
-          <div class="input-errors" v-for="error of v$.lastName.$errors" :key="error.$uid">
-            <div class="text-danger">Last Name is required</div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="email" class="form-label">Email</label>
-          <input v-model="form.email" type="email" class="form-control" id="email">
-          <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
-            <div class="text-danger">Email is required</div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="cell" class="form-label">Phone Number</label>
-          <input v-model="form.phone" type="text" class="form-control" id="cell">
-          <div class="input-errors" v-for="error of v$.phone.$errors" :key="error.$uid">
-            <div class="text-danger">Cell Number is required</div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <label for="name" class="form-label">Name</label>
-          <input v-model="form.name" type="text" class="form-control" id="name">
-        </div>
-        <div class="col-md-12">
-          <label for="description" class="form-label">Description</label>
-          <Textarea v-model="form.description" autoResize rows="5" cols="91"/>
-        </div>
-         
-      </div>
+    <Dialog v-model:visible="visible" position="top" modal :header="isEdit ? 'Edit Supplier' : 'Add Supplier'" :style="{ width: '50rem' }">
+      <Row class="g-3">        
+        <Column classes="col-md-6">
+          <InputLabel labelText="First Name" classes="form-label" htmlFor="firstName"/>
+          <Input v-model="form.firstName" type="text" classes="form-control" id="firstName" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.firstName.$errors" message="First Name is required" />
+        </Column>
 
-      <div class="col-12 mt-4">
+        <Column classes="col-md-6">
+          <InputLabel labelText="Last Name" classes="form-label" htmlFor="lastName"/>
+          <Input v-model="form.lastName" type="text" classes="form-control" id="lastName" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.lastName.$errors" message="Last Name is required" />
+          </Column>
+
+          <Column classes="col-md-6">
+          <InputLabel labelText="Email" classes="form-label" htmlFor="email"/>
+          <Input v-model="form.email" type="email" classes="form-control" id="email" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.email.$errors" message="Email is required" />
+          </Column>
+
+          <Column classes="col-md-6">
+          <InputLabel labelText="Phone Number" classes="form-label" htmlFor="cell"/>
+          <InputNumber v-model="form.phone" classes="form-control" id="cell" placeholder="" />
+          <InputError classes="input-errors" :errors="v$.phone.$errors" message="Phone Number is required" />
+          </Column>
+
+          <Column classes="col-md-12">
+            <InputLabel labelText="Name" classes="form-label" htmlFor="name"/>
+            <Input v-model="form.name" type="text" classes="form-control" id="name" placeholder="" />
+          </Column>
+       
+        <Column class="col-md-12">
+          <InputLabel labelText="Description" classes="form-label" htmlFor="description"/>
+          <Textarea v-model="form.description" id="description" autoResize rows="5" cols="91"/>
+        </Column>
+         
+      </Row>
+
+      <Column class="col-12 mt-4">
         <div class="d-grid">
-          <button @click="onSubmit" class="btn maz-gradient-btn" type="button">
-            {{ isEdit ? 'Update' : 'Submit' }}
-          </button>
+          <Button @click="onSubmit" classes="btn maz-gradient-btn" type="button" text="Submit">
+            <template #content>
+            {{ isEdit ? showLoading ? '' : 'Update' : showLoading ? '' : 'Submit' }}
+            </template>									  
+            <Spinner v-if="showLoading" class="spinner-border spinner-border-sm" />
+          </Button>
         </div>
-      </div>
+      </Column>
     </Dialog>
   </Layout>
 </template>

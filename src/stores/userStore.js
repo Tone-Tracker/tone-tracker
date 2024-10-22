@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/axiosInstance';
 import { reactive, ref } from 'vue';
-import { type } from 'jquery';
 
 export const useUserStore = defineStore('useUserStore', () => {
 
