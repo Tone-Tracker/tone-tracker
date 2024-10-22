@@ -17,7 +17,7 @@
               type="text"
               class="form-control me-4"
               aria-label="Text input with dropdown suggestions"
-              placeholder="Search For Activation..."
+              placeholder="Search For More Here...."
               v-model="query"
               @input="onInput"
               @keydown.enter="selectFirstSuggestion"
@@ -173,14 +173,13 @@ onMounted(() => {
 
 <style scoped>
 .form-control {
-  background-color: #1C1C1C !important;
+  background-color: #3b3b3b !important;
   border-left: 0 !important;
   border-top-left-radius: 0;
-  /* border: 1px solid #000000 !important; */
   border-top: 2px solid #ffff !important;
   border-bottom: 2px solid #ffff !important;
   border-right: 2px solid #ffff !important;
-  text-align: center;
+  text-align: left;
   color: white !important;
 }
 
@@ -190,7 +189,7 @@ onMounted(() => {
 }
 
 .form-control::placeholder {
-  text-align: center;
+  text-align: left;
   color: white !important;
 }
 
@@ -225,11 +224,28 @@ html.dark-theme .user-box {
 }
 
 html.dark-theme .input-group-text {
-  color: #d1d7de;
-  background-color: #1C1C1C !important;
+  color: #ffff;
+  background-color: #3b3b3b !important;
   border: 2px solid #ffff;
   border-radius: 0;
   border-right: 0px;
+}
+
+.btn.btn-outline-secondary {
+  color: white !important;  /* Ensure button text is white */
+}
+
+.maz-gradient-btn {
+  color: white !important;  /* Additional selector to ensure white text */
+}
+
+/* Updated search icon color */
+.input-group-text i {
+  color: #ffffff;
+}
+
+.input-group-text .bx-search {
+  color: #ffffff;
 }
 
 .btn {
