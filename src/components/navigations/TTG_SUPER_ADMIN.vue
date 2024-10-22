@@ -121,49 +121,61 @@ const getRoleName = () => {
                 <!-- Horizontal Line -->
                 <div class="horizontal-line"></div>
 
-<!-- Actions Section -->
-<div class="nav-section">
-  <h3 class="nav-header">ACTIONS</h3>
-  <ul class="nav-list">
-    <li class="nav-item" :class="{ 'active': currentRoute.path === '/campaign-budget' }">
-      <router-link to="/campaign-budget">
-        <i class="icon bx bx-spreadsheet" :class="{ 'text-muted': currentRoute.path !== '/campaign-budget' }"></i>
-        <span>Campaign Budget</span>
-      </router-link>
-    </li>
-    <li class="nav-item" :class="{ 'active': currentRoute.path === '/export-budget' }">
-      <router-link to="/export-budget">
-        <i class="icon bx bx-export" :class="{ 'text-muted': currentRoute.path !== '/export-budget' }"></i>
-        <span>Export Budget Report</span>
-      </router-link>
-    </li>
-  </ul>
-</div>
+                <!-- Actions Section -->
+                <div class="nav-section">
+                  <!-- <h3 class="nav-header">ACTIONS</h3> -->
+                  <ul class="nav-list">
+                    <li class="nav-item" :class="{ 'active': currentRoute.path === '/actions' }">
+                              <router-link to="/actions">
+                                <i class="icon bx bx-list-check" :class="{ 'text-muted': currentRoute.path !== '/actions' }"></i>
+                                <span>Actions</span>
+                              </router-link>
+                            </li>
+                    <li class="nav-item" :class="{ 'active': currentRoute.path === '/campaign-budget' }">
+                      <router-link to="/campaign-budget" style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-spreadsheet" :class="{ 'text-muted': currentRoute.path !== '/campaign-budget' }"></i> -->
+                        <span class="text-lowercase">Campaign Budget</span>
+                      </router-link>
+                    </li>
+                    <li class="nav-item" :class="{ 'active': currentRoute.path === '/export-budget' }">
+                      <router-link to="/export-budget" style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-export" :class="{ 'text-muted': currentRoute.path !== '/export-budget' }"></i> -->
+                        <span class="text-lowercase">Export Budget Report</span>
+                      </router-link>
+                    </li>
+                  </ul>
+                </div>
 
-<!-- Filter Section -->
-<div class="nav-section">
-  <h3 class="nav-header">FILTER BY</h3>
-  <ul class="nav-list">
-    <li class="nav-item">
-      <a href="#" @click.prevent>
-        <i class="icon bx bx-calendar"></i>
-        <span>Month</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="#" @click.prevent>
-        <i class="icon bx bx-time"></i>
-        <span>Daily</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="#" @click.prevent>
-        <i class="icon bx bx-calendar-week"></i>
-        <span>Weekly</span>
-      </a>
-    </li>
-  </ul>
-</div>
+                <!-- Filter Section -->
+                <div class="nav-section">
+                  <!-- <h3 class="nav-header">FILTER BY</h3> -->
+                  <ul class="nav-list">
+                    <li class="nav-item" :class="{ 'active': currentRoute.path === '/filters' }">
+                              <router-link to="/filters">
+                                <i class="icon bx bx-filter-alt" :class="{ 'text-muted': currentRoute.path !== '/filters' }"></i>
+                                <span>Filter By</span>
+                              </router-link>
+                            </li>
+                    <li class="nav-item">
+                      <a href="#" @click.prevent style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-calendar"></i> -->
+                        <span class="text-lowercase">Month</span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="#" @click.prevent style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-time"></i> -->
+                        <span class="text-lowercase">Daily</span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="#" @click.prevent style="padding-left: 70px;">
+                        <!-- <i class="icon bx bx-calendar-week"></i> -->
+                        <span class="text-lowercase">Weekly</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
       </div>
     </div>
   </template>
