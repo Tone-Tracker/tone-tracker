@@ -200,8 +200,10 @@ const getRoleName = () => {
     color: #fff;
     width: 298px;
     text-transform: uppercase;
+    position: relative;
     /* border-right: solid 2px #9c27b0; */
   }
+
 
 
   /* //////to make the border gradient////// */
@@ -254,7 +256,26 @@ const getRoleName = () => {
   
   .nav-item {
     margin-bottom: 10px;
+    position: relative;
+  overflow: hidden;
   }
+
+  .nav-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #9A3AB1, #117AD1);
+  transition: left 0.3s ease;
+  z-index: 0;
+}
+
+.nav-item:hover::before,
+.nav-item.active::before {
+  left: 0;
+}
   
   .nav-item a {
     display: flex;
@@ -264,11 +285,15 @@ const getRoleName = () => {
     padding: 0px 12px;
     border-radius: 4px;
     padding-left: 40px;
+    position: relative;
+    z-index: 1;
   }
   
   .nav-item .icon {
     margin-right: 10px;
     font-size: 20px;
+    transition: color 0.3s ease; /* Smooth transition for color change */
+
   }
   
   .nav-item.active,
@@ -276,10 +301,25 @@ const getRoleName = () => {
     background-color: #9d4dcb;
   }
 
+  /* Make text-muted icons slightly dimmed by default */
+.nav-item .icon.text-muted {
+  color: rgba(255, 255, 255, 0.5);
+}
+/* Turn icon white on hover */
+.nav-item:hover .icon,
+.nav-item.active .icon {
+  color: #fff !important; /* Use !important to override text-muted */
+}
+
+.nav-item.active,
+.nav-item:hover {
+  background-color: #9d4dcb;
+}
+
   /* New styles for horizontal line */
 .horizontal-line {
     height: 2px;
-    margin: 20px 20px;
+    margin: 20px 0px 20px 20px;
     background: linear-gradient(to right, #9A3AB1, #117AD1);
 }
   </style>

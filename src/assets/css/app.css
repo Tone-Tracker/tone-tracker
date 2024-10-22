@@ -358,7 +358,8 @@ html.dark-theme .page-footer {
 
 .wrapper.toggled .page-wrapper {
 
-	margin-left: 70px
+	margin-left: 70px;
+	background-color: #080d0e;
 }
 
 

@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="topbar d-flex flex-column align-items-center">
+    <div class="topbar d-flex flex-column align-items-center border-0">
       <nav class="navbar navbar-expand-lg d-flex justify-content-between w-100">
         <DarkThemeNavbarToggle />
         <!-- <div class="d-flex align-items-center justify-content-between">
@@ -43,10 +43,10 @@
             <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
             <img :src="user.path ? envPath + user.path : '../assets/images/placeholder.jpg'" class="user-img" :alt="user.firstName + ' ' + user.lastName" />
             </a>
-            <a @click="redirectToProfile" class="profile-link"><span class="fs-6">MY PROFILE</span></a>
+            <a @click="redirectToProfile" class="profile-link cursor-pointer"><span class="fs-6 later-space">MY PROFILE</span></a>
           </div>
           
-          <a @click="logout" class="logout-link fs-6 d-flex align-items-center justify-content-center gap-1"><i class="bx bx-log-out fs-1"></i><span class="fs-6">LOGOUT</span></a>
+          <a @click="logout" class="logout-link fs-6 d-flex align-items-center justify-content-center gap-1 cursor-pointer"><i class="bx bx-log-out fs-1"></i><span class="fs-6 later-space">LOGOUT</span></a>
         </div>
 
           <!-- User Profile Section -->
@@ -281,6 +281,11 @@ html.dark-theme .input-group-text {
     padding-bottom: 1.3rem;
     border: none !important;
 }
+
+.later-space {
+  letter-spacing: 3px;
+}
+
 @media (max-width: 991.98px) {
   .search-bar-container {
     display: none !important;
@@ -305,6 +310,8 @@ html.dark-theme .input-group-text {
     width: 150px;
   }
 }
+
+
 
 
 
