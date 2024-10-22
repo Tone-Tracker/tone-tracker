@@ -235,9 +235,13 @@ html.dark-theme .input-group-text {
   color: white !important;  /* Ensure button text is white */
 }
 
+
+
 .maz-gradient-btn {
   color: white !important;  /* Additional selector to ensure white text */
 }
+
+
 
 /* Updated search icon color */
 .input-group-text i {
