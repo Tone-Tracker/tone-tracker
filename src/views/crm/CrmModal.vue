@@ -27,7 +27,7 @@ let form = reactive({
   activation: '',
   region: '',
   address: '',
-  ambassorCode: ''
+  ambassadorCode: ''
 });
 
 watch(() => props.modalData, (newVal) => { 
@@ -40,7 +40,7 @@ watch(() => props.modalData, (newVal) => {
     activation: newVal.activation || 4,
     region: newVal.region || '',
     address: '' || newVal.address || '',
-    ambassorCode: newVal.ambassorCode || ''
+    ambassadorCode: newVal.ambassadorCode || ''
   });
 }, { deep: true });
 
@@ -52,7 +52,7 @@ const rules = {
   activation: { required },
   region: { required },
   address: { required },
-  ambassorCode: { required }
+  ambassadorCode: { required }
 };
 
 const v$ = useVuelidate(rules, form);
@@ -121,8 +121,8 @@ const onSubmit = async () => {
     </div>
     <div class="col-md-6">
       <label for="address" class="form-label">Ambassador Code</label>
-      <input v-model="form.ambassorCode" type="text" class="form-control" id="address">
-      <div class="text-danger" v-if="v$.ambassorCode.$error">Ambassador Code is required</div>
+      <input v-model="form.ambassadorCode" type="text" class="form-control" id="address">
+      <div class="text-danger" v-if="v$.ambassadorCode.$error">Ambassador Code is required</div>
     </div>
     
     

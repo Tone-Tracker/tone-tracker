@@ -66,6 +66,8 @@ onMounted(() => {
 const getWarehouse = () => {
 	warehouseStore.viewWarehouse(route.params.id).then((response) => {
 		warehouse.value = response.data;
+		merchendiseList.value = response.data?.stocksList?.filter((stock) => stock.type === 'MERCH');
+		brandings.value = response.data?.stocksList?.filter((stock) => stock.type === 'BRANDING');
 	});
 }
 const unitName = ref(null);
@@ -81,15 +83,15 @@ const onUnitChange = (event) => {
 	unitForm.capacity = viewedUnit.value?.capacity;
 	unitForm.warehouse = viewedUnit.value?.warehouse;
 	unitForm.id = viewedUnit.value?.id;
-	getStock();
+	// getStock();
 }
 
 
 const getStock = () => {
 	stock.getStockByUnit(unitId.value).then((response) => {
 		stockList.value = response.data;
-		merchendiseList.value = response.data?.filter((stock) => stock.type === 'MERCH');
-		brandings.value = response.data?.filter((stock) => stock.type === 'BRANDING');
+		// merchendiseList.value = response.data?.filter((stock) => stock.type === 'MERCH');
+		// brandings.value = response.data?.filter((stock) => stock.type === 'BRANDING');
 	});
 }
 
@@ -350,15 +352,15 @@ const onUpdateUnit = async () => {
 						<div class="gradient-card">
 						  <div class="content">
 							<strong>Region:</strong> {{ warehouse?.regionName}}<br>
-							<strong>Number of storage units:</strong> {{ warehouse?.numberOfUnits }} unit(s)<br>
+							<!-- <strong>Number of storage units:</strong> {{ warehouse?.numberOfUnits }} unit(s)<br> -->
 							<strong>Capacity:</strong> {{ warehouse?.capacity }}%<br>
-							<strong>Number of items:</strong> {{ warehouse?.numberOfItems }}
+							<strong>Number of items:</strong> {{ warehouse?.numberOfStocks }}
 						  </div>
 						</div>
 
 						<div class="row mt-4 d-flex justify-content-between align-items-center">
 					<!-- <div class="col-lg-1"></div> -->
-                    <div class="d-flex justify-content-between align-items-center gap-2 col-lg-3 col-md-6">
+                    <div class="d-flex justify-content-between align-items-center gap-2 col-lg-3 col-md-6 d-none">
 						<select @change="onUnitChange" class="form-select form-select-sm bg-maz-light w-100" aria-label=".form-select-sm example">
 							<option :value="''" selected="selected" disabled>Filter by unit</option>
 							<option v-for="(unit,index) in warehouse?.unitsList" :key="unit + index" 
@@ -404,9 +406,7 @@ const onUpdateUnit = async () => {
 								  </div>
 								  <div class="dropdown ms-auto mb-2">
 									 <button @click="visible=true" 
-									 :disabled="!unitId"
 									 type="button" class="btn maz-gradient-btn mx-width">Add Stock</button>
-									 <p class="fs-6 text-danger" v-if="!unitId">Choose unit</p>
 								  </div>
 							  </div>
 						  </div>

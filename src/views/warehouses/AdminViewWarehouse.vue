@@ -365,14 +365,15 @@ const viewUnits = async (warehouse) => {
                                                     <tr v-if="warehouses.length > 0" v-for="(region, index) in warehouses" :key="region.id">
                                                     <td>{{ region.name }}</td>
                                                     <td>
-                                                        <router-link :to="`/view-warehouse/${region.id}?name=${region.name}`" v-tooltip.bottom="region.unitsList?.length + ' units'"
+                                                        <router-link :to="`/view-warehouse/${region.id}?name=${region.name}`" 
                                                             class="btn maz-gradient-btn position-relative me-lg-5"> 
                                                             <i class='bx bx-building-house align-middle'></i> 
                                                             <span class="d-none d-xxl-inline">View</span> <!-- This will only show on screens larger than 1440px -->
-                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
+                                                            <!-- v-tooltip.bottom="region.unitsList?.length + ' units'" -->
+                                                            <!-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
                                                                 {{ region.unitsList?.length }} 
                                                                 <span class="visually-hidden">warehouses</span>
-                                                            </span>
+                                                            </span> -->
                                                         </router-link>
                                                     </td>
 

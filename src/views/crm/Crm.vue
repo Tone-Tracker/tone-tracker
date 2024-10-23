@@ -249,7 +249,7 @@ const onActivationChange = (activation) => {
                           <td>{{ user.name }}</td>
                           <td>{{ user.surname }}</td>
                           <td>{{ user.email }}</td>
-                          <td>--</td>
+                          <td>{{ user.ambassadorCode }}</td>
                           <td>{{ user.phone }}</td>
                           
                           <td>
