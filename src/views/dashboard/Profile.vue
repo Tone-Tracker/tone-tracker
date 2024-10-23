@@ -630,11 +630,7 @@ const paswordRules = {
     const vv$ = useVuelidate(paswordRules, { password, confirmPassword });
 
     const isNotSelf = (user) => {
-        return (user.id != userIdParam.value && user.userDetails.id != promoterId.value)
-        // console.log('userID',userIdParam.value)
-        // console.log('PreomoterID',promoterId.value)
-        // console.log('user',user)
-        // return true
+        return (user.id != userIdParam.value && user.userDetails.id != promoterId.value);
     }
 
 const updatePassword = async () => {

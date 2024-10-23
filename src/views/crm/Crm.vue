@@ -216,7 +216,7 @@ const onActivationChange = (activation) => {
                   </Select>
                     <button class="btn btn-primary maz-gradient-btn" @click="toggleModal">Add New User</button>
                   </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between d-none">
                         <h5>Database</h5>
                         <div class="filter-dropdown">
                             <h5 style="display: inline;">Filter</h5>
@@ -237,6 +237,7 @@ const onActivationChange = (activation) => {
                           <th>Contact Name</th>
                           <th>Contact Surname</th>
                           <th>Email</th>
+                          <th>Ambassador Code</th>
                           <th>Cell Number</th>
                           <th>Opt-in</th>
                           <th>Address</th>
@@ -248,6 +249,7 @@ const onActivationChange = (activation) => {
                           <td>{{ user.name }}</td>
                           <td>{{ user.surname }}</td>
                           <td>{{ user.email }}</td>
+                          <td>--</td>
                           <td>{{ user.phone }}</td>
                           
                           <td>
@@ -255,6 +257,9 @@ const onActivationChange = (activation) => {
                           </td>
                           <td>{{ user.address }}</td>
                           <td>{{ user.regionName }}</td>
+                        </tr>
+                        <tr v-else>
+                          <td colspan="8" class="text-center text-danger">{{ showLoading ? 'Loading...' : 'No users found.'}}</td>
                         </tr>
                       </tbody>
                     </table>
