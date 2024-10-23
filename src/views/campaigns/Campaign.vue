@@ -16,7 +16,6 @@ import Avatar from 'primevue/avatar';
 const route = useRoute();
 const clientId = ref(route.query.client);
 
-
 watch(
   () => route.query.client,
   (newClientId) => {
