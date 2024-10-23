@@ -124,11 +124,7 @@ const onSubmit = async () => {
       <input v-model="form.ambassorCode" type="text" class="form-control" id="address">
       <div class="text-danger" v-if="v$.ambassorCode.$error">Ambassador Code is required</div>
     </div>
-    <div class="col-md-3">
-      <label for="address" class="form-label d-block invisible">Address</label>
-      <input v-model="form.optIn" type="checkbox" class="" id="optin">
-      <label for="optin" class="form-label ms-2">Opt In</label>
-    </div> 
+    
     
     <div class="col-md-6">
       <label for="region" class="form-label">Region</label>
@@ -150,7 +146,11 @@ const onSubmit = async () => {
       </select>
       <div class="text-danger" v-if="v$.activation.$error">Activation Area is required</div>
     </div>
-               
+    <div class="col-md-3">
+      <label for="address" class="form-label d-block invisible">Address</label>
+      <input v-model="form.optIn" type="checkbox" class="" id="optin">
+      <label for="optin" class="form-label ms-2">Opt In</label>
+    </div>        
   </div>
   
   <div class="mt-4">
