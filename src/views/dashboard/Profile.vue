@@ -39,13 +39,13 @@ Date: 04/06/2024
                                                 </template>
                                                 <template #image>
                                                     <img v-if="path == null" 
-                                                        :src="`https://tonetracker-bucket.s3.af-south-1.amazonaws.com/${userInfo?.path ? userInfo.path : 'images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg'}`" 
+                                                        :src="userInfo?.path ? envPath + userInfo?.path : '../../assets/images/placeholder.jpg'" 
                                                         alt="image" width="350"  style="max-width: 17rem" />
                                                     <img v-else :src="path" alt="image" width="350" />
                                                     </template>
 
                                                     <template #preview="slotProps">
-                                                    <img :src="`https://tonetracker-bucket.s3.af-south-1.amazonaws.com/${userInfo?.path ? userInfo.path : 'images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg'}`" 
+                                                    <img :src="userInfo.path ? envPath + userInfo.path : '../../assets/images/placeholder.jpg'" 
                                                         alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                                                     </template>
 
@@ -186,13 +186,12 @@ Date: 04/06/2024
                             <div class="prmoters-jobs">
                                 <!-- <h5 class="text-white">Others promoters jobs</h5> -->
                                 <div class="row mt-6  row-cols-xl-9 ">
-                                    <div class="">
-                                        <h4 class="mb-2 mt-5 ml-2">Others promoters jobs</h4>
+                                    <div>
+                                        <h4 class="mb-2 mt-5 ml-2">Other promoters on job</h4>
                                     </div>
-
                                     <div  class="d-flex"> 
                                         <div v-for="promoter in otherPromotersList" :key="promoter.id">
-                                            <div v-if="promoter.id !== promoterId" class="col-img">
+                                            <div v-if="promoter?.userDetails?.id !== userIdParam && promoter?.id !== promoterId" class="col-img">
                                                 <div class="gallery">
                                                     <div class="card flex justify-center">
                                                         <Image alt="Image" preview>
@@ -201,14 +200,14 @@ Date: 04/06/2024
                                                             </template>
                                                             <template #image>
                                                                 <img 
-                                                                    :src="promoter.profilePicture || '../../assets/images/avatars/avatar-1.png'"
+                                                                    :src="promoter?.userDetails?.path ? envPath + promoter?.userDetails?.path : '../../assets/images/avatars/avatar-1.png'"
                                                                     :alt="promoter.userDetails.firstName" 
                                                                     width="250" 
                                                                 />
                                                             </template>
                                                             <template #preview="slotProps">
                                                                 <img 
-                                                                    :src="promoter.profilePicture || '../../assets/images/avatars/avatar-1.png'"
+                                                                    :src="promoter?.userDetails?.path ? envPath + promoter?.userDetails?.path : '../../assets/images/avatars/avatar-1.png'"
                                                                     :alt="promoter.userDetails.firstName" 
                                                                     :style="slotProps.style" 
                                                                     @click="slotProps.onClick" 

@@ -1,5 +1,5 @@
 <template>
-  <button class="btn btn-primary btn-download rounded-0 mb-0" @click="exportToPDF" type="button">
+  <button :disabled="data.length === 0" class="btn btn-primary btn-download rounded-0 mb-0" @click="exportToPDF" type="button">
     Download PDF
   </button>
 </template>

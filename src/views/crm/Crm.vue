@@ -214,7 +214,6 @@ const onActivationChange = (activation) => {
                           </div>
                       </template>
                   </Select>
-                    <!-- <input type="text" class="form-control" placeholder="Search" v-model="searchInput" @input="onSearchInput('')" style="width: 25rem;"> -->
                     <button class="btn btn-primary maz-gradient-btn" @click="toggleModal">Add New User</button>
                   </div>
                     <div class="d-flex justify-content-between">
@@ -260,8 +259,8 @@ const onActivationChange = (activation) => {
                       </tbody>
                     </table>
                     <div class="text-end">
-                        <button class="btn btn-secondary btn-export rounded-0 mb-0 mx-2" @click="fnExcelReport" type="button">Export</button>
-                        <HTMLTableToPDF :headers="tableHeaders" :data="users"/>
+                        <button :disabled="filteredUsers?.length === 0" class="btn btn-secondary btn-export rounded-0 mb-0 mx-2" @click="fnExcelReport" type="button">Export</button>
+                        <HTMLTableToPDF :headers="tableHeaders" :data="filteredUsers"/>
                     </div>
                     <iframe id="dummyFrame" style="display:none"></iframe>
                 </div>
