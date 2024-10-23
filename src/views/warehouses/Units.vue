@@ -431,7 +431,7 @@ const onUpdateUnit = async () => {
 										</td>
 								   <td >{{branding.description}}</td>
 								
-								   <td>{{branding.quantityInUnit}}</td>
+								   <td>{{branding.quantityInWarehouse}}</td>
 								   <td>
 									<SplitButton  @click="editBranding(branding)" class="text-white" label="" 
 													icon="bx bx-cog fs-4" 
@@ -468,7 +468,7 @@ const onUpdateUnit = async () => {
 										  
 										  </td>
 								   <td>{{merch.description}}</td>
-								   <td>{{merch.quantityInUnit}}</td>
+								   <td>{{merch.quantityInWarehouse}}</td>
 								   <td>
 									<SplitButton  @click="editBranding(merch)" class="text-white" label="" 
 													icon="bx bx-cog fs-4" 
