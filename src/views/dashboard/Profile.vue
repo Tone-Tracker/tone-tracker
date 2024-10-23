@@ -1204,7 +1204,7 @@ div.desc {
 .edit-icon {
     position: absolute;
     top: -5px;
-    right: 95px !important;
+    right: 95px;
     border-radius: 50%;      
     padding: 5px;  
     cursor: pointer;
@@ -1221,6 +1221,8 @@ div.desc {
 /* //////profile image///// */
 .image-gallery {
   width: 100%;
+  overflow-x: auto;
+
   /* padding: 20px; */
 }
 
@@ -1235,7 +1237,7 @@ div.desc {
   width: 100%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
@@ -1247,7 +1249,7 @@ div.desc {
 .image-item img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 @media (max-width: 768px) {
@@ -1276,9 +1278,13 @@ div.desc {
     aspect-ratio: 1 / 1;
     overflow: hidden;
     flex-wrap: wrap;
-    border-radius: 8px;
+    /* border-radius: 8px; */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .image-item:hover {
@@ -1286,6 +1292,34 @@ div.desc {
 }
 
 .image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-item .card {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.image-item img,
+.image-item :deep(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensure Preview component images also stretch properly */
+.image-item :deep(.p-image) {
+    width: 100%;
+    height: 100%;
+}
+
+.image-item :deep(.p-image img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
