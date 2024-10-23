@@ -251,10 +251,11 @@ const onInput = () => {
                     </template>
 				</SearchInput>
                 </div>
-            </div>
-                    <CardBody>
-                        <Row>
-                            <Column classes="col-8 col-lg-8 col-xl-8 d-flex">
+              </div>
+              
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-8 col-lg-8 col-xl-8 d-flex">
                                 <div class=" radius-10 w-100">
                                     <CardBody>
                                         <div class="table-responsive">
