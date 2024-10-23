@@ -198,7 +198,7 @@ const submitBriefFile = async () => {
           <div class="card-body">
             <div>
               <div class="mb-4 d-lg-flex align-items-center mb-4 gap-3">
-                <button type="button" @click="showAddModal=true" class="btn rounded-0 btn-primary">+ New</button>
+                <!-- <button type="button" @click="showAddModal=true" class="btn rounded-0 btn-primary">+ New</button> -->
 
                 <div class="position-relative">
                   <input

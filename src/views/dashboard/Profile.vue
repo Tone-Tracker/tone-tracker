@@ -191,7 +191,7 @@ Date: 04/06/2024
                                     </div>
                                     <div  class="d-flex"> 
                                         <div v-for="promoter in otherPromotersList" :key="promoter.id">
-                                            <div v-if="promoter?.userDetails?.id !== userIdParam && promoter?.id !== promoterId" class="col-img">
+                                            <div v-if="isNotSelf(promoter)" class="col-img">
                                                 <div class="gallery">
                                                     <div class="card flex justify-center">
                                                         <Image alt="Image" preview>
@@ -362,7 +362,7 @@ Date: 04/06/2024
                         <div class="col-xl-4 col-lg-12 col-sm-12">
                         <div class=" mb-3">
                             <div class="card-body p-4">
-                                <h4 class="mb-2 text-center mt-2">Experience</h4>
+                                <h4 class="mb-2 text-center mt-2">Brand Experience</h4>
                                 <div class="row mb-3">
                                     <div v-if="promoterData?.experiences?.length" v-for="experience in promoterData?.experiences" :key="experience?.id" class="row mb-3">
                                         <div>
@@ -371,11 +371,11 @@ Date: 04/06/2024
                                             <p>{{ experience?.description }}</p>
                                         </div>
                                     </div>
-                                    <div class="text-center text-danger" v-else>No experience added.</div>
+                                    <div class="text-center text-danger" v-else>No Brand  experience added.</div>
                                 </div>
                                 <div class="row" v-if="canUpdate()">
                                     <div class="col-12 text-end">
-                                        <button @click="showExperienceModal=true" type="button" class="btn maz-gradient-btn">Add Experience</button>
+                                        <button @click="showExperienceModal=true" type="button" class="btn maz-gradient-btn">Add Brand Experience</button>
                                     </div>
                                                     </div>
                                                 </div>
@@ -627,7 +627,15 @@ const paswordRules = {
   password: { required },
   confirmPassword: { sameAs: sameAs(password) }
 }
-    const vv$ = useVuelidate(paswordRules, { password, confirmPassword })
+    const vv$ = useVuelidate(paswordRules, { password, confirmPassword });
+
+    const isNotSelf = (user) => {
+        return (user.id != userIdParam.value && user.userDetails.id != promoterId.value)
+        // console.log('userID',userIdParam.value)
+        // console.log('PreomoterID',promoterId.value)
+        // console.log('user',user)
+        // return true
+    }
 
 const updatePassword = async () => {
     const isFormCorrect = await vv$.value.$validate();
