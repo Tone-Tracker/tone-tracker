@@ -171,7 +171,7 @@ a {
 
 	position: fixed;
 
-	top: 78px;
+	top: 103px;
 
 	bottom: 0;
 
@@ -302,7 +302,7 @@ a {
 
 	height: 100%;
 
-	margin-top: 60px;
+	margin-top: 105px;
 
 	margin-bottom: 30px;
 
@@ -358,7 +358,8 @@ html.dark-theme .page-footer {
 
 .wrapper.toggled .page-wrapper {
 
-	margin-left: 70px
+	margin-left: 70px;
+	background-color: #0F161F;
 }
 
 

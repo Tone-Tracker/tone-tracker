@@ -22,6 +22,7 @@ import Row from '@/components/general/Row.vue';
 import InputError from '@/components/form-components/InputError.vue';
 import InputLabel from '@/components/form-components/InputLabel.vue';
 import Input from '@/components/form-components/Input.vue';
+import InputNumber from '@/components/form-components/InputNumber.vue';
 
 const toaster = useToaster();
 const clientStore = useClientStore();
@@ -251,10 +252,10 @@ const handlePageChange = (newPage) => {
     <div class="page-wrapper">
       <div class="page-content">
         <BreadCrumb title="Clients" icon="bx bx-user-circle"/>
-        <Card class="card">         
-          <CardBody class="card-body">            
-            <Row class="row">
-              <Column class="col-8 col-lg-8 col-xl-8 pl-5 d-flex ">
+        <Card>         
+          <CardBody>            
+            <Row>
+              <Column classes="col-8 col-lg-8 col-xl-8 pl-5 d-flex ">
                 <div class="position-relative mb-3">
                   <SearchInput 
                     placeholder="Search" 
@@ -268,9 +269,9 @@ const handlePageChange = (newPage) => {
 								</SearchInput>
                 </div>
               </Column>
-              <Column class="col-8 col-lg-8 col-xl-8 d-flex">
+              <Column classes="col-8 col-lg-8 col-xl-8 d-flex">
                 <div class="radius-10 w-100">
-                  <CardBody class="card-body">
+                  <CardBody>
                     <div class="table-responsive">
                       <table class="table mb-0">
                         <thead class="table-light">
@@ -303,9 +304,9 @@ const handlePageChange = (newPage) => {
                         </tbody>
                       </table>
                     </div>
-                    <div class="card mt-4" v-if="!showLoading">
+                    <Card classes="mt-4" v-if="!showLoading">
                       <Paginator :page="allData?.page" @changePage="handlePageChange" />
-                    </div>
+                    </Card>
                   </CardBody>
                 </div>
               </Column>

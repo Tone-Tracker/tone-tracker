@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="topbar d-flex flex-column align-items-center">
+    <div class="topbar d-flex flex-column align-items-center border-0">
       <nav class="navbar navbar-expand-lg d-flex justify-content-between w-100">
         <DarkThemeNavbarToggle />
         <!-- <div class="d-flex align-items-center justify-content-between">
@@ -15,14 +15,14 @@
             <span class="input-group-text" id="addon-wrapping"><i class='bx bx-search'></i></span>
             <input
               type="text"
-              class="form-control"
+              class="form-control me-4"
               aria-label="Text input with dropdown suggestions"
-              placeholder="Search For Activation..."
+              placeholder="Search For More Here...."
               v-model="query"
               @input="onInput"
               @keydown.enter="selectFirstSuggestion"
             />
-            <button class="btn btn-outline-secondary w-20 maz-gradient-btn" @click="search">Search</button>
+            <button class="btn btn-outline-secondary w-20 maz-gradient-btn ps-4 pe-4" @click="search">SEARCH</button>
 
             <ul v-if="filteredSuggestions.length" class="suggestions-list">
               <li
@@ -38,39 +38,25 @@
           </div>
         </div>
 
-        <div class="user-box dropdown px-3">
-          <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
+        <div class="user-box dropdown px-3 d-flex align-items-center justify-content-center gap-5">
+          <div class="d-flex justify-content-center align-items-center justify-content-center gap-2">
+            <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
             <img :src="user.path ? envPath + user.path : '../assets/images/placeholder.jpg'" class="user-img" :alt="user.firstName + ' ' + user.lastName" />
-          </a>
-        </div>
-      </nav>
-      <!-- <div class="search-bar-containe text-center d-lg-flex w-100 justify-content-center">
-          <div class="input-group custom-width-70">
-            <span class="input-group-text" id="addon-wrapping"><i class='bx bx-search'></i></span>
-            <input
-              type="text"
-              class="form-control"
-              aria-label="Text input with dropdown suggestions"
-              placeholder="Search For Activation..."
-              v-model="query"
-              @input="onInput"
-              @keydown.enter="selectFirstSuggestion"
-            />
-            <button class="btn btn-outline-secondary w-20 maz-gradient-btn" @click="search">Search</button>
-
-            <ul v-if="filteredSuggestions.length" class="suggestions-list">
-              <li
-                v-for="(suggestion, index) in filteredSuggestions"
-                :key="index"
-                @click="selectSuggestion(suggestion)"
-              >
-              <router-link :to="`/report?activation=${suggestion.id}`">
-                {{ suggestion.name }} 
-              </router-link>
-              </li>
-            </ul>
+            </a>
+            <a @click="redirectToProfile" class="profile-link cursor-pointer"><span class="fs-6 later-space">MY PROFILE</span></a>
           </div>
-        </div> -->
+          
+          <a @click="logout" class="logout-link fs-6 d-flex align-items-center justify-content-center gap-1 cursor-pointer"><i class="bx bx-log-out fs-1"></i><span class="fs-6 later-space">LOGOUT</span></a>
+        </div>
+
+          <!-- User Profile Section -->
+      <!-- <div class="user-box">
+        <img :src="user.path ? envPath + user.path : '../assets/images/placeholder.jpg'" class="user-img" :alt="user.firstName + ' ' + user.lastName" />
+        <a @click="redirectToProfile" class="profile-link">My Profile</a>
+        <a @click="logout" class="logout-link"><i class="bx bx-log-out"></i> Logout</a>
+      </div> -->
+      </nav>
+
     </div>
   </header>
 </template>
@@ -187,14 +173,13 @@ onMounted(() => {
 
 <style scoped>
 .form-control {
-  background-color: #1C1C1C !important;
+  background-color: #3b3b3b !important;
   border-left: 0 !important;
   border-top-left-radius: 0;
-  /* border: 1px solid #000000 !important; */
-  border-top: 1px solid #000000 !important;
-  border-bottom: 1px solid #000000 !important;
-  border-right: 1px solid #000000 !important;
-  text-align: center;
+  border-top: 2px solid #ffff !important;
+  border-bottom: 2px solid #ffff !important;
+  border-right: 2px solid #ffff !important;
+  text-align: left;
   color: white !important;
 }
 
@@ -204,7 +189,7 @@ onMounted(() => {
 }
 
 .form-control::placeholder {
-  text-align: center;
+  text-align: left;
   color: white !important;
 }
 
@@ -214,13 +199,22 @@ onMounted(() => {
   max-width: 1100px;
 }
 
+.search-bar-container .user-box span {
+  letter-spacing: 4px;
+
+}
+
+.search-bar-container button {
+  letter-spacing: 4px;
+}
+
 .custom-width-70 {
   width: 70%;
 }
 
 .user-img {
-  width: 58px;
-  height: 58px;
+  width: 51px;
+  height: 51px;
   border: none !important;
 }
 
@@ -230,10 +224,32 @@ html.dark-theme .user-box {
 }
 
 html.dark-theme .input-group-text {
-  color: #d1d7de;
-  background-color: #1C1C1C !important;
-  border: 1px solid #000000;
+  color: #ffff;
+  background-color: #3b3b3b !important;
+  border: 2px solid #ffff;
   border-radius: 0;
+  border-right: 0px;
+}
+
+.btn.btn-outline-secondary {
+  color: white !important;  /* Ensure button text is white */
+}
+
+
+
+.maz-gradient-btn {
+  color: white !important;  /* Additional selector to ensure white text */
+}
+
+
+
+/* Updated search icon color */
+.input-group-text i {
+  color: #ffffff;
+}
+
+.input-group-text .bx-search {
+  color: #ffffff;
 }
 
 .btn {
@@ -247,7 +263,7 @@ html.dark-theme .input-group-text {
 }
 
 .logo {
-  width: 180px;
+  width: 266px;
 }
 
 .suggestions-list {
@@ -275,6 +291,21 @@ html.dark-theme .input-group-text {
   background-color: #2A2A2A;
 }
 
+
+.topbar .navbar {
+    width: 100%;
+    /* height: 60px; */
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    padding-top: 1.3rem;
+    padding-bottom: 1.3rem;
+    border: none !important;
+}
+
+.later-space {
+  letter-spacing: 3px;
+}
+
 @media (max-width: 991.98px) {
   .search-bar-container {
     display: none !important;
@@ -299,5 +330,10 @@ html.dark-theme .input-group-text {
     width: 150px;
   }
 }
+
+
+
+
+
 
 </style>
