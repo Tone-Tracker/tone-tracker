@@ -242,8 +242,7 @@ const onInput = () => {
                     <i class="bx bx-search"></i>
                   </span>
                 </div>
-              </div>
-              
+              </div>              
                     <div class="card-body">
                         <div class="row">
                             <div class="col-8 col-lg-8 col-xl-8 d-flex">
