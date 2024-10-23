@@ -343,8 +343,10 @@ a {
 }
 
 html.dark-theme .page-footer {
-	background-color: #060D0E;
+	background-color: #0B1729;
 	border-top: none !important;
+	z-index: 20;
+	margin: 0 !important;
 }
 
 
@@ -366,7 +368,7 @@ html.dark-theme .page-footer {
 
 .wrapper.toggled .page-footer {
 
-	left: 70px
+	left: 0px
 }
 
 
