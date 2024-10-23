@@ -497,7 +497,7 @@ const onUpdateUnit = async () => {
 								  <div class=" card-custom">
 									<h5 class="text-center">Inventory accuracy</h5>
 									<div class="chart-container">
-										<CustomGauge v-show="unitId" :viewedUnit="viewedUnit" />
+										<!-- <CustomGauge v-show="unitId" :viewedUnit="viewedUnit" /> -->
 									</div>
 								  </div>
 							 </div>
