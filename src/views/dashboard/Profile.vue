@@ -27,8 +27,8 @@ Date: 04/06/2024
               
 
                 <div class="container-fluid">
-                    <div class="row g-5">
-                        <div class="col-xl-4 col-lg-6 col-sm-12">
+                    <div class="row justify-content-between">
+                        <div class="col-xl-3 col-lg-6 col-sm-12">
                             <div class="card-c">
                                 <div class="d-flex flex-column card-header-c">
                                     <div class="image-container">
@@ -40,7 +40,7 @@ Date: 04/06/2024
                                                 <template #image>
                                                     <img v-if="path == null" 
                                                         :src="`https://tonetracker-bucket.s3.af-south-1.amazonaws.com/${userInfo?.path ? userInfo.path : 'images/TTG_SUPER_ADMIN/1/6c16f95e5837b7a15cc22a32eb72fad8.jpg'}`" 
-                                                        alt="image" width="350" />
+                                                        alt="image" width="350"  style="max-width: 17rem" />
                                                     <img v-else :src="path" alt="image" width="350" />
                                                     </template>
 
@@ -1204,7 +1204,7 @@ div.desc {
 .edit-icon {
     position: absolute;
     top: -5px;
-    right: 20px;
+    right: 95px !important;
     border-radius: 50%;      
     padding: 5px;  
     cursor: pointer;
