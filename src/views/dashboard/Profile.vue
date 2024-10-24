@@ -388,7 +388,7 @@ Date: 04/06/2024
 
                                             <Accordion :value="['maz']">
                                                 <AccordionPanel value="maz">
-                                                    <AccordionHeader><h4 class="mb-2 text-center mt-2">Change Password</h4></AccordionHeader>
+                                                    <AccordionHeader class="pt-0 pb-0"><h4 class="mb-2 text-center mt-2 fs-5">Change Password</h4></AccordionHeader>
                                                     <AccordionContent>
                                                         <div class="card-body p-4">
                                                         
