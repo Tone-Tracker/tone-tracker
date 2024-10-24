@@ -2,7 +2,7 @@
 
     <div :class="classes">
       <img v-if="promoter.path" :src="`${envPath}${promoter.path}`" width="110" height="110" class="rounded-circle shadow" alt="">
-      <img v-else src="../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
+      <img v-else src="https://tonetrackerfrontend.s3.af-south-1.amazonaws.com/do_not_delete/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
       <h5 class="mb-0 mt-5">{{ promoter.firstName }} {{ promoter.lastName }}</h5>
       <p class="mb-3">{{ promoter.email }}</p>
       <div class="list-inline contacts-social mt-3 mb-3">

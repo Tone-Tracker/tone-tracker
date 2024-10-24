@@ -1,7 +1,7 @@
 <template>
     <div :class="classes">
     <img v-if="user.path" :src="`${envPath}${user.path}`" width="110" height="110" class="rounded-circle shadow" alt="">
-    <img v-else src="../assets/images/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
+    <img v-else src="https://tonetrackerfrontend.s3.af-south-1.amazonaws.com/do_not_delete/placeholder.jpg" width="110" height="110" class="rounded-circle shadow" alt="">
     <h5 class="mb-0 mt-5">{{ user.firstName }} {{ user.lastName }} {{ isStaff ? isMyProfile(user) ? '(You)' : '' : ''}}</h5>
     <p class="mb-3">{{ user.email }}</p>
     <div class="list-inline contacts-social mt-3 mb-3"> 

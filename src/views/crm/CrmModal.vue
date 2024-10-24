@@ -26,7 +26,8 @@ let form = reactive({
   optIn: '',
   activation: '',
   region: '',
-  address: ''
+  address: '',
+  ambassadorCode: ''
 });
 
 watch(() => props.modalData, (newVal) => { 
@@ -38,7 +39,8 @@ watch(() => props.modalData, (newVal) => {
     optIn: newVal.optIn || '',
     activation: newVal.activation || 4,
     region: newVal.region || '',
-    address: ''
+    address: '' || newVal.address || '',
+    ambassadorCode: newVal.ambassadorCode || ''
   });
 }, { deep: true });
 
@@ -49,7 +51,8 @@ const rules = {
   phone: { required },
   activation: { required },
   region: { required },
-  address: { required }
+  address: { required },
+  ambassadorCode: { required }
 };
 
 const v$ = useVuelidate(rules, form);
@@ -111,16 +114,17 @@ const onSubmit = async () => {
       <div class="text-danger" v-if="v$.phone.$error">Cell Number is required</div>
     </div>
 
-    <div class="col-md-9">
+    <div class="col-md-6">
       <label for="address" class="form-label">Address</label>
       <input v-model="form.address" type="text" class="form-control" id="address">
       <div class="text-danger" v-if="v$.address.$error">Address is required</div>
     </div>
-    <div class="col-md-3">
-      <label for="address" class="form-label d-block invisible">Address</label>
-      <input v-model="form.optIn" type="checkbox" class="" id="optin">
-      <label for="optin" class="form-label ms-2">Opt In</label>
-    </div> 
+    <div class="col-md-6">
+      <label for="address" class="form-label">Ambassador Code</label>
+      <input v-model="form.ambassadorCode" type="text" class="form-control" id="address">
+      <div class="text-danger" v-if="v$.ambassadorCode.$error">Ambassador Code is required</div>
+    </div>
+    
     
     <div class="col-md-6">
       <label for="region" class="form-label">Region</label>
@@ -142,7 +146,11 @@ const onSubmit = async () => {
       </select>
       <div class="text-danger" v-if="v$.activation.$error">Activation Area is required</div>
     </div>
-               
+    <div class="col-md-3">
+      <label for="address" class="form-label d-block invisible">Address</label>
+      <input v-model="form.optIn" type="checkbox" class="" id="optin">
+      <label for="optin" class="form-label ms-2">Opt In</label>
+    </div>        
   </div>
   
   <div class="mt-4">

@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps, defineEmits, defineExpose } from 'vue';
+import { ref, computed } from 'vue';
 
 // Define props
 const props = defineProps({

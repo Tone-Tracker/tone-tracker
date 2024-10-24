@@ -14,6 +14,8 @@ import { onClickOutside } from '@vueuse/core';
 import HTMLTableToPDF from '@/components/HTMLTableToPDF.vue';
 import Dialog from 'primevue/dialog';
 import Checkbox from 'primevue/checkbox';
+import Select from 'primevue/select';
+import axios from 'axios';
 
 let showModal = ref(false);
 let showLoading = ref(false);
@@ -23,11 +25,13 @@ let regions = ref([]);
 const crmStore = useCrmStore();
 const regionStore = useRegion();
 const toaster = useToaster();
+const allActivations = ref([]);
 const uniqueActivations = ref([]);//for dropdown filter
 
 onMounted(() => {
   getAllUsers();
   getAllRegions();
+  getAllActivations();
 });
 
 let newUser = reactive({
@@ -39,6 +43,20 @@ let newUser = reactive({
   activation : ''
 });
 
+const getAllActivations = async () => {
+  try {
+    showLoading.value = true;
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/activations/admins`);
+    allActivations.value = response.data?.map((activation) => ({
+        id: activation.id,
+        name: activation.name,
+      }));
+      showLoading.value = false;
+  } catch (error) {
+    showLoading.value = false;
+    console.error('Error fetching all activations:', error);
+  }
+};
 const getAllUsers = async () => {
   showLoading.value = true;
   try {
@@ -160,6 +178,15 @@ const tableHeaders = ref([
     "Activation Area",
     "Region",
 ]);
+
+const selectedActivation = ref();
+const filteredUsers = ref([]);
+
+const onActivationChange = (activation) => {
+  filteredUsers.value = [];
+  filteredUsers.value = users.value.filter((user) => user.activation === activation.id);
+}
+
 </script>
 
 <template>
@@ -169,12 +196,27 @@ const tableHeaders = ref([
           <BreadCrumb title="CRM" icon="bx bxs-calculator" />
             <!-- Code here -->
             <div class="">
-                <div class="table-container-colour pl-5;">
-                  <div class="mb-2 d-flex justify-content-between">
-                    <input type="text" class="form-control" placeholder="Search" v-model="searchInput" @input="onSearchInput('')" style="width: 25rem;">
+                <div class="table-container-colour pl-5">
+                  <div class="mb-2 d-flex justify-content-between ">
+                    <Select @change="onActivationChange(selectedActivation)" @clear="clearFilter" showClear :loading="showLoading" v-model="selectedActivation" :options="allActivations" filter optionLabel="name" 
+                    placeholder="Select activation" class="w-90">
+                      <template #value="slotProps">
+                          <div v-if="slotProps.value" class="flex items-center">
+                              <div>{{ slotProps.value.name }}</div>
+                          </div>
+                          <span v-else>
+                              {{ slotProps.placeholder }}
+                          </span>
+                      </template>
+                      <template #option="slotProps">
+                          <div class="flex items-center">
+                              <div>{{ slotProps.option.name }}</div>
+                          </div>
+                      </template>
+                  </Select>
                     <button class="btn btn-primary maz-gradient-btn" @click="toggleModal">Add New User</button>
                   </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between d-none">
                         <h5>Database</h5>
                         <div class="filter-dropdown">
                             <h5 style="display: inline;">Filter</h5>
@@ -195,6 +237,7 @@ const tableHeaders = ref([
                           <th>Contact Name</th>
                           <th>Contact Surname</th>
                           <th>Email</th>
+                          <th>Ambassador Code</th>
                           <th>Cell Number</th>
                           <th>Opt-in</th>
                           <th>Address</th>
@@ -202,10 +245,11 @@ const tableHeaders = ref([
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-if="users?.length > 0" v-for="user in users" :key="user.id">
+                        <tr v-if="filteredUsers?.length > 0" v-for="user in filteredUsers" :key="user.id">
                           <td>{{ user.name }}</td>
                           <td>{{ user.surname }}</td>
                           <td>{{ user.email }}</td>
+                          <td>{{ user.ambassadorCode }}</td>
                           <td>{{ user.phone }}</td>
                           
                           <td>
@@ -214,11 +258,14 @@ const tableHeaders = ref([
                           <td>{{ user.address }}</td>
                           <td>{{ user.regionName }}</td>
                         </tr>
+                        <tr v-else>
+                          <td colspan="8" class="text-center text-danger">{{ showLoading ? 'Loading...' : 'No users found.'}}</td>
+                        </tr>
                       </tbody>
                     </table>
                     <div class="text-end">
-                        <button class="btn btn-secondary btn-export rounded-0 mb-0 mx-2" @click="fnExcelReport" type="button">Export</button>
-                        <HTMLTableToPDF :headers="tableHeaders" :data="users"/>
+                        <button :disabled="filteredUsers?.length === 0" class="btn btn-secondary btn-export rounded-0 mb-0 mx-2" @click="fnExcelReport" type="button">Export</button>
+                        <HTMLTableToPDF :headers="tableHeaders" :data="filteredUsers"/>
                     </div>
                     <iframe id="dummyFrame" style="display:none"></iframe>
                 </div>
@@ -240,6 +287,10 @@ const tableHeaders = ref([
   </template>
   
   <style scoped>
+
+  .p-select{
+    width: 30% !important;
+  }
 .mt-4 {
     margin-top: 1rem;
 }

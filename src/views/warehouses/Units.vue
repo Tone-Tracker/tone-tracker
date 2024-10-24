@@ -2,7 +2,7 @@
 <script setup>
 import Layout from '../shared/Layout.vue';
 import BreadCrumb from '../../components/BreadCrumb.vue';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
@@ -21,6 +21,7 @@ import Image from 'primevue/image';
 import SplitButton from 'primevue/splitbutton';
 import CustomGauge from './CustomGauge.vue';
 import { useUnit } from '@/stores/unit';
+import Paginator from 'primevue/paginator';
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;
 const authStore = useAuth();
@@ -32,6 +33,7 @@ const warehouseStore = useWarehouse();
 const toaster = useToaster();
 const stock = useStock();
 const warehouseName = ref(route.query.name);
+const warehouseId = ref(route.params.id);
 const warehouse = ref(null);
 const op = ref();
 const unitId = ref();
@@ -54,8 +56,8 @@ const unitVisible = ref(false);
 
 
 watch(searchInput, () => {
-	merchendiseList.value = stockList.value?.filter((stock) => stock.type === 'MERCH' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
-	brandings.value = stockList.value?.filter((stock) => stock.type === 'BRANDING' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
+	merchendiseList.value = warehouse.value?.stocksList?.filter((stock) => stock.type === 'MERCH' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
+	brandings.value = warehouse.value?.stocksList?.filter((stock) => stock.type === 'BRANDING' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
 })
 
 
@@ -63,9 +65,53 @@ onMounted(() => {
 	getWarehouse();
 });
 
+// Pagination variables
+const rowsPerPage = ref(10); // Number of rows per page
+const totalRecords = ref(0); // Total number of records
+const currentPage = ref(1); // Current page
+// Calculate the paginated data based on the current page and rows per page
+let paginatedBrandings = ref([]);
+
+const merchRowsPerPage = ref(10); // Number of rows per page
+const totalMerchRecords = ref(0); // Total number of records
+const merchCurrentPage = ref(1); 
+let paginatedMerch = ref([]);
+
+// Event handler for page change
+const onPageChange = (event) => {
+  currentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
+  rowsPerPage.value = event.rows;
+  updatePaginatedBrandings();
+};
+
+const onMerchPageChange = (event) => {
+	merchCurrentPage.value = event.page + 1; // PrimeVue Paginator is zero-based, so we add 1
+	merchRowsPerPage.value = event.rows;
+  	updatePaginatedMerch();
+};
+
+const updatePaginatedMerch = () => {
+  const start = (merchCurrentPage.value - 1) * merchRowsPerPage.value;
+  const end = start + merchRowsPerPage.value;
+  paginatedMerch.value = merchendiseList.value?.slice(start, end);
+};
+const updatePaginatedBrandings = () => {
+  const start = (currentPage.value - 1) * rowsPerPage.value;
+  const end = start + rowsPerPage.value;
+  paginatedBrandings.value = brandings.value?.slice(start, end);
+};
+
 const getWarehouse = () => {
 	warehouseStore.viewWarehouse(route.params.id).then((response) => {
 		warehouse.value = response.data;
+		merchendiseList.value = response.data?.stocksList?.filter((stock) => stock.type === 'MERCH');
+		brandings.value = response.data?.stocksList?.filter((stock) => stock.type === 'BRANDING');
+		totalRecords.value = brandings.value.length;
+		totalMerchRecords.value = merchendiseList.value.length;
+		paginatedBrandings.value = brandings.value;
+		paginatedMerch.value = merchendiseList.value;
+		updatePaginatedBrandings();
+		updatePaginatedMerch();
 	});
 }
 const unitName = ref(null);
@@ -81,24 +127,16 @@ const onUnitChange = (event) => {
 	unitForm.capacity = viewedUnit.value?.capacity;
 	unitForm.warehouse = viewedUnit.value?.warehouse;
 	unitForm.id = viewedUnit.value?.id;
-	getStock();
+	// getWarehouse()
 }
 
-
-const getStock = () => {
-	stock.getStockByUnit(unitId.value).then((response) => {
-		stockList.value = response.data;
-		merchendiseList.value = response.data?.filter((stock) => stock.type === 'MERCH');
-		brandings.value = response.data?.filter((stock) => stock.type === 'BRANDING');
-	});
-}
 
 
 const stockForm = reactive({
     description: '',
     quantity: null,
     type: '',
-	unit: null
+	warehouse: warehouseId
 });
 
 const stockRules = { 
@@ -121,12 +159,12 @@ const submitStock = async () => {
 		formData.append('description', stockForm.description);
 		formData.append('quantity', stockForm.quantity);
 		formData.append('type', stockForm.type);
-		formData.append('unit', stockForm.unit);
+		formData.append('warehouse', warehouse.value?.id);
 		
 
         await stock.addStock(formData, config);
 		visible.value = false;
-		getStock();
+		getWarehouse()
         toaster.success("Stock created successfully");
         stockForm.description = ''; // Reset the form input
 		stockForm.quantity = '';
@@ -173,7 +211,7 @@ const editForm = reactive({
     description: '',
     quantityInUnit: null,
     type: '',
-	unit: null
+	warehouse: warehouseId
 });
 const editStockRules = { 
     description: { required },
@@ -189,7 +227,6 @@ const openEditModal = (stock) => {
 	editForm.description = stock.description;
 	editForm.quantityInUnit = stock.quantityInUnit;
 	editForm.type = stock.type;
-	editForm.unit = stock.unit;
 	editVisible.value = true
 }
 
@@ -253,7 +290,7 @@ const submitStockMovement = async () => {
     if (!isFormValid) {return;}
 	stock.stockMovement(stockMovementForm).then(response => {
 		toaster.success("Stock updated successfully");
-		getStock();
+		getWarehouse()
 		stockMovementVisible.value = false;
 	}).catch(error => {
 		toaster.error("Error updating stock");
@@ -271,7 +308,7 @@ loading.value = true;
 	
 	stock.updateStock(editForm.id,formData, config).then(response => {
 		toaster.success("Stock updated successfully");
-		getStock();
+		getWarehouse()
 		editVisible.value = false;
 		loading.value = false;
 	}).catch(error => {
@@ -289,41 +326,6 @@ const unitForm = reactive({
 	id: null
 });
 
-const unitRules = {
-    name: { required },
-    capacity: { required }
-};
-
-const unitV$ = useVuelidate(unitRules, unitForm);
-// const loading = ref(false);
-
-const onUpdateUnit = async () => {
-    const isFormValid = await unitV$.value.$validate();
-    if (!isFormValid) return;
-    
-    loading.value = true;
-    
-    try {
-	   await unitStore.updateUnit(unitForm.id, unitForm).then(() => {
-			// unitForm.name = '';
-			// unitForm.capacity = null;
-			// unitV$.value.$errors = [];
-			// unitV$.value.$reset();
-		   loading.value = false;
-		   getWarehouse();
-		   toaster.success("Unit updated successfully");
-		   unitVisible.value = false;
-	   });
-        
-    } catch (error) {
-        toaster.error("Error updating unit");
-        console.error(error);
-    } finally {
-        loading.value = false;
-    }
-};
-
-//////////////modal icon/////////////
 
 
 </script>
@@ -350,15 +352,15 @@ const onUpdateUnit = async () => {
 						<div class="gradient-card">
 						  <div class="content">
 							<strong>Region:</strong> {{ warehouse?.regionName}}<br>
-							<strong>Number of storage units:</strong> {{ warehouse?.numberOfUnits }} unit(s)<br>
+							<!-- <strong>Number of storage units:</strong> {{ warehouse?.numberOfUnits }} unit(s)<br> -->
 							<strong>Capacity:</strong> {{ warehouse?.capacity }}%<br>
-							<strong>Number of items:</strong> {{ warehouse?.numberOfItems }}
+							<strong>Number of items:</strong> {{ warehouse?.numberOfStocks }}
 						  </div>
 						</div>
 
 						<div class="row mt-4 d-flex justify-content-between align-items-center">
 					<!-- <div class="col-lg-1"></div> -->
-                    <div class="d-flex justify-content-between align-items-center gap-2 col-lg-3 col-md-6">
+                    <div class="d-flex justify-content-between align-items-center gap-2 col-lg-3 col-md-6 d-none">
 						<select @change="onUnitChange" class="form-select form-select-sm bg-maz-light w-100" aria-label=".form-select-sm example">
 							<option :value="''" selected="selected" disabled>Filter by unit</option>
 							<option v-for="(unit,index) in warehouse?.unitsList" :key="unit + index" 
@@ -404,9 +406,7 @@ const onUpdateUnit = async () => {
 								  </div>
 								  <div class="dropdown ms-auto mb-2">
 									 <button @click="visible=true" 
-									 :disabled="!unitId"
 									 type="button" class="btn maz-gradient-btn mx-width">Add Stock</button>
-									 <p class="fs-6 text-danger" v-if="!unitId">Choose unit</p>
 								  </div>
 							  </div>
 						  </div>
@@ -422,30 +422,33 @@ const onUpdateUnit = async () => {
 								  </tr>
 								  </thead>
 								  <tbody>
-									<tr v-if="brandings?.length > 0" v-for="branding in brandings" class="maz-table-row-height">
+									<tr v-if="paginatedBrandings.length > 0" v-for="(branding, index) in paginatedBrandings" :key="index" class="maz-table-row-height">
 										<td>
-										  <Avatar  @click="viewStockImagePreview(branding)" 
-										  :image="branding.stockImage ? envPath + branding.stockImage : `https://ui-avatars.com/api/?name=${ branding.description }&background=4263C5`" 
-										   class="mr-2 cursor-pointer"  shape="circle" />
-										
+										  <Avatar @click="viewStockImagePreview(branding)" 
+												  :image="branding.stockImage ? envPath + branding.stockImage : `https://ui-avatars.com/api/?name=${ branding.description }&background=4263C5`" 
+												  class="mr-2 cursor-pointer" shape="circle" />
 										</td>
-								   <td >{{branding.description}}</td>
-								
-								   <td>{{branding.quantityInUnit}}</td>
-								   <td>
-									<SplitButton  @click="editBranding(branding)" class="text-white" label="" 
-													icon="bx bx-cog fs-4" 
-													dropdownIcon="text-white fs-4 bx bx-chevron-down" 
-													:model="items(branding)"/>
-								   </td>
-								 
-								  </tr>
+										<td>{{ branding.description }}</td>
+										<td>{{ branding.quantityInWarehouse }}</td>
+										<td>
+										  <SplitButton @click="editBranding(branding)" class="text-white" label="" 
+													   icon="bx bx-cog fs-4" 
+													   dropdownIcon="text-white fs-4 bx bx-chevron-down" 
+													   :model="items(branding)" />
+										</td>
+									  </tr>
 								  <tr v-else ><td colspan="7" class="text-center text-danger">No results found.</td></tr>
 			   
 								 </tbody>
 							   </table>
+							   <Paginator v-if="totalRecords > 0"
+								:first="(currentPage - 1) * rowsPerPage"
+								:rows="rowsPerPage"
+								:totalRecords="totalRecords"
+								:rowsPerPageOptions="[10, 20, 30]"
+								@page="onPageChange"
+							></Paginator>
 							 </div>
-
 							 
 							 <div class="table-responsive table table-dark table-striped w-100 p-0">
 								<table class="table align-middle mb-0">
@@ -460,7 +463,7 @@ const onUpdateUnit = async () => {
 								  </tr>
 								  </thead>
 								  <tbody>
-									<tr v-if="merchendiseList?.length > 0" v-for="merch in merchendiseList" class="maz-table-row-height">
+									<tr v-if="paginatedMerch?.length > 0" v-for="merch in paginatedMerch" class="maz-table-row-height">
 										<td>
 											<Avatar  @click="viewStockImagePreview(merch)" 
 											:image="merch.stockImage ? envPath + merch.stockImage : `https://ui-avatars.com/api/?name=${ merch.description }&background=4263C5`" 
@@ -468,7 +471,7 @@ const onUpdateUnit = async () => {
 										  
 										  </td>
 								   <td>{{merch.description}}</td>
-								   <td>{{merch.quantityInUnit}}</td>
+								   <td>{{merch.quantityInWarehouse}}</td>
 								   <td>
 									<SplitButton  @click="editBranding(merch)" class="text-white" label="" 
 													icon="bx bx-cog fs-4" 
@@ -480,11 +483,18 @@ const onUpdateUnit = async () => {
 								  <tr v-else ><td colspan="7" class="text-center text-danger">No results found.</td></tr>
 								 </tbody>
 							   </table>
+							   <Paginator v-if="totalMerchRecords > 0"
+								:first="(merchCurrentPage - 1) * merchRowsPerPage"
+								:rows="merchRowsPerPage"
+								:totalRecords="totalMerchRecords"
+								:rowsPerPageOptions="[10, 20, 30]"
+								@page="onMerchPageChange"
+							></Paginator>
 							 </div>
 						  </div>
 						</div>
 					 </div>
-					<div class="col-12">
+					<div class="col-12 d-none">
 						<div class=" radius-10">
 							 <div class="card-body">
 								<div class="card card-custom">
@@ -497,7 +507,7 @@ const onUpdateUnit = async () => {
 								  <div class=" card-custom">
 									<h5 class="text-center">Inventory accuracy</h5>
 									<div class="chart-container">
-										<CustomGauge v-show="unitId" :viewedUnit="viewedUnit" />
+										<!-- <CustomGauge v-show="unitId" :viewedUnit="viewedUnit" /> -->
 									</div>
 								  </div>
 							 </div>
@@ -600,8 +610,8 @@ const onUpdateUnit = async () => {
 				
 			</form>
         </Dialog>
-		<Dialog v-model:visible="visible" position="top" modal :header="`Add Stock to ${unitName}`" style="width: 30rem">
-               
+		<Dialog v-model:visible="visible" position="top" modal :header="`Add Stock to ${warehouseName}`" style="width: 30rem">
+			
 			<form @submit.prevent="submitStock" class="row mt-3">
                 
 				<div class="col-md-12">
@@ -660,42 +670,7 @@ const onUpdateUnit = async () => {
 				
 			</form>
         </Dialog>
-		<Dialog v-model:visible="unitVisible" position="top" modal header="Edit Unit" style="width: 26rem">
-               
-			   <form @submit.prevent="onUpdateUnit" class="row">
-				   
-				   <div class="col-md-12 pt-3">
-					   <div class="card my-card flex justify-center">
-						   <label for="input1" class="form-label">Unit Name</label>
-							  <InputText type="text" v-model="unitForm.name" />
-							  <div class="input-errors" v-for="error of unitV$.name.$errors" :key="error.$uid">
-							  <div class="text-danger">Warehouse name is required</div>
-					   </div>
-				   </div>                        
-				   </div>
-   
-   
-				   <div class="col-md-12">
-					   <div class="card my-card flex justify-center">
-						   <label for="input1" class="d-flex form-label">Capacity <i 
-							   v-tooltip.top="'Estimate the percentage capacity of the unit. e.g 100. For 100% capacity, enter 100'" class='bx bx-info-circle cursor-pointer ms-1 bx bx-info-circle  fs-6' ></i></label>
-							  <InputNumber inputId="minmax" :min="0" :max="100" v-model="unitForm.capacity" />
-							  <div class="input-errors" v-for="error of unitV$.capacity.$errors" :key="error.$uid">
-							  <div class="text-danger">Capacity estimate is required</div>
-						   </div>
-				   </div>                        
-				   </div>
-				   <div class="modal-footer">
-					   <button type="submit" class="btn maz-gradient-btn w-100" :disabled="loading">
-		   <div v-if="loading" class="spinner-border text-white" role="status">
-			   <span class="visually-hidden">Loading...</span>
-		   </div>
-		   Submit
-	   </button>
-				   </div>
-				   
-			   </form>
-		   </Dialog>
+	
 		<div class="card flex justify-center">
 			<Drawer v-model:visible="showStockImage" position="right" :header="`View Stock Image`" class="w-100 md:!w-80 lg:!w-[40rem]" style="width: 30rem!important;">
 				<!-- <img :src="stockImagePreview" style="width: 26rem!important;" /> -->
