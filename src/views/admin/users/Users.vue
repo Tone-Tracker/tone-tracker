@@ -181,6 +181,7 @@ const onSubmit = async () => {
 		v$.value.$errors = [];
 		
         visible.value = false;
+		getAllUsers();
         toaster.success("User updated successfully");
       })
       .catch(function (error) {
@@ -193,6 +194,10 @@ const onSubmit = async () => {
       .then(function (response) {
         showLoading.value = false;
         visible.value = false;
+		getAllUsers();
+		Object.assign(form, {});
+		v$.value.$reset();
+		v$.value.$errors = [];
         toaster.success("User created successfully");
       })
       .catch(function (error) {
