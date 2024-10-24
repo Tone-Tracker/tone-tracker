@@ -176,6 +176,7 @@ const onSubmit = async () => {
       .then(function (response) {
         console.log(response);
         showLoading.value = false;
+		Object.assign(form, {});
 		v$.value.$reset();
 		v$.value.$errors = [];
 		
@@ -193,7 +194,6 @@ const onSubmit = async () => {
       .then(function (response) {
         showLoading.value = false;
         visible.value = false;
-		form={}
 		getAllUsers();
 		Object.assign(form, {});
 		v$.value.$reset();
