@@ -56,8 +56,8 @@ const unitVisible = ref(false);
 
 
 watch(searchInput, () => {
-	merchendiseList.value = warehouse.value?.stocksList?.filter((stock) => stock.type === 'MERCH' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
-	brandings.value = warehouse.value?.stocksList?.filter((stock) => stock.type === 'BRANDING' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
+	paginatedMerch.value = warehouse.value?.stocksList?.filter((stock) => stock.type === 'MERCH' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
+	paginatedBrandings.value = warehouse.value?.stocksList?.filter((stock) => stock.type === 'BRANDING' && stock.description.toLowerCase().includes(searchInput.value.toLowerCase()));
 })
 
 

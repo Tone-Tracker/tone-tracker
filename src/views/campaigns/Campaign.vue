@@ -206,7 +206,9 @@ const vFocus = {
 
 const onInput = () => {
     if (searchInput.value && searchInput.value.length >= 3) {
-    // const searchTerm = searchInput.value.toLowerCase();
+    const searchTerm = searchInput.value.toLowerCase();
+    campaigns.value = campaigns.value.filter(campaign => campaign.name?.toLowerCase()?.includes(searchTerm));
+    console.log('campaigns',campaigns.value)
     //    campaignStore.getCampaignsByClientId(clientId.value, searchTerm).then(function (response) {
     //     campaignStore.setCampaigns(response.data);
     //     campaigns.value = campaignStore.allCampaigns;
@@ -262,11 +264,11 @@ const onInput = () => {
                                                         <td>
                                                             <Avatar v-if="campaign.path" :image="envPath + campaign.path" 
                                                             :style="{ background: clientColorStyles?.background }" 
-                                                             class="mr-2" size="large" shape="circle" 
+                                                             class="mr-2"  shape="circle" 
                                                              />
                                                             <Avatar v-else :label="campaign.name[0]?.toUpperCase()" class="mr-2" 
                                                             :style="{ background: clientColorStyles?.background }" 
-                                                            size="large" shape="circle" />
+                                                             shape="circle" />
                                                         </td>
                                                         <td v-if="!campaign.isEditing" class="pt-4">{{ campaign.name }}</td>
                                                         <td v-else class="pt-4">
