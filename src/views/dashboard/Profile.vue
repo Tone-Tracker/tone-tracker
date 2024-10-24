@@ -388,7 +388,7 @@ Date: 04/06/2024
 
                                             <Accordion :value="['maz']">
                                                 <AccordionPanel value="maz">
-                                                    <AccordionHeader><h4 class="mb-2 text-center mt-2">Change Password</h4></AccordionHeader>
+                                                    <AccordionHeader class="pt-0 pb-0"><h4 class="mb-2 text-center mt-2 fs-5">Change Password</h4></AccordionHeader>
                                                     <AccordionContent>
                                                         <div class="card-body p-4">
                                                         
@@ -1200,7 +1200,7 @@ div.desc {
 
 
 .image-container {
-    width: 370px;
+    width: 272px;
     position: relative;
     display: inline-block;
 }
@@ -1208,7 +1208,7 @@ div.desc {
 .edit-icon {
     position: absolute;
     top: -5px;
-    right: 95px;
+    right: 1px;
     border-radius: 50%;      
     padding: 5px;  
     cursor: pointer;
