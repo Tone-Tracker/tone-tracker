@@ -257,7 +257,7 @@ const handlePageChange = (newPage) => {
               <Column class="col-8 col-lg-8 col-xl-8 pl-5 d-flex ">
                 <div class="position-relative mb-3">
                   <SearchInput 
-                    placeholder="Search" 
+                    placeholder="Search"
                     id="searchInput"
                     v-model="searchInput" classes="form-control ps-5" type="search">
                     <template #search>
@@ -266,7 +266,22 @@ const handlePageChange = (newPage) => {
                       </span>
                     </template>
 								</SearchInput>
+             
                 </div>
+
+                <div class="dropdown ">
+                  <a class="btn btn-secondary dropdown-toggle maz-gradient-btn ps-5 pe-5" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bx bx-dots-horizontal-rounded fs-4"></i>
+                  </a>
+
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                    <li><a class="dropdown-item" href="#">View Campaign</a></li>
+                    <li><a class="dropdown-item" href="#">View Contacts</a></li>
+                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                  </ul>
+                </div>
+
               </Column>
               <Column class="col-8 col-lg-8 col-xl-8 d-flex">
                 <div class="radius-10 w-100">
@@ -288,14 +303,15 @@ const handlePageChange = (newPage) => {
                             <td>{{ 
                               client?.users?.length > 0 ? client?.users[0]?.firstName + ' ' + client?.users[0]?.lastName : ''
                              }}</td>
-                            <td>
-                              <div class="d-flex order-actions">
-                                <SplitButton class="text-white" label="" 
-                                icon="bx bx-cog fs-4" 
-                                dropdownIcon="text-white fs-4 bx bx-chevron-down" 
-                                :model="items(client)"/>
-                              </div>
-                            </td>
+                         <td>
+  <div class="d-flex justify-content-center order-actions">
+    <SplitButton class="btn btn-secondary btn-sm text-white" 
+                 label="" 
+                 dropdownIcon="bx bx-dots-horizontal-rounded fs-4" 
+                 :model="items(client)"/>
+  </div>
+</td>
+
                           </tr>
                           <tr v-else>
                             <td colspan="7" class="text-center text-danger">No clients found</td>
