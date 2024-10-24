@@ -21,6 +21,7 @@ import CardBody from '@/components/general/CardBody.vue';
 import Row from '@/components/general/Row.vue';
 import InputError from '@/components/form-components/InputError.vue';
 import InputLabel from '@/components/form-components/InputLabel.vue';
+import InputNumber from '@/components/form-components/InputNumber.vue';
 import Input from '@/components/form-components/Input.vue';
 
 const toaster = useToaster();
