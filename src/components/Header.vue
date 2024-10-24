@@ -37,10 +37,11 @@
             </ul>
           </div>
         </div>
-
+{{ profilePicture }}
         <div class="user-box dropdown px-3">
           <a @click="redirectToProfile" class="d-flex align-items-center nav-link gap-3" href="javascript:;" role="button">
-            <img :src="user.path ? envPath + user.path : 'https://tonetrackerfrontend.s3.af-south-1.amazonaws.com/do_not_delete/placeholder.jpg'" class="user-img" :alt="user.firstName + ' ' + user.lastName" />
+            <img :src="profilePicture ? envPath + profilePicture : user.path ? envPath + user.path : 'https://tonetrackerfrontend.s3.af-south-1.amazonaws.com/do_not_delete/placeholder.jpg'" 
+            class="user-img" :alt="user.firstName + ' ' + user.lastName" />
           </a>
         </div>
       </nav>
@@ -85,7 +86,7 @@ import { updateProfileHeader } from '@/stores/updateProfileHeader';
 
 
 const { profilePicture, setProfilePicture } = updateProfileHeader();
-
+console.log('profilePictureHeader', profilePicture);
 
 
 const envPath = import.meta.env.VITE_AWS_S3_BUCKET;

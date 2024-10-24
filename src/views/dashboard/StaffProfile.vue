@@ -37,7 +37,7 @@ Date: 04/06/2024
                                         </div>
                                     <!-- <img src="g" alt="Admin" class="zoom-image" style="width: 300px; height: 350px;"> -->
                                     <div v-if="isMyProfile()" @click="showModal = true"
-                                        class="edit-icon" data-bs-toggle="modal" data-bs-target="#addProfilePicModal">
+                                        class="edit-icon" >
                                         <i class='bx bx-edit-alt fs-2'></i>
                                     </div>
                                 </div>
@@ -442,6 +442,7 @@ async function getResult() {
         };
         promoterStore.uploadSingleImage(user.id,formData, config).then(function (response) {
             toaster.success('Profile picture updated successfully');
+            setProfilePicture(response.data?.picturePath);
             getUser();
             showLoading.value = false;
             showModal.value = false;           

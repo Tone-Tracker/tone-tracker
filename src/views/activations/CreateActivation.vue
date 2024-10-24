@@ -58,12 +58,11 @@ const form = reactive({
   name: "",
   budget: null,
   campaign: campaignId.value,
-  regions: "",
-  region: "",
+  regions: [],
+  region22: "",
   startDate: "",
   endDate: "",
   brief: "",
-  regions: "",
   targetGroup: "",
   painPoints: "",
 });
@@ -74,7 +73,7 @@ const getActivationById = async () => {
     Object.assign(form, response.data);
     
     // form.regions = response.data.region;
-    form.region = response.data.region;
+    form.region22 = response.data.region;
   });
 };
 
@@ -82,7 +81,7 @@ const rules = {
       name: { required },
       budget: { required },
       campaign: { required },
-      regions: { required },
+      region22: { required },
       startDate: { required },
       endDate: { required },
       targetGroup: { required },
@@ -122,6 +121,9 @@ const onfileDropped = (dropedFile) => {
 
 const regionsArray = ref([]);
 
+const onRegionChange = (e) => {
+  form.region22 = e.value;
+}
 
 const onSubmit = async () => {
 
@@ -136,15 +138,19 @@ if (!selectedFile.value && !activationId.value) {
 }
 
 loading.value = true;
-//loop through regions and push id to regionsArray
+
 if(!activationId.value){
-  for (let i = 0; i < form.regions.length; i++) {
-  regionsArray.value.push(form.regions[i].id);
+//   for (let i = 0; i < form.region22.length; i++) {
+//     // if id already exist skip
+//     if (form.regions.includes(form.region22[i].id)) {
+//         continue;
+//     }
+//     form.regions.push(form.region22[i].id);
+// }
 }
-form.regions = regionsArray.value;
-}
+const REGIONIDs = form.region22.map((reg) => reg.id);
 
-
+form.regions= REGIONIDs
 const formData = new FormData();
 formData.append('briefFile', selectedFile.value);
 formData.append('type', "ACTIVATION");
@@ -155,25 +161,24 @@ const config = {
 };
 
 try {
-    if (activationId.value) {
+  if (activationId.value) {
         await activation.update(activationId.value, form);
         toaster.success("Activation updated successfully");
     } else {
         await activation.submit(formData, config);
+        loading.value = false;
         toaster.success("Activation created successfully");
     }
   setTimeout(() => {
     router.push({ path: '/admin-activations', query: { campaign: campaignId.value } });
   }, 2000);
-    
-   
+
 } catch (error) {
-    toaster.error("Error creating/updating activation");
-    console.error(error);
- 
+  loading.value = false;
 } finally {
-    loading.value = false;
+  loading.value = false;
 }
+
 };
 
 </script>
@@ -247,12 +252,12 @@ try {
                     <div class="col-md-4 mb-3">
                       <label for="region" class="form-label">Region</label>
                       <div class="card flex justify-center">
-                        <MultiSelect v-model="form.regions" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
+                        <MultiSelect v-model="form.region22" @change="onRegionChange" display="chip" :options="regions" optionLabel="name" filter placeholder="Select Regions"
                             :maxSelectedLabels="5" class="w-full md:w-80" />
                     </div>
                       <div
                         class="input-errors"
-                        v-for="error of v$.regions.$errors"
+                        v-for="error of v$.region22.$errors"
                         :key="error.$uid"
                       >
                         <div class="text-danger">Region is required</div>

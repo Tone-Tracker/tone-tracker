@@ -9,6 +9,7 @@ export const updateProfileHeader = defineStore('profileHeader', () => {
   const profilePicture = ref(user.value?.profilePicture);
 
   function setProfilePicture(path) {
+    console.log('pathUpdated', path);
     profilePicture.value = path;
     user.value.path = path; 
     localStorage.setItem('user', JSON.stringify(user.value));

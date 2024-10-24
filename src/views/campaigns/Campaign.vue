@@ -233,7 +233,7 @@ const onInput = () => {
                     :style="{ borderColor: clientColorStyles?.borderColor }"
                     v-model="searchInput"
                     @input="onInput"
-                    type="text"
+                    type="search"
                     class="form-control ps-5"
                     placeholder="Search"
                   />
