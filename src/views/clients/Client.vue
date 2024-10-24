@@ -276,10 +276,10 @@ const handlePageChange = (newPage) => {
                   </a>
 
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                    <li><a class="dropdown-item" href="#">View Campaign</a></li>
-                    <li><a class="dropdown-item" href="#">View Contacts</a></li>
-                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                    <li><a class="dropdown-item" href="#"> <i class="bx bx-edit me-2"></i>Edit</a></li>
+                    <li><a class="dropdown-item" href="#"> <i class="bx bx-show me-2"></i>View Campaign</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bx bx-user me-2"></i>View Contacts</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bx bx-trash me-2"></i>Delete</a></li>
                   </ul>
                 </div>
 
