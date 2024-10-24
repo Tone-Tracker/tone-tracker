@@ -39,13 +39,13 @@ Date: 04/06/2024
                                                 </template>
                                                 <template #image>
                                                     <img v-if="path == null" 
-                                                        :src="userInfo?.path ? envPath + userInfo?.path : '../../assets/images/placeholder.jpg'" 
+                                                        :src="userInfo?.path ? envPath + userInfo?.path : 'https://tonetrackerfrontend.s3.af-south-1.amazonaws.com/do_not_delete/placeholder.jpg'" 
                                                         alt="image" width="350"  style="max-width: 17rem" />
                                                     <img v-else :src="path" alt="image" width="350" />
                                                     </template>
 
                                                     <template #preview="slotProps">
-                                                    <img :src="userInfo.path ? envPath + userInfo.path : '../../assets/images/placeholder.jpg'" 
+                                                    <img :src="userInfo.path ? envPath + userInfo.path : 'https://tonetrackerfrontend.s3.af-south-1.amazonaws.com/do_not_delete/placeholder.jpg'" 
                                                         alt="preview" :style="slotProps.style" @click="slotProps.onClick" />
                                                     </template>
 
@@ -200,14 +200,15 @@ Date: 04/06/2024
                                                             </template>
                                                             <template #image>
                                                                 <img 
-                                                                    :src="promoter?.userDetails?.path ? envPath + promoter?.userDetails?.path : '../../assets/images/avatars/avatar-1.png'"
+                                                                    :src="promoter?.userDetails?.path ? envPath + promoter?.userDetails?.path : 'https://tonetrackerfrontend.s3.af-south-1.amazonaws.com/do_not_delete/placeholder.jpg'"
                                                                     :alt="promoter.userDetails.firstName" 
                                                                     width="250" 
                                                                 />
                                                             </template>
+                                                            <img src="https://tonetrackerfrontend.s3.af-south-1.amazonaws.com/do_not_delete/placeholder.jpg" alt="">
                                                             <template #preview="slotProps">
                                                                 <img 
-                                                                    :src="promoter?.userDetails?.path ? envPath + promoter?.userDetails?.path : '../../assets/images/avatars/avatar-1.png'"
+                                                                    :src="promoter?.userDetails?.path ? envPath + promoter?.userDetails?.path : 'https://tonetrackerfrontend.s3.af-south-1.amazonaws.com/do_not_delete/placeholder.jpg'"
                                                                     :alt="promoter.userDetails.firstName" 
                                                                     :style="slotProps.style" 
                                                                     @click="slotProps.onClick" 
