@@ -1204,7 +1204,7 @@ div.desc {
 .edit-icon {
     position: absolute;
     top: -5px;
-    right: 95px;
+    right: 1px;
     border-radius: 50%;      
     padding: 5px;  
     cursor: pointer;
