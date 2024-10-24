@@ -1196,7 +1196,7 @@ div.desc {
 
 
 .image-container {
-    width: 370px;
+    width: 272px;
     position: relative;
     display: inline-block;
 }
